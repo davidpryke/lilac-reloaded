@@ -1,0 +1,7 @@
+Version history:
+------------------------------------
+
+lilac-reloaded 2.0-dev:
+- updated propel framework to 1.6.1
+- updated Pear::Log to 1.12.6
+- fixed missing field display_name in table nagios_host_template
