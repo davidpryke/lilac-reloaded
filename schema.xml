@@ -217,20 +217,15 @@
  		<column name="id" type="integer" primaryKey="true" autoIncrement="true" required="true" />
 		<column name="name" type="varchar" size="255" required="true" />
 		<column name="description" type="varchar" size="255" required="false" />
-	    <columm name="display_name" type="varchar" size="255" required="true" />	
-
-        <column name="initial_state" type="varchar" size="1" />
-		
+		<column name="display_name" type="varchar" size="255" required="true" />
+		<column name="initial_state" type="varchar" size="1" />
 		<column name="check_command" type="integer" />
-
-        <column name="retry_interval" type="integer" />
-        <column name="first_notification_delay" type="integer" />
-		
+		<column name="retry_interval" type="integer" />
+		<column name="first_notification_delay" type="integer" />
 		<column name="maximum_check_attempts" type="integer" />
 		<column name="check_interval" type="integer" />
 		<column name="passive_checks_enabled" type="boolean" />
 		<column name="check_period" type="integer" />
-
 		<column name="obsess_over_host" type="boolean" />
 		<column name="check_freshness" type="boolean" />
 		<column name="freshness_threshold" type="integer" />
@@ -244,7 +239,6 @@
 		<foreign-key foreignTable="nagios_command" onDelete="setnull">
 			<reference local="event_handler" foreign="id" />
 		</foreign-key>
-		
 		<column name="low_flap_threshold" type="integer" />
 		<column name="high_flap_threshold" type="integer" />
 		<column name="flap_detection_enabled" type="boolean" />
