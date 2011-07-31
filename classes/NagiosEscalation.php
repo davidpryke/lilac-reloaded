@@ -14,5 +14,12 @@
  * @package    propel.generator.
  */
 class NagiosEscalation extends BaseNagiosEscalation {
+	
+	public function setEscalationPeriodByName($name) {
+		$timeperiod = NagiosTimeperiodPeer::getByName($name);
+		if(!$timeperiod)
+			return false;
+		return $timeperiod;
+	}
 
 } // NagiosEscalation

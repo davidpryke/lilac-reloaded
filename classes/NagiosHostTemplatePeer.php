@@ -15,4 +15,14 @@
  */
 class NagiosHostTemplatePeer extends BaseNagiosHostTemplatePeer {
 
+    public function getByName($name) {
+        $c = new Criteria();
+        $c->add(NagiosHostTemplatePeer::NAME, $name);
+        $c->setIgnoreCase(true);
+        $template = NagiosHostTemplatePeer::doSelectOne($c);
+        if(!$template)
+        	return false;
+        return $template;
+    }
+
 } // NagiosHostTemplatePeer

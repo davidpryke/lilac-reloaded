@@ -14,5 +14,15 @@
  * @package    propel.generator.
  */
 class NagiosContactPeer extends BaseNagiosContactPeer {
+	
+	public function getByName($name) {
+		$c = new Criteria();
+		$c->add(NagiosContactPeer::NAME, $name);
+		$c->setIgnoreCase(true);
+		$contact = NagiosContactPeer::doSelectOne($c);
+		if(!$contact)
+			return false;
+		return $contact;
+	}
 
 } // NagiosContactPeer

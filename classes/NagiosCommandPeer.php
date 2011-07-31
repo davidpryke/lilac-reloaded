@@ -14,5 +14,15 @@
  * @package    propel.generator.
  */
 class NagiosCommandPeer extends BaseNagiosCommandPeer {
+	
+    public function getByName($name) {
+		$c = new Criteria();
+		$c->add(NagiosCommandPeer::NAME, $name);
+		$c->setIgnoreCase(true);
+		$command = NagiosCommandPeer::doSelectOne($c);
+		if(!$command)
+			return false;
+		return $command;
+    }
 
 } // NagiosCommandPeer

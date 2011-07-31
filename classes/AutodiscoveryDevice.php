@@ -14,5 +14,25 @@
  * @package    propel.generator.
  */
 class AutodiscoveryDevice extends BaseAutodiscoveryDevice {
+	
+	/**
+	 * Initializes internal state of AutodiscoveryDevice object.
+	 * @see        parent::__construct()
+	 */
+	public function __construct()
+	{
+		// Make sure that parent constructor is always invoked, since that
+		// is where any default values for this object are set.
+		parent::__construct();
+	}
+	
+	public function getTemplateMatches() {
+		$c = new Criteria();
+		$c->add(AutodiscoveryDeviceTemplateMatchPeer::DEVICE_ID, $this->getId());
+		$c->addDescendingOrderByColumn(AutodiscoveryDeviceTemplateMatchPeer::PERCENT);
+		$c->addDescendingOrderByColumn(AutodiscoveryDeviceTemplateMatchPeer::COMPLEXITY);
+		$matches = AutodiscoveryDeviceTemplateMatchPeer::doSelect($c);
+		return $matches;
+	}
 
 } // AutodiscoveryDevice

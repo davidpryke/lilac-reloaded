@@ -14,5 +14,15 @@
  * @package    propel.generator.
  */
 class NagiosServiceGroupPeer extends BaseNagiosServiceGroupPeer {
+	
+    public function getByName($name) {
+		$c = new Criteria();
+		$c->add(NagiosServiceGroupPeer::NAME, $name);
+		$c->setIgnoreCase(true);
+		$servicegroup = NagiosServiceGroupPeer::doSelectOne($c);
+		if(!$servicegroup)
+			return false;
+		return $servicegroup;
+    }
 
 } // NagiosServiceGroupPeer

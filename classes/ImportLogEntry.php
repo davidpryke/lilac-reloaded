@@ -14,5 +14,31 @@
  * @package    propel.generator.
  */
 class ImportLogEntry extends BaseImportLogEntry {
+	
+	const TYPE_NOTICE = 1;
+	const TYPE_WARNING = 2;
+	const TYPE_ERROR = 3;
+
+	public function isValidType($type) {
+		return true;
+		if($type != ImportLogEntry::TYPE_NOTICE &&
+			$type != ImportLogEntry::TYPE_WARNING &&
+			$type != ImportLogEntry::TYPE_ERROR) {
+				return false;
+			}
+			return true;
+	}
+	
+	public function getReadableType($type) {
+		if($type == ImportLogEntry::TYPE_NOTICE) {
+			return "NOTICE";
+		}
+		if($type == ImportLogEntry::TYPE_WARNING) {
+			return "WARNING";
+		}
+		if($type == ImportLogEntry::TYPE_ERROR) {
+			return "ERROR";
+		}
+	}
 
 } // ImportLogEntry

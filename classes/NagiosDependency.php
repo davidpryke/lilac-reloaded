@@ -14,5 +14,26 @@
  * @package    propel.generator.
  */
 class NagiosDependency extends BaseNagiosDependency {
+	
+    public function getType() {
+        if($this->getNagiosService())
+            return "service";
+        if($this->getNagiosServiceTemplate())
+            return "servicetemplate";
+        if($this->getNagiosHost())
+            return "host";
+        if($this->getNagiosHostTemplate())
+            return "hosttemplate";
+        if($this->getNagiosHostgroup())
+            return "hostgroup";
+    }
+
+    public function setDependencyPeriodByName($name) {
+        $timeperiod = NagiosTimeperiodPeer::getByName($name);
+        if(!$timeperiod)
+        	return false;
+        $this->setNagiosTimeperiod($timeperiod);
+        $this->save();
+    }
 
 } // NagiosDependency

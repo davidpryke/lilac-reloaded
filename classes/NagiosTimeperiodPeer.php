@@ -14,5 +14,15 @@
  * @package    propel.generator.
  */
 class NagiosTimeperiodPeer extends BaseNagiosTimeperiodPeer {
+	
+    public function getByName($name) {
+		$c = new Criteria();
+		$c->add(NagiosTimeperiodPeer::NAME, $name);
+		$c->setIgnoreCase(true);
+		$timeperiod = NagiosTimeperiodPeer::doSelectOne($c);
+		if(!$timeperiod)
+			return false;
+		return $timeperiod;
+    }
 
 } // NagiosTimeperiodPeer

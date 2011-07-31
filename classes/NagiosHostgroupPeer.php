@@ -14,5 +14,15 @@
  * @package    propel.generator.
  */
 class NagiosHostgroupPeer extends BaseNagiosHostgroupPeer {
+	
+    public function getByName($name) {
+		$c = new Criteria();
+		$c->add(NagiosHostgroupPeer::NAME, $name);
+		$c->setIgnoreCase(true);
+		$hostgroup = NagiosHostgroupPeer::doSelectOne($c);
+		if(!$hostgroup)
+			return false;
+		return $hostgroup;
+    }
 
 } // NagiosHostgroupPeer

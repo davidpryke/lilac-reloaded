@@ -14,5 +14,19 @@
  * @package    propel.generator.
  */
 class NagiosContactGroup extends BaseNagiosContactGroup {
+	
+	public function addMemberByName($name) {
+		$c = new Criteria();
+		$c->add(NagiosContactPeer::NAME, $name);
+		$contact = NagiosContactPeer::doSelectOne($c);
+		if(!empty($contact)) {
+			$membership = new NagiosContactGroupMember();
+			$membership->setNagiosContactGroup($this);
+			$membership->setNagiosContact($contact);
+			$membership->save();
+			return true;
+		}
+		return false;
+	}
 
 } // NagiosContactGroup

@@ -14,5 +14,15 @@
  * @package    propel.generator.
  */
 class NagiosServiceTemplatePeer extends BaseNagiosServiceTemplatePeer {
+	
+    public function getByName($name) {
+        $c = new Criteria();
+        $c->add(NagiosServiceTemplatePeer::NAME, $name);
+        $c->setIgnoreCase(true);
+        $template = NagiosServiceTemplatePeer::doSelectOne($c);
+        if(!$template) 
+        	return false;
+        return $template;
+    }
 
 } // NagiosServiceTemplatePeer

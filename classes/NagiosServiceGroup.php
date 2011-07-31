@@ -14,5 +14,49 @@
  * @package    propel.generator.
  */
 class NagiosServiceGroup extends BaseNagiosServiceGroup {
+	
+	public function addService($service) {
+		// First check to see if the membership exists
+		$c = new Criteria();
+		$c->add(NagiosServiceGroupMemberPeer::SERVICE_GROUP, $this->getId());
+		$c->add(NagiosServiceGroupMemberPeer::SERVICE, $service->getId());
+		$membership = NagiosServiceGroupMemberPeer::doSelectOne($c);
+		if($membership)
+			return true;
+		$membership = new NagiosServiceGroupMember();
+		$membership->setNagiosServiceGroup($this);
+		$membership->setNagiosService($service);
+		$membership->save();
+		return true;
+	}
+
+	public function addMembersByServiceGroup($name) {
+		// First get servicegroup
+		$servicegroup = NagiosServiceGroupPeer::getByName($name);
+		if(!$servicegroup) {
+			return false;
+		}
+		// Get the members
+		$memberships = $servicegroup->getNagiosServiceGroupMembers();
+		foreach($memberships as $membership) {
+			$service = $membership->getNagiosService();
+			// Check to see if we already have this in our member list
+			$id = $this->getId();
+			if(!empty($id)) {
+				$c = new Criteria();
+				$c->add(NagiosServiceGroupMemberPeer::SERVICE_GROUP, $this->getId());
+				$c->add(NagiosServiceGroupMemberPeer::SERVICE, $service->getId());
+				$relationship = NagiosServiceGroupMemberPeer::doSelectOne($c);
+				if($relationship)
+					continue;
+			}
+			// Create new relationship
+			$relationship = new NagiosServiceGroupMember();
+			$relationship->setNagiosService($service);
+			$relationship->setNagiosServiceGroup($this);
+			$relationship->save();
+		}
+		return true;
+	}
 
 } // NagiosServiceGroup

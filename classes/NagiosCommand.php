@@ -14,5 +14,11 @@
  * @package    propel.generator.
  */
 class NagiosCommand extends BaseNagiosCommand {
+	
+	public function updateFromArray($source) {
+		if(isset($source['command_name'])) $this->setName($source['command_name']);
+		if(isset($source['command_desc'])) $this->setDescription($source['command_desc']);
+		if(isset($source['command_line'])) $this->setLine($source['command_line']);
+	}
 
 } // NagiosCommand

@@ -14,5 +14,42 @@
  * @package    propel.generator.
  */
 class AutodiscoveryLogEntry extends BaseAutodiscoveryLogEntry {
+	
+	const TYPE_NOTICE = 1;
+	const TYPE_WARNING = 2;
+	const TYPE_ERROR = 3;
+
+	/**
+	 * Initializes internal state of AutodiscoveryLogEntry object.
+	 * @see        parent::__construct()
+	 */
+	public function __construct()
+	{
+		// Make sure that parent constructor is always invoked, since that
+		// is where any default values for this object are set.
+		parent::__construct();
+	}
+	
+	public function isValidType($type) {
+		return true;
+		if($type != AutodiscoveryLogEntry::TYPE_NOTICE &&
+			$type != AutodiscoveryLogEntry::TYPE_WARNING &&
+			$type != AutodiscoveryLogEntry::TYPE_ERROR) {
+				return false;
+			}
+			return true;
+	}
+	
+	public function getReadableType($type) {
+		if($type == AutodiscoveryLogEntry::TYPE_NOTICE) {
+			return "NOTICE";
+		}
+		if($type == AutodiscoveryLogEntry::TYPE_WARNING) {
+			return "WARNING";
+		}
+		if($type == AutodiscoveryLogEntry::TYPE_ERROR) {
+			return "ERROR";
+		}
+	}
 
 } // AutodiscoveryLogEntry
