@@ -213,7 +213,7 @@ class NagiosHost extends BaseNagiosHost {
 		return NagiosHostPeer::doCount($c);
 	}
 	
-	function getNagiosHostTemplateInheritances() {
+	function getNagiosHostTemplateInheritances($criteria = null, PropelPDO $con = null) {
 		$c = new Criteria();
 		$c->add(NagiosHostTemplateInheritancePeer::SOURCE_HOST, $this->getId());
 		$c->addAscendingOrderByColumn(NagiosHostTemplateInheritancePeer::ORDER);
@@ -225,7 +225,6 @@ class NagiosHost extends BaseNagiosHost {
 			$list[] = $inheritanceItem->getNagiosHostTemplateRelatedByTargetTemplate();
 		}
 		
-		
 		return $list;
 	}
 
@@ -234,6 +233,7 @@ class NagiosHost extends BaseNagiosHost {
         $parameter->setNagiosHost($this);
         $parameter->setParameter($value);
         $parameter->save();
+		
         return true;
     }
 

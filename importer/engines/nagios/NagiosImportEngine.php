@@ -100,6 +100,9 @@ class NagiosImportEngine extends ImportEngine {
 	}
 
 	public function renderConfig() {
+		
+		$cfgLocation = $this->guessConfigLocation();
+		
 		?>
 		<p>
 		<fieldset class="checks">
@@ -135,20 +138,45 @@ class NagiosImportEngine extends ImportEngine {
 			<legend>File Locations</legend>
 			<p>
 			<label for="config_file">Main Configuration File  (nagios.cfg)</label>
-			<input type="text" size="100" maxlength="255" id="config_file" name="config_file" />
+			<input type="text" size="100" maxlength="255" id="config_file" name="config_file" value="<?php echo $cfgLocation["nagios"]?>" />
 			</p>
 			<p>
 			<label for="cgi_file">CGI Configuration File (cgi.cfg)</label>
-			<input type="text" size="100" maxlength="255" id="cgi_file" name="cgi_file" />
+			<input type="text" size="100" maxlength="255" id="cgi_file" name="cgi_file" value="<?php echo $cfgLocation["cgi"]?>" />
 			</p>
 			<p>
 			<label for="resources_file">Resource File (resource.cfg)</label>
-			<input type="text" size="100" maxlength="255" id="resources_file" name="resources_file" />
+			<input type="text" size="100" maxlength="255" id="resources_file" name="resources_file" value="<?php echo $cfgLocation["resource"]?>" />
 			</p>
 		</fieldset>
 		</p>
 		<?php
 
+	}
+	
+	public function guessConfigLocation()
+	{
+		// Most possible locations
+		$posLoc = array("/etc/nagios/", "/etc/nagios3/", "/usr/local/nagios/etc/");
+		
+		// Found locations
+		$cfgFound = array("nagios" => "", "cgi" => "", "resource" => "");
+		
+		// Search for configs
+		foreach($posLoc as $dir)
+		{
+			// If file nagios.cfg exists there also must exist the other files
+			if(file_exists($dir . "nagios.cfg"))
+			{
+				$cfgFound["nagios"] = $dir . "nagios.cfg";
+				$cfgFound["cgi"] = $dir . "cgi.cfg";
+				$cfgFound["resource"] = $dir . "resource.cfg";
+				
+				return $cfgFound;
+			}
+		}
+		
+		return $cfgFound;
 	}
 
 	public function validateConfig() {

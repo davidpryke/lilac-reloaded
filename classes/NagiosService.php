@@ -241,7 +241,7 @@ class NagiosService extends BaseNagiosService {
 		return $cmdObj;
 	}
 	
-	function getNagiosServiceTemplateInheritances() {
+	function getNagiosServiceTemplateInheritances($criteria = null, PropelPDO $con = null) {
 		$c = new Criteria();
 		$c->add(NagiosServiceTemplateInheritancePeer::SOURCE_SERVICE , $this->getId());
 		$c->addAscendingOrderByColumn(NagiosServiceTemplateInheritancePeer::ORDER);
