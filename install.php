@@ -770,7 +770,7 @@ function print_header($title = null) {
 	    <link rel="stylesheet" type="text/css" href="style/jquery.tooltip.css">
 	 	<script type="text/javascript" src="js/jquery-1.2.6.min.js"></script>
 	 	<script type="text/javascript" src="js/jquery.tooltip.min.js"></script>
-	 	<script type="text/javascript" src="js/jquery.timers-1.0.0.js"></script>
+	 	<script type="text/javascript" src="js/jquery.timers.js"></script>
 	 	<script type="text/javascript" src="js/flexigrid.js"></script>
 
 	</head>	    

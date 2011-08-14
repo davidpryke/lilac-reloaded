@@ -62,7 +62,7 @@ function double_pane_select_form_element_with_enabler($backgroundColor, $form_na
 		</td>
 		<td align="right" class="formcell">
 		<input type="hidden" name="<?php echo $form_name;?>_enablers[<?php echo $enabler_name;?>]" value="<?php if($_POST[$form_name.'_enablers'][$enabler_name]) print("1"); else print("0");?>" />
-		<input type="checkbox" name="<?php echo $form_name;?>_checkboxes[<?php echo $enabler_name;?>]" value="1" id="<?php echo $form_name;?>_checkboxes[<?php echo $enabler_name;?>]" <?php if($_POST[$form_name.'_enablers'][$enabler_name]) print("CHECKED");?> onclick="form_element_switch(document.<?php echo $form_name;?>.elements['<?php echo $element_name;?>'], document.<?php echo $form_name;?>.elements['<?php echo $form_name;?>_checkboxes[<?php echo $enabler_name;?>]']); enabler_switch(document.<?php echo $form_name;?>.elements['<?php echo $form_name;?>_enablers[<?php echo $enabler_name;?>]']);" /><label for="<?php echo $form_name;?>_checkboxes[<?php echo $enabler_name;?>]"><b><?php echo $checkbox_description;?></b></label>
+		<input type="checkbox" name="<?php echo $form_name;?>_checkboxes[<?php echo $enabler_name;?>]" value="1" id="<?php echo $form_name;?>_checkboxes[<?php echo $enabler_name;?>]" <?php if($_POST[$form_name.'_enablers'][$enabler_name]) print("CHECKED");?> onClick="form_element_switch(document.<?php echo $form_name;?>.elements['<?php echo $element_name;?>'], document.<?php echo $form_name;?>.elements['<?php echo $form_name;?>_checkboxes[<?php echo $enabler_name;?>]']); enabler_switch(document.<?php echo $form_name;?>.elements['<?php echo $form_name;?>_enablers[<?php echo $enabler_name;?>]']);" /><label for="<?php echo $form_name;?>_checkboxes[<?php echo $enabler_name;?>]"><b><?php echo $checkbox_description;?></b></label>
 		</td>
 	</tr>
 	<tr>
@@ -84,7 +84,7 @@ function double_pane_text_form_element_with_enabler($backgroundColor, $form_name
 		</div>
 		<div class="formtogglefield">
 		<input type="hidden" name="<?php $form_name;?>_enablers[<?php echo $enabler_name;?>]" value="<?php if($_POST[$form_name.'_enablers'][$enabler_name]) print("1"); else print("0");?>" />
-		<input type="checkbox" name="<?php echo $form_name;?>_checkboxes[<?php echo $enabler_name;?>]" value="1" id="<?php echo $form_name;?>_checkboxes[<?php echo $enabler_name;?>]" <?php if($_POST[$form_name.'_enablers'][$enabler_name]) print("CHECKED");?> onclick="form_element_switch(document.<?php echo $form_name;?>.elements['<?php echo $element_name;?>'], document.<?php echo $form_name;?>.elements['<?php echo $form_name;?>_checkboxes[<?php echo $enabler_name;?>]']); enabler_switch(document.<?php echo $form_name;?>.elements['<?php echo $form_name;?>_enablers[<?php echo $enabler_name;?>]']);" /><label for="<?php echo $form_name;?>_checkboxes[<?php echo $enabler_name;?>]"><b><?php echo $checkbox_description;?></b></label>
+		<input type="checkbox" name="<?php echo $form_name;?>_checkboxes[<?php echo $enabler_name;?>]" value="1" id="<?php echo $form_name;?>_checkboxes[<?php echo $enabler_name;?>]" <?php if($_POST[$form_name.'_enablers'][$enabler_name]) print("CHECKED");?> onClick="form_element_switch(document.<?php echo $form_name;?>.elements['<?php echo $element_name;?>'], document.<?php echo $form_name;?>.elements['<?php echo $form_name;?>_checkboxes[<?php echo $enabler_name;?>]']); enabler_switch(document.<?php echo $form_name;?>.elements['<?php echo $form_name;?>_enablers[<?php echo $enabler_name;?>]']);" /><label for="<?php echo $form_name;?>_checkboxes[<?php echo $enabler_name;?>]"><b><?php echo $checkbox_description;?></b></label>
 		</div>
 		<?php echo $element_description; ?>
 	</div>
@@ -123,7 +123,7 @@ function double_pane_checkbox_group_form_element_with_enabler($backgroundColor, 
 		</td>
 		<td align="right" class="formcell">
 		<input type="hidden" name="<?php echo $form_name;?>_enablers[<?php echo $enabler_name;?>]" value="<?php if($_POST[$form_name.'_enablers'][$enabler_name]) print("1"); else print("0");?>" />
-		<input type="checkbox" name="<?php echo $form_name;?>_checkboxes[<?php echo $enabler_name;?>]" value="1" id="<?php echo $form_name;?>_checkboxes[<?php echo $enabler_name;?>]" <?php if($_POST[$form_name.'_enablers'][$enabler_name]) print("CHECKED");?> onclick="<?php
+		<input type="checkbox" name="<?php echo $form_name;?>_checkboxes[<?php echo $enabler_name;?>]" value="1" id="<?php echo $form_name;?>_checkboxes[<?php echo $enabler_name;?>]" <?php if($_POST[$form_name.'_enablers'][$enabler_name]) print("CHECKED");?> onClick="<?php
 		// Gotta send multiple calls to javascript: form_element_switch
 		for($counter = 0; $counter < $numOfElements; $counter++ ) {
 			?>
@@ -168,7 +168,7 @@ function double_pane_textarea_form_element_with_enabler($backgroundColor, $form_
 		</td>
 		<td align="right" class="formcell">
 		<input type="hidden" name="<?php echo $form_name;?>_enablers[<?php echo $enabler_name;?>]" value="<?php if($_POST[$form_name.'_enablers'][$enabler_name]) print("1"); else print("0");?>" />
-		<input type="checkbox" name="<?php echo $form_name;?>_checkboxes[<?php echo $enabler_name;?>]" value="1" id="<?php echo $form_name;?>_checkboxes[<?php echo $enabler_name;?>]" <?php if($_POST[$form_name.'_enablers'][$enabler_name]) print("CHECKED");?> onclick="form_element_switch(document.<?php echo $form_name;?>.elements['<?php echo $element_name;?>'], document.<?php echo $form_name;?>.elements['<?php echo $form_name;?>_checkboxes[<?php echo $enabler_name;?>]']);
+		<input type="checkbox" name="<?php echo $form_name;?>_checkboxes[<?php echo $enabler_name;?>]" value="1" id="<?php echo $form_name;?>_checkboxes[<?php echo $enabler_name;?>]" <?php if($_POST[$form_name.'_enablers'][$enabler_name]) print("CHECKED");?> onClick="form_element_switch(document.<?php echo $form_name;?>.elements['<?php echo $element_name;?>'], document.<?php echo $form_name;?>.elements['<?php echo $form_name;?>_checkboxes[<?php echo $enabler_name;?>]']);
 		enabler_switch(document.<?php echo $form_name;?>.elements['<?php echo $form_name;?>_enablers[<?php echo $enabler_name;?>]']);" /><label for="<?php echo $form_name;?>_checkboxes[<?php echo $enabler_name;?>]"><b><?php echo $checkbox_description;?></b></label>
 		</td>
 		</tr>
@@ -290,9 +290,9 @@ function print_header($title = null) {
 	    <link rel="stylesheet" type="text/css" href="style/flexigrid.css">
 	    <link rel="stylesheet" type="text/css" href="style/jquery.tooltip.css">
 		<link rel="stylesheet" type="text/css" href="style/jquery.autocomplete.css">
-	 	<script type="text/javascript" src="js/jquery-1.2.6.min.js"></script>
+	 	<script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
 	 	<script type="text/javascript" src="js/jquery.tooltip.min.js"></script>
-	 	<script type="text/javascript" src="js/jquery.timers-1.0.0.js"></script>
+	 	<script type="text/javascript" src="js/jquery.timers.js"></script>
 	 	<script type="text/javascript" src="js/flexigrid.js"></script>
 		<script type="text/javascript" src="js/jquery.autocomplete.js"></script>
 	</head>	    
