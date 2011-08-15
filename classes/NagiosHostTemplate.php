@@ -252,12 +252,14 @@ class NagiosHostTemplate extends BaseNagiosHostTemplate {
 			// This template has inherited templates, let's bring their values in
 			foreach($inheritanceTemplates as $hostTemplate) {
 				$filters = $hostTemplate->getInheritedNagiosAutodiscoveryServiceFilters(false);
-				$filterList = array_merge($filterList, $filters);
+				if(count($filters))
+					$filterList = array_merge($filterList, $filters);
 			}
 		}
 		if(!$self) {
 			$filters = $this->getNagiosHostTemplateAutodiscoveryServices();
-			$filterList = array_merge($filterList, $filters);
+			if(count($filters))
+				$filterList = array_merge($filterList, $filters);
 		}
 		return $filterList;
 	}

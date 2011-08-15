@@ -89,12 +89,14 @@ class NagiosServiceTemplate extends BaseNagiosServiceTemplate {
 			// This template has inherited templates, let's bring their values in
 			foreach($inheritanceTemplates as $serviceTemplate) {
 				$dependencies = $serviceTemplate->getInheritedDependencies(false);
-				$dependenciesList = array_merge($dependenciesList, $dependencies);
+				if(count($dependencies))
+					$dependenciesList = array_merge($dependenciesList, $dependencies);
 			}
 		}
 		if(!$self) {
 			$dependencies = $this->getNagiosDependencys();
-			$dependenciesList = array_merge($dependenciesList, $dependencies);
+			if(count($dependencies))
+				$dependenciesList = array_merge($dependenciesList, $dependencies);
 		}
 		return $dependenciesList;
 	}	
@@ -107,12 +109,14 @@ class NagiosServiceTemplate extends BaseNagiosServiceTemplate {
 			// This template has inherited templates, let's bring their values in
 			foreach($inheritanceTemplates as $serviceTemplate) {
 				$escalations = $serviceTemplate->getInheritedEscalations(false);
-				$escalationsList = array_merge($escalationsList, $escalations);
+				if(count($escalations))
+					$escalationsList = array_merge($escalationsList, $escalations);
 			}
 		}
 		if(!$self) {
 			$escalations = $this->getNagiosEscalations();
-			$escalationsList = array_merge($escalationsList, $escalations);			
+			if(count($escalations))
+				$escalationsList = array_merge($escalationsList, $escalations);			
 		}
 		return $escalationsList;
 	}	

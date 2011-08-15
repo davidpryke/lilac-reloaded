@@ -23,18 +23,17 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 require_once('includes/config.inc');
 print_header();
 
-print_window_header("About Lilac Configurator", "100%");
+print_window_header("About Lilac-Reloaded", "100%");
 ?>
 <p>
-<h2>Lilac Configurator <?php echo LILAC_VERSION;?></h2>
-Lilac Configurator is part of the Lilac Platform.  The community site is available at <a href="http://www.lilacplatform.com">www.lilacplatform.com</a>.  Lilac Configurator is a project developed by <a href="http://www.lilacnetworks.com">Lilac Networks</a>.
-</p>
+<h2>Lilac-Reloaded <?php echo LILAC_VERSION;?></h2>
 <p>
-<h2>Services & Support</h2>
-Lilac Networks can help support your implementation of Lilac & Nagios.  For commercial support of your open source monitoring infrastructure, review our service offerings at <a href="http://www.lilacnetworks.com/services/">www.lilacnetworks.com</a>.  For community support for Lilac Configurator, refer to the community site at <a href="http://www.lilacplatform.com">www.lilacplatform.com</a>.
+	Lilac-Reloaded is the successor of the Lilac Nagios Configurator.  The community site is available at <a href="http://sourceforge.net/projects/lilac--reloaded/">http://sourceforge.net/projects/lilac--reloaded/</a>.</a>.
+</p>
 </p>
 <p>
 <h2>Statistics</h2>
+<p>
 <table class="statistics">
 	<tr>
 		<td><strong>Total Nagios Commands:</strong></td>
@@ -78,6 +77,7 @@ Lilac Networks can help support your implementation of Lilac & Nagios.  For comm
 	</tr>
 
 </table>
+</p>
 
 <?php
 print_window_footer();
