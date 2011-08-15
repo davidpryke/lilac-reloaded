@@ -128,6 +128,10 @@ class NagiosImportEngine extends ImportEngine {
 			<label for="overwrite_existing">Overwrite Existing Objects (Ignored if Deleting Existing Objects)</label>
 			</p>
 			<p>
+			<input type="checkbox" name="skip_missing_template_values" id="skip_missing_template_values" checked="checked" />
+			<label for="skip_missing_template_values">Skip dependency errors for templates (Error is still shown in log)</label>
+			</p>
+			<p>
 			<input type="checkbox" id="continue_error" name="continue_error" />
 			<label for="continue_error">Attempt to Continue on Errors</label>
 			</p>
@@ -200,6 +204,7 @@ class NagiosImportEngine extends ImportEngine {
 		$config->setVar("continue_error", (isset($_POST['continue_error']) ? true : false));
 		$config->setVar("delete_existing", (isset($_POST['delete_existing']) ? true : false));
 		$config->setVar("overwrite_existing", (isset($_POST['overwrite_existing']) ? true : false));
+		$config->setVar("skip_missing_template_values", (isset($_POST['skip_missing_template_values']) ? true : false));
 		$config->setVar("config_file", $_POST['config_file']);
 		$config->setVar("cgi_file", $_POST['cgi_file']);
 		$config->setVar("resources_file", $_POST['resources_file']);
@@ -222,6 +227,9 @@ class NagiosImportEngine extends ImportEngine {
 		}
 		if($config->getVar("continue_error")) {
 			?><li><strong>Attempting to Continue on Errors</strong></li><?php
+		}
+		if($config->getVar("skip_missing_template_values")) {
+			?><li><strong>Skip dependency errors for templates</strong></li><?php
 		}
 		?></ul><?php
 	}

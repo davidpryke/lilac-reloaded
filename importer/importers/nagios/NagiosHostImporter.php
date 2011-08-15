@@ -137,8 +137,10 @@ class NagiosHostImporter extends NagiosImporter {
 	}
 
 	public function valid() {
+		$config = $this->getEngine()->getConfig();
 		$values = $this->getSegment()->getValues();
 		$job = $this->getEngine()->getJob();
+
 		if(isset($values['use'])) {
 			// We need to use a template
 			$job->addNotice("This Host uses a template: " . $values['use'][0]['value']);	
@@ -153,26 +155,35 @@ class NagiosHostImporter extends NagiosImporter {
 				return false;
 			}
 		}
+		
 		// Check time period existence
 		if(isset($values['check_period'])) {
 			$c = new Criteria();
 			$c->add(NagiosTimeperiodPeer::NAME, $values['check_period'][0]['value']);
 			$timePeriod = NagiosTimeperiodPeer::doSelectOne($c);
 			if(empty($timePeriod)) {
-				$job->addNotice("The time period specified by " . $values['check_period'][0]['value'] . " was not found.");
-				return false;
+				$job->addNotice("The time period specified by " . $values['check_period'][0]['value'] . " was not found for host " . $values["name"][0]["value"] . ".");
+					
+				if((!$config->getVar('skip_missing_template_values') && $values["register"][0]["value"] == 0) || $values["register"][0]["value"] == 1)
+					return false;
 			}
-			$timePeriod->clearAllReferences(true);
+			else {
+				$timePeriod->clearAllReferences(true);
+			}
 		}
 		if(isset($values['notification_period'])) {
 			$c = new Criteria();
 			$c->add(NagiosTimeperiodPeer::NAME, $values['notification_period'][0]['value']);
 			$timePeriod = NagiosTimeperiodPeer::doSelectOne($c);
 			if(empty($timePeriod)) {
-				$job->addNotice("The time period specified by " . $values['notification_period'][0]['value'] . " was not found.");
-				return false;
+				$job->addNotice("The time period specified by " . $values['notification_period'][0]['value'] . " was not found for host " . $values["name"][0]["value"] . ".");
+					
+				if((!$config->getVar('skip_missing_template_values') && $values["register"][0]["value"] == 0) || $values["register"][0]["value"] == 1)
+					return false;
 			}
-			$timePeriod->clearAllReferences(true);
+			else {
+				$timePeriod->clearAllReferences(true);
+			}
 		}
 		// Check command existence
 		if(isset($values['check_command'])) {
@@ -181,20 +192,28 @@ class NagiosHostImporter extends NagiosImporter {
 			$c->add(NagiosCommandPeer::NAME, $params[0]);
 			$command = NagiosCommandPeer::doSelectOne($c);
 			if(empty($command)) {
-				$job->addNotice("The command specified by " . $params[0] . " was not found.");
-				return false;
+				$job->addNotice("The command specified by " . $params[0] . " was not found for host " . $values["name"][0]["value"] . ".");
+					
+				if((!$config->getVar('skip_missing_template_values') && $values["register"][0]["value"] == 0) || $values["register"][0]["value"] == 1)
+					return false;
 			}
-			$command->clearAllReferences(true);
+			else {
+				$command->clearAllReferences(true);
+			}
 		}
 		if(isset($values['event_handler'])) {
 			$c = new Criteria();
 			$c->add(NagiosCommandPeer::NAME, $values['event_handler'][0]['value']);
 			$command = NagiosCommandPeer::doSelectOne($c);
 			if(empty($command)) {
-				$job->addNotice("The command specified by " . $values['event_handler'][0]['value'] . " was not found.");
-				return false;
+				$job->addNotice("The command specified by " . $values['event_handler'][0]['value'] . " was not found for host " . $values["name"][0]["value"] . ".");
+					
+				if((!$config->getVar('skip_missing_template_values') && $values["register"][0]["value"] == 0) || $values["register"][0]["value"] == 1)
+					return false;
 			}
-			$command->clearAllReferences(true);
+			else {
+				$command->clearAllReferences(true);
+			}
 		}
 
 		// Check contact groups
@@ -204,10 +223,14 @@ class NagiosHostImporter extends NagiosImporter {
 				$c->add(NagiosContactGroupPeer::NAME, $contactGroupValues['value']);
 				$contactgroup = NagiosContactGroupPeer::doSelectOne($c);
 				if(empty($contactgroup)) {
-					$job->addNotice("The contact group specified by " . $contactGroupValues['value'] . " was not found.");
-					return false;
+					$job->addNotice("The contact group specified by " . $contactGroupValues['value'] . " was not found for host " . $values["name"][0]["value"] . ".");
+					
+					if((!$config->getVar('skip_missing_template_values') && $values["register"][0]["value"] == 0) || $values["register"][0]["value"] == 1)
+						return false;
 				}
-				$contactgroup->clearAllReferences();
+				else {
+					$contactgroup->clearAllReferences();
+				}
 			}
 		}
         if(isset($values['contacts'])) {
@@ -216,10 +239,14 @@ class NagiosHostImporter extends NagiosImporter {
 				$c->add(NagiosContactPeer::NAME, $contactValues['value']);
 				$contactgroup = NagiosContactPeer::doSelectOne($c);
 				if(empty($contactgroup)) {
-					$job->addNotice("The contact specified by " . $contactValues['value'] . " was not found.");
-					return false;
+					$job->addNotice("The contact specified by " . $contactValues['value'] . " was not found for host " . $values["name"][0]["value"] . ".");
+					
+					if((!$config->getVar('skip_missing_template_values') && $values["register"][0]["value"] == 0) || $values["register"][0]["value"] == 1)
+						return false;
 				}
-				$contactgroup->clearAllReferences();
+				else {
+					$contactgroup->clearAllReferences();
+				}
 			}
 		}
 		// Check host groups
@@ -229,10 +256,14 @@ class NagiosHostImporter extends NagiosImporter {
 				$c->add(NagiosHostgroupPeer::NAME, $hostGroupValues['value']);
 				$hostgroup = NagiosHostgroupPeer::doSelectOne($c);
 				if(empty($hostgroup)) {
-					$job->addNotice("The host group specified by " . $hostGroupValues['value'] . " was not found.");
-					return false;
+					$job->addNotice("The host group specified by " . $hostGroupValues['value'] . " was not found for host " . $values["name"][0]["value"] . ".");
+					
+					if((!$config->getVar('skip_missing_template_values') && $values["register"][0]["value"] == 0) || $values["register"][0]["value"] == 1)
+						return false;
 				}
-				$hostgroup->clearAllReferences();
+				else {
+					$hostgroup->clearAllReferences();
+				}
 			}
 		}
         // Check parents
@@ -242,10 +273,14 @@ class NagiosHostImporter extends NagiosImporter {
 				$c->add(NagiosHostPeer::NAME, $parentValues['value']);
 				$host = NagiosHostPeer::doSelectOne($c);
 				if(empty($host)) {
-					$job->addNotice("The host specified by " . $parentValues['value'] . " was not found.");
-					return false;
+					$job->addNotice("The host specified by " . $parentValues['value'] . " was not found for host " . $values["name"][0]["value"] . ".");
+					
+					if((!$config->getVar('skip_missing_template_values') && $values["register"][0]["value"] == 0) || $values["register"][0]["value"] == 1)
+						return false;
 				}
-				$host->clearAllReferences();
+				else {
+					$host->clearAllReferences();
+				}
 			}
 		}
 
