@@ -279,6 +279,7 @@ class NagiosTimeperiodImporter extends NagiosImporter {
 			if($dependant) {
 				// We need to add all the entries from that time period to ours.
 				$entries = $dependant->getNagiosTimeperiodEntrys();
+				print_r($dependant);
 				foreach($entries as $entry) {
 					$tempEntry = new NagiosTimeperiodEntry();
 					$tempEntry->setEntry($entry->getEntry());
@@ -291,7 +292,7 @@ class NagiosTimeperiodImporter extends NagiosImporter {
 					$tempExclusion->setNagiosTimeperiodRelatedByTimeperiodId($timePeriod);
 					$tempExclusion->setNagiosTimeperiodRelatedByExcludedTimeperiod($exclusion->getNagiosTimeperiodRelatedByExcludedTimePeriod);
 				}
-				$dependent->clearAllReferences(true);
+				$dependant->clearAllReferences(true);
 			}
 		}
 				

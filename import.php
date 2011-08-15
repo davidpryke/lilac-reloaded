@@ -206,6 +206,7 @@ if(isset($importJob)) {
 				$.getJSON("import.php?id=<?php echo $importJob->getId();?>&request=status&tok=" + Math.random() , function(data) {
 					$("#jobstatus").html(data.status_text);
 					$("#elapsedtime").html(data.elapsed_time);
+					$("#joblog").flexReload();
 					
 					if(data.status_code == <?php echo ImportJob::STATUS_FINISHED;?> || data.status_code == <?php echo ImportJob::STATUS_FAILED;?>) {
 						if(data.status_code == <?php echo ImportJob::STATUS_FINISHED;?>) {
