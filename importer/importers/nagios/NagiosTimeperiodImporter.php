@@ -279,7 +279,6 @@ class NagiosTimeperiodImporter extends NagiosImporter {
 			if($dependant) {
 				// We need to add all the entries from that time period to ours.
 				$entries = $dependant->getNagiosTimeperiodEntrys();
-				print_r($dependant);
 				foreach($entries as $entry) {
 					$tempEntry = new NagiosTimeperiodEntry();
 					$tempEntry->setEntry($entry->getEntry());
@@ -320,7 +319,7 @@ class NagiosTimeperiodImporter extends NagiosImporter {
 							}	
 						}
 						else {
-							call_user_method($this->fieldMethods[$key], $timePeriod, $value);
+							call_user_func(array($timePeriod, $this->fieldMethods[$key]), $value);
 						}
 					}
 					else {

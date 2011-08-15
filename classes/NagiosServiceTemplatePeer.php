@@ -15,7 +15,7 @@
  */
 class NagiosServiceTemplatePeer extends BaseNagiosServiceTemplatePeer {
 	
-    public function getByName($name) {
+    static public function getByName($name) {
         $c = new Criteria();
         $c->add(NagiosServiceTemplatePeer::NAME, $name);
         $c->setIgnoreCase(true);

@@ -283,7 +283,7 @@ class NagiosContactImporter extends NagiosImporter {
 					}	
 				}
 				else {
-					call_user_method($this->fieldMethods[$key], $contact, $value);
+					call_user_func(array($contact, $this->fieldMethods[$key]), $value);
 				}
 		
 			}

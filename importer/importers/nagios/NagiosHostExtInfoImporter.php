@@ -261,7 +261,7 @@ class NagiosHostExtInfoImporter extends NagiosImporter {
 						}	
 					}
 					else {
-						call_user_method($this->fieldMethods[$key], $host, $value);
+						call_user_func(array($host, $this->fieldMethods[$key]), $value);
 					}
 
 				}

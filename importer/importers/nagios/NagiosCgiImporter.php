@@ -115,7 +115,7 @@ class NagiosCgiImporter extends NagiosImporter {
 					}	
 				}
 				else {
-					call_user_method($this->fieldMethods[$key], $cgiCfg, $value);
+					call_user_func(array($cgiCfg, $this->fieldMethods[$key]), $value);
 				}
 				continue;
 			}
@@ -131,7 +131,7 @@ class NagiosCgiImporter extends NagiosImporter {
 							}	
 						}
 						else {
-							call_user_method($this->fieldMethods[$key], $cgiCfg, $value);
+							call_user_func(array($cgiCfg, $this->fieldMethods[$key]), $value);
 						}
 					}
 			}

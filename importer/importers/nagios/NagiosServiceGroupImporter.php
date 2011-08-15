@@ -122,7 +122,7 @@ class NagiosServiceGroupImporter extends NagiosImporter {
 					}	
 				}
 				else {
-					call_user_method($this->fieldMethods[$key], $servicegroup, $value);
+					call_user_func(array($servicegroup, $this->fieldMethods[$key]), $value);
 				}
 		
 			}

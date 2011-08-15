@@ -454,7 +454,7 @@ class NagiosMainImporter extends NagiosImporter {
 							}	
 						}
 						else {
-							call_user_method($this->fieldMethods[$key], $mainCfg, $value);
+							call_user_func(array($mainCfg, $this->fieldMethods[$key]), $value);
 						}
 					}
 			}
