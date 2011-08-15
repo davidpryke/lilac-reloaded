@@ -82,6 +82,8 @@ if($stage == 2) {
 		$mysqlPassword = trim($_POST['mysqlPassword']);
 		$mysqlDatabase = trim($_POST['mysqlDatabase']);
 		$mysqlPopulate = trim($_POST['mysqlPopulate']);
+		$timezone = trim($_POST['timezone']);
+		
 		if(isset($_POST['mysqlCreateUserDatabase'])) {
 			$mysqlCreateUserDatabase = true;
 		}
@@ -105,6 +107,7 @@ if($stage == 2) {
 				$error = "MySQL Database cannot be blank.";
 			}
 		}
+		
 		if(!$error) {
 			// Okay, breathe, we're going to do the grunt of the work now.
 			// Check to see if we need to create the user and database
@@ -192,7 +195,8 @@ if($stage == 2) {
 				$conf = file_get_contents(dirname(__FILE__) . "/includes/lilac-conf.php.dist");
 				$conf = str_replace("%%DSN%%", "mysql:host=" . $mysqlHostname . ";dbname=" . $mysqlDatabase, $conf);
 				$conf = str_replace("%%USERNAME%%", $mysqlUsername, $conf);
-				$conf = str_replace("%%PASSWORD%%", $mysqlPassword, $conf);			
+				$conf = str_replace("%%PASSWORD%%", $mysqlPassword, $conf);	
+				$conf = str_replace("%%TIMEZONE%%", "date_default_timezone_set('" . $timezone . "');", $conf);			
 				// We have the new conf
 				$ret = file_put_contents(dirname(__FILE__) . "/includes/lilac-conf.php", $conf);
 				if($ret == false) {
@@ -617,7 +621,7 @@ if($stage == 1) {
 		?>
 		<form action="install.php" method="post">
 		<input type="hidden" name="stage" value="2" />
-		<input class="submit" type="submit" value="Continue To Database Configuration..." />
+		<input class="submit" type="submit" value="Continue To Configuration..." />
 		</form>
 		<?php
 	}
@@ -692,7 +696,38 @@ else if($stage == 2 && empty($success)) {
 		<p>
 		<input type="checkbox" <?php if($mysqlPopulate) echo "checked=\"checked\"" ;?> name="mysqlPopulate" id="populatedb"><label for="populatedb">Populate Database With Sample Data (Uncheck if you want to keep existing data or upgrading) <strong>Warning:</strong> This will remove any existing data!  You should back-up any existing data.</label>
 		</p>
-	<input class="submit"  type="submit" value="Continue" />
+        <p>
+            <select id="timezone" name="timezone" style="margin-left: 20px; margin-right: 10px;">
+                <?php
+				$guessTimezone = date_default_timezone_get();
+				
+                $timezone_identifiers = DateTimeZone::listIdentifiers();
+                $continent = "";
+                foreach($timezone_identifiers as $value) {
+                    if(preg_match( '/^(America|Antartica|Arctic|Asia|Atlantic|Europe|Indian|Pacific)\//', $value)) {
+                        $ex = explode("/", $value); 
+                        if($continent != $ex[0]) {
+                            if($continent != "") echo '</optgroup>';
+                            echo '<optgroup label="' . $ex[0] . '">';
+                        }
+               
+                        $city = $ex[1];
+                        $continent = $ex[0];
+						
+						if($value == $guessTimezone)
+							echo '<option value="' . $value . '" selected>' . $city . '</option>';  
+						else
+                        	echo '<option value="' . $value . '">' . $city . '</option>';               
+                    }
+                }
+                ?>
+                </optgroup>
+            </select>
+            <label for="populatedb">Select your proper timezone (Guessed value: <?php echo $guessTimezone; ?>)</label>
+        </p>
+        <p style="margin-top: 10px;">
+			<input class="submit"  type="submit" value="Continue" />
+        </p>
 	<?php
 	print_window_footer();
 }
@@ -768,7 +803,7 @@ function print_header($title = null) {
 		<link rel="stylesheet" type="text/css" href="style/install.css">
 	    <link rel="stylesheet" type="text/css" href="style/flexigrid.css">
 	    <link rel="stylesheet" type="text/css" href="style/jquery.tooltip.css">
-	 	<script type="text/javascript" src="js/jquery-1.2.6.min.js"></script>
+	 	<script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
 	 	<script type="text/javascript" src="js/jquery.tooltip.min.js"></script>
 	 	<script type="text/javascript" src="js/jquery.timers.js"></script>
 	 	<script type="text/javascript" src="js/flexigrid.js"></script>
