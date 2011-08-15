@@ -1298,11 +1298,11 @@ if(isset($host)) {
 					}
 					else {
                      $values = array();
-                     if($hostValues['notification_on_down']['value']) $values[] = "Down";
-                     if($hostValues['notification_on_unreachable']['value']) $values[] = "Unreachable";
-                     if($hostValues['notification_on_recovery']['value']) $values[] = "Recovery";
-                     if($hostValues['notification_on_flapping']['value']) $values[] = "Flapping";
-                     if($hostValues['notification_on_scheduled_downtime']['value']) $values[] = "Scheduled Downtime";
+                     if(isset($hostValues['notification_on_down']['value'])) $values[] = "Down";
+                     if(isset($hostValues['notification_on_unreachable']['value'])) $values[] = "Unreachable";
+                     if(isset($hostValues['notification_on_recovery']['value'])) $values[] = "Recovery";
+                     if(isset($hostValues['notification_on_flapping']['value'])) $values[] = "Flapping";
+                     if(isset($hostValues['notification_on_scheduled_downtime']['value'])) $values[] = "Scheduled Downtime";
                      print(implode(",", $values));
                     }
 					print("<b> - Inherited From: </b><i>".$hostValues['notification_on_down']['source']['name']."</i>");

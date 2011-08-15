@@ -22,15 +22,17 @@ class NagiosHostPeer extends BaseNagiosHostPeer {
 		$host = NagiosHostPeer::doSelectOne($c);
 		if(!$host)
 			return false;
+			
 		return $host;
 	}
 
-	public function getTopLevelHosts() {
+	static public function getTopLevelHosts() {
 		$con = Propel::getConnection(BaseNagiosHostPeer::DATABASE_NAME);
 		$sql = "SELECT * from nagios_host WHERE (select count(*) FROM nagios_host_parent WHERE nagios_host_parent.child_host = nagios_host.id) = 0 ORDER BY nagios_host.name";
 		$stmt = $con->prepare($sql);
 		$stmt->execute();
 		$hosts = NagiosHostPeer::populateObjects($stmt);
+		
 		return $hosts;
 	}
 

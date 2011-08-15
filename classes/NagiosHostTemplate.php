@@ -103,12 +103,14 @@ class NagiosHostTemplate extends BaseNagiosHostTemplate {
 			// This template has inherited templates, let's bring their values in
 			foreach($inheritanceTemplates as $hostTemplate) {
 				$parameters = $hostTemplate->getInheritedCommandParameters(false);
-				$parameterList = array_merge($parameterList, $parameters);
+				if(count($parameters))
+					$parameterList = array_merge($parameterList, $parameters);
 			}
 		}
 		if(!$self) {
 			$parameters = $this->getNagiosHostCheckCommandParameters();
-			array_merge($parameterList, $parameters);
+			if(count($parameters))
+				array_merge($parameterList, $parameters);
 		}
 		return $parameterList;
 	}
@@ -122,12 +124,14 @@ class NagiosHostTemplate extends BaseNagiosHostTemplate {
 			// This template has inherited templates, let's bring their values in
 			foreach($inheritanceTemplates as $hostTemplate) {
 				$dependencies = $hostTemplate->getInheritedDependencies(false);
-				$dependenciesList = array_merge($dependenciesList, $dependencies);
+				if(count($dependencies)) 
+					$dependenciesList = array_merge($dependenciesList, $dependencies);
 			}
 		}
 		if(!$self) {
 			$dependencies = $this->getNagiosDependencys();
-			$dependenciesList = array_merge($dependenciesList, $dependencies);
+			if(count($dependencies)) 
+				$dependenciesList = array_merge($dependenciesList, $dependencies);
 		}
 		return $dependenciesList;
 	}	
@@ -141,12 +145,14 @@ class NagiosHostTemplate extends BaseNagiosHostTemplate {
 			// This template has inherited templates, let's bring their values in
 			foreach($inheritanceTemplates as $hostTemplate) {
 				$escalations = $hostTemplate->getInheritedEscalations(false);
-				$escalationsList = array_merge($escalationsList, $escalations);
+				if(count($escalations)) 
+					$escalationsList = array_merge($escalationsList, $escalations);
 			}
 		}
 		if(!$self) {
 			$escalations = $this->getNagiosEscalations();
-			$escalationsList = array_merge($escalationsList, $escalations);
+			if(count($escalations))
+				$escalationsList = array_merge($escalationsList, $escalations);
 		}
 		return $escalationsList;
 	}	
@@ -160,12 +166,13 @@ class NagiosHostTemplate extends BaseNagiosHostTemplate {
 			// This template has inherited templates, let's bring their values in
 			foreach($inheritanceTemplates as $hostTemplate) {
 				$services = $hostTemplate->getInheritedServices(false);
-				$servicesList = array_merge($servicesList, $services);
+				if(count($services)) 
+					$servicesList = array_merge($servicesList, $services);
 			}
 		}
 		if(!$self) {
-
-				$services = $this->getNagiosServices();
+			$services = $this->getNagiosServices();
+			if(count($servicesList))
 				$servicesList = array_merge($servicesList, $services);
 		}
 		return $servicesList;
