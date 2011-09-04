@@ -129,7 +129,7 @@ class NagiosImportEngine extends ImportEngine {
 			</p>
 			<p>
 			<input type="checkbox" name="skip_missing_template_values" id="skip_missing_template_values" checked="checked" />
-			<label for="skip_missing_template_values">Skip dependency errors for templates (Error is still shown in log)</label>
+			<label for="skip_missing_template_values">Skip dependency warnings for templates (Warning is still shown in log)</label>
 			</p>
 			<p>
 			<input type="checkbox" id="continue_error" name="continue_error" />
@@ -229,7 +229,7 @@ class NagiosImportEngine extends ImportEngine {
 			?><li><strong>Attempting to Continue on Errors</strong></li><?php
 		}
 		if($config->getVar("skip_missing_template_values")) {
-			?><li><strong>Skip dependency errors for templates</strong></li><?php
+			?><li><strong>Skip dependency warnings for templates</strong></li><?php
 		}
 		?></ul><?php
 	}
