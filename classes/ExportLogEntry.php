@@ -19,7 +19,7 @@ class ExportLogEntry extends BaseExportLogEntry {
 	const TYPE_WARNING = 2;
 	const TYPE_ERROR = 3;
 
-	public function isValidType($type) {
+	public static function isValidType($type) {
 		return true;
 		if($type != ImportLogEntry::TYPE_NOTICE &&
 			$type != ImportLogEntry::TYPE_WARNING &&

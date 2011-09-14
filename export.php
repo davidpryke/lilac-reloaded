@@ -53,6 +53,7 @@ if(isset($_GET['id'])) {
 		$exportJob->setStatus("Starting...");
 		$exportJob->save();
 		exec("php exporter/export.php " . $exportJob->getId() . " > /dev/null", $tempOutput, $retVal);
+		//exec("php exporter/export.php " . $exportJob->getId() . " > /tmp/phpdebug.txt", $tempOutput, $retVal);
 		if($retVal != 42) {
 			$error = "Failed to run external exporter script. Return value: " . $retVal . "<br /> Error:";
 			foreach($tempOutput as $output) {

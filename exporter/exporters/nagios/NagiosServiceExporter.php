@@ -276,18 +276,21 @@ class NagiosServiceExporter extends NagiosExporter {
 		$fp = $this->getOutputFile();
 		fputs($fp, "# Written by NagiosServiceExporter from " . LILAC_NAME . " " . LILAC_VERSION . " on " . date("F j, Y, g:i a") . "\n\n");		
 		
-		$hosts = NagiosHostPeer::doSelect(new Criteria());
-		
+		//$hosts = NagiosHostPeer::doSelect(new Criteria());
+		$hosts = NagiosHostQuery::create()->find();
+		$job->addNotice("Total hosts found: " . count($hosts));
 		foreach($hosts as $host) {
 			// Got hosts
 			// Get our inherited services first
 			$job->addNotice("Processing services for host: " . $host->getName());
 			$inheritedServices = $host->getInheritedServices();
+			$job->addNotice("Total inherited services found for host " . $host->getName() . ": " . count($inheritedServices));
 			foreach($inheritedServices as $service) {
 				$job->addNotice("Processing service " . $service->getDescription());
 				$this->_exportService($service, "host", $host);
 			}
 			$services = $host->getNagiosServices();
+			$job->addNotice("Total services found for host " . $host->getName() . ": " . count($services));
 			foreach($services as $service) {
 				$job->addNotice("Processing service " . $service->getDescription());
 				$this->_exportService($service, "host", $host);
@@ -296,6 +299,7 @@ class NagiosServiceExporter extends NagiosExporter {
 		}
 		
 		$hostgroups = NagiosHostgroupPeer::doSelect(new Criteria());
+		$job->addNotice("Total hostgroups found: " . count($hostgroups));
 		foreach($hostgroups as $hostgroup) {
 			$job->addNotice("Processing services for hostgroup: " . $hostgroup->getName());
 			$services = $hostgroup->getNagiosServices();

@@ -76,7 +76,10 @@ class NagiosHost extends BaseNagiosHost {
 		}
 		if(!$self) {
 			$parameters = $this->getNagiosHostCheckCommandParameters();
-			array_merge($parameterList, $parameters);
+			
+			foreach($parameters as $parameter) {
+				$parameterList[] = $parameter;
+			}
 		}
 		return $parameterList;
 	}
@@ -96,7 +99,10 @@ class NagiosHost extends BaseNagiosHost {
 		}
 		if(!$self) {
 			$dependencies = $this->getNagiosDependencys();
-			$dependenciesList = array_merge($dependenciesList, $dependencies);
+
+			foreach($dependencies as $dependency) {
+				$dependenciesList[] = $dependency;
+			}
 		}
 		return $dependenciesList;
 	}	
@@ -115,7 +121,10 @@ class NagiosHost extends BaseNagiosHost {
 		}
 		if(!$self) {
 			$escalations = $this->getNagiosEscalations();
-			$escalationsList = array_merge($escalationsList, $escalations);
+			
+			foreach($escalations as $escalation) {
+				$escalationsList[] = $escalation;
+			}
 		}
 		return $escalationsList;
 	}	
@@ -133,9 +142,11 @@ class NagiosHost extends BaseNagiosHost {
 			}
 		}
 		if(!$self) {
-
-				$services = $this->getNagiosServices();
-				$servicesList = array_merge($servicesList, $services);
+			$services = $this->getNagiosServices();
+			
+			foreach($services as $service) {
+				$servicesList[] = $service;
+			}
 		}
 		return $servicesList;
 	}
