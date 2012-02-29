@@ -273,7 +273,7 @@ class NagiosServiceImporter extends NagiosImporter {
 		$values = $segment->getValues();
 		$fileName = $segment->getFilename();
 		// First let's go and re-merge the check_commands
-		foreach($values as $key => &$entries) {
+		foreach($values as $key => $entries) {
 			if($key == "check_command") {
 				foreach($entries as $entry) {
 					if(empty($newEntry)) {

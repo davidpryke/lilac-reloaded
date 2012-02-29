@@ -304,7 +304,7 @@ class NagiosHostImporter extends NagiosImporter {
             $obj = new NagiosHost();
             $isTemplate = false;
         }
-		foreach($values as $key => &$entries) {
+		foreach($values as $key => $entries) {
 			if($key == "check_command") {
 				foreach($entries as $entry) {
 					if(empty($newEntry)) {
