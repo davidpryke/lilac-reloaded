@@ -1505,9 +1505,16 @@ if(isset($host)) {
 								<tr class="altRow2">
 								<?php
 							}
+							
+							if(null != $service->getNagiosHostTemplate()) {
+								$data="<i>(hosttemplate)</i> ". $service->getNagiosHostTemplate()->getName();
+							} else {
+								$data="<i>(hostgroup)</i> ".$service->getNagiosHostgroup()->getName();
+							}
+							
 							?>
 							<td height="20" width="80" nowrap="nowrap" class="altLeft">&nbsp;</td>
-							<td height="20" class="altRight"><b><a href="service.php?id=<?php echo $service->getId();?>"><?php echo $service->getDescription();?></a></b> from <b><?php echo $service->getNagiosHostTemplate()->getName();?></b></td>
+							<td height="20" class="altRight"><b><a href="service.php?id=<?php echo $service->getId();?>"><?php echo $service->getDescription();?></a></b> from <b><?php echo $data;?></b></td>
 							</tr>
 							<?php
 							$counter++;

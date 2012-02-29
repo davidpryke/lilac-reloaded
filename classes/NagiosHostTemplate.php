@@ -177,6 +177,27 @@ class NagiosHostTemplate extends BaseNagiosHostTemplate {
 				}
 			}
 		}
+		
+		$inheritanceTemplates = $this->getInheritedHostGroups();
+		if(count($inheritanceTemplates)) {
+			foreach($inheritanceTemplates as $hostgroup) {
+				$c = new Criteria();
+				$c->add(NagiosServicePeer::HOSTGROUP, $hostgroup->getId() );
+				$services = NagiosServicePeer::doSelect($c);
+				$servicesList = array_merge($servicesList, $services);
+			}
+		}
+
+		$hostgroupMemberships =
+		$this->getNagiosHostgroupMemberships();
+		foreach($hostgroupMemberships as $membership) {
+			$hostgroup = $membership->getNagiosHostGroup();
+			$c = new Criteria();
+			$c->add(NagiosServicePeer::HOSTGROUP, $hostgroup->getId() );
+			$services = NagiosServicePeer::doSelect($c);
+			$servicesList = array_merge($servicesList, $services);
+		}
+		
 		if(!$self) {
 			$services = $this->getNagiosServices();
 			
@@ -184,7 +205,8 @@ class NagiosHostTemplate extends BaseNagiosHostTemplate {
 				$servicesList[] = $service;
 			}
 		}
-		return $servicesList;
+		
+		return array_unique($servicesList);
 	}
 	
 	function getInheritedHostGroups($self = true) {
