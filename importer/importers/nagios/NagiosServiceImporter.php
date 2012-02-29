@@ -1,6 +1,7 @@
 <?php
 require_once('NagiosServiceTemplate.php');
 require_once('NagiosService.php');
+require_once('NagiosServiceTemplateInheritance.php');
 
 class NagiosServiceImporter extends NagiosImporter {
 
@@ -290,7 +291,7 @@ class NagiosServiceImporter extends NagiosImporter {
 				// Skips
 				$value = $entry['value'];
 				$lineNum = $entry['line'];
-				if($key == 'register' || $key == 'host_name' || $key == 'hostgroup_name' || $key == "hostgroup" )
+				if($key == 'register' || $key == 'host_name' )
 					continue;
 
 				if($key == 'use') {
@@ -378,6 +379,28 @@ class NagiosServiceImporter extends NagiosImporter {
 					}
 					continue;
 				}
+				
+				if($key == 'hostgroup_name' || $key == 'hostgroup') {
+					$options = explode(",",$entry['value']);
+					foreach($options as $hostGroupValue) {
+						$hostgroup = NagiosHostgroupPeer::getByName($hostGroupValue);
+						if(!$hostgroup)
+							continue;
+						// Okay, we got a proper hostgroup
+						$srv = new NagiosService();
+						$srv->setDescription($obj->getDescription());
+						$srv->setHostgroup($hostgroup->getId());
+						$obj->save();
+						$inh= new NagiosServiceTemplateInheritance();
+						$inh->setTargetTemplate( $obj->getId());
+						$srv->addNagiosServiceTemplateInheritance($inh);
+						$srv->save();
+						$hostgroup->clearAllReferences(true);
+						$srv->clearAllReferences(true);
+						$inh->clearAllReferences(true);
+					}
+				}
+				
 				// Okay, let's check that the method DOES exist
 				if(!method_exists($obj, $this->fieldMethods[$key])) {
 					$job->addError("Method " . $this->fieldMethods[$key] . " does not exist for variable: " . $key . " on line " . $lineNum . " in file " . $fileName);
@@ -392,6 +415,7 @@ class NagiosServiceImporter extends NagiosImporter {
 			}
 
 		}
+		
 		return true;
 	}
 
