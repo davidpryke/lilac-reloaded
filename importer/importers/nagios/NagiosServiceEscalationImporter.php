@@ -1,5 +1,6 @@
 <?php
 require_once('NagiosEscalation.php');
+require_once('NagiosEscalationContactgroup.php');
 
 class NagiosServiceEscalationImporter extends NagiosImporter {
 
