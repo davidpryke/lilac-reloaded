@@ -341,7 +341,11 @@ class NagiosTimeperiodImporter extends NagiosImporter {
 						$tempEntry->setEntry($tempLabel);
 						$tempEntry->setValue($tempValue);
 						$timePeriod->addNagiosTimeperiodEntry($tempEntry);
-						$tempEntry->clearAllReferences(true);
+						
+						/*
+						 * Must not be set, otherwise reference to NagiosTimeperiod() is also cleared 
+						 */
+						//$tempEntry->clearAllReferences(true);
 					}
 			}
 		}
@@ -368,7 +372,11 @@ class NagiosTimeperiodImporter extends NagiosImporter {
 						$exclusion->setNagiosTimeperiodRelatedByTimeperiodId($timePeriod);
 						$exclusion->setNagiosTimeperiodRelatedByExcludedTimeperiod($target);
 						$exclusion->clearAllReferences(true);
-						$target->clearAllReferences(true);
+						
+						/*
+						 * Must not be set, otherwise reference to NagiosTimeperiod() is also cleared
+						 */
+						//$target->clearAllReferences(true);
 					}
 				}
 			}
