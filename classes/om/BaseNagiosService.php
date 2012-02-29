@@ -3620,7 +3620,13 @@ abstract class BaseNagiosService extends BaseObject  implements Persistent
 
 			foreach ($this->getNagiosServiceTemplateInheritances() as $relObj) {
 				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-					$copyObj->addNagiosServiceTemplateInheritance($relObj->copy($deepCopy));
+					if($relObj instanceof NagiosServiceTemplateInheritance) {
+						$copyObj->addNagiosServiceTemplateInheritance($relObj->copy($deepCopy));
+					} else if ($relObj instanceof NagiosServiceTemplate) {
+						$inh= new NagiosServiceTemplateInheritance();
+						$inh->setTargetTemplate($relObj->getId());
+						$copyObj->addNagiosServiceTemplateInheritance($inh);
+					}
 				}
 			}
 
