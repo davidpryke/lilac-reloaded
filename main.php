@@ -83,6 +83,12 @@ if(isset($_POST['request'])) {
 			else {
 				$mainConfig->setTempFile(null);
 			}
+			if(isset($_POST['main_config']['temp_path'])) {
+				$mainConfig->setTempFile($_POST['main_config']['temp_path']);
+			}
+			else {
+				$mainConfig->setTempPath(null);
+			}
 			if(isset($_POST['main_config']['status_file'])) {
 				$mainConfig->setStatusFile($_POST['main_config']['status_file']);
 			}
@@ -954,6 +960,7 @@ print_header("Main Configuration File Editor", "main");
 			form_text_element_with_enabler(60, 255, "main_config", "object_cache_file", "Object Cache File", $lilac->element_desc("object_cache_file", "nagios_main_desc"), $mainValues, null);
 			form_text_element_with_enabler(60, 255, "main_config", "precached_object_file", "Precached Object File", $lilac->element_desc("precached_object_file", "nagios_main_desc"), $mainValues, null);
 			form_text_element_with_enabler(60, 255, "main_config", "temp_file", "Temporary File", $lilac->element_desc("temp_file", "nagios_main_desc"), $mainValues, null);
+			form_text_element_with_enabler(60, 255, "main_config", "temp_path", "Temporary Path", $lilac->element_desc("temp_path", "nagios_main_desc"), $mainValues, null);
 			form_text_element_with_enabler(60, 255, "main_config", "status_file", "Status File", $lilac->element_desc("status_file", "nagios_main_desc"), $mainValues, null);
 			form_text_element_with_enabler(60, 255, "main_config", "log_archive_path", "Log Archive Path", $lilac->element_desc("log_archive_path", "nagios_main_desc"), $mainValues, null);
 			form_text_element_with_enabler(60, 255, "main_config", "command_file", "Command File", $lilac->element_desc("command_file", "nagios_main_desc"), $mainValues, null);
