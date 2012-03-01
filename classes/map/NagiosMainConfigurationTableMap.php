@@ -164,6 +164,7 @@ class NagiosMainConfigurationTableMap extends TableMap
 		$this->addColumn('DEBUG_LEVEL', 'DebugLevel', 'INTEGER', false, null, null);
 		$this->addColumn('DEBUG_VERBOSITY', 'DebugVerbosity', 'INTEGER', false, null, null);
 		$this->addColumn('MAX_DEBUG_FILE_SIZE', 'MaxDebugFileSize', 'INTEGER', false, null, null);
+		$this->addColumn('TEMP_PATH', 'TempPath', 'VARCHAR', false, 255, null);
 		// validators
 	} // initialize()
 
