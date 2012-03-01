@@ -84,7 +84,7 @@ if(isset($_POST['request'])) {
 				$mainConfig->setTempFile(null);
 			}
 			if(isset($_POST['main_config']['temp_path'])) {
-				$mainConfig->setTempFile($_POST['main_config']['temp_path']);
+				$mainConfig->setTempPath($_POST['main_config']['temp_path']);
 			}
 			else {
 				$mainConfig->setTempPath(null);
