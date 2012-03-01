@@ -1415,6 +1415,7 @@ CREATE TABLE `nagios_main_configuration`
 	`debug_level` INTEGER,
 	`debug_verbosity` INTEGER,
 	`max_debug_file_size` INTEGER,
+	`temp_path` VARCHAR(255),
 	PRIMARY KEY (`id`),
 	INDEX `nagios_main_configuration_FI_1` (`ocsp_command`),
 	INDEX `nagios_main_configuration_FI_2` (`ochp_command`),

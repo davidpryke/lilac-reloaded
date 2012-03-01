@@ -47,6 +47,12 @@ abstract class BaseNagiosMainConfiguration extends BaseObject  implements Persis
 	 * @var        string
 	 */
 	protected $temp_file;
+	
+	/**
+	 * The value for the temp_path field.
+	 * @var        string
+	 */
+	protected $temp_path;
 
 	/**
 	 * The value for the status_file field.
@@ -872,6 +878,16 @@ abstract class BaseNagiosMainConfiguration extends BaseObject  implements Persis
 	public function getTempFile()
 	{
 		return $this->temp_file;
+	}
+	
+	/**
+	 * Get the [temp_path] column value.
+	 *
+	 * @return     string
+	 */
+	public function getTempPath()
+	{
+		return $this->temp_path;
 	}
 
 	/**
@@ -2173,6 +2189,26 @@ abstract class BaseNagiosMainConfiguration extends BaseObject  implements Persis
 
 		return $this;
 	} // setTempFile()
+	
+	/**
+	 * Set the value of [temp_path] column.
+	 *
+	 * @param      string $v new value
+	 * @return     NagiosMainConfiguration The current object (for fluent API support)
+	 */
+	public function setTempPath($v)
+	{
+		if ($v !== null) {
+			$v = (string) $v;
+		}
+	
+		if ($this->temp_path !== $v) {
+			$this->temp_path = $v;
+			$this->modifiedColumns[] = NagiosMainConfigurationPeer::TEMP_PATH;
+		}
+	
+		return $this;
+	} // setTempPath()
 
 	/**
 	 * Set the value of [status_file] column.
@@ -5132,6 +5168,7 @@ abstract class BaseNagiosMainConfiguration extends BaseObject  implements Persis
 			$this->debug_level = ($row[$startcol + 123] !== null) ? (int) $row[$startcol + 123] : null;
 			$this->debug_verbosity = ($row[$startcol + 124] !== null) ? (int) $row[$startcol + 124] : null;
 			$this->max_debug_file_size = ($row[$startcol + 125] !== null) ? (int) $row[$startcol + 125] : null;
+			$this->temp_path = ($row[$startcol + 126] !== null) ? (string) $row[$startcol + 126] : null;
 			$this->resetModified();
 
 			$this->setNew(false);
@@ -6719,6 +6756,7 @@ abstract class BaseNagiosMainConfiguration extends BaseObject  implements Persis
 		if ($this->isColumnModified(NagiosMainConfigurationPeer::CONFIG_DIR)) $criteria->add(NagiosMainConfigurationPeer::CONFIG_DIR, $this->config_dir);
 		if ($this->isColumnModified(NagiosMainConfigurationPeer::LOG_FILE)) $criteria->add(NagiosMainConfigurationPeer::LOG_FILE, $this->log_file);
 		if ($this->isColumnModified(NagiosMainConfigurationPeer::TEMP_FILE)) $criteria->add(NagiosMainConfigurationPeer::TEMP_FILE, $this->temp_file);
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::TEMP_PATH)) $criteria->add(NagiosMainConfigurationPeer::TEMP_PATH, $this->temp_path);
 		if ($this->isColumnModified(NagiosMainConfigurationPeer::STATUS_FILE)) $criteria->add(NagiosMainConfigurationPeer::STATUS_FILE, $this->status_file);
 		if ($this->isColumnModified(NagiosMainConfigurationPeer::STATUS_UPDATE_INTERVAL)) $criteria->add(NagiosMainConfigurationPeer::STATUS_UPDATE_INTERVAL, $this->status_update_interval);
 		if ($this->isColumnModified(NagiosMainConfigurationPeer::NAGIOS_USER)) $criteria->add(NagiosMainConfigurationPeer::NAGIOS_USER, $this->nagios_user);
@@ -7473,6 +7511,7 @@ abstract class BaseNagiosMainConfiguration extends BaseObject  implements Persis
 		$this->config_dir = null;
 		$this->log_file = null;
 		$this->temp_file = null;
+		$this->temp_path = null;
 		$this->status_file = null;
 		$this->status_update_interval = null;
 		$this->nagios_user = null;

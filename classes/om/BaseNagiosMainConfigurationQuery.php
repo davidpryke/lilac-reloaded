@@ -10,6 +10,7 @@
  * @method     NagiosMainConfigurationQuery orderByConfigDir($order = Criteria::ASC) Order by the config_dir column
  * @method     NagiosMainConfigurationQuery orderByLogFile($order = Criteria::ASC) Order by the log_file column
  * @method     NagiosMainConfigurationQuery orderByTempFile($order = Criteria::ASC) Order by the temp_file column
+ * @method     NagiosMainConfigurationQuery orderByTempPath($order = Criteria::ASC) Order by the temp_path column
  * @method     NagiosMainConfigurationQuery orderByStatusFile($order = Criteria::ASC) Order by the status_file column
  * @method     NagiosMainConfigurationQuery orderByStatusUpdateInterval($order = Criteria::ASC) Order by the status_update_interval column
  * @method     NagiosMainConfigurationQuery orderByNagiosUser($order = Criteria::ASC) Order by the nagios_user column
@@ -137,6 +138,7 @@
  * @method     NagiosMainConfigurationQuery groupByConfigDir() Group by the config_dir column
  * @method     NagiosMainConfigurationQuery groupByLogFile() Group by the log_file column
  * @method     NagiosMainConfigurationQuery groupByTempFile() Group by the temp_file column
+ * @method     NagiosMainConfigurationQuery groupByTempPath() Group by the temp_path column
  * @method     NagiosMainConfigurationQuery groupByStatusFile() Group by the status_file column
  * @method     NagiosMainConfigurationQuery groupByStatusUpdateInterval() Group by the status_update_interval column
  * @method     NagiosMainConfigurationQuery groupByNagiosUser() Group by the nagios_user column
@@ -303,6 +305,7 @@
  * @method     NagiosMainConfiguration findOneByConfigDir(string $config_dir) Return the first NagiosMainConfiguration filtered by the config_dir column
  * @method     NagiosMainConfiguration findOneByLogFile(string $log_file) Return the first NagiosMainConfiguration filtered by the log_file column
  * @method     NagiosMainConfiguration findOneByTempFile(string $temp_file) Return the first NagiosMainConfiguration filtered by the temp_file column
+ * @method     NagiosMainConfiguration findOneByTempPath(string $temp_path) Return the first NagiosMainConfiguration filtered by the temp_path column
  * @method     NagiosMainConfiguration findOneByStatusFile(string $status_file) Return the first NagiosMainConfiguration filtered by the status_file column
  * @method     NagiosMainConfiguration findOneByStatusUpdateInterval(int $status_update_interval) Return the first NagiosMainConfiguration filtered by the status_update_interval column
  * @method     NagiosMainConfiguration findOneByNagiosUser(string $nagios_user) Return the first NagiosMainConfiguration filtered by the nagios_user column
@@ -430,6 +433,7 @@
  * @method     array findByConfigDir(string $config_dir) Return NagiosMainConfiguration objects filtered by the config_dir column
  * @method     array findByLogFile(string $log_file) Return NagiosMainConfiguration objects filtered by the log_file column
  * @method     array findByTempFile(string $temp_file) Return NagiosMainConfiguration objects filtered by the temp_file column
+ * @method     array findByTempPath(string $temp_path) Return NagiosMainConfiguration objects filtered by the temp_path column
  * @method     array findByStatusFile(string $status_file) Return NagiosMainConfiguration objects filtered by the status_file column
  * @method     array findByStatusUpdateInterval(int $status_update_interval) Return NagiosMainConfiguration objects filtered by the status_update_interval column
  * @method     array findByNagiosUser(string $nagios_user) Return NagiosMainConfiguration objects filtered by the nagios_user column
@@ -769,6 +773,34 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 			}
 		}
 		return $this->addUsingAlias(NagiosMainConfigurationPeer::TEMP_FILE, $tempFile, $comparison);
+	}
+	
+	/**
+	 * Filter the query on the temp_path column
+	 *
+	 * Example usage:
+	 * <code>
+	 * $query->filterByTempFile('fooValue');   // WHERE temp_path = 'fooValue'
+	 * $query->filterByTempFile('%fooValue%'); // WHERE temp_path LIKE '%fooValue%'
+	 * </code>
+	 *
+	 * @param     string $tempPath The value to use as filter.
+	 *              Accepts wildcards (* and % trigger a LIKE)
+	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 *
+	 * @return    NagiosMainConfigurationQuery The current query, for fluid interface
+	 */
+	public function filterByTempPath($tempPath = null, $comparison = null)
+	{
+		if (null === $comparison) {
+			if (is_array($tempPath)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $tempPath)) {
+				$tempPath = str_replace('*', '%', $tempPath);
+				$comparison = Criteria::LIKE;
+			}
+		}
+		return $this->addUsingAlias(NagiosMainConfigurationPeer::TEMP_PATH, $tempPath, $comparison);
 	}
 
 	/**
