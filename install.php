@@ -194,6 +194,13 @@ if($stage == 2) {
 					if($retVal != 0) {
 						$error = "Failed to import database schema. Make sure the mysql binary is in the search path for the web user.";
 					}
+					else {
+						// Import labels
+						exec("mysql -h " . $mysqlHostname . " -u " . $mysqlUsername . " -p" . $mysqlPassword . " " . $mysqlDatabase . " < " . dirname(__FILE__) . "/sqldata/lilac-nagios-en-label.sql", $output, $retVal);
+						if($retVal != 0) {
+							$error = "Failed to import Nagios labels.  Error was: <br />" . str_replace("\n", "<br />", $output[count($output)]);
+						}
+					}
 				}
 			}
 			
