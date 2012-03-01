@@ -471,6 +471,9 @@ abstract class BaseNagiosMainConfigurationPeer {
 	{
 		$toNames = self::getFieldNames($toType);
 		$key = isset(self::$fieldKeys[$fromType][$name]) ? self::$fieldKeys[$fromType][$name] : null;
+		
+		echo "name: " . $name . " = key: " . $key . "<br>";
+		
 		if ($key === null) {
 			throw new PropelException("'$name' could not be found in the field names of type '$fromType'. These are: " . print_r(self::$fieldKeys[$fromType], true));
 		}
