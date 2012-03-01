@@ -29,7 +29,10 @@ class NagiosMainConfiguration extends BaseNagiosMainConfiguration {
 		$fieldNames = NagiosMainConfigurationPeer::getFieldNames(BasePeer::TYPE_FIELDNAME);
 		foreach($fieldNames as $fieldName) {
 			$method = "get" . NagiosMainConfigurationPeer::translateFieldName($fieldName, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_PHPNAME);
-			$val = $this->getTempPath();
+			$val = $this->$method();
+			
+			echo "fieldname: " . $fieldName . " = " . $val;
+			
 			if($val !== null) {
 				$values[$fieldName] = array();
 
