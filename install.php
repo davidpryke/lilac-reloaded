@@ -81,7 +81,7 @@ if($stage == 2) {
 		$mysqlUsername = trim($_POST['mysqlUsername']);
 		$mysqlPassword = trim($_POST['mysqlPassword']);
 		$mysqlDatabase = trim($_POST['mysqlDatabase']);
-		$mysqlPopulate = trim($_POST['mysqlPopulate']);
+		$mysqlPopulate = (isset($_POST['mysqlPopulate'])) ? trim($_POST['mysqlPopulate']) : false;
 		$timezone = trim($_POST['timezone']);
 		
 		if(isset($_POST['mysqlCreateUserDatabase'])) {
