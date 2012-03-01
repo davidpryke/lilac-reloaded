@@ -26,13 +26,13 @@ abstract class BaseNagiosMainConfigurationPeer {
 	const TM_CLASS = 'NagiosMainConfigurationTableMap';
 	
 	/** The total number of columns. */
-	const NUM_COLUMNS = 126;
+	const NUM_COLUMNS = 127;
 
 	/** The number of lazy-loaded columns. */
 	const NUM_LAZY_LOAD_COLUMNS = 0;
 
 	/** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
-	const NUM_HYDRATE_COLUMNS = 126;
+	const NUM_HYDRATE_COLUMNS = 127;
 
 	/** the column name for the ID field */
 	const ID = 'nagios_main_configuration.ID';
