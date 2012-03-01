@@ -183,6 +183,20 @@ if($stage == 2) {
 					}
 				}
 			}
+			else if(!$error) {
+				// Select db.
+				if(!mysql_select_db($mysqlDatabase, $dbConn)) {
+					$error = "Failed to use " . $mysqlDatabase . " database.  Check your User credentials.  Error was: <em>" . mysql_error($dbConn) . "</em>";
+				}
+				else {
+					// Load the data
+					exec("mysql -h " . $mysqlHostname . " -u " . $mysqlUsername . " -p" . $mysqlPassword . " " . $mysqlDatabase . " < " . dirname(__FILE__) . "/sqldata/schema.sql", $output, $retVal);
+					if($retVal != 0) {
+						$error = "Failed to import database schema. Make sure the mysql binary is in the search path for the web user.";
+					}
+				}
+			}
+			
 			// Create PDO connection to perform upgrades
 			try {
 				$dbConn = new PDO("mysql:host=" . $mysqlHostname . ";dbname=" . $mysqlDatabase, $mysqlUsername, $mysqlPassword);
