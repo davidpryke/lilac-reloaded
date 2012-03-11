@@ -221,7 +221,7 @@ abstract class BaseNagiosEscalationQuery extends ModelCriteria
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$obj = new NagiosEscalation();
 			$obj->hydrate($row);
-			NagiosEscalationPeer::addInstanceToPool($obj, (string) $key);
+			NagiosEscalationPeer::addInstanceToPool($obj, (string) $row[0]);
 		}
 		$stmt->closeCursor();
 

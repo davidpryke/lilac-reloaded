@@ -145,7 +145,7 @@ abstract class BaseAutodiscoveryDeviceTemplateMatchQuery extends ModelCriteria
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$obj = new AutodiscoveryDeviceTemplateMatch();
 			$obj->hydrate($row);
-			AutodiscoveryDeviceTemplateMatchPeer::addInstanceToPool($obj, (string) $key);
+			AutodiscoveryDeviceTemplateMatchPeer::addInstanceToPool($obj, (string) $row[0]);
 		}
 		$stmt->closeCursor();
 

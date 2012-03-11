@@ -161,7 +161,7 @@ abstract class BaseNagiosHostgroupQuery extends ModelCriteria
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$obj = new NagiosHostgroup();
 			$obj->hydrate($row);
-			NagiosHostgroupPeer::addInstanceToPool($obj, (string) $key);
+			NagiosHostgroupPeer::addInstanceToPool($obj, (string) $row[0]);
 		}
 		$stmt->closeCursor();
 

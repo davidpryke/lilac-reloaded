@@ -19,6 +19,9 @@ abstract class BaseLilacConfigurationPeer {
 	/** the related Propel class for this table */
 	const OM_CLASS = 'LilacConfiguration';
 
+	/** A class that can be returned by this peer. */
+	const CLASS_DEFAULT = 'LilacConfiguration';
+
 	/** the related TableMap class for this table */
 	const TM_CLASS = 'LilacConfigurationTableMap';
 
@@ -393,7 +396,7 @@ abstract class BaseLilacConfigurationPeer {
 		$results = array();
 	
 		// set the class once to avoid overhead in the loop
-		$cls = LilacConfigurationPeer::getOMClass();
+		$cls = LilacConfigurationPeer::getOMClass(false);
 		// populate the object(s)
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$key = LilacConfigurationPeer::getPrimaryKeyHashFromRow($row, 0);
@@ -465,12 +468,17 @@ abstract class BaseLilacConfigurationPeer {
 	/**
 	 * The class that the Peer will make instances of.
 	 *
+	 * If $withPrefix is true, the returned path
+	 * uses a dot-path notation which is tranalted into a path
+	 * relative to a location on the PHP include_path.
+	 * (e.g. path.to.MyClass -> 'path/to/MyClass.php')
 	 *
-	 * @return     string ClassName
+	 * @param      boolean $withPrefix Whether or not to return the path with the class name
+	 * @return     string path.to.ClassName
 	 */
-	public static function getOMClass()
+	public static function getOMClass($withPrefix = true)
 	{
-		return LilacConfigurationPeer::OM_CLASS;
+		return $withPrefix ? LilacConfigurationPeer::CLASS_DEFAULT : LilacConfigurationPeer::OM_CLASS;
 	}
 
 	/**

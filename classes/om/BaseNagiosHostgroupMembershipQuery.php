@@ -145,7 +145,7 @@ abstract class BaseNagiosHostgroupMembershipQuery extends ModelCriteria
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$obj = new NagiosHostgroupMembership();
 			$obj->hydrate($row);
-			NagiosHostgroupMembershipPeer::addInstanceToPool($obj, (string) $key);
+			NagiosHostgroupMembershipPeer::addInstanceToPool($obj, (string) $row[0]);
 		}
 		$stmt->closeCursor();
 

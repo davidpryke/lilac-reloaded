@@ -133,7 +133,7 @@ abstract class BaseNagiosContactAddressQuery extends ModelCriteria
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$obj = new NagiosContactAddress();
 			$obj->hydrate($row);
-			NagiosContactAddressPeer::addInstanceToPool($obj, (string) $key);
+			NagiosContactAddressPeer::addInstanceToPool($obj, (string) $row[0]);
 		}
 		$stmt->closeCursor();
 

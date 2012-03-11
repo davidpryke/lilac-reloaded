@@ -19,6 +19,9 @@ abstract class BaseNagiosEscalationContactPeer {
 	/** the related Propel class for this table */
 	const OM_CLASS = 'NagiosEscalationContact';
 
+	/** A class that can be returned by this peer. */
+	const CLASS_DEFAULT = 'NagiosEscalationContact';
+
 	/** the related TableMap class for this table */
 	const TM_CLASS = 'NagiosEscalationContactTableMap';
 
@@ -398,7 +401,7 @@ abstract class BaseNagiosEscalationContactPeer {
 		$results = array();
 	
 		// set the class once to avoid overhead in the loop
-		$cls = NagiosEscalationContactPeer::getOMClass();
+		$cls = NagiosEscalationContactPeer::getOMClass(false);
 		// populate the object(s)
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$key = NagiosEscalationContactPeer::getPrimaryKeyHashFromRow($row, 0);
@@ -579,7 +582,7 @@ abstract class BaseNagiosEscalationContactPeer {
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 
-				$cls = NagiosEscalationContactPeer::getOMClass();
+				$cls = NagiosEscalationContactPeer::getOMClass(false);
 
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
@@ -591,7 +594,7 @@ abstract class BaseNagiosEscalationContactPeer {
 				$obj2 = NagiosEscalationPeer::getInstanceFromPool($key2);
 				if (!$obj2) {
 
-					$cls = NagiosEscalationPeer::getOMClass();
+					$cls = NagiosEscalationPeer::getOMClass(false);
 
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol);
@@ -645,7 +648,7 @@ abstract class BaseNagiosEscalationContactPeer {
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 
-				$cls = NagiosEscalationContactPeer::getOMClass();
+				$cls = NagiosEscalationContactPeer::getOMClass(false);
 
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
@@ -657,7 +660,7 @@ abstract class BaseNagiosEscalationContactPeer {
 				$obj2 = NagiosContactPeer::getInstanceFromPool($key2);
 				if (!$obj2) {
 
-					$cls = NagiosContactPeer::getOMClass();
+					$cls = NagiosContactPeer::getOMClass(false);
 
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol);
@@ -769,7 +772,7 @@ abstract class BaseNagiosEscalationContactPeer {
 				// See http://www.propelorm.org/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
-				$cls = NagiosEscalationContactPeer::getOMClass();
+				$cls = NagiosEscalationContactPeer::getOMClass(false);
 
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
@@ -783,7 +786,7 @@ abstract class BaseNagiosEscalationContactPeer {
 				$obj2 = NagiosEscalationPeer::getInstanceFromPool($key2);
 				if (!$obj2) {
 
-					$cls = NagiosEscalationPeer::getOMClass();
+					$cls = NagiosEscalationPeer::getOMClass(false);
 
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol2);
@@ -801,7 +804,7 @@ abstract class BaseNagiosEscalationContactPeer {
 				$obj3 = NagiosContactPeer::getInstanceFromPool($key3);
 				if (!$obj3) {
 
-					$cls = NagiosContactPeer::getOMClass();
+					$cls = NagiosContactPeer::getOMClass(false);
 
 					$obj3 = new $cls();
 					$obj3->hydrate($row, $startcol3);
@@ -959,7 +962,7 @@ abstract class BaseNagiosEscalationContactPeer {
 				// See http://www.propelorm.org/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
-				$cls = NagiosEscalationContactPeer::getOMClass();
+				$cls = NagiosEscalationContactPeer::getOMClass(false);
 
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
@@ -973,7 +976,7 @@ abstract class BaseNagiosEscalationContactPeer {
 					$obj2 = NagiosContactPeer::getInstanceFromPool($key2);
 					if (!$obj2) {
 	
-						$cls = NagiosContactPeer::getOMClass();
+						$cls = NagiosContactPeer::getOMClass(false);
 
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol2);
@@ -1032,7 +1035,7 @@ abstract class BaseNagiosEscalationContactPeer {
 				// See http://www.propelorm.org/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
-				$cls = NagiosEscalationContactPeer::getOMClass();
+				$cls = NagiosEscalationContactPeer::getOMClass(false);
 
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
@@ -1046,7 +1049,7 @@ abstract class BaseNagiosEscalationContactPeer {
 					$obj2 = NagiosEscalationPeer::getInstanceFromPool($key2);
 					if (!$obj2) {
 	
-						$cls = NagiosEscalationPeer::getOMClass();
+						$cls = NagiosEscalationPeer::getOMClass(false);
 
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol2);
@@ -1091,12 +1094,17 @@ abstract class BaseNagiosEscalationContactPeer {
 	/**
 	 * The class that the Peer will make instances of.
 	 *
+	 * If $withPrefix is true, the returned path
+	 * uses a dot-path notation which is tranalted into a path
+	 * relative to a location on the PHP include_path.
+	 * (e.g. path.to.MyClass -> 'path/to/MyClass.php')
 	 *
-	 * @return     string ClassName
+	 * @param      boolean $withPrefix Whether or not to return the path with the class name
+	 * @return     string path.to.ClassName
 	 */
-	public static function getOMClass()
+	public static function getOMClass($withPrefix = true)
 	{
-		return NagiosEscalationContactPeer::OM_CLASS;
+		return $withPrefix ? NagiosEscalationContactPeer::CLASS_DEFAULT : NagiosEscalationContactPeer::OM_CLASS;
 	}
 
 	/**

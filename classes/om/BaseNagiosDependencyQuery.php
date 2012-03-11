@@ -245,7 +245,7 @@ abstract class BaseNagiosDependencyQuery extends ModelCriteria
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$obj = new NagiosDependency();
 			$obj->hydrate($row);
-			NagiosDependencyPeer::addInstanceToPool($obj, (string) $key);
+			NagiosDependencyPeer::addInstanceToPool($obj, (string) $row[0]);
 		}
 		$stmt->closeCursor();
 

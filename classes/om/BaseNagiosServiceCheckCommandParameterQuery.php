@@ -141,7 +141,7 @@ abstract class BaseNagiosServiceCheckCommandParameterQuery extends ModelCriteria
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$obj = new NagiosServiceCheckCommandParameter();
 			$obj->hydrate($row);
-			NagiosServiceCheckCommandParameterPeer::addInstanceToPool($obj, (string) $key);
+			NagiosServiceCheckCommandParameterPeer::addInstanceToPool($obj, (string) $row[0]);
 		}
 		$stmt->closeCursor();
 

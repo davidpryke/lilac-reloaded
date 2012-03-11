@@ -233,7 +233,7 @@ abstract class BaseNagiosCgiConfigurationQuery extends ModelCriteria
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$obj = new NagiosCgiConfiguration();
 			$obj->hydrate($row);
-			NagiosCgiConfigurationPeer::addInstanceToPool($obj, (string) $key);
+			NagiosCgiConfigurationPeer::addInstanceToPool($obj, (string) $row[0]);
 		}
 		$stmt->closeCursor();
 

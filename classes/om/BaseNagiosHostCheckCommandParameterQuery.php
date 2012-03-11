@@ -141,7 +141,7 @@ abstract class BaseNagiosHostCheckCommandParameterQuery extends ModelCriteria
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$obj = new NagiosHostCheckCommandParameter();
 			$obj->hydrate($row);
-			NagiosHostCheckCommandParameterPeer::addInstanceToPool($obj, (string) $key);
+			NagiosHostCheckCommandParameterPeer::addInstanceToPool($obj, (string) $row[0]);
 		}
 		$stmt->closeCursor();
 

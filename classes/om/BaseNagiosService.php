@@ -25,12 +25,6 @@ abstract class BaseNagiosService extends BaseObject  implements Persistent
 	protected static $peer;
 
 	/**
-	 * The flag var to prevent infinit loop in deep copy
-	 * @var       boolean
-	 */
-	protected $startCopy = false;
-
-	/**
 	 * The value for the id field.
 	 * @var        int
 	 */
@@ -4053,12 +4047,10 @@ abstract class BaseNagiosService extends BaseObject  implements Persistent
 		$copyObj->setIconImage($this->getIconImage());
 		$copyObj->setIconImageAlt($this->getIconImageAlt());
 
-		if ($deepCopy && !$this->startCopy) {
+		if ($deepCopy) {
 			// important: temporarily setNew(false) because this affects the behavior of
 			// the getter/setter methods for fkey referrer objects.
 			$copyObj->setNew(false);
-			// store object hash to prevent cycle
-			$this->startCopy = true;
 
 			foreach ($this->getNagiosServiceCheckCommandParameters() as $relObj) {
 				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
@@ -4108,8 +4100,6 @@ abstract class BaseNagiosService extends BaseObject  implements Persistent
 				}
 			}
 
-			//unflag object copy
-			$this->startCopy = false;
 		} // if ($deepCopy)
 
 		if ($makeNew) {

@@ -133,7 +133,7 @@ abstract class BaseLabelQuery extends ModelCriteria
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$obj = new Label();
 			$obj->hydrate($row);
-			LabelPeer::addInstanceToPool($obj, (string) $key);
+			LabelPeer::addInstanceToPool($obj, (string) $row[0]);
 		}
 		$stmt->closeCursor();
 

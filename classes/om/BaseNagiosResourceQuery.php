@@ -249,7 +249,7 @@ abstract class BaseNagiosResourceQuery extends ModelCriteria
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$obj = new NagiosResource();
 			$obj->hydrate($row);
-			NagiosResourcePeer::addInstanceToPool($obj, (string) $key);
+			NagiosResourcePeer::addInstanceToPool($obj, (string) $row[0]);
 		}
 		$stmt->closeCursor();
 

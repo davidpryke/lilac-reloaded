@@ -19,6 +19,9 @@ abstract class BaseAutodiscoveryJobPeer {
 	/** the related Propel class for this table */
 	const OM_CLASS = 'AutodiscoveryJob';
 
+	/** A class that can be returned by this peer. */
+	const CLASS_DEFAULT = 'AutodiscoveryJob';
+
 	/** the related TableMap class for this table */
 	const TM_CLASS = 'AutodiscoveryJobTableMap';
 
@@ -444,7 +447,7 @@ abstract class BaseAutodiscoveryJobPeer {
 		$results = array();
 	
 		// set the class once to avoid overhead in the loop
-		$cls = AutodiscoveryJobPeer::getOMClass();
+		$cls = AutodiscoveryJobPeer::getOMClass(false);
 		// populate the object(s)
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$key = AutodiscoveryJobPeer::getPrimaryKeyHashFromRow($row, 0);
@@ -516,12 +519,17 @@ abstract class BaseAutodiscoveryJobPeer {
 	/**
 	 * The class that the Peer will make instances of.
 	 *
+	 * If $withPrefix is true, the returned path
+	 * uses a dot-path notation which is tranalted into a path
+	 * relative to a location on the PHP include_path.
+	 * (e.g. path.to.MyClass -> 'path/to/MyClass.php')
 	 *
-	 * @return     string ClassName
+	 * @param      boolean $withPrefix Whether or not to return the path with the class name
+	 * @return     string path.to.ClassName
 	 */
-	public static function getOMClass()
+	public static function getOMClass($withPrefix = true)
 	{
-		return AutodiscoveryJobPeer::OM_CLASS;
+		return $withPrefix ? AutodiscoveryJobPeer::CLASS_DEFAULT : AutodiscoveryJobPeer::OM_CLASS;
 	}
 
 	/**

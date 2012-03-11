@@ -19,6 +19,9 @@ abstract class BaseAutodiscoveryDevicePeer {
 	/** the related Propel class for this table */
 	const OM_CLASS = 'AutodiscoveryDevice';
 
+	/** A class that can be returned by this peer. */
+	const CLASS_DEFAULT = 'AutodiscoveryDevice';
+
 	/** the related TableMap class for this table */
 	const TM_CLASS = 'AutodiscoveryDeviceTableMap';
 
@@ -444,7 +447,7 @@ abstract class BaseAutodiscoveryDevicePeer {
 		$results = array();
 	
 		// set the class once to avoid overhead in the loop
-		$cls = AutodiscoveryDevicePeer::getOMClass();
+		$cls = AutodiscoveryDevicePeer::getOMClass(false);
 		// populate the object(s)
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$key = AutodiscoveryDevicePeer::getPrimaryKeyHashFromRow($row, 0);
@@ -675,7 +678,7 @@ abstract class BaseAutodiscoveryDevicePeer {
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 
-				$cls = AutodiscoveryDevicePeer::getOMClass();
+				$cls = AutodiscoveryDevicePeer::getOMClass(false);
 
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
@@ -687,7 +690,7 @@ abstract class BaseAutodiscoveryDevicePeer {
 				$obj2 = AutodiscoveryJobPeer::getInstanceFromPool($key2);
 				if (!$obj2) {
 
-					$cls = AutodiscoveryJobPeer::getOMClass();
+					$cls = AutodiscoveryJobPeer::getOMClass(false);
 
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol);
@@ -741,7 +744,7 @@ abstract class BaseAutodiscoveryDevicePeer {
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 
-				$cls = AutodiscoveryDevicePeer::getOMClass();
+				$cls = AutodiscoveryDevicePeer::getOMClass(false);
 
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
@@ -753,7 +756,7 @@ abstract class BaseAutodiscoveryDevicePeer {
 				$obj2 = NagiosHostTemplatePeer::getInstanceFromPool($key2);
 				if (!$obj2) {
 
-					$cls = NagiosHostTemplatePeer::getOMClass();
+					$cls = NagiosHostTemplatePeer::getOMClass(false);
 
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol);
@@ -807,7 +810,7 @@ abstract class BaseAutodiscoveryDevicePeer {
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 
-				$cls = AutodiscoveryDevicePeer::getOMClass();
+				$cls = AutodiscoveryDevicePeer::getOMClass(false);
 
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
@@ -819,7 +822,7 @@ abstract class BaseAutodiscoveryDevicePeer {
 				$obj2 = NagiosHostPeer::getInstanceFromPool($key2);
 				if (!$obj2) {
 
-					$cls = NagiosHostPeer::getOMClass();
+					$cls = NagiosHostPeer::getOMClass(false);
 
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol);
@@ -938,7 +941,7 @@ abstract class BaseAutodiscoveryDevicePeer {
 				// See http://www.propelorm.org/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
-				$cls = AutodiscoveryDevicePeer::getOMClass();
+				$cls = AutodiscoveryDevicePeer::getOMClass(false);
 
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
@@ -952,7 +955,7 @@ abstract class BaseAutodiscoveryDevicePeer {
 				$obj2 = AutodiscoveryJobPeer::getInstanceFromPool($key2);
 				if (!$obj2) {
 
-					$cls = AutodiscoveryJobPeer::getOMClass();
+					$cls = AutodiscoveryJobPeer::getOMClass(false);
 
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol2);
@@ -970,7 +973,7 @@ abstract class BaseAutodiscoveryDevicePeer {
 				$obj3 = NagiosHostTemplatePeer::getInstanceFromPool($key3);
 				if (!$obj3) {
 
-					$cls = NagiosHostTemplatePeer::getOMClass();
+					$cls = NagiosHostTemplatePeer::getOMClass(false);
 
 					$obj3 = new $cls();
 					$obj3->hydrate($row, $startcol3);
@@ -988,7 +991,7 @@ abstract class BaseAutodiscoveryDevicePeer {
 				$obj4 = NagiosHostPeer::getInstanceFromPool($key4);
 				if (!$obj4) {
 
-					$cls = NagiosHostPeer::getOMClass();
+					$cls = NagiosHostPeer::getOMClass(false);
 
 					$obj4 = new $cls();
 					$obj4->hydrate($row, $startcol4);
@@ -1207,7 +1210,7 @@ abstract class BaseAutodiscoveryDevicePeer {
 				// See http://www.propelorm.org/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
-				$cls = AutodiscoveryDevicePeer::getOMClass();
+				$cls = AutodiscoveryDevicePeer::getOMClass(false);
 
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
@@ -1221,7 +1224,7 @@ abstract class BaseAutodiscoveryDevicePeer {
 					$obj2 = NagiosHostTemplatePeer::getInstanceFromPool($key2);
 					if (!$obj2) {
 	
-						$cls = NagiosHostTemplatePeer::getOMClass();
+						$cls = NagiosHostTemplatePeer::getOMClass(false);
 
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol2);
@@ -1240,7 +1243,7 @@ abstract class BaseAutodiscoveryDevicePeer {
 					$obj3 = NagiosHostPeer::getInstanceFromPool($key3);
 					if (!$obj3) {
 	
-						$cls = NagiosHostPeer::getOMClass();
+						$cls = NagiosHostPeer::getOMClass(false);
 
 					$obj3 = new $cls();
 					$obj3->hydrate($row, $startcol3);
@@ -1304,7 +1307,7 @@ abstract class BaseAutodiscoveryDevicePeer {
 				// See http://www.propelorm.org/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
-				$cls = AutodiscoveryDevicePeer::getOMClass();
+				$cls = AutodiscoveryDevicePeer::getOMClass(false);
 
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
@@ -1318,7 +1321,7 @@ abstract class BaseAutodiscoveryDevicePeer {
 					$obj2 = AutodiscoveryJobPeer::getInstanceFromPool($key2);
 					if (!$obj2) {
 	
-						$cls = AutodiscoveryJobPeer::getOMClass();
+						$cls = AutodiscoveryJobPeer::getOMClass(false);
 
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol2);
@@ -1337,7 +1340,7 @@ abstract class BaseAutodiscoveryDevicePeer {
 					$obj3 = NagiosHostPeer::getInstanceFromPool($key3);
 					if (!$obj3) {
 	
-						$cls = NagiosHostPeer::getOMClass();
+						$cls = NagiosHostPeer::getOMClass(false);
 
 					$obj3 = new $cls();
 					$obj3->hydrate($row, $startcol3);
@@ -1401,7 +1404,7 @@ abstract class BaseAutodiscoveryDevicePeer {
 				// See http://www.propelorm.org/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
-				$cls = AutodiscoveryDevicePeer::getOMClass();
+				$cls = AutodiscoveryDevicePeer::getOMClass(false);
 
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
@@ -1415,7 +1418,7 @@ abstract class BaseAutodiscoveryDevicePeer {
 					$obj2 = AutodiscoveryJobPeer::getInstanceFromPool($key2);
 					if (!$obj2) {
 	
-						$cls = AutodiscoveryJobPeer::getOMClass();
+						$cls = AutodiscoveryJobPeer::getOMClass(false);
 
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol2);
@@ -1434,7 +1437,7 @@ abstract class BaseAutodiscoveryDevicePeer {
 					$obj3 = NagiosHostTemplatePeer::getInstanceFromPool($key3);
 					if (!$obj3) {
 	
-						$cls = NagiosHostTemplatePeer::getOMClass();
+						$cls = NagiosHostTemplatePeer::getOMClass(false);
 
 					$obj3 = new $cls();
 					$obj3->hydrate($row, $startcol3);
@@ -1479,12 +1482,17 @@ abstract class BaseAutodiscoveryDevicePeer {
 	/**
 	 * The class that the Peer will make instances of.
 	 *
+	 * If $withPrefix is true, the returned path
+	 * uses a dot-path notation which is tranalted into a path
+	 * relative to a location on the PHP include_path.
+	 * (e.g. path.to.MyClass -> 'path/to/MyClass.php')
 	 *
-	 * @return     string ClassName
+	 * @param      boolean $withPrefix Whether or not to return the path with the class name
+	 * @return     string path.to.ClassName
 	 */
-	public static function getOMClass()
+	public static function getOMClass($withPrefix = true)
 	{
-		return AutodiscoveryDevicePeer::OM_CLASS;
+		return $withPrefix ? AutodiscoveryDevicePeer::CLASS_DEFAULT : AutodiscoveryDevicePeer::OM_CLASS;
 	}
 
 	/**

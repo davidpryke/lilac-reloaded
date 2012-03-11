@@ -25,12 +25,6 @@ abstract class BaseNagiosServiceTemplateInheritance extends BaseObject  implemen
 	protected static $peer;
 
 	/**
-	 * The flag var to prevent infinit loop in deep copy
-	 * @var       boolean
-	 */
-	protected $startCopy = false;
-
-	/**
 	 * The value for the id field.
 	 * @var        int
 	 */
@@ -954,18 +948,6 @@ abstract class BaseNagiosServiceTemplateInheritance extends BaseObject  implemen
 		$copyObj->setSourceTemplate($this->getSourceTemplate());
 		$copyObj->setTargetTemplate($this->getTargetTemplate());
 		$copyObj->setOrder($this->getOrder());
-
-		if ($deepCopy && !$this->startCopy) {
-			// important: temporarily setNew(false) because this affects the behavior of
-			// the getter/setter methods for fkey referrer objects.
-			$copyObj->setNew(false);
-			// store object hash to prevent cycle
-			$this->startCopy = true;
-
-			//unflag object copy
-			$this->startCopy = false;
-		} // if ($deepCopy)
-
 		if ($makeNew) {
 			$copyObj->setNew(true);
 			$copyObj->setId(NULL); // this is a auto-increment column, so set to default value

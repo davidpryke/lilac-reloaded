@@ -19,6 +19,9 @@ abstract class BaseNagiosTimeperiodPeer {
 	/** the related Propel class for this table */
 	const OM_CLASS = 'NagiosTimeperiod';
 
+	/** A class that can be returned by this peer. */
+	const CLASS_DEFAULT = 'NagiosTimeperiod';
+
 	/** the related TableMap class for this table */
 	const TM_CLASS = 'NagiosTimeperiodTableMap';
 
@@ -443,7 +446,7 @@ abstract class BaseNagiosTimeperiodPeer {
 		$results = array();
 	
 		// set the class once to avoid overhead in the loop
-		$cls = NagiosTimeperiodPeer::getOMClass();
+		$cls = NagiosTimeperiodPeer::getOMClass(false);
 		// populate the object(s)
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$key = NagiosTimeperiodPeer::getPrimaryKeyHashFromRow($row, 0);
@@ -515,12 +518,17 @@ abstract class BaseNagiosTimeperiodPeer {
 	/**
 	 * The class that the Peer will make instances of.
 	 *
+	 * If $withPrefix is true, the returned path
+	 * uses a dot-path notation which is tranalted into a path
+	 * relative to a location on the PHP include_path.
+	 * (e.g. path.to.MyClass -> 'path/to/MyClass.php')
 	 *
-	 * @return     string ClassName
+	 * @param      boolean $withPrefix Whether or not to return the path with the class name
+	 * @return     string path.to.ClassName
 	 */
-	public static function getOMClass()
+	public static function getOMClass($withPrefix = true)
 	{
-		return NagiosTimeperiodPeer::OM_CLASS;
+		return $withPrefix ? NagiosTimeperiodPeer::CLASS_DEFAULT : NagiosTimeperiodPeer::OM_CLASS;
 	}
 
 	/**

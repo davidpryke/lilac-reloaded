@@ -165,7 +165,7 @@ abstract class BaseExportJobQuery extends ModelCriteria
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$obj = new ExportJob();
 			$obj->hydrate($row);
-			ExportJobPeer::addInstanceToPool($obj, (string) $key);
+			ExportJobPeer::addInstanceToPool($obj, (string) $row[0]);
 		}
 		$stmt->closeCursor();
 

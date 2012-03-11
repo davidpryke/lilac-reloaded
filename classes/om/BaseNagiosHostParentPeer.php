@@ -19,6 +19,9 @@ abstract class BaseNagiosHostParentPeer {
 	/** the related Propel class for this table */
 	const OM_CLASS = 'NagiosHostParent';
 
+	/** A class that can be returned by this peer. */
+	const CLASS_DEFAULT = 'NagiosHostParent';
+
 	/** the related TableMap class for this table */
 	const TM_CLASS = 'NagiosHostParentTableMap';
 
@@ -403,7 +406,7 @@ abstract class BaseNagiosHostParentPeer {
 		$results = array();
 	
 		// set the class once to avoid overhead in the loop
-		$cls = NagiosHostParentPeer::getOMClass();
+		$cls = NagiosHostParentPeer::getOMClass(false);
 		// populate the object(s)
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$key = NagiosHostParentPeer::getPrimaryKeyHashFromRow($row, 0);
@@ -634,7 +637,7 @@ abstract class BaseNagiosHostParentPeer {
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 
-				$cls = NagiosHostParentPeer::getOMClass();
+				$cls = NagiosHostParentPeer::getOMClass(false);
 
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
@@ -646,7 +649,7 @@ abstract class BaseNagiosHostParentPeer {
 				$obj2 = NagiosHostPeer::getInstanceFromPool($key2);
 				if (!$obj2) {
 
-					$cls = NagiosHostPeer::getOMClass();
+					$cls = NagiosHostPeer::getOMClass(false);
 
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol);
@@ -700,7 +703,7 @@ abstract class BaseNagiosHostParentPeer {
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 
-				$cls = NagiosHostParentPeer::getOMClass();
+				$cls = NagiosHostParentPeer::getOMClass(false);
 
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
@@ -712,7 +715,7 @@ abstract class BaseNagiosHostParentPeer {
 				$obj2 = NagiosHostPeer::getInstanceFromPool($key2);
 				if (!$obj2) {
 
-					$cls = NagiosHostPeer::getOMClass();
+					$cls = NagiosHostPeer::getOMClass(false);
 
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol);
@@ -766,7 +769,7 @@ abstract class BaseNagiosHostParentPeer {
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 
-				$cls = NagiosHostParentPeer::getOMClass();
+				$cls = NagiosHostParentPeer::getOMClass(false);
 
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
@@ -778,7 +781,7 @@ abstract class BaseNagiosHostParentPeer {
 				$obj2 = NagiosHostTemplatePeer::getInstanceFromPool($key2);
 				if (!$obj2) {
 
-					$cls = NagiosHostTemplatePeer::getOMClass();
+					$cls = NagiosHostTemplatePeer::getOMClass(false);
 
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol);
@@ -897,7 +900,7 @@ abstract class BaseNagiosHostParentPeer {
 				// See http://www.propelorm.org/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
-				$cls = NagiosHostParentPeer::getOMClass();
+				$cls = NagiosHostParentPeer::getOMClass(false);
 
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
@@ -911,7 +914,7 @@ abstract class BaseNagiosHostParentPeer {
 				$obj2 = NagiosHostPeer::getInstanceFromPool($key2);
 				if (!$obj2) {
 
-					$cls = NagiosHostPeer::getOMClass();
+					$cls = NagiosHostPeer::getOMClass(false);
 
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol2);
@@ -929,7 +932,7 @@ abstract class BaseNagiosHostParentPeer {
 				$obj3 = NagiosHostPeer::getInstanceFromPool($key3);
 				if (!$obj3) {
 
-					$cls = NagiosHostPeer::getOMClass();
+					$cls = NagiosHostPeer::getOMClass(false);
 
 					$obj3 = new $cls();
 					$obj3->hydrate($row, $startcol3);
@@ -947,7 +950,7 @@ abstract class BaseNagiosHostParentPeer {
 				$obj4 = NagiosHostTemplatePeer::getInstanceFromPool($key4);
 				if (!$obj4) {
 
-					$cls = NagiosHostTemplatePeer::getOMClass();
+					$cls = NagiosHostTemplatePeer::getOMClass(false);
 
 					$obj4 = new $cls();
 					$obj4->hydrate($row, $startcol4);
@@ -1157,7 +1160,7 @@ abstract class BaseNagiosHostParentPeer {
 				// See http://www.propelorm.org/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
-				$cls = NagiosHostParentPeer::getOMClass();
+				$cls = NagiosHostParentPeer::getOMClass(false);
 
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
@@ -1171,7 +1174,7 @@ abstract class BaseNagiosHostParentPeer {
 					$obj2 = NagiosHostTemplatePeer::getInstanceFromPool($key2);
 					if (!$obj2) {
 	
-						$cls = NagiosHostTemplatePeer::getOMClass();
+						$cls = NagiosHostTemplatePeer::getOMClass(false);
 
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol2);
@@ -1230,7 +1233,7 @@ abstract class BaseNagiosHostParentPeer {
 				// See http://www.propelorm.org/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
-				$cls = NagiosHostParentPeer::getOMClass();
+				$cls = NagiosHostParentPeer::getOMClass(false);
 
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
@@ -1244,7 +1247,7 @@ abstract class BaseNagiosHostParentPeer {
 					$obj2 = NagiosHostTemplatePeer::getInstanceFromPool($key2);
 					if (!$obj2) {
 	
-						$cls = NagiosHostTemplatePeer::getOMClass();
+						$cls = NagiosHostTemplatePeer::getOMClass(false);
 
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol2);
@@ -1308,7 +1311,7 @@ abstract class BaseNagiosHostParentPeer {
 				// See http://www.propelorm.org/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
-				$cls = NagiosHostParentPeer::getOMClass();
+				$cls = NagiosHostParentPeer::getOMClass(false);
 
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
@@ -1322,7 +1325,7 @@ abstract class BaseNagiosHostParentPeer {
 					$obj2 = NagiosHostPeer::getInstanceFromPool($key2);
 					if (!$obj2) {
 	
-						$cls = NagiosHostPeer::getOMClass();
+						$cls = NagiosHostPeer::getOMClass(false);
 
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol2);
@@ -1341,7 +1344,7 @@ abstract class BaseNagiosHostParentPeer {
 					$obj3 = NagiosHostPeer::getInstanceFromPool($key3);
 					if (!$obj3) {
 	
-						$cls = NagiosHostPeer::getOMClass();
+						$cls = NagiosHostPeer::getOMClass(false);
 
 					$obj3 = new $cls();
 					$obj3->hydrate($row, $startcol3);
@@ -1386,12 +1389,17 @@ abstract class BaseNagiosHostParentPeer {
 	/**
 	 * The class that the Peer will make instances of.
 	 *
+	 * If $withPrefix is true, the returned path
+	 * uses a dot-path notation which is tranalted into a path
+	 * relative to a location on the PHP include_path.
+	 * (e.g. path.to.MyClass -> 'path/to/MyClass.php')
 	 *
-	 * @return     string ClassName
+	 * @param      boolean $withPrefix Whether or not to return the path with the class name
+	 * @return     string path.to.ClassName
 	 */
-	public static function getOMClass()
+	public static function getOMClass($withPrefix = true)
 	{
-		return NagiosHostParentPeer::OM_CLASS;
+		return $withPrefix ? NagiosHostParentPeer::CLASS_DEFAULT : NagiosHostParentPeer::OM_CLASS;
 	}
 
 	/**

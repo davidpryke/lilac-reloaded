@@ -137,7 +137,7 @@ abstract class BaseNagiosTimeperiodExcludeQuery extends ModelCriteria
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$obj = new NagiosTimeperiodExclude();
 			$obj->hydrate($row);
-			NagiosTimeperiodExcludePeer::addInstanceToPool($obj, (string) $key);
+			NagiosTimeperiodExcludePeer::addInstanceToPool($obj, (string) $row[0]);
 		}
 		$stmt->closeCursor();
 

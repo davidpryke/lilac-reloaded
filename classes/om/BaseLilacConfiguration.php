@@ -25,12 +25,6 @@ abstract class BaseLilacConfiguration extends BaseObject  implements Persistent
 	protected static $peer;
 
 	/**
-	 * The flag var to prevent infinit loop in deep copy
-	 * @var       boolean
-	 */
-	protected $startCopy = false;
-
-	/**
 	 * The value for the id field.
 	 * @var        int
 	 */

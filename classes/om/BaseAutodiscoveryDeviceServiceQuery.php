@@ -153,7 +153,7 @@ abstract class BaseAutodiscoveryDeviceServiceQuery extends ModelCriteria
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$obj = new AutodiscoveryDeviceService();
 			$obj->hydrate($row);
-			AutodiscoveryDeviceServicePeer::addInstanceToPool($obj, (string) $key);
+			AutodiscoveryDeviceServicePeer::addInstanceToPool($obj, (string) $row[0]);
 		}
 		$stmt->closeCursor();
 

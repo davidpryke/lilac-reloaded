@@ -19,6 +19,9 @@ abstract class BaseNagiosServicePeer {
 	/** the related Propel class for this table */
 	const OM_CLASS = 'NagiosService';
 
+	/** A class that can be returned by this peer. */
+	const CLASS_DEFAULT = 'NagiosService';
+
 	/** the related TableMap class for this table */
 	const TM_CLASS = 'NagiosServiceTableMap';
 
@@ -662,7 +665,7 @@ abstract class BaseNagiosServicePeer {
 		$results = array();
 	
 		// set the class once to avoid overhead in the loop
-		$cls = NagiosServicePeer::getOMClass();
+		$cls = NagiosServicePeer::getOMClass(false);
 		// populate the object(s)
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$key = NagiosServicePeer::getPrimaryKeyHashFromRow($row, 0);
@@ -1093,7 +1096,7 @@ abstract class BaseNagiosServicePeer {
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 
-				$cls = NagiosServicePeer::getOMClass();
+				$cls = NagiosServicePeer::getOMClass(false);
 
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
@@ -1105,7 +1108,7 @@ abstract class BaseNagiosServicePeer {
 				$obj2 = NagiosHostPeer::getInstanceFromPool($key2);
 				if (!$obj2) {
 
-					$cls = NagiosHostPeer::getOMClass();
+					$cls = NagiosHostPeer::getOMClass(false);
 
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol);
@@ -1159,7 +1162,7 @@ abstract class BaseNagiosServicePeer {
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 
-				$cls = NagiosServicePeer::getOMClass();
+				$cls = NagiosServicePeer::getOMClass(false);
 
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
@@ -1171,7 +1174,7 @@ abstract class BaseNagiosServicePeer {
 				$obj2 = NagiosHostTemplatePeer::getInstanceFromPool($key2);
 				if (!$obj2) {
 
-					$cls = NagiosHostTemplatePeer::getOMClass();
+					$cls = NagiosHostTemplatePeer::getOMClass(false);
 
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol);
@@ -1225,7 +1228,7 @@ abstract class BaseNagiosServicePeer {
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 
-				$cls = NagiosServicePeer::getOMClass();
+				$cls = NagiosServicePeer::getOMClass(false);
 
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
@@ -1237,7 +1240,7 @@ abstract class BaseNagiosServicePeer {
 				$obj2 = NagiosHostgroupPeer::getInstanceFromPool($key2);
 				if (!$obj2) {
 
-					$cls = NagiosHostgroupPeer::getOMClass();
+					$cls = NagiosHostgroupPeer::getOMClass(false);
 
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol);
@@ -1291,7 +1294,7 @@ abstract class BaseNagiosServicePeer {
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 
-				$cls = NagiosServicePeer::getOMClass();
+				$cls = NagiosServicePeer::getOMClass(false);
 
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
@@ -1303,7 +1306,7 @@ abstract class BaseNagiosServicePeer {
 				$obj2 = NagiosCommandPeer::getInstanceFromPool($key2);
 				if (!$obj2) {
 
-					$cls = NagiosCommandPeer::getOMClass();
+					$cls = NagiosCommandPeer::getOMClass(false);
 
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol);
@@ -1357,7 +1360,7 @@ abstract class BaseNagiosServicePeer {
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 
-				$cls = NagiosServicePeer::getOMClass();
+				$cls = NagiosServicePeer::getOMClass(false);
 
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
@@ -1369,7 +1372,7 @@ abstract class BaseNagiosServicePeer {
 				$obj2 = NagiosCommandPeer::getInstanceFromPool($key2);
 				if (!$obj2) {
 
-					$cls = NagiosCommandPeer::getOMClass();
+					$cls = NagiosCommandPeer::getOMClass(false);
 
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol);
@@ -1423,7 +1426,7 @@ abstract class BaseNagiosServicePeer {
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 
-				$cls = NagiosServicePeer::getOMClass();
+				$cls = NagiosServicePeer::getOMClass(false);
 
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
@@ -1435,7 +1438,7 @@ abstract class BaseNagiosServicePeer {
 				$obj2 = NagiosTimeperiodPeer::getInstanceFromPool($key2);
 				if (!$obj2) {
 
-					$cls = NagiosTimeperiodPeer::getOMClass();
+					$cls = NagiosTimeperiodPeer::getOMClass(false);
 
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol);
@@ -1489,7 +1492,7 @@ abstract class BaseNagiosServicePeer {
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 
-				$cls = NagiosServicePeer::getOMClass();
+				$cls = NagiosServicePeer::getOMClass(false);
 
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
@@ -1501,7 +1504,7 @@ abstract class BaseNagiosServicePeer {
 				$obj2 = NagiosTimeperiodPeer::getInstanceFromPool($key2);
 				if (!$obj2) {
 
-					$cls = NagiosTimeperiodPeer::getOMClass();
+					$cls = NagiosTimeperiodPeer::getOMClass(false);
 
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol);
@@ -1648,7 +1651,7 @@ abstract class BaseNagiosServicePeer {
 				// See http://www.propelorm.org/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
-				$cls = NagiosServicePeer::getOMClass();
+				$cls = NagiosServicePeer::getOMClass(false);
 
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
@@ -1662,7 +1665,7 @@ abstract class BaseNagiosServicePeer {
 				$obj2 = NagiosHostPeer::getInstanceFromPool($key2);
 				if (!$obj2) {
 
-					$cls = NagiosHostPeer::getOMClass();
+					$cls = NagiosHostPeer::getOMClass(false);
 
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol2);
@@ -1680,7 +1683,7 @@ abstract class BaseNagiosServicePeer {
 				$obj3 = NagiosHostTemplatePeer::getInstanceFromPool($key3);
 				if (!$obj3) {
 
-					$cls = NagiosHostTemplatePeer::getOMClass();
+					$cls = NagiosHostTemplatePeer::getOMClass(false);
 
 					$obj3 = new $cls();
 					$obj3->hydrate($row, $startcol3);
@@ -1698,7 +1701,7 @@ abstract class BaseNagiosServicePeer {
 				$obj4 = NagiosHostgroupPeer::getInstanceFromPool($key4);
 				if (!$obj4) {
 
-					$cls = NagiosHostgroupPeer::getOMClass();
+					$cls = NagiosHostgroupPeer::getOMClass(false);
 
 					$obj4 = new $cls();
 					$obj4->hydrate($row, $startcol4);
@@ -1716,7 +1719,7 @@ abstract class BaseNagiosServicePeer {
 				$obj5 = NagiosCommandPeer::getInstanceFromPool($key5);
 				if (!$obj5) {
 
-					$cls = NagiosCommandPeer::getOMClass();
+					$cls = NagiosCommandPeer::getOMClass(false);
 
 					$obj5 = new $cls();
 					$obj5->hydrate($row, $startcol5);
@@ -1734,7 +1737,7 @@ abstract class BaseNagiosServicePeer {
 				$obj6 = NagiosCommandPeer::getInstanceFromPool($key6);
 				if (!$obj6) {
 
-					$cls = NagiosCommandPeer::getOMClass();
+					$cls = NagiosCommandPeer::getOMClass(false);
 
 					$obj6 = new $cls();
 					$obj6->hydrate($row, $startcol6);
@@ -1752,7 +1755,7 @@ abstract class BaseNagiosServicePeer {
 				$obj7 = NagiosTimeperiodPeer::getInstanceFromPool($key7);
 				if (!$obj7) {
 
-					$cls = NagiosTimeperiodPeer::getOMClass();
+					$cls = NagiosTimeperiodPeer::getOMClass(false);
 
 					$obj7 = new $cls();
 					$obj7->hydrate($row, $startcol7);
@@ -1770,7 +1773,7 @@ abstract class BaseNagiosServicePeer {
 				$obj8 = NagiosTimeperiodPeer::getInstanceFromPool($key8);
 				if (!$obj8) {
 
-					$cls = NagiosTimeperiodPeer::getOMClass();
+					$cls = NagiosTimeperiodPeer::getOMClass(false);
 
 					$obj8 = new $cls();
 					$obj8->hydrate($row, $startcol8);
@@ -2265,7 +2268,7 @@ abstract class BaseNagiosServicePeer {
 				// See http://www.propelorm.org/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
-				$cls = NagiosServicePeer::getOMClass();
+				$cls = NagiosServicePeer::getOMClass(false);
 
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
@@ -2279,7 +2282,7 @@ abstract class BaseNagiosServicePeer {
 					$obj2 = NagiosHostTemplatePeer::getInstanceFromPool($key2);
 					if (!$obj2) {
 	
-						$cls = NagiosHostTemplatePeer::getOMClass();
+						$cls = NagiosHostTemplatePeer::getOMClass(false);
 
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol2);
@@ -2298,7 +2301,7 @@ abstract class BaseNagiosServicePeer {
 					$obj3 = NagiosHostgroupPeer::getInstanceFromPool($key3);
 					if (!$obj3) {
 	
-						$cls = NagiosHostgroupPeer::getOMClass();
+						$cls = NagiosHostgroupPeer::getOMClass(false);
 
 					$obj3 = new $cls();
 					$obj3->hydrate($row, $startcol3);
@@ -2317,7 +2320,7 @@ abstract class BaseNagiosServicePeer {
 					$obj4 = NagiosCommandPeer::getInstanceFromPool($key4);
 					if (!$obj4) {
 	
-						$cls = NagiosCommandPeer::getOMClass();
+						$cls = NagiosCommandPeer::getOMClass(false);
 
 					$obj4 = new $cls();
 					$obj4->hydrate($row, $startcol4);
@@ -2336,7 +2339,7 @@ abstract class BaseNagiosServicePeer {
 					$obj5 = NagiosCommandPeer::getInstanceFromPool($key5);
 					if (!$obj5) {
 	
-						$cls = NagiosCommandPeer::getOMClass();
+						$cls = NagiosCommandPeer::getOMClass(false);
 
 					$obj5 = new $cls();
 					$obj5->hydrate($row, $startcol5);
@@ -2355,7 +2358,7 @@ abstract class BaseNagiosServicePeer {
 					$obj6 = NagiosTimeperiodPeer::getInstanceFromPool($key6);
 					if (!$obj6) {
 	
-						$cls = NagiosTimeperiodPeer::getOMClass();
+						$cls = NagiosTimeperiodPeer::getOMClass(false);
 
 					$obj6 = new $cls();
 					$obj6->hydrate($row, $startcol6);
@@ -2374,7 +2377,7 @@ abstract class BaseNagiosServicePeer {
 					$obj7 = NagiosTimeperiodPeer::getInstanceFromPool($key7);
 					if (!$obj7) {
 	
-						$cls = NagiosTimeperiodPeer::getOMClass();
+						$cls = NagiosTimeperiodPeer::getOMClass(false);
 
 					$obj7 = new $cls();
 					$obj7->hydrate($row, $startcol7);
@@ -2458,7 +2461,7 @@ abstract class BaseNagiosServicePeer {
 				// See http://www.propelorm.org/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
-				$cls = NagiosServicePeer::getOMClass();
+				$cls = NagiosServicePeer::getOMClass(false);
 
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
@@ -2472,7 +2475,7 @@ abstract class BaseNagiosServicePeer {
 					$obj2 = NagiosHostPeer::getInstanceFromPool($key2);
 					if (!$obj2) {
 	
-						$cls = NagiosHostPeer::getOMClass();
+						$cls = NagiosHostPeer::getOMClass(false);
 
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol2);
@@ -2491,7 +2494,7 @@ abstract class BaseNagiosServicePeer {
 					$obj3 = NagiosHostgroupPeer::getInstanceFromPool($key3);
 					if (!$obj3) {
 	
-						$cls = NagiosHostgroupPeer::getOMClass();
+						$cls = NagiosHostgroupPeer::getOMClass(false);
 
 					$obj3 = new $cls();
 					$obj3->hydrate($row, $startcol3);
@@ -2510,7 +2513,7 @@ abstract class BaseNagiosServicePeer {
 					$obj4 = NagiosCommandPeer::getInstanceFromPool($key4);
 					if (!$obj4) {
 	
-						$cls = NagiosCommandPeer::getOMClass();
+						$cls = NagiosCommandPeer::getOMClass(false);
 
 					$obj4 = new $cls();
 					$obj4->hydrate($row, $startcol4);
@@ -2529,7 +2532,7 @@ abstract class BaseNagiosServicePeer {
 					$obj5 = NagiosCommandPeer::getInstanceFromPool($key5);
 					if (!$obj5) {
 	
-						$cls = NagiosCommandPeer::getOMClass();
+						$cls = NagiosCommandPeer::getOMClass(false);
 
 					$obj5 = new $cls();
 					$obj5->hydrate($row, $startcol5);
@@ -2548,7 +2551,7 @@ abstract class BaseNagiosServicePeer {
 					$obj6 = NagiosTimeperiodPeer::getInstanceFromPool($key6);
 					if (!$obj6) {
 	
-						$cls = NagiosTimeperiodPeer::getOMClass();
+						$cls = NagiosTimeperiodPeer::getOMClass(false);
 
 					$obj6 = new $cls();
 					$obj6->hydrate($row, $startcol6);
@@ -2567,7 +2570,7 @@ abstract class BaseNagiosServicePeer {
 					$obj7 = NagiosTimeperiodPeer::getInstanceFromPool($key7);
 					if (!$obj7) {
 	
-						$cls = NagiosTimeperiodPeer::getOMClass();
+						$cls = NagiosTimeperiodPeer::getOMClass(false);
 
 					$obj7 = new $cls();
 					$obj7->hydrate($row, $startcol7);
@@ -2651,7 +2654,7 @@ abstract class BaseNagiosServicePeer {
 				// See http://www.propelorm.org/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
-				$cls = NagiosServicePeer::getOMClass();
+				$cls = NagiosServicePeer::getOMClass(false);
 
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
@@ -2665,7 +2668,7 @@ abstract class BaseNagiosServicePeer {
 					$obj2 = NagiosHostPeer::getInstanceFromPool($key2);
 					if (!$obj2) {
 	
-						$cls = NagiosHostPeer::getOMClass();
+						$cls = NagiosHostPeer::getOMClass(false);
 
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol2);
@@ -2684,7 +2687,7 @@ abstract class BaseNagiosServicePeer {
 					$obj3 = NagiosHostTemplatePeer::getInstanceFromPool($key3);
 					if (!$obj3) {
 	
-						$cls = NagiosHostTemplatePeer::getOMClass();
+						$cls = NagiosHostTemplatePeer::getOMClass(false);
 
 					$obj3 = new $cls();
 					$obj3->hydrate($row, $startcol3);
@@ -2703,7 +2706,7 @@ abstract class BaseNagiosServicePeer {
 					$obj4 = NagiosCommandPeer::getInstanceFromPool($key4);
 					if (!$obj4) {
 	
-						$cls = NagiosCommandPeer::getOMClass();
+						$cls = NagiosCommandPeer::getOMClass(false);
 
 					$obj4 = new $cls();
 					$obj4->hydrate($row, $startcol4);
@@ -2722,7 +2725,7 @@ abstract class BaseNagiosServicePeer {
 					$obj5 = NagiosCommandPeer::getInstanceFromPool($key5);
 					if (!$obj5) {
 	
-						$cls = NagiosCommandPeer::getOMClass();
+						$cls = NagiosCommandPeer::getOMClass(false);
 
 					$obj5 = new $cls();
 					$obj5->hydrate($row, $startcol5);
@@ -2741,7 +2744,7 @@ abstract class BaseNagiosServicePeer {
 					$obj6 = NagiosTimeperiodPeer::getInstanceFromPool($key6);
 					if (!$obj6) {
 	
-						$cls = NagiosTimeperiodPeer::getOMClass();
+						$cls = NagiosTimeperiodPeer::getOMClass(false);
 
 					$obj6 = new $cls();
 					$obj6->hydrate($row, $startcol6);
@@ -2760,7 +2763,7 @@ abstract class BaseNagiosServicePeer {
 					$obj7 = NagiosTimeperiodPeer::getInstanceFromPool($key7);
 					if (!$obj7) {
 	
-						$cls = NagiosTimeperiodPeer::getOMClass();
+						$cls = NagiosTimeperiodPeer::getOMClass(false);
 
 					$obj7 = new $cls();
 					$obj7->hydrate($row, $startcol7);
@@ -2839,7 +2842,7 @@ abstract class BaseNagiosServicePeer {
 				// See http://www.propelorm.org/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
-				$cls = NagiosServicePeer::getOMClass();
+				$cls = NagiosServicePeer::getOMClass(false);
 
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
@@ -2853,7 +2856,7 @@ abstract class BaseNagiosServicePeer {
 					$obj2 = NagiosHostPeer::getInstanceFromPool($key2);
 					if (!$obj2) {
 	
-						$cls = NagiosHostPeer::getOMClass();
+						$cls = NagiosHostPeer::getOMClass(false);
 
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol2);
@@ -2872,7 +2875,7 @@ abstract class BaseNagiosServicePeer {
 					$obj3 = NagiosHostTemplatePeer::getInstanceFromPool($key3);
 					if (!$obj3) {
 	
-						$cls = NagiosHostTemplatePeer::getOMClass();
+						$cls = NagiosHostTemplatePeer::getOMClass(false);
 
 					$obj3 = new $cls();
 					$obj3->hydrate($row, $startcol3);
@@ -2891,7 +2894,7 @@ abstract class BaseNagiosServicePeer {
 					$obj4 = NagiosHostgroupPeer::getInstanceFromPool($key4);
 					if (!$obj4) {
 	
-						$cls = NagiosHostgroupPeer::getOMClass();
+						$cls = NagiosHostgroupPeer::getOMClass(false);
 
 					$obj4 = new $cls();
 					$obj4->hydrate($row, $startcol4);
@@ -2910,7 +2913,7 @@ abstract class BaseNagiosServicePeer {
 					$obj5 = NagiosTimeperiodPeer::getInstanceFromPool($key5);
 					if (!$obj5) {
 	
-						$cls = NagiosTimeperiodPeer::getOMClass();
+						$cls = NagiosTimeperiodPeer::getOMClass(false);
 
 					$obj5 = new $cls();
 					$obj5->hydrate($row, $startcol5);
@@ -2929,7 +2932,7 @@ abstract class BaseNagiosServicePeer {
 					$obj6 = NagiosTimeperiodPeer::getInstanceFromPool($key6);
 					if (!$obj6) {
 	
-						$cls = NagiosTimeperiodPeer::getOMClass();
+						$cls = NagiosTimeperiodPeer::getOMClass(false);
 
 					$obj6 = new $cls();
 					$obj6->hydrate($row, $startcol6);
@@ -3008,7 +3011,7 @@ abstract class BaseNagiosServicePeer {
 				// See http://www.propelorm.org/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
-				$cls = NagiosServicePeer::getOMClass();
+				$cls = NagiosServicePeer::getOMClass(false);
 
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
@@ -3022,7 +3025,7 @@ abstract class BaseNagiosServicePeer {
 					$obj2 = NagiosHostPeer::getInstanceFromPool($key2);
 					if (!$obj2) {
 	
-						$cls = NagiosHostPeer::getOMClass();
+						$cls = NagiosHostPeer::getOMClass(false);
 
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol2);
@@ -3041,7 +3044,7 @@ abstract class BaseNagiosServicePeer {
 					$obj3 = NagiosHostTemplatePeer::getInstanceFromPool($key3);
 					if (!$obj3) {
 	
-						$cls = NagiosHostTemplatePeer::getOMClass();
+						$cls = NagiosHostTemplatePeer::getOMClass(false);
 
 					$obj3 = new $cls();
 					$obj3->hydrate($row, $startcol3);
@@ -3060,7 +3063,7 @@ abstract class BaseNagiosServicePeer {
 					$obj4 = NagiosHostgroupPeer::getInstanceFromPool($key4);
 					if (!$obj4) {
 	
-						$cls = NagiosHostgroupPeer::getOMClass();
+						$cls = NagiosHostgroupPeer::getOMClass(false);
 
 					$obj4 = new $cls();
 					$obj4->hydrate($row, $startcol4);
@@ -3079,7 +3082,7 @@ abstract class BaseNagiosServicePeer {
 					$obj5 = NagiosTimeperiodPeer::getInstanceFromPool($key5);
 					if (!$obj5) {
 	
-						$cls = NagiosTimeperiodPeer::getOMClass();
+						$cls = NagiosTimeperiodPeer::getOMClass(false);
 
 					$obj5 = new $cls();
 					$obj5->hydrate($row, $startcol5);
@@ -3098,7 +3101,7 @@ abstract class BaseNagiosServicePeer {
 					$obj6 = NagiosTimeperiodPeer::getInstanceFromPool($key6);
 					if (!$obj6) {
 	
-						$cls = NagiosTimeperiodPeer::getOMClass();
+						$cls = NagiosTimeperiodPeer::getOMClass(false);
 
 					$obj6 = new $cls();
 					$obj6->hydrate($row, $startcol6);
@@ -3177,7 +3180,7 @@ abstract class BaseNagiosServicePeer {
 				// See http://www.propelorm.org/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
-				$cls = NagiosServicePeer::getOMClass();
+				$cls = NagiosServicePeer::getOMClass(false);
 
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
@@ -3191,7 +3194,7 @@ abstract class BaseNagiosServicePeer {
 					$obj2 = NagiosHostPeer::getInstanceFromPool($key2);
 					if (!$obj2) {
 	
-						$cls = NagiosHostPeer::getOMClass();
+						$cls = NagiosHostPeer::getOMClass(false);
 
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol2);
@@ -3210,7 +3213,7 @@ abstract class BaseNagiosServicePeer {
 					$obj3 = NagiosHostTemplatePeer::getInstanceFromPool($key3);
 					if (!$obj3) {
 	
-						$cls = NagiosHostTemplatePeer::getOMClass();
+						$cls = NagiosHostTemplatePeer::getOMClass(false);
 
 					$obj3 = new $cls();
 					$obj3->hydrate($row, $startcol3);
@@ -3229,7 +3232,7 @@ abstract class BaseNagiosServicePeer {
 					$obj4 = NagiosHostgroupPeer::getInstanceFromPool($key4);
 					if (!$obj4) {
 	
-						$cls = NagiosHostgroupPeer::getOMClass();
+						$cls = NagiosHostgroupPeer::getOMClass(false);
 
 					$obj4 = new $cls();
 					$obj4->hydrate($row, $startcol4);
@@ -3248,7 +3251,7 @@ abstract class BaseNagiosServicePeer {
 					$obj5 = NagiosCommandPeer::getInstanceFromPool($key5);
 					if (!$obj5) {
 	
-						$cls = NagiosCommandPeer::getOMClass();
+						$cls = NagiosCommandPeer::getOMClass(false);
 
 					$obj5 = new $cls();
 					$obj5->hydrate($row, $startcol5);
@@ -3267,7 +3270,7 @@ abstract class BaseNagiosServicePeer {
 					$obj6 = NagiosCommandPeer::getInstanceFromPool($key6);
 					if (!$obj6) {
 	
-						$cls = NagiosCommandPeer::getOMClass();
+						$cls = NagiosCommandPeer::getOMClass(false);
 
 					$obj6 = new $cls();
 					$obj6->hydrate($row, $startcol6);
@@ -3346,7 +3349,7 @@ abstract class BaseNagiosServicePeer {
 				// See http://www.propelorm.org/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
-				$cls = NagiosServicePeer::getOMClass();
+				$cls = NagiosServicePeer::getOMClass(false);
 
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
@@ -3360,7 +3363,7 @@ abstract class BaseNagiosServicePeer {
 					$obj2 = NagiosHostPeer::getInstanceFromPool($key2);
 					if (!$obj2) {
 	
-						$cls = NagiosHostPeer::getOMClass();
+						$cls = NagiosHostPeer::getOMClass(false);
 
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol2);
@@ -3379,7 +3382,7 @@ abstract class BaseNagiosServicePeer {
 					$obj3 = NagiosHostTemplatePeer::getInstanceFromPool($key3);
 					if (!$obj3) {
 	
-						$cls = NagiosHostTemplatePeer::getOMClass();
+						$cls = NagiosHostTemplatePeer::getOMClass(false);
 
 					$obj3 = new $cls();
 					$obj3->hydrate($row, $startcol3);
@@ -3398,7 +3401,7 @@ abstract class BaseNagiosServicePeer {
 					$obj4 = NagiosHostgroupPeer::getInstanceFromPool($key4);
 					if (!$obj4) {
 	
-						$cls = NagiosHostgroupPeer::getOMClass();
+						$cls = NagiosHostgroupPeer::getOMClass(false);
 
 					$obj4 = new $cls();
 					$obj4->hydrate($row, $startcol4);
@@ -3417,7 +3420,7 @@ abstract class BaseNagiosServicePeer {
 					$obj5 = NagiosCommandPeer::getInstanceFromPool($key5);
 					if (!$obj5) {
 	
-						$cls = NagiosCommandPeer::getOMClass();
+						$cls = NagiosCommandPeer::getOMClass(false);
 
 					$obj5 = new $cls();
 					$obj5->hydrate($row, $startcol5);
@@ -3436,7 +3439,7 @@ abstract class BaseNagiosServicePeer {
 					$obj6 = NagiosCommandPeer::getInstanceFromPool($key6);
 					if (!$obj6) {
 	
-						$cls = NagiosCommandPeer::getOMClass();
+						$cls = NagiosCommandPeer::getOMClass(false);
 
 					$obj6 = new $cls();
 					$obj6->hydrate($row, $startcol6);
@@ -3481,12 +3484,17 @@ abstract class BaseNagiosServicePeer {
 	/**
 	 * The class that the Peer will make instances of.
 	 *
+	 * If $withPrefix is true, the returned path
+	 * uses a dot-path notation which is tranalted into a path
+	 * relative to a location on the PHP include_path.
+	 * (e.g. path.to.MyClass -> 'path/to/MyClass.php')
 	 *
-	 * @return     string ClassName
+	 * @param      boolean $withPrefix Whether or not to return the path with the class name
+	 * @return     string path.to.ClassName
 	 */
-	public static function getOMClass()
+	public static function getOMClass($withPrefix = true)
 	{
-		return NagiosServicePeer::OM_CLASS;
+		return $withPrefix ? NagiosServicePeer::CLASS_DEFAULT : NagiosServicePeer::OM_CLASS;
 	}
 
 	/**

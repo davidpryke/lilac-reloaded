@@ -141,7 +141,7 @@ abstract class BaseExportLogEntryQuery extends ModelCriteria
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$obj = new ExportLogEntry();
 			$obj->hydrate($row);
-			ExportLogEntryPeer::addInstanceToPool($obj, (string) $key);
+			ExportLogEntryPeer::addInstanceToPool($obj, (string) $row[0]);
 		}
 		$stmt->closeCursor();
 

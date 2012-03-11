@@ -149,7 +149,7 @@ abstract class BaseNagiosServiceTemplateInheritanceQuery extends ModelCriteria
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$obj = new NagiosServiceTemplateInheritance();
 			$obj->hydrate($row);
-			NagiosServiceTemplateInheritancePeer::addInstanceToPool($obj, (string) $key);
+			NagiosServiceTemplateInheritancePeer::addInstanceToPool($obj, (string) $row[0]);
 		}
 		$stmt->closeCursor();
 

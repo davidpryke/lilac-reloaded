@@ -169,7 +169,7 @@ abstract class BaseAutodiscoveryJobQuery extends ModelCriteria
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$obj = new AutodiscoveryJob();
 			$obj->hydrate($row);
-			AutodiscoveryJobPeer::addInstanceToPool($obj, (string) $key);
+			AutodiscoveryJobPeer::addInstanceToPool($obj, (string) $row[0]);
 		}
 		$stmt->closeCursor();
 

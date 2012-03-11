@@ -137,7 +137,7 @@ abstract class BaseNagiosTimeperiodEntryQuery extends ModelCriteria
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$obj = new NagiosTimeperiodEntry();
 			$obj->hydrate($row);
-			NagiosTimeperiodEntryPeer::addInstanceToPool($obj, (string) $key);
+			NagiosTimeperiodEntryPeer::addInstanceToPool($obj, (string) $row[0]);
 		}
 		$stmt->closeCursor();
 

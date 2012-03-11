@@ -141,7 +141,7 @@ abstract class BaseNagiosContactNotificationCommandQuery extends ModelCriteria
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$obj = new NagiosContactNotificationCommand();
 			$obj->hydrate($row);
-			NagiosContactNotificationCommandPeer::addInstanceToPool($obj, (string) $key);
+			NagiosContactNotificationCommandPeer::addInstanceToPool($obj, (string) $row[0]);
 		}
 		$stmt->closeCursor();
 

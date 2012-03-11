@@ -145,7 +145,7 @@ abstract class BaseNagiosServiceGroupQuery extends ModelCriteria
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$obj = new NagiosServiceGroup();
 			$obj->hydrate($row);
-			NagiosServiceGroupPeer::addInstanceToPool($obj, (string) $key);
+			NagiosServiceGroupPeer::addInstanceToPool($obj, (string) $row[0]);
 		}
 		$stmt->closeCursor();
 

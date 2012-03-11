@@ -145,7 +145,7 @@ abstract class BaseNagiosContactGroupQuery extends ModelCriteria
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$obj = new NagiosContactGroup();
 			$obj->hydrate($row);
-			NagiosContactGroupPeer::addInstanceToPool($obj, (string) $key);
+			NagiosContactGroupPeer::addInstanceToPool($obj, (string) $row[0]);
 		}
 		$stmt->closeCursor();
 

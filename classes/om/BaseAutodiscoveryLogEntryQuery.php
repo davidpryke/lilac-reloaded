@@ -141,7 +141,7 @@ abstract class BaseAutodiscoveryLogEntryQuery extends ModelCriteria
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$obj = new AutodiscoveryLogEntry();
 			$obj->hydrate($row);
-			AutodiscoveryLogEntryPeer::addInstanceToPool($obj, (string) $key);
+			AutodiscoveryLogEntryPeer::addInstanceToPool($obj, (string) $row[0]);
 		}
 		$stmt->closeCursor();
 

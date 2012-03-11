@@ -19,6 +19,9 @@ abstract class BaseNagiosContactPeer {
 	/** the related Propel class for this table */
 	const OM_CLASS = 'NagiosContact';
 
+	/** A class that can be returned by this peer. */
+	const CLASS_DEFAULT = 'NagiosContact';
+
 	/** the related TableMap class for this table */
 	const TM_CLASS = 'NagiosContactTableMap';
 
@@ -511,7 +514,7 @@ abstract class BaseNagiosContactPeer {
 		$results = array();
 	
 		// set the class once to avoid overhead in the loop
-		$cls = NagiosContactPeer::getOMClass();
+		$cls = NagiosContactPeer::getOMClass(false);
 		// populate the object(s)
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$key = NagiosContactPeer::getPrimaryKeyHashFromRow($row, 0);
@@ -692,7 +695,7 @@ abstract class BaseNagiosContactPeer {
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 
-				$cls = NagiosContactPeer::getOMClass();
+				$cls = NagiosContactPeer::getOMClass(false);
 
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
@@ -704,7 +707,7 @@ abstract class BaseNagiosContactPeer {
 				$obj2 = NagiosTimeperiodPeer::getInstanceFromPool($key2);
 				if (!$obj2) {
 
-					$cls = NagiosTimeperiodPeer::getOMClass();
+					$cls = NagiosTimeperiodPeer::getOMClass(false);
 
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol);
@@ -758,7 +761,7 @@ abstract class BaseNagiosContactPeer {
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 
-				$cls = NagiosContactPeer::getOMClass();
+				$cls = NagiosContactPeer::getOMClass(false);
 
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
@@ -770,7 +773,7 @@ abstract class BaseNagiosContactPeer {
 				$obj2 = NagiosTimeperiodPeer::getInstanceFromPool($key2);
 				if (!$obj2) {
 
-					$cls = NagiosTimeperiodPeer::getOMClass();
+					$cls = NagiosTimeperiodPeer::getOMClass(false);
 
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol);
@@ -882,7 +885,7 @@ abstract class BaseNagiosContactPeer {
 				// See http://www.propelorm.org/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
-				$cls = NagiosContactPeer::getOMClass();
+				$cls = NagiosContactPeer::getOMClass(false);
 
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
@@ -896,7 +899,7 @@ abstract class BaseNagiosContactPeer {
 				$obj2 = NagiosTimeperiodPeer::getInstanceFromPool($key2);
 				if (!$obj2) {
 
-					$cls = NagiosTimeperiodPeer::getOMClass();
+					$cls = NagiosTimeperiodPeer::getOMClass(false);
 
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol2);
@@ -914,7 +917,7 @@ abstract class BaseNagiosContactPeer {
 				$obj3 = NagiosTimeperiodPeer::getInstanceFromPool($key3);
 				if (!$obj3) {
 
-					$cls = NagiosTimeperiodPeer::getOMClass();
+					$cls = NagiosTimeperiodPeer::getOMClass(false);
 
 					$obj3 = new $cls();
 					$obj3->hydrate($row, $startcol3);
@@ -1063,7 +1066,7 @@ abstract class BaseNagiosContactPeer {
 				// See http://www.propelorm.org/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
-				$cls = NagiosContactPeer::getOMClass();
+				$cls = NagiosContactPeer::getOMClass(false);
 
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
@@ -1112,7 +1115,7 @@ abstract class BaseNagiosContactPeer {
 				// See http://www.propelorm.org/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
-				$cls = NagiosContactPeer::getOMClass();
+				$cls = NagiosContactPeer::getOMClass(false);
 
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
@@ -1152,12 +1155,17 @@ abstract class BaseNagiosContactPeer {
 	/**
 	 * The class that the Peer will make instances of.
 	 *
+	 * If $withPrefix is true, the returned path
+	 * uses a dot-path notation which is tranalted into a path
+	 * relative to a location on the PHP include_path.
+	 * (e.g. path.to.MyClass -> 'path/to/MyClass.php')
 	 *
-	 * @return     string ClassName
+	 * @param      boolean $withPrefix Whether or not to return the path with the class name
+	 * @return     string path.to.ClassName
 	 */
-	public static function getOMClass()
+	public static function getOMClass($withPrefix = true)
 	{
-		return NagiosContactPeer::OM_CLASS;
+		return $withPrefix ? NagiosContactPeer::CLASS_DEFAULT : NagiosContactPeer::OM_CLASS;
 	}
 
 	/**

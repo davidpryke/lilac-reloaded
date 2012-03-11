@@ -19,6 +19,9 @@ abstract class BaseNagiosHostgroupPeer {
 	/** the related Propel class for this table */
 	const OM_CLASS = 'NagiosHostgroup';
 
+	/** A class that can be returned by this peer. */
+	const CLASS_DEFAULT = 'NagiosHostgroup';
+
 	/** the related TableMap class for this table */
 	const TM_CLASS = 'NagiosHostgroupTableMap';
 
@@ -428,7 +431,7 @@ abstract class BaseNagiosHostgroupPeer {
 		$results = array();
 	
 		// set the class once to avoid overhead in the loop
-		$cls = NagiosHostgroupPeer::getOMClass();
+		$cls = NagiosHostgroupPeer::getOMClass(false);
 		// populate the object(s)
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$key = NagiosHostgroupPeer::getPrimaryKeyHashFromRow($row, 0);
@@ -500,12 +503,17 @@ abstract class BaseNagiosHostgroupPeer {
 	/**
 	 * The class that the Peer will make instances of.
 	 *
+	 * If $withPrefix is true, the returned path
+	 * uses a dot-path notation which is tranalted into a path
+	 * relative to a location on the PHP include_path.
+	 * (e.g. path.to.MyClass -> 'path/to/MyClass.php')
 	 *
-	 * @return     string ClassName
+	 * @param      boolean $withPrefix Whether or not to return the path with the class name
+	 * @return     string path.to.ClassName
 	 */
-	public static function getOMClass()
+	public static function getOMClass($withPrefix = true)
 	{
-		return NagiosHostgroupPeer::OM_CLASS;
+		return $withPrefix ? NagiosHostgroupPeer::CLASS_DEFAULT : NagiosHostgroupPeer::OM_CLASS;
 	}
 
 	/**

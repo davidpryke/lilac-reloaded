@@ -125,7 +125,7 @@ abstract class BaseNagiosBrokerModuleQuery extends ModelCriteria
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$obj = new NagiosBrokerModule();
 			$obj->hydrate($row);
-			NagiosBrokerModulePeer::addInstanceToPool($obj, (string) $key);
+			NagiosBrokerModulePeer::addInstanceToPool($obj, (string) $row[0]);
 		}
 		$stmt->closeCursor();
 

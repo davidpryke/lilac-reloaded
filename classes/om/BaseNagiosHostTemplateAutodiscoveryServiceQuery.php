@@ -153,7 +153,7 @@ abstract class BaseNagiosHostTemplateAutodiscoveryServiceQuery extends ModelCrit
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$obj = new NagiosHostTemplateAutodiscoveryService();
 			$obj->hydrate($row);
-			NagiosHostTemplateAutodiscoveryServicePeer::addInstanceToPool($obj, (string) $key);
+			NagiosHostTemplateAutodiscoveryServicePeer::addInstanceToPool($obj, (string) $row[0]);
 		}
 		$stmt->closeCursor();
 

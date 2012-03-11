@@ -201,7 +201,7 @@ abstract class BaseNagiosCommandQuery extends ModelCriteria
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$obj = new NagiosCommand();
 			$obj->hydrate($row);
-			NagiosCommandPeer::addInstanceToPool($obj, (string) $key);
+			NagiosCommandPeer::addInstanceToPool($obj, (string) $row[0]);
 		}
 		$stmt->closeCursor();
 

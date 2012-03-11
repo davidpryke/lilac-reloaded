@@ -357,7 +357,7 @@ abstract class BaseNagiosServiceTemplateQuery extends ModelCriteria
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$obj = new NagiosServiceTemplate();
 			$obj->hydrate($row);
-			NagiosServiceTemplatePeer::addInstanceToPool($obj, (string) $key);
+			NagiosServiceTemplatePeer::addInstanceToPool($obj, (string) $row[0]);
 		}
 		$stmt->closeCursor();
 

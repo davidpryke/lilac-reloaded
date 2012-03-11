@@ -145,7 +145,7 @@ abstract class BaseNagiosHostContactMemberQuery extends ModelCriteria
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$obj = new NagiosHostContactMember();
 			$obj->hydrate($row);
-			NagiosHostContactMemberPeer::addInstanceToPool($obj, (string) $key);
+			NagiosHostContactMemberPeer::addInstanceToPool($obj, (string) $row[0]);
 		}
 		$stmt->closeCursor();
 
