@@ -19,12 +19,9 @@ abstract class BaseAutodiscoveryDeviceTemplateMatchPeer {
 	/** the related Propel class for this table */
 	const OM_CLASS = 'AutodiscoveryDeviceTemplateMatch';
 
-	/** A class that can be returned by this peer. */
-	const CLASS_DEFAULT = 'AutodiscoveryDeviceTemplateMatch';
-
 	/** the related TableMap class for this table */
 	const TM_CLASS = 'AutodiscoveryDeviceTemplateMatchTableMap';
-	
+
 	/** The total number of columns. */
 	const NUM_COLUMNS = 5;
 
@@ -51,7 +48,7 @@ abstract class BaseAutodiscoveryDeviceTemplateMatchPeer {
 
 	/** The default string format for model objects of the related table **/
 	const DEFAULT_STRING_FORMAT = 'YAML';
-	
+
 	/**
 	 * An identiy map to hold any loaded instances of AutodiscoveryDeviceTemplateMatch objects.
 	 * This must be public so that other peer classes can access this when hydrating from JOIN
@@ -386,7 +383,7 @@ abstract class BaseAutodiscoveryDeviceTemplateMatchPeer {
 	}
 
 	/**
-	 * Retrieves the primary key from the DB resultset row 
+	 * Retrieves the primary key from the DB resultset row
 	 * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
 	 * a multi-column primary key, an array of the primary key columns will be returned.
 	 *
@@ -411,7 +408,7 @@ abstract class BaseAutodiscoveryDeviceTemplateMatchPeer {
 		$results = array();
 	
 		// set the class once to avoid overhead in the loop
-		$cls = AutodiscoveryDeviceTemplateMatchPeer::getOMClass(false);
+		$cls = AutodiscoveryDeviceTemplateMatchPeer::getOMClass();
 		// populate the object(s)
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$key = AutodiscoveryDeviceTemplateMatchPeer::getPrimaryKeyHashFromRow($row, 0);
@@ -483,9 +480,9 @@ abstract class BaseAutodiscoveryDeviceTemplateMatchPeer {
 		if (!$criteria->hasSelectClause()) {
 			AutodiscoveryDeviceTemplateMatchPeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -533,9 +530,9 @@ abstract class BaseAutodiscoveryDeviceTemplateMatchPeer {
 		if (!$criteria->hasSelectClause()) {
 			AutodiscoveryDeviceTemplateMatchPeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -592,7 +589,7 @@ abstract class BaseAutodiscoveryDeviceTemplateMatchPeer {
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 
-				$cls = AutodiscoveryDeviceTemplateMatchPeer::getOMClass(false);
+				$cls = AutodiscoveryDeviceTemplateMatchPeer::getOMClass();
 
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
@@ -604,7 +601,7 @@ abstract class BaseAutodiscoveryDeviceTemplateMatchPeer {
 				$obj2 = AutodiscoveryDevicePeer::getInstanceFromPool($key2);
 				if (!$obj2) {
 
-					$cls = AutodiscoveryDevicePeer::getOMClass(false);
+					$cls = AutodiscoveryDevicePeer::getOMClass();
 
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol);
@@ -658,7 +655,7 @@ abstract class BaseAutodiscoveryDeviceTemplateMatchPeer {
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 
-				$cls = AutodiscoveryDeviceTemplateMatchPeer::getOMClass(false);
+				$cls = AutodiscoveryDeviceTemplateMatchPeer::getOMClass();
 
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
@@ -670,7 +667,7 @@ abstract class BaseAutodiscoveryDeviceTemplateMatchPeer {
 				$obj2 = NagiosHostTemplatePeer::getInstanceFromPool($key2);
 				if (!$obj2) {
 
-					$cls = NagiosHostTemplatePeer::getOMClass(false);
+					$cls = NagiosHostTemplatePeer::getOMClass();
 
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol);
@@ -715,9 +712,9 @@ abstract class BaseAutodiscoveryDeviceTemplateMatchPeer {
 		if (!$criteria->hasSelectClause()) {
 			AutodiscoveryDeviceTemplateMatchPeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -782,7 +779,7 @@ abstract class BaseAutodiscoveryDeviceTemplateMatchPeer {
 				// See http://www.propelorm.org/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
-				$cls = AutodiscoveryDeviceTemplateMatchPeer::getOMClass(false);
+				$cls = AutodiscoveryDeviceTemplateMatchPeer::getOMClass();
 
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
@@ -796,7 +793,7 @@ abstract class BaseAutodiscoveryDeviceTemplateMatchPeer {
 				$obj2 = AutodiscoveryDevicePeer::getInstanceFromPool($key2);
 				if (!$obj2) {
 
-					$cls = AutodiscoveryDevicePeer::getOMClass(false);
+					$cls = AutodiscoveryDevicePeer::getOMClass();
 
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol2);
@@ -814,7 +811,7 @@ abstract class BaseAutodiscoveryDeviceTemplateMatchPeer {
 				$obj3 = NagiosHostTemplatePeer::getInstanceFromPool($key3);
 				if (!$obj3) {
 
-					$cls = NagiosHostTemplatePeer::getOMClass(false);
+					$cls = NagiosHostTemplatePeer::getOMClass();
 
 					$obj3 = new $cls();
 					$obj3->hydrate($row, $startcol3);
@@ -850,7 +847,7 @@ abstract class BaseAutodiscoveryDeviceTemplateMatchPeer {
 		// it will be impossible for the BasePeer::createSelectSql() method to determine which
 		// tables go into the FROM clause.
 		$criteria->setPrimaryTableName(AutodiscoveryDeviceTemplateMatchPeer::TABLE_NAME);
-		
+
 		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
 			$criteria->setDistinct();
 		}
@@ -858,9 +855,9 @@ abstract class BaseAutodiscoveryDeviceTemplateMatchPeer {
 		if (!$criteria->hasSelectClause()) {
 			AutodiscoveryDeviceTemplateMatchPeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY should not affect count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -900,7 +897,7 @@ abstract class BaseAutodiscoveryDeviceTemplateMatchPeer {
 		// it will be impossible for the BasePeer::createSelectSql() method to determine which
 		// tables go into the FROM clause.
 		$criteria->setPrimaryTableName(AutodiscoveryDeviceTemplateMatchPeer::TABLE_NAME);
-		
+
 		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
 			$criteria->setDistinct();
 		}
@@ -908,9 +905,9 @@ abstract class BaseAutodiscoveryDeviceTemplateMatchPeer {
 		if (!$criteria->hasSelectClause()) {
 			AutodiscoveryDeviceTemplateMatchPeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY should not affect count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -972,7 +969,7 @@ abstract class BaseAutodiscoveryDeviceTemplateMatchPeer {
 				// See http://www.propelorm.org/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
-				$cls = AutodiscoveryDeviceTemplateMatchPeer::getOMClass(false);
+				$cls = AutodiscoveryDeviceTemplateMatchPeer::getOMClass();
 
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
@@ -986,7 +983,7 @@ abstract class BaseAutodiscoveryDeviceTemplateMatchPeer {
 					$obj2 = NagiosHostTemplatePeer::getInstanceFromPool($key2);
 					if (!$obj2) {
 	
-						$cls = NagiosHostTemplatePeer::getOMClass(false);
+						$cls = NagiosHostTemplatePeer::getOMClass();
 
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol2);
@@ -1045,7 +1042,7 @@ abstract class BaseAutodiscoveryDeviceTemplateMatchPeer {
 				// See http://www.propelorm.org/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
-				$cls = AutodiscoveryDeviceTemplateMatchPeer::getOMClass(false);
+				$cls = AutodiscoveryDeviceTemplateMatchPeer::getOMClass();
 
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
@@ -1059,7 +1056,7 @@ abstract class BaseAutodiscoveryDeviceTemplateMatchPeer {
 					$obj2 = AutodiscoveryDevicePeer::getInstanceFromPool($key2);
 					if (!$obj2) {
 	
-						$cls = AutodiscoveryDevicePeer::getOMClass(false);
+						$cls = AutodiscoveryDevicePeer::getOMClass();
 
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol2);
@@ -1104,17 +1101,12 @@ abstract class BaseAutodiscoveryDeviceTemplateMatchPeer {
 	/**
 	 * The class that the Peer will make instances of.
 	 *
-	 * If $withPrefix is true, the returned path
-	 * uses a dot-path notation which is tranalted into a path
-	 * relative to a location on the PHP include_path.
-	 * (e.g. path.to.MyClass -> 'path/to/MyClass.php')
 	 *
-	 * @param      boolean $withPrefix Whether or not to return the path with the class name
-	 * @return     string path.to.ClassName
+	 * @return     string ClassName
 	 */
-	public static function getOMClass($withPrefix = true)
+	public static function getOMClass()
 	{
-		return $withPrefix ? AutodiscoveryDeviceTemplateMatchPeer::CLASS_DEFAULT : AutodiscoveryDeviceTemplateMatchPeer::OM_CLASS;
+		return AutodiscoveryDeviceTemplateMatchPeer::OM_CLASS;
 	}
 
 	/**

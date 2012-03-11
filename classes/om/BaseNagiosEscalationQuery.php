@@ -125,7 +125,7 @@
  */
 abstract class BaseNagiosEscalationQuery extends ModelCriteria
 {
-
+	
 	/**
 	 * Initializes internal state of BaseNagiosEscalationQuery object.
 	 *
@@ -162,11 +162,14 @@ abstract class BaseNagiosEscalationQuery extends ModelCriteria
 	}
 
 	/**
-	 * Find object by primary key
-	 * Use instance pooling to avoid a database query if the object exists
+	 * Find object by primary key.
+	 * Propel uses the instance pool to skip the database if the object exists.
+	 * Go fast if the query is untouched.
+	 *
 	 * <code>
 	 * $obj  = $c->findPk(12, $con);
 	 * </code>
+	 *
 	 * @param     mixed $key Primary key to use for the query
 	 * @param     PropelPDO $con an optional connection object
 	 *
@@ -174,17 +177,73 @@ abstract class BaseNagiosEscalationQuery extends ModelCriteria
 	 */
 	public function findPk($key, $con = null)
 	{
-		if ((null !== ($obj = NagiosEscalationPeer::getInstanceFromPool((string) $key))) && $this->getFormatter()->isObjectFormatter()) {
+		if ($key === null) {
+			return null;
+		}
+		if ((null !== ($obj = NagiosEscalationPeer::getInstanceFromPool((string) $key))) && !$this->formatter) {
 			// the object is alredy in the instance pool
 			return $obj;
-		} else {
-			// the object has not been requested yet, or the formatter is not an object formatter
-			$criteria = $this->isKeepQuery() ? clone $this : $this;
-			$stmt = $criteria
-				->filterByPrimaryKey($key)
-				->getSelectStatement($con);
-			return $criteria->getFormatter()->init($criteria)->formatOne($stmt);
 		}
+		if ($con === null) {
+			$con = Propel::getConnection(NagiosEscalationPeer::DATABASE_NAME, Propel::CONNECTION_READ);
+		}
+		$this->basePreSelect($con);
+		if ($this->formatter || $this->modelAlias || $this->with || $this->select
+		 || $this->selectColumns || $this->asColumns || $this->selectModifiers
+		 || $this->map || $this->having || $this->joins) {
+			return $this->findPkComplex($key, $con);
+		} else {
+			return $this->findPkSimple($key, $con);
+		}
+	}
+
+	/**
+	 * Find object by primary key using raw SQL to go fast.
+	 * Bypass doSelect() and the object formatter by using generated code.
+	 *
+	 * @param     mixed $key Primary key to use for the query
+	 * @param     PropelPDO $con A connection object
+	 *
+	 * @return    NagiosEscalation A model object, or null if the key is not found
+	 */
+	protected function findPkSimple($key, $con)
+	{
+		$sql = 'SELECT `ID`, `DESCRIPTION`, `HOST_TEMPLATE`, `HOST`, `HOSTGROUP`, `SERVICE_TEMPLATE`, `SERVICE`, `FIRST_NOTIFICATION`, `LAST_NOTIFICATION`, `NOTIFICATION_INTERVAL`, `ESCALATION_PERIOD`, `ESCALATION_OPTIONS_UP`, `ESCALATION_OPTIONS_DOWN`, `ESCALATION_OPTIONS_UNREACHABLE`, `ESCALATION_OPTIONS_OK`, `ESCALATION_OPTIONS_WARNING`, `ESCALATION_OPTIONS_UNKNOWN`, `ESCALATION_OPTIONS_CRITICAL` FROM `nagios_escalation` WHERE `ID` = :p0';
+		try {
+			$stmt = $con->prepare($sql);
+			$stmt->bindValue(':p0', $key, PDO::PARAM_INT);
+			$stmt->execute();
+		} catch (Exception $e) {
+			Propel::log($e->getMessage(), Propel::LOG_ERR);
+			throw new PropelException(sprintf('Unable to execute SELECT statement [%s]', $sql), $e);
+		}
+		$obj = null;
+		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+			$obj = new NagiosEscalation();
+			$obj->hydrate($row);
+			NagiosEscalationPeer::addInstanceToPool($obj, (string) $key);
+		}
+		$stmt->closeCursor();
+
+		return $obj;
+	}
+
+	/**
+	 * Find object by primary key.
+	 *
+	 * @param     mixed $key Primary key to use for the query
+	 * @param     PropelPDO $con A connection object
+	 *
+	 * @return    NagiosEscalation|array|mixed the result, formatted by the current formatter
+	 */
+	protected function findPkComplex($key, $con)
+	{
+		// As the query uses a PK condition, no limit(1) is necessary.
+		$criteria = $this->isKeepQuery() ? clone $this : $this;
+		$stmt = $criteria
+			->filterByPrimaryKey($key)
+			->doSelect($con);
+		return $criteria->getFormatter()->init($criteria)->formatOne($stmt);
 	}
 
 	/**
@@ -199,10 +258,15 @@ abstract class BaseNagiosEscalationQuery extends ModelCriteria
 	 */
 	public function findPks($keys, $con = null)
 	{
+		if ($con === null) {
+			$con = Propel::getConnection($this->getDbName(), Propel::CONNECTION_READ);
+		}
+		$this->basePreSelect($con);
 		$criteria = $this->isKeepQuery() ? clone $this : $this;
-		return $this
+		$stmt = $criteria
 			->filterByPrimaryKeys($keys)
-			->find($con);
+			->doSelect($con);
+		return $criteria->getFormatter()->init($criteria)->format($stmt);
 	}
 
 	/**
@@ -231,7 +295,7 @@ abstract class BaseNagiosEscalationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the id column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterById(1234); // WHERE id = 1234
@@ -257,7 +321,7 @@ abstract class BaseNagiosEscalationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the description column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByDescription('fooValue');   // WHERE description = 'fooValue'
@@ -285,7 +349,7 @@ abstract class BaseNagiosEscalationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the host_template column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByHostTemplate(1234); // WHERE host_template = 1234
@@ -327,7 +391,7 @@ abstract class BaseNagiosEscalationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the host column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByHost(1234); // WHERE host = 1234
@@ -369,7 +433,7 @@ abstract class BaseNagiosEscalationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the hostgroup column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByHostgroup(1234); // WHERE hostgroup = 1234
@@ -411,7 +475,7 @@ abstract class BaseNagiosEscalationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the service_template column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByServiceTemplate(1234); // WHERE service_template = 1234
@@ -453,7 +517,7 @@ abstract class BaseNagiosEscalationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the service column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByService(1234); // WHERE service = 1234
@@ -495,7 +559,7 @@ abstract class BaseNagiosEscalationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the first_notification column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByFirstNotification(1234); // WHERE first_notification = 1234
@@ -535,7 +599,7 @@ abstract class BaseNagiosEscalationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the last_notification column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByLastNotification(1234); // WHERE last_notification = 1234
@@ -575,7 +639,7 @@ abstract class BaseNagiosEscalationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the notification_interval column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByNotificationInterval(1234); // WHERE notification_interval = 1234
@@ -615,7 +679,7 @@ abstract class BaseNagiosEscalationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the escalation_period column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByEscalationPeriod(1234); // WHERE escalation_period = 1234
@@ -657,7 +721,7 @@ abstract class BaseNagiosEscalationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the escalation_options_up column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByEscalationOptionsUp(true); // WHERE escalation_options_up = true
@@ -683,7 +747,7 @@ abstract class BaseNagiosEscalationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the escalation_options_down column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByEscalationOptionsDown(true); // WHERE escalation_options_down = true
@@ -709,7 +773,7 @@ abstract class BaseNagiosEscalationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the escalation_options_unreachable column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByEscalationOptionsUnreachable(true); // WHERE escalation_options_unreachable = true
@@ -735,7 +799,7 @@ abstract class BaseNagiosEscalationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the escalation_options_ok column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByEscalationOptionsOk(true); // WHERE escalation_options_ok = true
@@ -761,7 +825,7 @@ abstract class BaseNagiosEscalationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the escalation_options_warning column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByEscalationOptionsWarning(true); // WHERE escalation_options_warning = true
@@ -787,7 +851,7 @@ abstract class BaseNagiosEscalationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the escalation_options_unknown column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByEscalationOptionsUnknown(true); // WHERE escalation_options_unknown = true
@@ -813,7 +877,7 @@ abstract class BaseNagiosEscalationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the escalation_options_critical column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByEscalationOptionsCritical(true); // WHERE escalation_options_critical = true
@@ -863,7 +927,7 @@ abstract class BaseNagiosEscalationQuery extends ModelCriteria
 
 	/**
 	 * Adds a JOIN clause to the query using the NagiosHostTemplate relation
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
@@ -873,7 +937,7 @@ abstract class BaseNagiosEscalationQuery extends ModelCriteria
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('NagiosHostTemplate');
-		
+
 		// create a ModelJoin object for this join
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
@@ -881,7 +945,7 @@ abstract class BaseNagiosEscalationQuery extends ModelCriteria
 		if ($previousJoin = $this->getPreviousJoin()) {
 			$join->setPreviousJoin($previousJoin);
 		}
-		
+
 		// add the ModelJoin to the current object
 		if($relationAlias) {
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
@@ -889,7 +953,7 @@ abstract class BaseNagiosEscalationQuery extends ModelCriteria
 		} else {
 			$this->addJoinObject($join, 'NagiosHostTemplate');
 		}
-		
+
 		return $this;
 	}
 
@@ -897,7 +961,7 @@ abstract class BaseNagiosEscalationQuery extends ModelCriteria
 	 * Use the NagiosHostTemplate relation NagiosHostTemplate object
 	 *
 	 * @see       useQuery()
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation,
 	 *                                   to be used as main alias in the secondary query
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
@@ -937,7 +1001,7 @@ abstract class BaseNagiosEscalationQuery extends ModelCriteria
 
 	/**
 	 * Adds a JOIN clause to the query using the NagiosHost relation
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
@@ -947,7 +1011,7 @@ abstract class BaseNagiosEscalationQuery extends ModelCriteria
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('NagiosHost');
-		
+
 		// create a ModelJoin object for this join
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
@@ -955,7 +1019,7 @@ abstract class BaseNagiosEscalationQuery extends ModelCriteria
 		if ($previousJoin = $this->getPreviousJoin()) {
 			$join->setPreviousJoin($previousJoin);
 		}
-		
+
 		// add the ModelJoin to the current object
 		if($relationAlias) {
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
@@ -963,7 +1027,7 @@ abstract class BaseNagiosEscalationQuery extends ModelCriteria
 		} else {
 			$this->addJoinObject($join, 'NagiosHost');
 		}
-		
+
 		return $this;
 	}
 
@@ -971,7 +1035,7 @@ abstract class BaseNagiosEscalationQuery extends ModelCriteria
 	 * Use the NagiosHost relation NagiosHost object
 	 *
 	 * @see       useQuery()
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation,
 	 *                                   to be used as main alias in the secondary query
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
@@ -1011,7 +1075,7 @@ abstract class BaseNagiosEscalationQuery extends ModelCriteria
 
 	/**
 	 * Adds a JOIN clause to the query using the NagiosServiceTemplate relation
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
@@ -1021,7 +1085,7 @@ abstract class BaseNagiosEscalationQuery extends ModelCriteria
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('NagiosServiceTemplate');
-		
+
 		// create a ModelJoin object for this join
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
@@ -1029,7 +1093,7 @@ abstract class BaseNagiosEscalationQuery extends ModelCriteria
 		if ($previousJoin = $this->getPreviousJoin()) {
 			$join->setPreviousJoin($previousJoin);
 		}
-		
+
 		// add the ModelJoin to the current object
 		if($relationAlias) {
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
@@ -1037,7 +1101,7 @@ abstract class BaseNagiosEscalationQuery extends ModelCriteria
 		} else {
 			$this->addJoinObject($join, 'NagiosServiceTemplate');
 		}
-		
+
 		return $this;
 	}
 
@@ -1045,7 +1109,7 @@ abstract class BaseNagiosEscalationQuery extends ModelCriteria
 	 * Use the NagiosServiceTemplate relation NagiosServiceTemplate object
 	 *
 	 * @see       useQuery()
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation,
 	 *                                   to be used as main alias in the secondary query
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
@@ -1085,7 +1149,7 @@ abstract class BaseNagiosEscalationQuery extends ModelCriteria
 
 	/**
 	 * Adds a JOIN clause to the query using the NagiosService relation
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
@@ -1095,7 +1159,7 @@ abstract class BaseNagiosEscalationQuery extends ModelCriteria
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('NagiosService');
-		
+
 		// create a ModelJoin object for this join
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
@@ -1103,7 +1167,7 @@ abstract class BaseNagiosEscalationQuery extends ModelCriteria
 		if ($previousJoin = $this->getPreviousJoin()) {
 			$join->setPreviousJoin($previousJoin);
 		}
-		
+
 		// add the ModelJoin to the current object
 		if($relationAlias) {
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
@@ -1111,7 +1175,7 @@ abstract class BaseNagiosEscalationQuery extends ModelCriteria
 		} else {
 			$this->addJoinObject($join, 'NagiosService');
 		}
-		
+
 		return $this;
 	}
 
@@ -1119,7 +1183,7 @@ abstract class BaseNagiosEscalationQuery extends ModelCriteria
 	 * Use the NagiosService relation NagiosService object
 	 *
 	 * @see       useQuery()
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation,
 	 *                                   to be used as main alias in the secondary query
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
@@ -1159,7 +1223,7 @@ abstract class BaseNagiosEscalationQuery extends ModelCriteria
 
 	/**
 	 * Adds a JOIN clause to the query using the NagiosHostgroup relation
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
@@ -1169,7 +1233,7 @@ abstract class BaseNagiosEscalationQuery extends ModelCriteria
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('NagiosHostgroup');
-		
+
 		// create a ModelJoin object for this join
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
@@ -1177,7 +1241,7 @@ abstract class BaseNagiosEscalationQuery extends ModelCriteria
 		if ($previousJoin = $this->getPreviousJoin()) {
 			$join->setPreviousJoin($previousJoin);
 		}
-		
+
 		// add the ModelJoin to the current object
 		if($relationAlias) {
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
@@ -1185,7 +1249,7 @@ abstract class BaseNagiosEscalationQuery extends ModelCriteria
 		} else {
 			$this->addJoinObject($join, 'NagiosHostgroup');
 		}
-		
+
 		return $this;
 	}
 
@@ -1193,7 +1257,7 @@ abstract class BaseNagiosEscalationQuery extends ModelCriteria
 	 * Use the NagiosHostgroup relation NagiosHostgroup object
 	 *
 	 * @see       useQuery()
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation,
 	 *                                   to be used as main alias in the secondary query
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
@@ -1233,7 +1297,7 @@ abstract class BaseNagiosEscalationQuery extends ModelCriteria
 
 	/**
 	 * Adds a JOIN clause to the query using the NagiosTimeperiod relation
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
@@ -1243,7 +1307,7 @@ abstract class BaseNagiosEscalationQuery extends ModelCriteria
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('NagiosTimeperiod');
-		
+
 		// create a ModelJoin object for this join
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
@@ -1251,7 +1315,7 @@ abstract class BaseNagiosEscalationQuery extends ModelCriteria
 		if ($previousJoin = $this->getPreviousJoin()) {
 			$join->setPreviousJoin($previousJoin);
 		}
-		
+
 		// add the ModelJoin to the current object
 		if($relationAlias) {
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
@@ -1259,7 +1323,7 @@ abstract class BaseNagiosEscalationQuery extends ModelCriteria
 		} else {
 			$this->addJoinObject($join, 'NagiosTimeperiod');
 		}
-		
+
 		return $this;
 	}
 
@@ -1267,7 +1331,7 @@ abstract class BaseNagiosEscalationQuery extends ModelCriteria
 	 * Use the NagiosTimeperiod relation NagiosTimeperiod object
 	 *
 	 * @see       useQuery()
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation,
 	 *                                   to be used as main alias in the secondary query
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
@@ -1297,7 +1361,7 @@ abstract class BaseNagiosEscalationQuery extends ModelCriteria
 		} elseif ($nagiosEscalationContact instanceof PropelCollection) {
 			return $this
 				->useNagiosEscalationContactQuery()
-					->filterByPrimaryKeys($nagiosEscalationContact->getPrimaryKeys())
+				->filterByPrimaryKeys($nagiosEscalationContact->getPrimaryKeys())
 				->endUse();
 		} else {
 			throw new PropelException('filterByNagiosEscalationContact() only accepts arguments of type NagiosEscalationContact or PropelCollection');
@@ -1306,7 +1370,7 @@ abstract class BaseNagiosEscalationQuery extends ModelCriteria
 
 	/**
 	 * Adds a JOIN clause to the query using the NagiosEscalationContact relation
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
@@ -1316,7 +1380,7 @@ abstract class BaseNagiosEscalationQuery extends ModelCriteria
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('NagiosEscalationContact');
-		
+
 		// create a ModelJoin object for this join
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
@@ -1324,7 +1388,7 @@ abstract class BaseNagiosEscalationQuery extends ModelCriteria
 		if ($previousJoin = $this->getPreviousJoin()) {
 			$join->setPreviousJoin($previousJoin);
 		}
-		
+
 		// add the ModelJoin to the current object
 		if($relationAlias) {
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
@@ -1332,7 +1396,7 @@ abstract class BaseNagiosEscalationQuery extends ModelCriteria
 		} else {
 			$this->addJoinObject($join, 'NagiosEscalationContact');
 		}
-		
+
 		return $this;
 	}
 
@@ -1340,7 +1404,7 @@ abstract class BaseNagiosEscalationQuery extends ModelCriteria
 	 * Use the NagiosEscalationContact relation NagiosEscalationContact object
 	 *
 	 * @see       useQuery()
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation,
 	 *                                   to be used as main alias in the secondary query
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
@@ -1370,7 +1434,7 @@ abstract class BaseNagiosEscalationQuery extends ModelCriteria
 		} elseif ($nagiosEscalationContactgroup instanceof PropelCollection) {
 			return $this
 				->useNagiosEscalationContactgroupQuery()
-					->filterByPrimaryKeys($nagiosEscalationContactgroup->getPrimaryKeys())
+				->filterByPrimaryKeys($nagiosEscalationContactgroup->getPrimaryKeys())
 				->endUse();
 		} else {
 			throw new PropelException('filterByNagiosEscalationContactgroup() only accepts arguments of type NagiosEscalationContactgroup or PropelCollection');
@@ -1379,7 +1443,7 @@ abstract class BaseNagiosEscalationQuery extends ModelCriteria
 
 	/**
 	 * Adds a JOIN clause to the query using the NagiosEscalationContactgroup relation
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
@@ -1389,7 +1453,7 @@ abstract class BaseNagiosEscalationQuery extends ModelCriteria
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('NagiosEscalationContactgroup');
-		
+
 		// create a ModelJoin object for this join
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
@@ -1397,7 +1461,7 @@ abstract class BaseNagiosEscalationQuery extends ModelCriteria
 		if ($previousJoin = $this->getPreviousJoin()) {
 			$join->setPreviousJoin($previousJoin);
 		}
-		
+
 		// add the ModelJoin to the current object
 		if($relationAlias) {
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
@@ -1405,7 +1469,7 @@ abstract class BaseNagiosEscalationQuery extends ModelCriteria
 		} else {
 			$this->addJoinObject($join, 'NagiosEscalationContactgroup');
 		}
-		
+
 		return $this;
 	}
 
@@ -1413,7 +1477,7 @@ abstract class BaseNagiosEscalationQuery extends ModelCriteria
 	 * Use the NagiosEscalationContactgroup relation NagiosEscalationContactgroup object
 	 *
 	 * @see       useQuery()
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation,
 	 *                                   to be used as main alias in the secondary query
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
@@ -1438,8 +1502,8 @@ abstract class BaseNagiosEscalationQuery extends ModelCriteria
 	{
 		if ($nagiosEscalation) {
 			$this->addUsingAlias(NagiosEscalationPeer::ID, $nagiosEscalation->getId(), Criteria::NOT_EQUAL);
-	  }
-	  
+		}
+
 		return $this;
 	}
 

@@ -60,8 +60,8 @@ class AutodiscoveryDeviceTableMap extends TableMap
 		$this->addRelation('AutodiscoveryJob', 'AutodiscoveryJob', RelationMap::MANY_TO_ONE, array('job_id' => 'id', ), 'CASCADE', null);
 		$this->addRelation('NagiosHostTemplate', 'NagiosHostTemplate', RelationMap::MANY_TO_ONE, array('host_template' => 'id', ), 'SET NULL', null);
 		$this->addRelation('NagiosHost', 'NagiosHost', RelationMap::MANY_TO_ONE, array('proposed_parent' => 'id', ), 'SET NULL', null);
-		$this->addRelation('AutodiscoveryDeviceService', 'AutodiscoveryDeviceService', RelationMap::ONE_TO_MANY, array('id' => 'device_id', ), 'CASCADE', null);
-		$this->addRelation('AutodiscoveryDeviceTemplateMatch', 'AutodiscoveryDeviceTemplateMatch', RelationMap::ONE_TO_MANY, array('id' => 'device_id', ), 'CASCADE', null);
+		$this->addRelation('AutodiscoveryDeviceService', 'AutodiscoveryDeviceService', RelationMap::ONE_TO_MANY, array('id' => 'device_id', ), 'CASCADE', null, 'AutodiscoveryDeviceServices');
+		$this->addRelation('AutodiscoveryDeviceTemplateMatch', 'AutodiscoveryDeviceTemplateMatch', RelationMap::ONE_TO_MANY, array('id' => 'device_id', ), 'CASCADE', null, 'AutodiscoveryDeviceTemplateMatchs');
 	} // buildRelations()
 
 } // AutodiscoveryDeviceTableMap

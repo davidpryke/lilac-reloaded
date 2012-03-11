@@ -19,20 +19,17 @@ abstract class BaseNagiosMainConfigurationPeer {
 	/** the related Propel class for this table */
 	const OM_CLASS = 'NagiosMainConfiguration';
 
-	/** A class that can be returned by this peer. */
-	const CLASS_DEFAULT = 'NagiosMainConfiguration';
-
 	/** the related TableMap class for this table */
 	const TM_CLASS = 'NagiosMainConfigurationTableMap';
-	
+
 	/** The total number of columns. */
-	const NUM_COLUMNS = 127;
+	const NUM_COLUMNS = 130;
 
 	/** The number of lazy-loaded columns. */
 	const NUM_LAZY_LOAD_COLUMNS = 0;
 
 	/** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
-	const NUM_HYDRATE_COLUMNS = 127;
+	const NUM_HYDRATE_COLUMNS = 130;
 
 	/** the column name for the ID field */
 	const ID = 'nagios_main_configuration.ID';
@@ -45,9 +42,6 @@ abstract class BaseNagiosMainConfigurationPeer {
 
 	/** the column name for the TEMP_FILE field */
 	const TEMP_FILE = 'nagios_main_configuration.TEMP_FILE';
-	
-	/** the column name for the TEMP_PATH field */
-	const TEMP_PATH = 'nagios_main_configuration.TEMP_PATH';
 
 	/** the column name for the STATUS_FILE field */
 	const STATUS_FILE = 'nagios_main_configuration.STATUS_FILE';
@@ -415,9 +409,21 @@ abstract class BaseNagiosMainConfigurationPeer {
 	/** the column name for the MAX_DEBUG_FILE_SIZE field */
 	const MAX_DEBUG_FILE_SIZE = 'nagios_main_configuration.MAX_DEBUG_FILE_SIZE';
 
+	/** the column name for the TEMP_PATH field */
+	const TEMP_PATH = 'nagios_main_configuration.TEMP_PATH';
+
+	/** the column name for the CHECK_FOR_UPDATES field */
+	const CHECK_FOR_UPDATES = 'nagios_main_configuration.CHECK_FOR_UPDATES';
+
+	/** the column name for the CHECK_FOR_ORPHANED_HOSTS field */
+	const CHECK_FOR_ORPHANED_HOSTS = 'nagios_main_configuration.CHECK_FOR_ORPHANED_HOSTS';
+
+	/** the column name for the BARE_UPDATE_CHECK field */
+	const BARE_UPDATE_CHECK = 'nagios_main_configuration.BARE_UPDATE_CHECK';
+
 	/** The default string format for model objects of the related table **/
 	const DEFAULT_STRING_FORMAT = 'YAML';
-	
+
 	/**
 	 * An identiy map to hold any loaded instances of NagiosMainConfiguration objects.
 	 * This must be public so that other peer classes can access this when hydrating from JOIN
@@ -434,12 +440,12 @@ abstract class BaseNagiosMainConfigurationPeer {
 	 * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
 	 */
 	protected static $fieldNames = array (
-		BasePeer::TYPE_PHPNAME => array ('Id', 'ConfigDir', 'LogFile', 'TempFile', 'StatusFile', 'StatusUpdateInterval', 'NagiosUser', 'NagiosGroup', 'EnableNotifications', 'ExecuteServiceChecks', 'AcceptPassiveServiceChecks', 'EnableEventHandlers', 'LogRotationMethod', 'LogArchivePath', 'CheckExternalCommands', 'CommandCheckInterval', 'CommandFile', 'LockFile', 'RetainStateInformation', 'StateRetentionFile', 'RetentionUpdateInterval', 'UseRetainedProgramState', 'UseSyslog', 'LogNotifications', 'LogServiceRetries', 'LogHostRetries', 'LogEventHandlers', 'LogInitialStates', 'LogExternalCommands', 'LogPassiveChecks', 'GlobalHostEventHandler', 'GlobalServiceEventHandler', 'ExternalCommandBufferSlots', 'SleepTime', 'ServiceInterleaveFactor', 'MaxConcurrentChecks', 'ServiceReaperFrequency', 'IntervalLength', 'UseAggressiveHostChecking', 'EnableFlapDetection', 'LowServiceFlapThreshold', 'HighServiceFlapThreshold', 'LowHostFlapThreshold', 'HighHostFlapThreshold', 'SoftStateDependencies', 'ServiceCheckTimeout', 'HostCheckTimeout', 'EventHandlerTimeout', 'NotificationTimeout', 'OcspTimeout', 'OhcpTimeout', 'PerfdataTimeout', 'ObsessOverServices', 'OcspCommand', 'ProcessPerformanceData', 'CheckForOrphanedServices', 'CheckServiceFreshness', 'FreshnessCheckInterval', 'DateFormat', 'IllegalObjectNameChars', 'IllegalMacroOutputChars', 'AdminEmail', 'AdminPager', 'ExecuteHostChecks', 'ServiceInterCheckDelayMethod', 'UseRetainedSchedulingInfo', 'AcceptPassiveHostChecks', 'MaxServiceCheckSpread', 'HostInterCheckDelayMethod', 'MaxHostCheckSpread', 'AutoRescheduleChecks', 'AutoReschedulingInterval', 'AutoReschedulingWindow', 'OchpTimeout', 'ObsessOverHosts', 'OchpCommand', 'CheckHostFreshness', 'HostFreshnessCheckInterval', 'ServiceFreshnessCheckInterval', 'UseRegexpMatching', 'UseTrueRegexpMatching', 'EventBrokerOptions', 'DaemonDumpsCore', 'HostPerfdataCommand', 'ServicePerfdataCommand', 'HostPerfdataFile', 'HostPerfdataFileTemplate', 'ServicePerfdataFile', 'ServicePerfdataFileTemplate', 'HostPerfdataFileMode', 'ServicePerfdataFileMode', 'HostPerfdataFileProcessingCommand', 'ServicePerfdataFileProcessingCommand', 'HostPerfdataFileProcessingInterval', 'ServicePerfdataFileProcessingInterval', 'ObjectCacheFile', 'PrecachedObjectFile', 'RetainedHostAttributeMask', 'RetainedServiceAttributeMask', 'RetainedProcessHostAttributeMask', 'RetainedProcessServiceAttributeMask', 'RetainedContactHostAttributeMask', 'RetainedContactServiceAttributeMask', 'CheckResultReaperFrequency', 'MaxCheckResultReaperTime', 'CheckResultPath', 'MaxCheckResultFileAge', 'TranslatePassiveHostChecks', 'PassiveHostChecksAreSoft', 'EnablePredictiveHostDependencyChecks', 'EnablePredictiveServiceDependencyChecks', 'CachedHostCheckHorizon', 'CachedServiceCheckHorizon', 'UseLargeInstallationTweaks', 'FreeChildProcessMemory', 'ChildProcessesForkTwice', 'EnableEnvironmentMacros', 'AdditionalFreshnessLatency', 'EnableEmbeddedPerl', 'UseEmbeddedPerlImplicitly', 'P1File', 'UseTimezone', 'DebugFile', 'DebugLevel', 'DebugVerbosity', 'MaxDebugFileSize', 'TempPath', ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'configDir', 'logFile', 'tempFile', 'statusFile', 'statusUpdateInterval', 'nagiosUser', 'nagiosGroup', 'enableNotifications', 'executeServiceChecks', 'acceptPassiveServiceChecks', 'enableEventHandlers', 'logRotationMethod', 'logArchivePath', 'checkExternalCommands', 'commandCheckInterval', 'commandFile', 'lockFile', 'retainStateInformation', 'stateRetentionFile', 'retentionUpdateInterval', 'useRetainedProgramState', 'useSyslog', 'logNotifications', 'logServiceRetries', 'logHostRetries', 'logEventHandlers', 'logInitialStates', 'logExternalCommands', 'logPassiveChecks', 'globalHostEventHandler', 'globalServiceEventHandler', 'externalCommandBufferSlots', 'sleepTime', 'serviceInterleaveFactor', 'maxConcurrentChecks', 'serviceReaperFrequency', 'intervalLength', 'useAggressiveHostChecking', 'enableFlapDetection', 'lowServiceFlapThreshold', 'highServiceFlapThreshold', 'lowHostFlapThreshold', 'highHostFlapThreshold', 'softStateDependencies', 'serviceCheckTimeout', 'hostCheckTimeout', 'eventHandlerTimeout', 'notificationTimeout', 'ocspTimeout', 'ohcpTimeout', 'perfdataTimeout', 'obsessOverServices', 'ocspCommand', 'processPerformanceData', 'checkForOrphanedServices', 'checkServiceFreshness', 'freshnessCheckInterval', 'dateFormat', 'illegalObjectNameChars', 'illegalMacroOutputChars', 'adminEmail', 'adminPager', 'executeHostChecks', 'serviceInterCheckDelayMethod', 'useRetainedSchedulingInfo', 'acceptPassiveHostChecks', 'maxServiceCheckSpread', 'hostInterCheckDelayMethod', 'maxHostCheckSpread', 'autoRescheduleChecks', 'autoReschedulingInterval', 'autoReschedulingWindow', 'ochpTimeout', 'obsessOverHosts', 'ochpCommand', 'checkHostFreshness', 'hostFreshnessCheckInterval', 'serviceFreshnessCheckInterval', 'useRegexpMatching', 'useTrueRegexpMatching', 'eventBrokerOptions', 'daemonDumpsCore', 'hostPerfdataCommand', 'servicePerfdataCommand', 'hostPerfdataFile', 'hostPerfdataFileTemplate', 'servicePerfdataFile', 'servicePerfdataFileTemplate', 'hostPerfdataFileMode', 'servicePerfdataFileMode', 'hostPerfdataFileProcessingCommand', 'servicePerfdataFileProcessingCommand', 'hostPerfdataFileProcessingInterval', 'servicePerfdataFileProcessingInterval', 'objectCacheFile', 'precachedObjectFile', 'retainedHostAttributeMask', 'retainedServiceAttributeMask', 'retainedProcessHostAttributeMask', 'retainedProcessServiceAttributeMask', 'retainedContactHostAttributeMask', 'retainedContactServiceAttributeMask', 'checkResultReaperFrequency', 'maxCheckResultReaperTime', 'checkResultPath', 'maxCheckResultFileAge', 'translatePassiveHostChecks', 'passiveHostChecksAreSoft', 'enablePredictiveHostDependencyChecks', 'enablePredictiveServiceDependencyChecks', 'cachedHostCheckHorizon', 'cachedServiceCheckHorizon', 'useLargeInstallationTweaks', 'freeChildProcessMemory', 'childProcessesForkTwice', 'enableEnvironmentMacros', 'additionalFreshnessLatency', 'enableEmbeddedPerl', 'useEmbeddedPerlImplicitly', 'p1File', 'useTimezone', 'debugFile', 'debugLevel', 'debugVerbosity', 'maxDebugFileSize', 'tempPath', ),
-		BasePeer::TYPE_COLNAME => array (self::ID, self::CONFIG_DIR, self::LOG_FILE, self::TEMP_FILE, self::STATUS_FILE, self::STATUS_UPDATE_INTERVAL, self::NAGIOS_USER, self::NAGIOS_GROUP, self::ENABLE_NOTIFICATIONS, self::EXECUTE_SERVICE_CHECKS, self::ACCEPT_PASSIVE_SERVICE_CHECKS, self::ENABLE_EVENT_HANDLERS, self::LOG_ROTATION_METHOD, self::LOG_ARCHIVE_PATH, self::CHECK_EXTERNAL_COMMANDS, self::COMMAND_CHECK_INTERVAL, self::COMMAND_FILE, self::LOCK_FILE, self::RETAIN_STATE_INFORMATION, self::STATE_RETENTION_FILE, self::RETENTION_UPDATE_INTERVAL, self::USE_RETAINED_PROGRAM_STATE, self::USE_SYSLOG, self::LOG_NOTIFICATIONS, self::LOG_SERVICE_RETRIES, self::LOG_HOST_RETRIES, self::LOG_EVENT_HANDLERS, self::LOG_INITIAL_STATES, self::LOG_EXTERNAL_COMMANDS, self::LOG_PASSIVE_CHECKS, self::GLOBAL_HOST_EVENT_HANDLER, self::GLOBAL_SERVICE_EVENT_HANDLER, self::EXTERNAL_COMMAND_BUFFER_SLOTS, self::SLEEP_TIME, self::SERVICE_INTERLEAVE_FACTOR, self::MAX_CONCURRENT_CHECKS, self::SERVICE_REAPER_FREQUENCY, self::INTERVAL_LENGTH, self::USE_AGGRESSIVE_HOST_CHECKING, self::ENABLE_FLAP_DETECTION, self::LOW_SERVICE_FLAP_THRESHOLD, self::HIGH_SERVICE_FLAP_THRESHOLD, self::LOW_HOST_FLAP_THRESHOLD, self::HIGH_HOST_FLAP_THRESHOLD, self::SOFT_STATE_DEPENDENCIES, self::SERVICE_CHECK_TIMEOUT, self::HOST_CHECK_TIMEOUT, self::EVENT_HANDLER_TIMEOUT, self::NOTIFICATION_TIMEOUT, self::OCSP_TIMEOUT, self::OHCP_TIMEOUT, self::PERFDATA_TIMEOUT, self::OBSESS_OVER_SERVICES, self::OCSP_COMMAND, self::PROCESS_PERFORMANCE_DATA, self::CHECK_FOR_ORPHANED_SERVICES, self::CHECK_SERVICE_FRESHNESS, self::FRESHNESS_CHECK_INTERVAL, self::DATE_FORMAT, self::ILLEGAL_OBJECT_NAME_CHARS, self::ILLEGAL_MACRO_OUTPUT_CHARS, self::ADMIN_EMAIL, self::ADMIN_PAGER, self::EXECUTE_HOST_CHECKS, self::SERVICE_INTER_CHECK_DELAY_METHOD, self::USE_RETAINED_SCHEDULING_INFO, self::ACCEPT_PASSIVE_HOST_CHECKS, self::MAX_SERVICE_CHECK_SPREAD, self::HOST_INTER_CHECK_DELAY_METHOD, self::MAX_HOST_CHECK_SPREAD, self::AUTO_RESCHEDULE_CHECKS, self::AUTO_RESCHEDULING_INTERVAL, self::AUTO_RESCHEDULING_WINDOW, self::OCHP_TIMEOUT, self::OBSESS_OVER_HOSTS, self::OCHP_COMMAND, self::CHECK_HOST_FRESHNESS, self::HOST_FRESHNESS_CHECK_INTERVAL, self::SERVICE_FRESHNESS_CHECK_INTERVAL, self::USE_REGEXP_MATCHING, self::USE_TRUE_REGEXP_MATCHING, self::EVENT_BROKER_OPTIONS, self::DAEMON_DUMPS_CORE, self::HOST_PERFDATA_COMMAND, self::SERVICE_PERFDATA_COMMAND, self::HOST_PERFDATA_FILE, self::HOST_PERFDATA_FILE_TEMPLATE, self::SERVICE_PERFDATA_FILE, self::SERVICE_PERFDATA_FILE_TEMPLATE, self::HOST_PERFDATA_FILE_MODE, self::SERVICE_PERFDATA_FILE_MODE, self::HOST_PERFDATA_FILE_PROCESSING_COMMAND, self::SERVICE_PERFDATA_FILE_PROCESSING_COMMAND, self::HOST_PERFDATA_FILE_PROCESSING_INTERVAL, self::SERVICE_PERFDATA_FILE_PROCESSING_INTERVAL, self::OBJECT_CACHE_FILE, self::PRECACHED_OBJECT_FILE, self::RETAINED_HOST_ATTRIBUTE_MASK, self::RETAINED_SERVICE_ATTRIBUTE_MASK, self::RETAINED_PROCESS_HOST_ATTRIBUTE_MASK, self::RETAINED_PROCESS_SERVICE_ATTRIBUTE_MASK, self::RETAINED_CONTACT_HOST_ATTRIBUTE_MASK, self::RETAINED_CONTACT_SERVICE_ATTRIBUTE_MASK, self::CHECK_RESULT_REAPER_FREQUENCY, self::MAX_CHECK_RESULT_REAPER_TIME, self::CHECK_RESULT_PATH, self::MAX_CHECK_RESULT_FILE_AGE, self::TRANSLATE_PASSIVE_HOST_CHECKS, self::PASSIVE_HOST_CHECKS_ARE_SOFT, self::ENABLE_PREDICTIVE_HOST_DEPENDENCY_CHECKS, self::ENABLE_PREDICTIVE_SERVICE_DEPENDENCY_CHECKS, self::CACHED_HOST_CHECK_HORIZON, self::CACHED_SERVICE_CHECK_HORIZON, self::USE_LARGE_INSTALLATION_TWEAKS, self::FREE_CHILD_PROCESS_MEMORY, self::CHILD_PROCESSES_FORK_TWICE, self::ENABLE_ENVIRONMENT_MACROS, self::ADDITIONAL_FRESHNESS_LATENCY, self::ENABLE_EMBEDDED_PERL, self::USE_EMBEDDED_PERL_IMPLICITLY, self::P1_FILE, self::USE_TIMEZONE, self::DEBUG_FILE, self::DEBUG_LEVEL, self::DEBUG_VERBOSITY, self::MAX_DEBUG_FILE_SIZE, self::TEMP_PATH, ),
-		BasePeer::TYPE_RAW_COLNAME => array ('ID', 'CONFIG_DIR', 'LOG_FILE', 'TEMP_FILE', 'STATUS_FILE', 'STATUS_UPDATE_INTERVAL', 'NAGIOS_USER', 'NAGIOS_GROUP', 'ENABLE_NOTIFICATIONS', 'EXECUTE_SERVICE_CHECKS', 'ACCEPT_PASSIVE_SERVICE_CHECKS', 'ENABLE_EVENT_HANDLERS', 'LOG_ROTATION_METHOD', 'LOG_ARCHIVE_PATH', 'CHECK_EXTERNAL_COMMANDS', 'COMMAND_CHECK_INTERVAL', 'COMMAND_FILE', 'LOCK_FILE', 'RETAIN_STATE_INFORMATION', 'STATE_RETENTION_FILE', 'RETENTION_UPDATE_INTERVAL', 'USE_RETAINED_PROGRAM_STATE', 'USE_SYSLOG', 'LOG_NOTIFICATIONS', 'LOG_SERVICE_RETRIES', 'LOG_HOST_RETRIES', 'LOG_EVENT_HANDLERS', 'LOG_INITIAL_STATES', 'LOG_EXTERNAL_COMMANDS', 'LOG_PASSIVE_CHECKS', 'GLOBAL_HOST_EVENT_HANDLER', 'GLOBAL_SERVICE_EVENT_HANDLER', 'EXTERNAL_COMMAND_BUFFER_SLOTS', 'SLEEP_TIME', 'SERVICE_INTERLEAVE_FACTOR', 'MAX_CONCURRENT_CHECKS', 'SERVICE_REAPER_FREQUENCY', 'INTERVAL_LENGTH', 'USE_AGGRESSIVE_HOST_CHECKING', 'ENABLE_FLAP_DETECTION', 'LOW_SERVICE_FLAP_THRESHOLD', 'HIGH_SERVICE_FLAP_THRESHOLD', 'LOW_HOST_FLAP_THRESHOLD', 'HIGH_HOST_FLAP_THRESHOLD', 'SOFT_STATE_DEPENDENCIES', 'SERVICE_CHECK_TIMEOUT', 'HOST_CHECK_TIMEOUT', 'EVENT_HANDLER_TIMEOUT', 'NOTIFICATION_TIMEOUT', 'OCSP_TIMEOUT', 'OHCP_TIMEOUT', 'PERFDATA_TIMEOUT', 'OBSESS_OVER_SERVICES', 'OCSP_COMMAND', 'PROCESS_PERFORMANCE_DATA', 'CHECK_FOR_ORPHANED_SERVICES', 'CHECK_SERVICE_FRESHNESS', 'FRESHNESS_CHECK_INTERVAL', 'DATE_FORMAT', 'ILLEGAL_OBJECT_NAME_CHARS', 'ILLEGAL_MACRO_OUTPUT_CHARS', 'ADMIN_EMAIL', 'ADMIN_PAGER', 'EXECUTE_HOST_CHECKS', 'SERVICE_INTER_CHECK_DELAY_METHOD', 'USE_RETAINED_SCHEDULING_INFO', 'ACCEPT_PASSIVE_HOST_CHECKS', 'MAX_SERVICE_CHECK_SPREAD', 'HOST_INTER_CHECK_DELAY_METHOD', 'MAX_HOST_CHECK_SPREAD', 'AUTO_RESCHEDULE_CHECKS', 'AUTO_RESCHEDULING_INTERVAL', 'AUTO_RESCHEDULING_WINDOW', 'OCHP_TIMEOUT', 'OBSESS_OVER_HOSTS', 'OCHP_COMMAND', 'CHECK_HOST_FRESHNESS', 'HOST_FRESHNESS_CHECK_INTERVAL', 'SERVICE_FRESHNESS_CHECK_INTERVAL', 'USE_REGEXP_MATCHING', 'USE_TRUE_REGEXP_MATCHING', 'EVENT_BROKER_OPTIONS', 'DAEMON_DUMPS_CORE', 'HOST_PERFDATA_COMMAND', 'SERVICE_PERFDATA_COMMAND', 'HOST_PERFDATA_FILE', 'HOST_PERFDATA_FILE_TEMPLATE', 'SERVICE_PERFDATA_FILE', 'SERVICE_PERFDATA_FILE_TEMPLATE', 'HOST_PERFDATA_FILE_MODE', 'SERVICE_PERFDATA_FILE_MODE', 'HOST_PERFDATA_FILE_PROCESSING_COMMAND', 'SERVICE_PERFDATA_FILE_PROCESSING_COMMAND', 'HOST_PERFDATA_FILE_PROCESSING_INTERVAL', 'SERVICE_PERFDATA_FILE_PROCESSING_INTERVAL', 'OBJECT_CACHE_FILE', 'PRECACHED_OBJECT_FILE', 'RETAINED_HOST_ATTRIBUTE_MASK', 'RETAINED_SERVICE_ATTRIBUTE_MASK', 'RETAINED_PROCESS_HOST_ATTRIBUTE_MASK', 'RETAINED_PROCESS_SERVICE_ATTRIBUTE_MASK', 'RETAINED_CONTACT_HOST_ATTRIBUTE_MASK', 'RETAINED_CONTACT_SERVICE_ATTRIBUTE_MASK', 'CHECK_RESULT_REAPER_FREQUENCY', 'MAX_CHECK_RESULT_REAPER_TIME', 'CHECK_RESULT_PATH', 'MAX_CHECK_RESULT_FILE_AGE', 'TRANSLATE_PASSIVE_HOST_CHECKS', 'PASSIVE_HOST_CHECKS_ARE_SOFT', 'ENABLE_PREDICTIVE_HOST_DEPENDENCY_CHECKS', 'ENABLE_PREDICTIVE_SERVICE_DEPENDENCY_CHECKS', 'CACHED_HOST_CHECK_HORIZON', 'CACHED_SERVICE_CHECK_HORIZON', 'USE_LARGE_INSTALLATION_TWEAKS', 'FREE_CHILD_PROCESS_MEMORY', 'CHILD_PROCESSES_FORK_TWICE', 'ENABLE_ENVIRONMENT_MACROS', 'ADDITIONAL_FRESHNESS_LATENCY', 'ENABLE_EMBEDDED_PERL', 'USE_EMBEDDED_PERL_IMPLICITLY', 'P1_FILE', 'USE_TIMEZONE', 'DEBUG_FILE', 'DEBUG_LEVEL', 'DEBUG_VERBOSITY', 'MAX_DEBUG_FILE_SIZE', 'TEMP_PATH', ),
-		BasePeer::TYPE_FIELDNAME => array ('id', 'config_dir', 'log_file', 'temp_file', 'status_file', 'status_update_interval', 'nagios_user', 'nagios_group', 'enable_notifications', 'execute_service_checks', 'accept_passive_service_checks', 'enable_event_handlers', 'log_rotation_method', 'log_archive_path', 'check_external_commands', 'command_check_interval', 'command_file', 'lock_file', 'retain_state_information', 'state_retention_file', 'retention_update_interval', 'use_retained_program_state', 'use_syslog', 'log_notifications', 'log_service_retries', 'log_host_retries', 'log_event_handlers', 'log_initial_states', 'log_external_commands', 'log_passive_checks', 'global_host_event_handler', 'global_service_event_handler', 'external_command_buffer_slots', 'sleep_time', 'service_interleave_factor', 'max_concurrent_checks', 'service_reaper_frequency', 'interval_length', 'use_aggressive_host_checking', 'enable_flap_detection', 'low_service_flap_threshold', 'high_service_flap_threshold', 'low_host_flap_threshold', 'high_host_flap_threshold', 'soft_state_dependencies', 'service_check_timeout', 'host_check_timeout', 'event_handler_timeout', 'notification_timeout', 'ocsp_timeout', 'ohcp_timeout', 'perfdata_timeout', 'obsess_over_services', 'ocsp_command', 'process_performance_data', 'check_for_orphaned_services', 'check_service_freshness', 'freshness_check_interval', 'date_format', 'illegal_object_name_chars', 'illegal_macro_output_chars', 'admin_email', 'admin_pager', 'execute_host_checks', 'service_inter_check_delay_method', 'use_retained_scheduling_info', 'accept_passive_host_checks', 'max_service_check_spread', 'host_inter_check_delay_method', 'max_host_check_spread', 'auto_reschedule_checks', 'auto_rescheduling_interval', 'auto_rescheduling_window', 'ochp_timeout', 'obsess_over_hosts', 'ochp_command', 'check_host_freshness', 'host_freshness_check_interval', 'service_freshness_check_interval', 'use_regexp_matching', 'use_true_regexp_matching', 'event_broker_options', 'daemon_dumps_core', 'host_perfdata_command', 'service_perfdata_command', 'host_perfdata_file', 'host_perfdata_file_template', 'service_perfdata_file', 'service_perfdata_file_template', 'host_perfdata_file_mode', 'service_perfdata_file_mode', 'host_perfdata_file_processing_command', 'service_perfdata_file_processing_command', 'host_perfdata_file_processing_interval', 'service_perfdata_file_processing_interval', 'object_cache_file', 'precached_object_file', 'retained_host_attribute_mask', 'retained_service_attribute_mask', 'retained_process_host_attribute_mask', 'retained_process_service_attribute_mask', 'retained_contact_host_attribute_mask', 'retained_contact_service_attribute_mask', 'check_result_reaper_frequency', 'max_check_result_reaper_time', 'check_result_path', 'max_check_result_file_age', 'translate_passive_host_checks', 'passive_host_checks_are_soft', 'enable_predictive_host_dependency_checks', 'enable_predictive_service_dependency_checks', 'cached_host_check_horizon', 'cached_service_check_horizon', 'use_large_installation_tweaks', 'free_child_process_memory', 'child_processes_fork_twice', 'enable_environment_macros', 'additional_freshness_latency', 'enable_embedded_perl', 'use_embedded_perl_implicitly', 'p1_file', 'use_timezone', 'debug_file', 'debug_level', 'debug_verbosity', 'max_debug_file_size', 'temp_path', ),
-		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, )
+		BasePeer::TYPE_PHPNAME => array ('Id', 'ConfigDir', 'LogFile', 'TempFile', 'StatusFile', 'StatusUpdateInterval', 'NagiosUser', 'NagiosGroup', 'EnableNotifications', 'ExecuteServiceChecks', 'AcceptPassiveServiceChecks', 'EnableEventHandlers', 'LogRotationMethod', 'LogArchivePath', 'CheckExternalCommands', 'CommandCheckInterval', 'CommandFile', 'LockFile', 'RetainStateInformation', 'StateRetentionFile', 'RetentionUpdateInterval', 'UseRetainedProgramState', 'UseSyslog', 'LogNotifications', 'LogServiceRetries', 'LogHostRetries', 'LogEventHandlers', 'LogInitialStates', 'LogExternalCommands', 'LogPassiveChecks', 'GlobalHostEventHandler', 'GlobalServiceEventHandler', 'ExternalCommandBufferSlots', 'SleepTime', 'ServiceInterleaveFactor', 'MaxConcurrentChecks', 'ServiceReaperFrequency', 'IntervalLength', 'UseAggressiveHostChecking', 'EnableFlapDetection', 'LowServiceFlapThreshold', 'HighServiceFlapThreshold', 'LowHostFlapThreshold', 'HighHostFlapThreshold', 'SoftStateDependencies', 'ServiceCheckTimeout', 'HostCheckTimeout', 'EventHandlerTimeout', 'NotificationTimeout', 'OcspTimeout', 'OhcpTimeout', 'PerfdataTimeout', 'ObsessOverServices', 'OcspCommand', 'ProcessPerformanceData', 'CheckForOrphanedServices', 'CheckServiceFreshness', 'FreshnessCheckInterval', 'DateFormat', 'IllegalObjectNameChars', 'IllegalMacroOutputChars', 'AdminEmail', 'AdminPager', 'ExecuteHostChecks', 'ServiceInterCheckDelayMethod', 'UseRetainedSchedulingInfo', 'AcceptPassiveHostChecks', 'MaxServiceCheckSpread', 'HostInterCheckDelayMethod', 'MaxHostCheckSpread', 'AutoRescheduleChecks', 'AutoReschedulingInterval', 'AutoReschedulingWindow', 'OchpTimeout', 'ObsessOverHosts', 'OchpCommand', 'CheckHostFreshness', 'HostFreshnessCheckInterval', 'ServiceFreshnessCheckInterval', 'UseRegexpMatching', 'UseTrueRegexpMatching', 'EventBrokerOptions', 'DaemonDumpsCore', 'HostPerfdataCommand', 'ServicePerfdataCommand', 'HostPerfdataFile', 'HostPerfdataFileTemplate', 'ServicePerfdataFile', 'ServicePerfdataFileTemplate', 'HostPerfdataFileMode', 'ServicePerfdataFileMode', 'HostPerfdataFileProcessingCommand', 'ServicePerfdataFileProcessingCommand', 'HostPerfdataFileProcessingInterval', 'ServicePerfdataFileProcessingInterval', 'ObjectCacheFile', 'PrecachedObjectFile', 'RetainedHostAttributeMask', 'RetainedServiceAttributeMask', 'RetainedProcessHostAttributeMask', 'RetainedProcessServiceAttributeMask', 'RetainedContactHostAttributeMask', 'RetainedContactServiceAttributeMask', 'CheckResultReaperFrequency', 'MaxCheckResultReaperTime', 'CheckResultPath', 'MaxCheckResultFileAge', 'TranslatePassiveHostChecks', 'PassiveHostChecksAreSoft', 'EnablePredictiveHostDependencyChecks', 'EnablePredictiveServiceDependencyChecks', 'CachedHostCheckHorizon', 'CachedServiceCheckHorizon', 'UseLargeInstallationTweaks', 'FreeChildProcessMemory', 'ChildProcessesForkTwice', 'EnableEnvironmentMacros', 'AdditionalFreshnessLatency', 'EnableEmbeddedPerl', 'UseEmbeddedPerlImplicitly', 'P1File', 'UseTimezone', 'DebugFile', 'DebugLevel', 'DebugVerbosity', 'MaxDebugFileSize', 'TempPath', 'CheckForUpdates', 'CheckForOrphanedHosts', 'BareUpdateCheck', ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'configDir', 'logFile', 'tempFile', 'statusFile', 'statusUpdateInterval', 'nagiosUser', 'nagiosGroup', 'enableNotifications', 'executeServiceChecks', 'acceptPassiveServiceChecks', 'enableEventHandlers', 'logRotationMethod', 'logArchivePath', 'checkExternalCommands', 'commandCheckInterval', 'commandFile', 'lockFile', 'retainStateInformation', 'stateRetentionFile', 'retentionUpdateInterval', 'useRetainedProgramState', 'useSyslog', 'logNotifications', 'logServiceRetries', 'logHostRetries', 'logEventHandlers', 'logInitialStates', 'logExternalCommands', 'logPassiveChecks', 'globalHostEventHandler', 'globalServiceEventHandler', 'externalCommandBufferSlots', 'sleepTime', 'serviceInterleaveFactor', 'maxConcurrentChecks', 'serviceReaperFrequency', 'intervalLength', 'useAggressiveHostChecking', 'enableFlapDetection', 'lowServiceFlapThreshold', 'highServiceFlapThreshold', 'lowHostFlapThreshold', 'highHostFlapThreshold', 'softStateDependencies', 'serviceCheckTimeout', 'hostCheckTimeout', 'eventHandlerTimeout', 'notificationTimeout', 'ocspTimeout', 'ohcpTimeout', 'perfdataTimeout', 'obsessOverServices', 'ocspCommand', 'processPerformanceData', 'checkForOrphanedServices', 'checkServiceFreshness', 'freshnessCheckInterval', 'dateFormat', 'illegalObjectNameChars', 'illegalMacroOutputChars', 'adminEmail', 'adminPager', 'executeHostChecks', 'serviceInterCheckDelayMethod', 'useRetainedSchedulingInfo', 'acceptPassiveHostChecks', 'maxServiceCheckSpread', 'hostInterCheckDelayMethod', 'maxHostCheckSpread', 'autoRescheduleChecks', 'autoReschedulingInterval', 'autoReschedulingWindow', 'ochpTimeout', 'obsessOverHosts', 'ochpCommand', 'checkHostFreshness', 'hostFreshnessCheckInterval', 'serviceFreshnessCheckInterval', 'useRegexpMatching', 'useTrueRegexpMatching', 'eventBrokerOptions', 'daemonDumpsCore', 'hostPerfdataCommand', 'servicePerfdataCommand', 'hostPerfdataFile', 'hostPerfdataFileTemplate', 'servicePerfdataFile', 'servicePerfdataFileTemplate', 'hostPerfdataFileMode', 'servicePerfdataFileMode', 'hostPerfdataFileProcessingCommand', 'servicePerfdataFileProcessingCommand', 'hostPerfdataFileProcessingInterval', 'servicePerfdataFileProcessingInterval', 'objectCacheFile', 'precachedObjectFile', 'retainedHostAttributeMask', 'retainedServiceAttributeMask', 'retainedProcessHostAttributeMask', 'retainedProcessServiceAttributeMask', 'retainedContactHostAttributeMask', 'retainedContactServiceAttributeMask', 'checkResultReaperFrequency', 'maxCheckResultReaperTime', 'checkResultPath', 'maxCheckResultFileAge', 'translatePassiveHostChecks', 'passiveHostChecksAreSoft', 'enablePredictiveHostDependencyChecks', 'enablePredictiveServiceDependencyChecks', 'cachedHostCheckHorizon', 'cachedServiceCheckHorizon', 'useLargeInstallationTweaks', 'freeChildProcessMemory', 'childProcessesForkTwice', 'enableEnvironmentMacros', 'additionalFreshnessLatency', 'enableEmbeddedPerl', 'useEmbeddedPerlImplicitly', 'p1File', 'useTimezone', 'debugFile', 'debugLevel', 'debugVerbosity', 'maxDebugFileSize', 'tempPath', 'checkForUpdates', 'checkForOrphanedHosts', 'bareUpdateCheck', ),
+		BasePeer::TYPE_COLNAME => array (self::ID, self::CONFIG_DIR, self::LOG_FILE, self::TEMP_FILE, self::STATUS_FILE, self::STATUS_UPDATE_INTERVAL, self::NAGIOS_USER, self::NAGIOS_GROUP, self::ENABLE_NOTIFICATIONS, self::EXECUTE_SERVICE_CHECKS, self::ACCEPT_PASSIVE_SERVICE_CHECKS, self::ENABLE_EVENT_HANDLERS, self::LOG_ROTATION_METHOD, self::LOG_ARCHIVE_PATH, self::CHECK_EXTERNAL_COMMANDS, self::COMMAND_CHECK_INTERVAL, self::COMMAND_FILE, self::LOCK_FILE, self::RETAIN_STATE_INFORMATION, self::STATE_RETENTION_FILE, self::RETENTION_UPDATE_INTERVAL, self::USE_RETAINED_PROGRAM_STATE, self::USE_SYSLOG, self::LOG_NOTIFICATIONS, self::LOG_SERVICE_RETRIES, self::LOG_HOST_RETRIES, self::LOG_EVENT_HANDLERS, self::LOG_INITIAL_STATES, self::LOG_EXTERNAL_COMMANDS, self::LOG_PASSIVE_CHECKS, self::GLOBAL_HOST_EVENT_HANDLER, self::GLOBAL_SERVICE_EVENT_HANDLER, self::EXTERNAL_COMMAND_BUFFER_SLOTS, self::SLEEP_TIME, self::SERVICE_INTERLEAVE_FACTOR, self::MAX_CONCURRENT_CHECKS, self::SERVICE_REAPER_FREQUENCY, self::INTERVAL_LENGTH, self::USE_AGGRESSIVE_HOST_CHECKING, self::ENABLE_FLAP_DETECTION, self::LOW_SERVICE_FLAP_THRESHOLD, self::HIGH_SERVICE_FLAP_THRESHOLD, self::LOW_HOST_FLAP_THRESHOLD, self::HIGH_HOST_FLAP_THRESHOLD, self::SOFT_STATE_DEPENDENCIES, self::SERVICE_CHECK_TIMEOUT, self::HOST_CHECK_TIMEOUT, self::EVENT_HANDLER_TIMEOUT, self::NOTIFICATION_TIMEOUT, self::OCSP_TIMEOUT, self::OHCP_TIMEOUT, self::PERFDATA_TIMEOUT, self::OBSESS_OVER_SERVICES, self::OCSP_COMMAND, self::PROCESS_PERFORMANCE_DATA, self::CHECK_FOR_ORPHANED_SERVICES, self::CHECK_SERVICE_FRESHNESS, self::FRESHNESS_CHECK_INTERVAL, self::DATE_FORMAT, self::ILLEGAL_OBJECT_NAME_CHARS, self::ILLEGAL_MACRO_OUTPUT_CHARS, self::ADMIN_EMAIL, self::ADMIN_PAGER, self::EXECUTE_HOST_CHECKS, self::SERVICE_INTER_CHECK_DELAY_METHOD, self::USE_RETAINED_SCHEDULING_INFO, self::ACCEPT_PASSIVE_HOST_CHECKS, self::MAX_SERVICE_CHECK_SPREAD, self::HOST_INTER_CHECK_DELAY_METHOD, self::MAX_HOST_CHECK_SPREAD, self::AUTO_RESCHEDULE_CHECKS, self::AUTO_RESCHEDULING_INTERVAL, self::AUTO_RESCHEDULING_WINDOW, self::OCHP_TIMEOUT, self::OBSESS_OVER_HOSTS, self::OCHP_COMMAND, self::CHECK_HOST_FRESHNESS, self::HOST_FRESHNESS_CHECK_INTERVAL, self::SERVICE_FRESHNESS_CHECK_INTERVAL, self::USE_REGEXP_MATCHING, self::USE_TRUE_REGEXP_MATCHING, self::EVENT_BROKER_OPTIONS, self::DAEMON_DUMPS_CORE, self::HOST_PERFDATA_COMMAND, self::SERVICE_PERFDATA_COMMAND, self::HOST_PERFDATA_FILE, self::HOST_PERFDATA_FILE_TEMPLATE, self::SERVICE_PERFDATA_FILE, self::SERVICE_PERFDATA_FILE_TEMPLATE, self::HOST_PERFDATA_FILE_MODE, self::SERVICE_PERFDATA_FILE_MODE, self::HOST_PERFDATA_FILE_PROCESSING_COMMAND, self::SERVICE_PERFDATA_FILE_PROCESSING_COMMAND, self::HOST_PERFDATA_FILE_PROCESSING_INTERVAL, self::SERVICE_PERFDATA_FILE_PROCESSING_INTERVAL, self::OBJECT_CACHE_FILE, self::PRECACHED_OBJECT_FILE, self::RETAINED_HOST_ATTRIBUTE_MASK, self::RETAINED_SERVICE_ATTRIBUTE_MASK, self::RETAINED_PROCESS_HOST_ATTRIBUTE_MASK, self::RETAINED_PROCESS_SERVICE_ATTRIBUTE_MASK, self::RETAINED_CONTACT_HOST_ATTRIBUTE_MASK, self::RETAINED_CONTACT_SERVICE_ATTRIBUTE_MASK, self::CHECK_RESULT_REAPER_FREQUENCY, self::MAX_CHECK_RESULT_REAPER_TIME, self::CHECK_RESULT_PATH, self::MAX_CHECK_RESULT_FILE_AGE, self::TRANSLATE_PASSIVE_HOST_CHECKS, self::PASSIVE_HOST_CHECKS_ARE_SOFT, self::ENABLE_PREDICTIVE_HOST_DEPENDENCY_CHECKS, self::ENABLE_PREDICTIVE_SERVICE_DEPENDENCY_CHECKS, self::CACHED_HOST_CHECK_HORIZON, self::CACHED_SERVICE_CHECK_HORIZON, self::USE_LARGE_INSTALLATION_TWEAKS, self::FREE_CHILD_PROCESS_MEMORY, self::CHILD_PROCESSES_FORK_TWICE, self::ENABLE_ENVIRONMENT_MACROS, self::ADDITIONAL_FRESHNESS_LATENCY, self::ENABLE_EMBEDDED_PERL, self::USE_EMBEDDED_PERL_IMPLICITLY, self::P1_FILE, self::USE_TIMEZONE, self::DEBUG_FILE, self::DEBUG_LEVEL, self::DEBUG_VERBOSITY, self::MAX_DEBUG_FILE_SIZE, self::TEMP_PATH, self::CHECK_FOR_UPDATES, self::CHECK_FOR_ORPHANED_HOSTS, self::BARE_UPDATE_CHECK, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('ID', 'CONFIG_DIR', 'LOG_FILE', 'TEMP_FILE', 'STATUS_FILE', 'STATUS_UPDATE_INTERVAL', 'NAGIOS_USER', 'NAGIOS_GROUP', 'ENABLE_NOTIFICATIONS', 'EXECUTE_SERVICE_CHECKS', 'ACCEPT_PASSIVE_SERVICE_CHECKS', 'ENABLE_EVENT_HANDLERS', 'LOG_ROTATION_METHOD', 'LOG_ARCHIVE_PATH', 'CHECK_EXTERNAL_COMMANDS', 'COMMAND_CHECK_INTERVAL', 'COMMAND_FILE', 'LOCK_FILE', 'RETAIN_STATE_INFORMATION', 'STATE_RETENTION_FILE', 'RETENTION_UPDATE_INTERVAL', 'USE_RETAINED_PROGRAM_STATE', 'USE_SYSLOG', 'LOG_NOTIFICATIONS', 'LOG_SERVICE_RETRIES', 'LOG_HOST_RETRIES', 'LOG_EVENT_HANDLERS', 'LOG_INITIAL_STATES', 'LOG_EXTERNAL_COMMANDS', 'LOG_PASSIVE_CHECKS', 'GLOBAL_HOST_EVENT_HANDLER', 'GLOBAL_SERVICE_EVENT_HANDLER', 'EXTERNAL_COMMAND_BUFFER_SLOTS', 'SLEEP_TIME', 'SERVICE_INTERLEAVE_FACTOR', 'MAX_CONCURRENT_CHECKS', 'SERVICE_REAPER_FREQUENCY', 'INTERVAL_LENGTH', 'USE_AGGRESSIVE_HOST_CHECKING', 'ENABLE_FLAP_DETECTION', 'LOW_SERVICE_FLAP_THRESHOLD', 'HIGH_SERVICE_FLAP_THRESHOLD', 'LOW_HOST_FLAP_THRESHOLD', 'HIGH_HOST_FLAP_THRESHOLD', 'SOFT_STATE_DEPENDENCIES', 'SERVICE_CHECK_TIMEOUT', 'HOST_CHECK_TIMEOUT', 'EVENT_HANDLER_TIMEOUT', 'NOTIFICATION_TIMEOUT', 'OCSP_TIMEOUT', 'OHCP_TIMEOUT', 'PERFDATA_TIMEOUT', 'OBSESS_OVER_SERVICES', 'OCSP_COMMAND', 'PROCESS_PERFORMANCE_DATA', 'CHECK_FOR_ORPHANED_SERVICES', 'CHECK_SERVICE_FRESHNESS', 'FRESHNESS_CHECK_INTERVAL', 'DATE_FORMAT', 'ILLEGAL_OBJECT_NAME_CHARS', 'ILLEGAL_MACRO_OUTPUT_CHARS', 'ADMIN_EMAIL', 'ADMIN_PAGER', 'EXECUTE_HOST_CHECKS', 'SERVICE_INTER_CHECK_DELAY_METHOD', 'USE_RETAINED_SCHEDULING_INFO', 'ACCEPT_PASSIVE_HOST_CHECKS', 'MAX_SERVICE_CHECK_SPREAD', 'HOST_INTER_CHECK_DELAY_METHOD', 'MAX_HOST_CHECK_SPREAD', 'AUTO_RESCHEDULE_CHECKS', 'AUTO_RESCHEDULING_INTERVAL', 'AUTO_RESCHEDULING_WINDOW', 'OCHP_TIMEOUT', 'OBSESS_OVER_HOSTS', 'OCHP_COMMAND', 'CHECK_HOST_FRESHNESS', 'HOST_FRESHNESS_CHECK_INTERVAL', 'SERVICE_FRESHNESS_CHECK_INTERVAL', 'USE_REGEXP_MATCHING', 'USE_TRUE_REGEXP_MATCHING', 'EVENT_BROKER_OPTIONS', 'DAEMON_DUMPS_CORE', 'HOST_PERFDATA_COMMAND', 'SERVICE_PERFDATA_COMMAND', 'HOST_PERFDATA_FILE', 'HOST_PERFDATA_FILE_TEMPLATE', 'SERVICE_PERFDATA_FILE', 'SERVICE_PERFDATA_FILE_TEMPLATE', 'HOST_PERFDATA_FILE_MODE', 'SERVICE_PERFDATA_FILE_MODE', 'HOST_PERFDATA_FILE_PROCESSING_COMMAND', 'SERVICE_PERFDATA_FILE_PROCESSING_COMMAND', 'HOST_PERFDATA_FILE_PROCESSING_INTERVAL', 'SERVICE_PERFDATA_FILE_PROCESSING_INTERVAL', 'OBJECT_CACHE_FILE', 'PRECACHED_OBJECT_FILE', 'RETAINED_HOST_ATTRIBUTE_MASK', 'RETAINED_SERVICE_ATTRIBUTE_MASK', 'RETAINED_PROCESS_HOST_ATTRIBUTE_MASK', 'RETAINED_PROCESS_SERVICE_ATTRIBUTE_MASK', 'RETAINED_CONTACT_HOST_ATTRIBUTE_MASK', 'RETAINED_CONTACT_SERVICE_ATTRIBUTE_MASK', 'CHECK_RESULT_REAPER_FREQUENCY', 'MAX_CHECK_RESULT_REAPER_TIME', 'CHECK_RESULT_PATH', 'MAX_CHECK_RESULT_FILE_AGE', 'TRANSLATE_PASSIVE_HOST_CHECKS', 'PASSIVE_HOST_CHECKS_ARE_SOFT', 'ENABLE_PREDICTIVE_HOST_DEPENDENCY_CHECKS', 'ENABLE_PREDICTIVE_SERVICE_DEPENDENCY_CHECKS', 'CACHED_HOST_CHECK_HORIZON', 'CACHED_SERVICE_CHECK_HORIZON', 'USE_LARGE_INSTALLATION_TWEAKS', 'FREE_CHILD_PROCESS_MEMORY', 'CHILD_PROCESSES_FORK_TWICE', 'ENABLE_ENVIRONMENT_MACROS', 'ADDITIONAL_FRESHNESS_LATENCY', 'ENABLE_EMBEDDED_PERL', 'USE_EMBEDDED_PERL_IMPLICITLY', 'P1_FILE', 'USE_TIMEZONE', 'DEBUG_FILE', 'DEBUG_LEVEL', 'DEBUG_VERBOSITY', 'MAX_DEBUG_FILE_SIZE', 'TEMP_PATH', 'CHECK_FOR_UPDATES', 'CHECK_FOR_ORPHANED_HOSTS', 'BARE_UPDATE_CHECK', ),
+		BasePeer::TYPE_FIELDNAME => array ('id', 'config_dir', 'log_file', 'temp_file', 'status_file', 'status_update_interval', 'nagios_user', 'nagios_group', 'enable_notifications', 'execute_service_checks', 'accept_passive_service_checks', 'enable_event_handlers', 'log_rotation_method', 'log_archive_path', 'check_external_commands', 'command_check_interval', 'command_file', 'lock_file', 'retain_state_information', 'state_retention_file', 'retention_update_interval', 'use_retained_program_state', 'use_syslog', 'log_notifications', 'log_service_retries', 'log_host_retries', 'log_event_handlers', 'log_initial_states', 'log_external_commands', 'log_passive_checks', 'global_host_event_handler', 'global_service_event_handler', 'external_command_buffer_slots', 'sleep_time', 'service_interleave_factor', 'max_concurrent_checks', 'service_reaper_frequency', 'interval_length', 'use_aggressive_host_checking', 'enable_flap_detection', 'low_service_flap_threshold', 'high_service_flap_threshold', 'low_host_flap_threshold', 'high_host_flap_threshold', 'soft_state_dependencies', 'service_check_timeout', 'host_check_timeout', 'event_handler_timeout', 'notification_timeout', 'ocsp_timeout', 'ohcp_timeout', 'perfdata_timeout', 'obsess_over_services', 'ocsp_command', 'process_performance_data', 'check_for_orphaned_services', 'check_service_freshness', 'freshness_check_interval', 'date_format', 'illegal_object_name_chars', 'illegal_macro_output_chars', 'admin_email', 'admin_pager', 'execute_host_checks', 'service_inter_check_delay_method', 'use_retained_scheduling_info', 'accept_passive_host_checks', 'max_service_check_spread', 'host_inter_check_delay_method', 'max_host_check_spread', 'auto_reschedule_checks', 'auto_rescheduling_interval', 'auto_rescheduling_window', 'ochp_timeout', 'obsess_over_hosts', 'ochp_command', 'check_host_freshness', 'host_freshness_check_interval', 'service_freshness_check_interval', 'use_regexp_matching', 'use_true_regexp_matching', 'event_broker_options', 'daemon_dumps_core', 'host_perfdata_command', 'service_perfdata_command', 'host_perfdata_file', 'host_perfdata_file_template', 'service_perfdata_file', 'service_perfdata_file_template', 'host_perfdata_file_mode', 'service_perfdata_file_mode', 'host_perfdata_file_processing_command', 'service_perfdata_file_processing_command', 'host_perfdata_file_processing_interval', 'service_perfdata_file_processing_interval', 'object_cache_file', 'precached_object_file', 'retained_host_attribute_mask', 'retained_service_attribute_mask', 'retained_process_host_attribute_mask', 'retained_process_service_attribute_mask', 'retained_contact_host_attribute_mask', 'retained_contact_service_attribute_mask', 'check_result_reaper_frequency', 'max_check_result_reaper_time', 'check_result_path', 'max_check_result_file_age', 'translate_passive_host_checks', 'passive_host_checks_are_soft', 'enable_predictive_host_dependency_checks', 'enable_predictive_service_dependency_checks', 'cached_host_check_horizon', 'cached_service_check_horizon', 'use_large_installation_tweaks', 'free_child_process_memory', 'child_processes_fork_twice', 'enable_environment_macros', 'additional_freshness_latency', 'enable_embedded_perl', 'use_embedded_perl_implicitly', 'p1_file', 'use_timezone', 'debug_file', 'debug_level', 'debug_verbosity', 'max_debug_file_size', 'temp_path', 'check_for_updates', 'check_for_orphaned_hosts', 'bare_update_check', ),
+		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128, 129, )
 	);
 
 	/**
@@ -449,12 +455,12 @@ abstract class BaseNagiosMainConfigurationPeer {
 	 * e.g. self::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
 	 */
 	protected static $fieldKeys = array (
-		BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'ConfigDir' => 1, 'LogFile' => 2, 'TempFile' => 3, 'StatusFile' => 4, 'StatusUpdateInterval' => 5, 'NagiosUser' => 6, 'NagiosGroup' => 7, 'EnableNotifications' => 8, 'ExecuteServiceChecks' => 9, 'AcceptPassiveServiceChecks' => 10, 'EnableEventHandlers' => 11, 'LogRotationMethod' => 12, 'LogArchivePath' => 13, 'CheckExternalCommands' => 14, 'CommandCheckInterval' => 15, 'CommandFile' => 16, 'LockFile' => 17, 'RetainStateInformation' => 18, 'StateRetentionFile' => 19, 'RetentionUpdateInterval' => 20, 'UseRetainedProgramState' => 21, 'UseSyslog' => 22, 'LogNotifications' => 23, 'LogServiceRetries' => 24, 'LogHostRetries' => 25, 'LogEventHandlers' => 26, 'LogInitialStates' => 27, 'LogExternalCommands' => 28, 'LogPassiveChecks' => 29, 'GlobalHostEventHandler' => 30, 'GlobalServiceEventHandler' => 31, 'ExternalCommandBufferSlots' => 32, 'SleepTime' => 33, 'ServiceInterleaveFactor' => 34, 'MaxConcurrentChecks' => 35, 'ServiceReaperFrequency' => 36, 'IntervalLength' => 37, 'UseAggressiveHostChecking' => 38, 'EnableFlapDetection' => 39, 'LowServiceFlapThreshold' => 40, 'HighServiceFlapThreshold' => 41, 'LowHostFlapThreshold' => 42, 'HighHostFlapThreshold' => 43, 'SoftStateDependencies' => 44, 'ServiceCheckTimeout' => 45, 'HostCheckTimeout' => 46, 'EventHandlerTimeout' => 47, 'NotificationTimeout' => 48, 'OcspTimeout' => 49, 'OhcpTimeout' => 50, 'PerfdataTimeout' => 51, 'ObsessOverServices' => 52, 'OcspCommand' => 53, 'ProcessPerformanceData' => 54, 'CheckForOrphanedServices' => 55, 'CheckServiceFreshness' => 56, 'FreshnessCheckInterval' => 57, 'DateFormat' => 58, 'IllegalObjectNameChars' => 59, 'IllegalMacroOutputChars' => 60, 'AdminEmail' => 61, 'AdminPager' => 62, 'ExecuteHostChecks' => 63, 'ServiceInterCheckDelayMethod' => 64, 'UseRetainedSchedulingInfo' => 65, 'AcceptPassiveHostChecks' => 66, 'MaxServiceCheckSpread' => 67, 'HostInterCheckDelayMethod' => 68, 'MaxHostCheckSpread' => 69, 'AutoRescheduleChecks' => 70, 'AutoReschedulingInterval' => 71, 'AutoReschedulingWindow' => 72, 'OchpTimeout' => 73, 'ObsessOverHosts' => 74, 'OchpCommand' => 75, 'CheckHostFreshness' => 76, 'HostFreshnessCheckInterval' => 77, 'ServiceFreshnessCheckInterval' => 78, 'UseRegexpMatching' => 79, 'UseTrueRegexpMatching' => 80, 'EventBrokerOptions' => 81, 'DaemonDumpsCore' => 82, 'HostPerfdataCommand' => 83, 'ServicePerfdataCommand' => 84, 'HostPerfdataFile' => 85, 'HostPerfdataFileTemplate' => 86, 'ServicePerfdataFile' => 87, 'ServicePerfdataFileTemplate' => 88, 'HostPerfdataFileMode' => 89, 'ServicePerfdataFileMode' => 90, 'HostPerfdataFileProcessingCommand' => 91, 'ServicePerfdataFileProcessingCommand' => 92, 'HostPerfdataFileProcessingInterval' => 93, 'ServicePerfdataFileProcessingInterval' => 94, 'ObjectCacheFile' => 95, 'PrecachedObjectFile' => 96, 'RetainedHostAttributeMask' => 97, 'RetainedServiceAttributeMask' => 98, 'RetainedProcessHostAttributeMask' => 99, 'RetainedProcessServiceAttributeMask' => 100, 'RetainedContactHostAttributeMask' => 101, 'RetainedContactServiceAttributeMask' => 102, 'CheckResultReaperFrequency' => 103, 'MaxCheckResultReaperTime' => 104, 'CheckResultPath' => 105, 'MaxCheckResultFileAge' => 106, 'TranslatePassiveHostChecks' => 107, 'PassiveHostChecksAreSoft' => 108, 'EnablePredictiveHostDependencyChecks' => 109, 'EnablePredictiveServiceDependencyChecks' => 110, 'CachedHostCheckHorizon' => 111, 'CachedServiceCheckHorizon' => 112, 'UseLargeInstallationTweaks' => 113, 'FreeChildProcessMemory' => 114, 'ChildProcessesForkTwice' => 115, 'EnableEnvironmentMacros' => 116, 'AdditionalFreshnessLatency' => 117, 'EnableEmbeddedPerl' => 118, 'UseEmbeddedPerlImplicitly' => 119, 'P1File' => 120, 'UseTimezone' => 121, 'DebugFile' => 122, 'DebugLevel' => 123, 'DebugVerbosity' => 124, 'MaxDebugFileSize' => 125, 'TempPath' => 126, ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'configDir' => 1, 'logFile' => 2, 'tempFile' => 3, 'statusFile' => 4, 'statusUpdateInterval' => 5, 'nagiosUser' => 6, 'nagiosGroup' => 7, 'enableNotifications' => 8, 'executeServiceChecks' => 9, 'acceptPassiveServiceChecks' => 10, 'enableEventHandlers' => 11, 'logRotationMethod' => 12, 'logArchivePath' => 13, 'checkExternalCommands' => 14, 'commandCheckInterval' => 15, 'commandFile' => 16, 'lockFile' => 17, 'retainStateInformation' => 18, 'stateRetentionFile' => 19, 'retentionUpdateInterval' => 20, 'useRetainedProgramState' => 21, 'useSyslog' => 22, 'logNotifications' => 23, 'logServiceRetries' => 24, 'logHostRetries' => 25, 'logEventHandlers' => 26, 'logInitialStates' => 27, 'logExternalCommands' => 28, 'logPassiveChecks' => 29, 'globalHostEventHandler' => 30, 'globalServiceEventHandler' => 31, 'externalCommandBufferSlots' => 32, 'sleepTime' => 33, 'serviceInterleaveFactor' => 34, 'maxConcurrentChecks' => 35, 'serviceReaperFrequency' => 36, 'intervalLength' => 37, 'useAggressiveHostChecking' => 38, 'enableFlapDetection' => 39, 'lowServiceFlapThreshold' => 40, 'highServiceFlapThreshold' => 41, 'lowHostFlapThreshold' => 42, 'highHostFlapThreshold' => 43, 'softStateDependencies' => 44, 'serviceCheckTimeout' => 45, 'hostCheckTimeout' => 46, 'eventHandlerTimeout' => 47, 'notificationTimeout' => 48, 'ocspTimeout' => 49, 'ohcpTimeout' => 50, 'perfdataTimeout' => 51, 'obsessOverServices' => 52, 'ocspCommand' => 53, 'processPerformanceData' => 54, 'checkForOrphanedServices' => 55, 'checkServiceFreshness' => 56, 'freshnessCheckInterval' => 57, 'dateFormat' => 58, 'illegalObjectNameChars' => 59, 'illegalMacroOutputChars' => 60, 'adminEmail' => 61, 'adminPager' => 62, 'executeHostChecks' => 63, 'serviceInterCheckDelayMethod' => 64, 'useRetainedSchedulingInfo' => 65, 'acceptPassiveHostChecks' => 66, 'maxServiceCheckSpread' => 67, 'hostInterCheckDelayMethod' => 68, 'maxHostCheckSpread' => 69, 'autoRescheduleChecks' => 70, 'autoReschedulingInterval' => 71, 'autoReschedulingWindow' => 72, 'ochpTimeout' => 73, 'obsessOverHosts' => 74, 'ochpCommand' => 75, 'checkHostFreshness' => 76, 'hostFreshnessCheckInterval' => 77, 'serviceFreshnessCheckInterval' => 78, 'useRegexpMatching' => 79, 'useTrueRegexpMatching' => 80, 'eventBrokerOptions' => 81, 'daemonDumpsCore' => 82, 'hostPerfdataCommand' => 83, 'servicePerfdataCommand' => 84, 'hostPerfdataFile' => 85, 'hostPerfdataFileTemplate' => 86, 'servicePerfdataFile' => 87, 'servicePerfdataFileTemplate' => 88, 'hostPerfdataFileMode' => 89, 'servicePerfdataFileMode' => 90, 'hostPerfdataFileProcessingCommand' => 91, 'servicePerfdataFileProcessingCommand' => 92, 'hostPerfdataFileProcessingInterval' => 93, 'servicePerfdataFileProcessingInterval' => 94, 'objectCacheFile' => 95, 'precachedObjectFile' => 96, 'retainedHostAttributeMask' => 97, 'retainedServiceAttributeMask' => 98, 'retainedProcessHostAttributeMask' => 99, 'retainedProcessServiceAttributeMask' => 100, 'retainedContactHostAttributeMask' => 101, 'retainedContactServiceAttributeMask' => 102, 'checkResultReaperFrequency' => 103, 'maxCheckResultReaperTime' => 104, 'checkResultPath' => 105, 'maxCheckResultFileAge' => 106, 'translatePassiveHostChecks' => 107, 'passiveHostChecksAreSoft' => 108, 'enablePredictiveHostDependencyChecks' => 109, 'enablePredictiveServiceDependencyChecks' => 110, 'cachedHostCheckHorizon' => 111, 'cachedServiceCheckHorizon' => 112, 'useLargeInstallationTweaks' => 113, 'freeChildProcessMemory' => 114, 'childProcessesForkTwice' => 115, 'enableEnvironmentMacros' => 116, 'additionalFreshnessLatency' => 117, 'enableEmbeddedPerl' => 118, 'useEmbeddedPerlImplicitly' => 119, 'p1File' => 120, 'useTimezone' => 121, 'debugFile' => 122, 'debugLevel' => 123, 'debugVerbosity' => 124, 'maxDebugFileSize' => 125, 'tempPath' => 126, ),
-		BasePeer::TYPE_COLNAME => array (self::ID => 0, self::CONFIG_DIR => 1, self::LOG_FILE => 2, self::TEMP_FILE => 3, self::STATUS_FILE => 4, self::STATUS_UPDATE_INTERVAL => 5, self::NAGIOS_USER => 6, self::NAGIOS_GROUP => 7, self::ENABLE_NOTIFICATIONS => 8, self::EXECUTE_SERVICE_CHECKS => 9, self::ACCEPT_PASSIVE_SERVICE_CHECKS => 10, self::ENABLE_EVENT_HANDLERS => 11, self::LOG_ROTATION_METHOD => 12, self::LOG_ARCHIVE_PATH => 13, self::CHECK_EXTERNAL_COMMANDS => 14, self::COMMAND_CHECK_INTERVAL => 15, self::COMMAND_FILE => 16, self::LOCK_FILE => 17, self::RETAIN_STATE_INFORMATION => 18, self::STATE_RETENTION_FILE => 19, self::RETENTION_UPDATE_INTERVAL => 20, self::USE_RETAINED_PROGRAM_STATE => 21, self::USE_SYSLOG => 22, self::LOG_NOTIFICATIONS => 23, self::LOG_SERVICE_RETRIES => 24, self::LOG_HOST_RETRIES => 25, self::LOG_EVENT_HANDLERS => 26, self::LOG_INITIAL_STATES => 27, self::LOG_EXTERNAL_COMMANDS => 28, self::LOG_PASSIVE_CHECKS => 29, self::GLOBAL_HOST_EVENT_HANDLER => 30, self::GLOBAL_SERVICE_EVENT_HANDLER => 31, self::EXTERNAL_COMMAND_BUFFER_SLOTS => 32, self::SLEEP_TIME => 33, self::SERVICE_INTERLEAVE_FACTOR => 34, self::MAX_CONCURRENT_CHECKS => 35, self::SERVICE_REAPER_FREQUENCY => 36, self::INTERVAL_LENGTH => 37, self::USE_AGGRESSIVE_HOST_CHECKING => 38, self::ENABLE_FLAP_DETECTION => 39, self::LOW_SERVICE_FLAP_THRESHOLD => 40, self::HIGH_SERVICE_FLAP_THRESHOLD => 41, self::LOW_HOST_FLAP_THRESHOLD => 42, self::HIGH_HOST_FLAP_THRESHOLD => 43, self::SOFT_STATE_DEPENDENCIES => 44, self::SERVICE_CHECK_TIMEOUT => 45, self::HOST_CHECK_TIMEOUT => 46, self::EVENT_HANDLER_TIMEOUT => 47, self::NOTIFICATION_TIMEOUT => 48, self::OCSP_TIMEOUT => 49, self::OHCP_TIMEOUT => 50, self::PERFDATA_TIMEOUT => 51, self::OBSESS_OVER_SERVICES => 52, self::OCSP_COMMAND => 53, self::PROCESS_PERFORMANCE_DATA => 54, self::CHECK_FOR_ORPHANED_SERVICES => 55, self::CHECK_SERVICE_FRESHNESS => 56, self::FRESHNESS_CHECK_INTERVAL => 57, self::DATE_FORMAT => 58, self::ILLEGAL_OBJECT_NAME_CHARS => 59, self::ILLEGAL_MACRO_OUTPUT_CHARS => 60, self::ADMIN_EMAIL => 61, self::ADMIN_PAGER => 62, self::EXECUTE_HOST_CHECKS => 63, self::SERVICE_INTER_CHECK_DELAY_METHOD => 64, self::USE_RETAINED_SCHEDULING_INFO => 65, self::ACCEPT_PASSIVE_HOST_CHECKS => 66, self::MAX_SERVICE_CHECK_SPREAD => 67, self::HOST_INTER_CHECK_DELAY_METHOD => 68, self::MAX_HOST_CHECK_SPREAD => 69, self::AUTO_RESCHEDULE_CHECKS => 70, self::AUTO_RESCHEDULING_INTERVAL => 71, self::AUTO_RESCHEDULING_WINDOW => 72, self::OCHP_TIMEOUT => 73, self::OBSESS_OVER_HOSTS => 74, self::OCHP_COMMAND => 75, self::CHECK_HOST_FRESHNESS => 76, self::HOST_FRESHNESS_CHECK_INTERVAL => 77, self::SERVICE_FRESHNESS_CHECK_INTERVAL => 78, self::USE_REGEXP_MATCHING => 79, self::USE_TRUE_REGEXP_MATCHING => 80, self::EVENT_BROKER_OPTIONS => 81, self::DAEMON_DUMPS_CORE => 82, self::HOST_PERFDATA_COMMAND => 83, self::SERVICE_PERFDATA_COMMAND => 84, self::HOST_PERFDATA_FILE => 85, self::HOST_PERFDATA_FILE_TEMPLATE => 86, self::SERVICE_PERFDATA_FILE => 87, self::SERVICE_PERFDATA_FILE_TEMPLATE => 88, self::HOST_PERFDATA_FILE_MODE => 89, self::SERVICE_PERFDATA_FILE_MODE => 90, self::HOST_PERFDATA_FILE_PROCESSING_COMMAND => 91, self::SERVICE_PERFDATA_FILE_PROCESSING_COMMAND => 92, self::HOST_PERFDATA_FILE_PROCESSING_INTERVAL => 93, self::SERVICE_PERFDATA_FILE_PROCESSING_INTERVAL => 94, self::OBJECT_CACHE_FILE => 95, self::PRECACHED_OBJECT_FILE => 96, self::RETAINED_HOST_ATTRIBUTE_MASK => 97, self::RETAINED_SERVICE_ATTRIBUTE_MASK => 98, self::RETAINED_PROCESS_HOST_ATTRIBUTE_MASK => 99, self::RETAINED_PROCESS_SERVICE_ATTRIBUTE_MASK => 100, self::RETAINED_CONTACT_HOST_ATTRIBUTE_MASK => 101, self::RETAINED_CONTACT_SERVICE_ATTRIBUTE_MASK => 102, self::CHECK_RESULT_REAPER_FREQUENCY => 103, self::MAX_CHECK_RESULT_REAPER_TIME => 104, self::CHECK_RESULT_PATH => 105, self::MAX_CHECK_RESULT_FILE_AGE => 106, self::TRANSLATE_PASSIVE_HOST_CHECKS => 107, self::PASSIVE_HOST_CHECKS_ARE_SOFT => 108, self::ENABLE_PREDICTIVE_HOST_DEPENDENCY_CHECKS => 109, self::ENABLE_PREDICTIVE_SERVICE_DEPENDENCY_CHECKS => 110, self::CACHED_HOST_CHECK_HORIZON => 111, self::CACHED_SERVICE_CHECK_HORIZON => 112, self::USE_LARGE_INSTALLATION_TWEAKS => 113, self::FREE_CHILD_PROCESS_MEMORY => 114, self::CHILD_PROCESSES_FORK_TWICE => 115, self::ENABLE_ENVIRONMENT_MACROS => 116, self::ADDITIONAL_FRESHNESS_LATENCY => 117, self::ENABLE_EMBEDDED_PERL => 118, self::USE_EMBEDDED_PERL_IMPLICITLY => 119, self::P1_FILE => 120, self::USE_TIMEZONE => 121, self::DEBUG_FILE => 122, self::DEBUG_LEVEL => 123, self::DEBUG_VERBOSITY => 124, self::MAX_DEBUG_FILE_SIZE => 125, self::TEMP_PATH => 126, ),
-		BasePeer::TYPE_RAW_COLNAME => array ('ID' => 0, 'CONFIG_DIR' => 1, 'LOG_FILE' => 2, 'TEMP_FILE' => 3, 'STATUS_FILE' => 4, 'STATUS_UPDATE_INTERVAL' => 5, 'NAGIOS_USER' => 6, 'NAGIOS_GROUP' => 7, 'ENABLE_NOTIFICATIONS' => 8, 'EXECUTE_SERVICE_CHECKS' => 9, 'ACCEPT_PASSIVE_SERVICE_CHECKS' => 10, 'ENABLE_EVENT_HANDLERS' => 11, 'LOG_ROTATION_METHOD' => 12, 'LOG_ARCHIVE_PATH' => 13, 'CHECK_EXTERNAL_COMMANDS' => 14, 'COMMAND_CHECK_INTERVAL' => 15, 'COMMAND_FILE' => 16, 'LOCK_FILE' => 17, 'RETAIN_STATE_INFORMATION' => 18, 'STATE_RETENTION_FILE' => 19, 'RETENTION_UPDATE_INTERVAL' => 20, 'USE_RETAINED_PROGRAM_STATE' => 21, 'USE_SYSLOG' => 22, 'LOG_NOTIFICATIONS' => 23, 'LOG_SERVICE_RETRIES' => 24, 'LOG_HOST_RETRIES' => 25, 'LOG_EVENT_HANDLERS' => 26, 'LOG_INITIAL_STATES' => 27, 'LOG_EXTERNAL_COMMANDS' => 28, 'LOG_PASSIVE_CHECKS' => 29, 'GLOBAL_HOST_EVENT_HANDLER' => 30, 'GLOBAL_SERVICE_EVENT_HANDLER' => 31, 'EXTERNAL_COMMAND_BUFFER_SLOTS' => 32, 'SLEEP_TIME' => 33, 'SERVICE_INTERLEAVE_FACTOR' => 34, 'MAX_CONCURRENT_CHECKS' => 35, 'SERVICE_REAPER_FREQUENCY' => 36, 'INTERVAL_LENGTH' => 37, 'USE_AGGRESSIVE_HOST_CHECKING' => 38, 'ENABLE_FLAP_DETECTION' => 39, 'LOW_SERVICE_FLAP_THRESHOLD' => 40, 'HIGH_SERVICE_FLAP_THRESHOLD' => 41, 'LOW_HOST_FLAP_THRESHOLD' => 42, 'HIGH_HOST_FLAP_THRESHOLD' => 43, 'SOFT_STATE_DEPENDENCIES' => 44, 'SERVICE_CHECK_TIMEOUT' => 45, 'HOST_CHECK_TIMEOUT' => 46, 'EVENT_HANDLER_TIMEOUT' => 47, 'NOTIFICATION_TIMEOUT' => 48, 'OCSP_TIMEOUT' => 49, 'OHCP_TIMEOUT' => 50, 'PERFDATA_TIMEOUT' => 51, 'OBSESS_OVER_SERVICES' => 52, 'OCSP_COMMAND' => 53, 'PROCESS_PERFORMANCE_DATA' => 54, 'CHECK_FOR_ORPHANED_SERVICES' => 55, 'CHECK_SERVICE_FRESHNESS' => 56, 'FRESHNESS_CHECK_INTERVAL' => 57, 'DATE_FORMAT' => 58, 'ILLEGAL_OBJECT_NAME_CHARS' => 59, 'ILLEGAL_MACRO_OUTPUT_CHARS' => 60, 'ADMIN_EMAIL' => 61, 'ADMIN_PAGER' => 62, 'EXECUTE_HOST_CHECKS' => 63, 'SERVICE_INTER_CHECK_DELAY_METHOD' => 64, 'USE_RETAINED_SCHEDULING_INFO' => 65, 'ACCEPT_PASSIVE_HOST_CHECKS' => 66, 'MAX_SERVICE_CHECK_SPREAD' => 67, 'HOST_INTER_CHECK_DELAY_METHOD' => 68, 'MAX_HOST_CHECK_SPREAD' => 69, 'AUTO_RESCHEDULE_CHECKS' => 70, 'AUTO_RESCHEDULING_INTERVAL' => 71, 'AUTO_RESCHEDULING_WINDOW' => 72, 'OCHP_TIMEOUT' => 73, 'OBSESS_OVER_HOSTS' => 74, 'OCHP_COMMAND' => 75, 'CHECK_HOST_FRESHNESS' => 76, 'HOST_FRESHNESS_CHECK_INTERVAL' => 77, 'SERVICE_FRESHNESS_CHECK_INTERVAL' => 78, 'USE_REGEXP_MATCHING' => 79, 'USE_TRUE_REGEXP_MATCHING' => 80, 'EVENT_BROKER_OPTIONS' => 81, 'DAEMON_DUMPS_CORE' => 82, 'HOST_PERFDATA_COMMAND' => 83, 'SERVICE_PERFDATA_COMMAND' => 84, 'HOST_PERFDATA_FILE' => 85, 'HOST_PERFDATA_FILE_TEMPLATE' => 86, 'SERVICE_PERFDATA_FILE' => 87, 'SERVICE_PERFDATA_FILE_TEMPLATE' => 88, 'HOST_PERFDATA_FILE_MODE' => 89, 'SERVICE_PERFDATA_FILE_MODE' => 90, 'HOST_PERFDATA_FILE_PROCESSING_COMMAND' => 91, 'SERVICE_PERFDATA_FILE_PROCESSING_COMMAND' => 92, 'HOST_PERFDATA_FILE_PROCESSING_INTERVAL' => 93, 'SERVICE_PERFDATA_FILE_PROCESSING_INTERVAL' => 94, 'OBJECT_CACHE_FILE' => 95, 'PRECACHED_OBJECT_FILE' => 96, 'RETAINED_HOST_ATTRIBUTE_MASK' => 97, 'RETAINED_SERVICE_ATTRIBUTE_MASK' => 98, 'RETAINED_PROCESS_HOST_ATTRIBUTE_MASK' => 99, 'RETAINED_PROCESS_SERVICE_ATTRIBUTE_MASK' => 100, 'RETAINED_CONTACT_HOST_ATTRIBUTE_MASK' => 101, 'RETAINED_CONTACT_SERVICE_ATTRIBUTE_MASK' => 102, 'CHECK_RESULT_REAPER_FREQUENCY' => 103, 'MAX_CHECK_RESULT_REAPER_TIME' => 104, 'CHECK_RESULT_PATH' => 105, 'MAX_CHECK_RESULT_FILE_AGE' => 106, 'TRANSLATE_PASSIVE_HOST_CHECKS' => 107, 'PASSIVE_HOST_CHECKS_ARE_SOFT' => 108, 'ENABLE_PREDICTIVE_HOST_DEPENDENCY_CHECKS' => 109, 'ENABLE_PREDICTIVE_SERVICE_DEPENDENCY_CHECKS' => 110, 'CACHED_HOST_CHECK_HORIZON' => 111, 'CACHED_SERVICE_CHECK_HORIZON' => 112, 'USE_LARGE_INSTALLATION_TWEAKS' => 113, 'FREE_CHILD_PROCESS_MEMORY' => 114, 'CHILD_PROCESSES_FORK_TWICE' => 115, 'ENABLE_ENVIRONMENT_MACROS' => 116, 'ADDITIONAL_FRESHNESS_LATENCY' => 117, 'ENABLE_EMBEDDED_PERL' => 118, 'USE_EMBEDDED_PERL_IMPLICITLY' => 119, 'P1_FILE' => 120, 'USE_TIMEZONE' => 121, 'DEBUG_FILE' => 122, 'DEBUG_LEVEL' => 123, 'DEBUG_VERBOSITY' => 124, 'MAX_DEBUG_FILE_SIZE' => 125, 'TEMP_PATH' => 126, ),
-		BasePeer::TYPE_FIELDNAME => array ('id' => 0, 'config_dir' => 1, 'log_file' => 2, 'temp_file' => 3, 'status_file' => 4, 'status_update_interval' => 5, 'nagios_user' => 6, 'nagios_group' => 7, 'enable_notifications' => 8, 'execute_service_checks' => 9, 'accept_passive_service_checks' => 10, 'enable_event_handlers' => 11, 'log_rotation_method' => 12, 'log_archive_path' => 13, 'check_external_commands' => 14, 'command_check_interval' => 15, 'command_file' => 16, 'lock_file' => 17, 'retain_state_information' => 18, 'state_retention_file' => 19, 'retention_update_interval' => 20, 'use_retained_program_state' => 21, 'use_syslog' => 22, 'log_notifications' => 23, 'log_service_retries' => 24, 'log_host_retries' => 25, 'log_event_handlers' => 26, 'log_initial_states' => 27, 'log_external_commands' => 28, 'log_passive_checks' => 29, 'global_host_event_handler' => 30, 'global_service_event_handler' => 31, 'external_command_buffer_slots' => 32, 'sleep_time' => 33, 'service_interleave_factor' => 34, 'max_concurrent_checks' => 35, 'service_reaper_frequency' => 36, 'interval_length' => 37, 'use_aggressive_host_checking' => 38, 'enable_flap_detection' => 39, 'low_service_flap_threshold' => 40, 'high_service_flap_threshold' => 41, 'low_host_flap_threshold' => 42, 'high_host_flap_threshold' => 43, 'soft_state_dependencies' => 44, 'service_check_timeout' => 45, 'host_check_timeout' => 46, 'event_handler_timeout' => 47, 'notification_timeout' => 48, 'ocsp_timeout' => 49, 'ohcp_timeout' => 50, 'perfdata_timeout' => 51, 'obsess_over_services' => 52, 'ocsp_command' => 53, 'process_performance_data' => 54, 'check_for_orphaned_services' => 55, 'check_service_freshness' => 56, 'freshness_check_interval' => 57, 'date_format' => 58, 'illegal_object_name_chars' => 59, 'illegal_macro_output_chars' => 60, 'admin_email' => 61, 'admin_pager' => 62, 'execute_host_checks' => 63, 'service_inter_check_delay_method' => 64, 'use_retained_scheduling_info' => 65, 'accept_passive_host_checks' => 66, 'max_service_check_spread' => 67, 'host_inter_check_delay_method' => 68, 'max_host_check_spread' => 69, 'auto_reschedule_checks' => 70, 'auto_rescheduling_interval' => 71, 'auto_rescheduling_window' => 72, 'ochp_timeout' => 73, 'obsess_over_hosts' => 74, 'ochp_command' => 75, 'check_host_freshness' => 76, 'host_freshness_check_interval' => 77, 'service_freshness_check_interval' => 78, 'use_regexp_matching' => 79, 'use_true_regexp_matching' => 80, 'event_broker_options' => 81, 'daemon_dumps_core' => 82, 'host_perfdata_command' => 83, 'service_perfdata_command' => 84, 'host_perfdata_file' => 85, 'host_perfdata_file_template' => 86, 'service_perfdata_file' => 87, 'service_perfdata_file_template' => 88, 'host_perfdata_file_mode' => 89, 'service_perfdata_file_mode' => 90, 'host_perfdata_file_processing_command' => 91, 'service_perfdata_file_processing_command' => 92, 'host_perfdata_file_processing_interval' => 93, 'service_perfdata_file_processing_interval' => 94, 'object_cache_file' => 95, 'precached_object_file' => 96, 'retained_host_attribute_mask' => 97, 'retained_service_attribute_mask' => 98, 'retained_process_host_attribute_mask' => 99, 'retained_process_service_attribute_mask' => 100, 'retained_contact_host_attribute_mask' => 101, 'retained_contact_service_attribute_mask' => 102, 'check_result_reaper_frequency' => 103, 'max_check_result_reaper_time' => 104, 'check_result_path' => 105, 'max_check_result_file_age' => 106, 'translate_passive_host_checks' => 107, 'passive_host_checks_are_soft' => 108, 'enable_predictive_host_dependency_checks' => 109, 'enable_predictive_service_dependency_checks' => 110, 'cached_host_check_horizon' => 111, 'cached_service_check_horizon' => 112, 'use_large_installation_tweaks' => 113, 'free_child_process_memory' => 114, 'child_processes_fork_twice' => 115, 'enable_environment_macros' => 116, 'additional_freshness_latency' => 117, 'enable_embedded_perl' => 118, 'use_embedded_perl_implicitly' => 119, 'p1_file' => 120, 'use_timezone' => 121, 'debug_file' => 122, 'debug_level' => 123, 'debug_verbosity' => 124, 'max_debug_file_size' => 125, 'temp_path' => 126, ),
-		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, )
+		BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'ConfigDir' => 1, 'LogFile' => 2, 'TempFile' => 3, 'StatusFile' => 4, 'StatusUpdateInterval' => 5, 'NagiosUser' => 6, 'NagiosGroup' => 7, 'EnableNotifications' => 8, 'ExecuteServiceChecks' => 9, 'AcceptPassiveServiceChecks' => 10, 'EnableEventHandlers' => 11, 'LogRotationMethod' => 12, 'LogArchivePath' => 13, 'CheckExternalCommands' => 14, 'CommandCheckInterval' => 15, 'CommandFile' => 16, 'LockFile' => 17, 'RetainStateInformation' => 18, 'StateRetentionFile' => 19, 'RetentionUpdateInterval' => 20, 'UseRetainedProgramState' => 21, 'UseSyslog' => 22, 'LogNotifications' => 23, 'LogServiceRetries' => 24, 'LogHostRetries' => 25, 'LogEventHandlers' => 26, 'LogInitialStates' => 27, 'LogExternalCommands' => 28, 'LogPassiveChecks' => 29, 'GlobalHostEventHandler' => 30, 'GlobalServiceEventHandler' => 31, 'ExternalCommandBufferSlots' => 32, 'SleepTime' => 33, 'ServiceInterleaveFactor' => 34, 'MaxConcurrentChecks' => 35, 'ServiceReaperFrequency' => 36, 'IntervalLength' => 37, 'UseAggressiveHostChecking' => 38, 'EnableFlapDetection' => 39, 'LowServiceFlapThreshold' => 40, 'HighServiceFlapThreshold' => 41, 'LowHostFlapThreshold' => 42, 'HighHostFlapThreshold' => 43, 'SoftStateDependencies' => 44, 'ServiceCheckTimeout' => 45, 'HostCheckTimeout' => 46, 'EventHandlerTimeout' => 47, 'NotificationTimeout' => 48, 'OcspTimeout' => 49, 'OhcpTimeout' => 50, 'PerfdataTimeout' => 51, 'ObsessOverServices' => 52, 'OcspCommand' => 53, 'ProcessPerformanceData' => 54, 'CheckForOrphanedServices' => 55, 'CheckServiceFreshness' => 56, 'FreshnessCheckInterval' => 57, 'DateFormat' => 58, 'IllegalObjectNameChars' => 59, 'IllegalMacroOutputChars' => 60, 'AdminEmail' => 61, 'AdminPager' => 62, 'ExecuteHostChecks' => 63, 'ServiceInterCheckDelayMethod' => 64, 'UseRetainedSchedulingInfo' => 65, 'AcceptPassiveHostChecks' => 66, 'MaxServiceCheckSpread' => 67, 'HostInterCheckDelayMethod' => 68, 'MaxHostCheckSpread' => 69, 'AutoRescheduleChecks' => 70, 'AutoReschedulingInterval' => 71, 'AutoReschedulingWindow' => 72, 'OchpTimeout' => 73, 'ObsessOverHosts' => 74, 'OchpCommand' => 75, 'CheckHostFreshness' => 76, 'HostFreshnessCheckInterval' => 77, 'ServiceFreshnessCheckInterval' => 78, 'UseRegexpMatching' => 79, 'UseTrueRegexpMatching' => 80, 'EventBrokerOptions' => 81, 'DaemonDumpsCore' => 82, 'HostPerfdataCommand' => 83, 'ServicePerfdataCommand' => 84, 'HostPerfdataFile' => 85, 'HostPerfdataFileTemplate' => 86, 'ServicePerfdataFile' => 87, 'ServicePerfdataFileTemplate' => 88, 'HostPerfdataFileMode' => 89, 'ServicePerfdataFileMode' => 90, 'HostPerfdataFileProcessingCommand' => 91, 'ServicePerfdataFileProcessingCommand' => 92, 'HostPerfdataFileProcessingInterval' => 93, 'ServicePerfdataFileProcessingInterval' => 94, 'ObjectCacheFile' => 95, 'PrecachedObjectFile' => 96, 'RetainedHostAttributeMask' => 97, 'RetainedServiceAttributeMask' => 98, 'RetainedProcessHostAttributeMask' => 99, 'RetainedProcessServiceAttributeMask' => 100, 'RetainedContactHostAttributeMask' => 101, 'RetainedContactServiceAttributeMask' => 102, 'CheckResultReaperFrequency' => 103, 'MaxCheckResultReaperTime' => 104, 'CheckResultPath' => 105, 'MaxCheckResultFileAge' => 106, 'TranslatePassiveHostChecks' => 107, 'PassiveHostChecksAreSoft' => 108, 'EnablePredictiveHostDependencyChecks' => 109, 'EnablePredictiveServiceDependencyChecks' => 110, 'CachedHostCheckHorizon' => 111, 'CachedServiceCheckHorizon' => 112, 'UseLargeInstallationTweaks' => 113, 'FreeChildProcessMemory' => 114, 'ChildProcessesForkTwice' => 115, 'EnableEnvironmentMacros' => 116, 'AdditionalFreshnessLatency' => 117, 'EnableEmbeddedPerl' => 118, 'UseEmbeddedPerlImplicitly' => 119, 'P1File' => 120, 'UseTimezone' => 121, 'DebugFile' => 122, 'DebugLevel' => 123, 'DebugVerbosity' => 124, 'MaxDebugFileSize' => 125, 'TempPath' => 126, 'CheckForUpdates' => 127, 'CheckForOrphanedHosts' => 128, 'BareUpdateCheck' => 129, ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'configDir' => 1, 'logFile' => 2, 'tempFile' => 3, 'statusFile' => 4, 'statusUpdateInterval' => 5, 'nagiosUser' => 6, 'nagiosGroup' => 7, 'enableNotifications' => 8, 'executeServiceChecks' => 9, 'acceptPassiveServiceChecks' => 10, 'enableEventHandlers' => 11, 'logRotationMethod' => 12, 'logArchivePath' => 13, 'checkExternalCommands' => 14, 'commandCheckInterval' => 15, 'commandFile' => 16, 'lockFile' => 17, 'retainStateInformation' => 18, 'stateRetentionFile' => 19, 'retentionUpdateInterval' => 20, 'useRetainedProgramState' => 21, 'useSyslog' => 22, 'logNotifications' => 23, 'logServiceRetries' => 24, 'logHostRetries' => 25, 'logEventHandlers' => 26, 'logInitialStates' => 27, 'logExternalCommands' => 28, 'logPassiveChecks' => 29, 'globalHostEventHandler' => 30, 'globalServiceEventHandler' => 31, 'externalCommandBufferSlots' => 32, 'sleepTime' => 33, 'serviceInterleaveFactor' => 34, 'maxConcurrentChecks' => 35, 'serviceReaperFrequency' => 36, 'intervalLength' => 37, 'useAggressiveHostChecking' => 38, 'enableFlapDetection' => 39, 'lowServiceFlapThreshold' => 40, 'highServiceFlapThreshold' => 41, 'lowHostFlapThreshold' => 42, 'highHostFlapThreshold' => 43, 'softStateDependencies' => 44, 'serviceCheckTimeout' => 45, 'hostCheckTimeout' => 46, 'eventHandlerTimeout' => 47, 'notificationTimeout' => 48, 'ocspTimeout' => 49, 'ohcpTimeout' => 50, 'perfdataTimeout' => 51, 'obsessOverServices' => 52, 'ocspCommand' => 53, 'processPerformanceData' => 54, 'checkForOrphanedServices' => 55, 'checkServiceFreshness' => 56, 'freshnessCheckInterval' => 57, 'dateFormat' => 58, 'illegalObjectNameChars' => 59, 'illegalMacroOutputChars' => 60, 'adminEmail' => 61, 'adminPager' => 62, 'executeHostChecks' => 63, 'serviceInterCheckDelayMethod' => 64, 'useRetainedSchedulingInfo' => 65, 'acceptPassiveHostChecks' => 66, 'maxServiceCheckSpread' => 67, 'hostInterCheckDelayMethod' => 68, 'maxHostCheckSpread' => 69, 'autoRescheduleChecks' => 70, 'autoReschedulingInterval' => 71, 'autoReschedulingWindow' => 72, 'ochpTimeout' => 73, 'obsessOverHosts' => 74, 'ochpCommand' => 75, 'checkHostFreshness' => 76, 'hostFreshnessCheckInterval' => 77, 'serviceFreshnessCheckInterval' => 78, 'useRegexpMatching' => 79, 'useTrueRegexpMatching' => 80, 'eventBrokerOptions' => 81, 'daemonDumpsCore' => 82, 'hostPerfdataCommand' => 83, 'servicePerfdataCommand' => 84, 'hostPerfdataFile' => 85, 'hostPerfdataFileTemplate' => 86, 'servicePerfdataFile' => 87, 'servicePerfdataFileTemplate' => 88, 'hostPerfdataFileMode' => 89, 'servicePerfdataFileMode' => 90, 'hostPerfdataFileProcessingCommand' => 91, 'servicePerfdataFileProcessingCommand' => 92, 'hostPerfdataFileProcessingInterval' => 93, 'servicePerfdataFileProcessingInterval' => 94, 'objectCacheFile' => 95, 'precachedObjectFile' => 96, 'retainedHostAttributeMask' => 97, 'retainedServiceAttributeMask' => 98, 'retainedProcessHostAttributeMask' => 99, 'retainedProcessServiceAttributeMask' => 100, 'retainedContactHostAttributeMask' => 101, 'retainedContactServiceAttributeMask' => 102, 'checkResultReaperFrequency' => 103, 'maxCheckResultReaperTime' => 104, 'checkResultPath' => 105, 'maxCheckResultFileAge' => 106, 'translatePassiveHostChecks' => 107, 'passiveHostChecksAreSoft' => 108, 'enablePredictiveHostDependencyChecks' => 109, 'enablePredictiveServiceDependencyChecks' => 110, 'cachedHostCheckHorizon' => 111, 'cachedServiceCheckHorizon' => 112, 'useLargeInstallationTweaks' => 113, 'freeChildProcessMemory' => 114, 'childProcessesForkTwice' => 115, 'enableEnvironmentMacros' => 116, 'additionalFreshnessLatency' => 117, 'enableEmbeddedPerl' => 118, 'useEmbeddedPerlImplicitly' => 119, 'p1File' => 120, 'useTimezone' => 121, 'debugFile' => 122, 'debugLevel' => 123, 'debugVerbosity' => 124, 'maxDebugFileSize' => 125, 'tempPath' => 126, 'checkForUpdates' => 127, 'checkForOrphanedHosts' => 128, 'bareUpdateCheck' => 129, ),
+		BasePeer::TYPE_COLNAME => array (self::ID => 0, self::CONFIG_DIR => 1, self::LOG_FILE => 2, self::TEMP_FILE => 3, self::STATUS_FILE => 4, self::STATUS_UPDATE_INTERVAL => 5, self::NAGIOS_USER => 6, self::NAGIOS_GROUP => 7, self::ENABLE_NOTIFICATIONS => 8, self::EXECUTE_SERVICE_CHECKS => 9, self::ACCEPT_PASSIVE_SERVICE_CHECKS => 10, self::ENABLE_EVENT_HANDLERS => 11, self::LOG_ROTATION_METHOD => 12, self::LOG_ARCHIVE_PATH => 13, self::CHECK_EXTERNAL_COMMANDS => 14, self::COMMAND_CHECK_INTERVAL => 15, self::COMMAND_FILE => 16, self::LOCK_FILE => 17, self::RETAIN_STATE_INFORMATION => 18, self::STATE_RETENTION_FILE => 19, self::RETENTION_UPDATE_INTERVAL => 20, self::USE_RETAINED_PROGRAM_STATE => 21, self::USE_SYSLOG => 22, self::LOG_NOTIFICATIONS => 23, self::LOG_SERVICE_RETRIES => 24, self::LOG_HOST_RETRIES => 25, self::LOG_EVENT_HANDLERS => 26, self::LOG_INITIAL_STATES => 27, self::LOG_EXTERNAL_COMMANDS => 28, self::LOG_PASSIVE_CHECKS => 29, self::GLOBAL_HOST_EVENT_HANDLER => 30, self::GLOBAL_SERVICE_EVENT_HANDLER => 31, self::EXTERNAL_COMMAND_BUFFER_SLOTS => 32, self::SLEEP_TIME => 33, self::SERVICE_INTERLEAVE_FACTOR => 34, self::MAX_CONCURRENT_CHECKS => 35, self::SERVICE_REAPER_FREQUENCY => 36, self::INTERVAL_LENGTH => 37, self::USE_AGGRESSIVE_HOST_CHECKING => 38, self::ENABLE_FLAP_DETECTION => 39, self::LOW_SERVICE_FLAP_THRESHOLD => 40, self::HIGH_SERVICE_FLAP_THRESHOLD => 41, self::LOW_HOST_FLAP_THRESHOLD => 42, self::HIGH_HOST_FLAP_THRESHOLD => 43, self::SOFT_STATE_DEPENDENCIES => 44, self::SERVICE_CHECK_TIMEOUT => 45, self::HOST_CHECK_TIMEOUT => 46, self::EVENT_HANDLER_TIMEOUT => 47, self::NOTIFICATION_TIMEOUT => 48, self::OCSP_TIMEOUT => 49, self::OHCP_TIMEOUT => 50, self::PERFDATA_TIMEOUT => 51, self::OBSESS_OVER_SERVICES => 52, self::OCSP_COMMAND => 53, self::PROCESS_PERFORMANCE_DATA => 54, self::CHECK_FOR_ORPHANED_SERVICES => 55, self::CHECK_SERVICE_FRESHNESS => 56, self::FRESHNESS_CHECK_INTERVAL => 57, self::DATE_FORMAT => 58, self::ILLEGAL_OBJECT_NAME_CHARS => 59, self::ILLEGAL_MACRO_OUTPUT_CHARS => 60, self::ADMIN_EMAIL => 61, self::ADMIN_PAGER => 62, self::EXECUTE_HOST_CHECKS => 63, self::SERVICE_INTER_CHECK_DELAY_METHOD => 64, self::USE_RETAINED_SCHEDULING_INFO => 65, self::ACCEPT_PASSIVE_HOST_CHECKS => 66, self::MAX_SERVICE_CHECK_SPREAD => 67, self::HOST_INTER_CHECK_DELAY_METHOD => 68, self::MAX_HOST_CHECK_SPREAD => 69, self::AUTO_RESCHEDULE_CHECKS => 70, self::AUTO_RESCHEDULING_INTERVAL => 71, self::AUTO_RESCHEDULING_WINDOW => 72, self::OCHP_TIMEOUT => 73, self::OBSESS_OVER_HOSTS => 74, self::OCHP_COMMAND => 75, self::CHECK_HOST_FRESHNESS => 76, self::HOST_FRESHNESS_CHECK_INTERVAL => 77, self::SERVICE_FRESHNESS_CHECK_INTERVAL => 78, self::USE_REGEXP_MATCHING => 79, self::USE_TRUE_REGEXP_MATCHING => 80, self::EVENT_BROKER_OPTIONS => 81, self::DAEMON_DUMPS_CORE => 82, self::HOST_PERFDATA_COMMAND => 83, self::SERVICE_PERFDATA_COMMAND => 84, self::HOST_PERFDATA_FILE => 85, self::HOST_PERFDATA_FILE_TEMPLATE => 86, self::SERVICE_PERFDATA_FILE => 87, self::SERVICE_PERFDATA_FILE_TEMPLATE => 88, self::HOST_PERFDATA_FILE_MODE => 89, self::SERVICE_PERFDATA_FILE_MODE => 90, self::HOST_PERFDATA_FILE_PROCESSING_COMMAND => 91, self::SERVICE_PERFDATA_FILE_PROCESSING_COMMAND => 92, self::HOST_PERFDATA_FILE_PROCESSING_INTERVAL => 93, self::SERVICE_PERFDATA_FILE_PROCESSING_INTERVAL => 94, self::OBJECT_CACHE_FILE => 95, self::PRECACHED_OBJECT_FILE => 96, self::RETAINED_HOST_ATTRIBUTE_MASK => 97, self::RETAINED_SERVICE_ATTRIBUTE_MASK => 98, self::RETAINED_PROCESS_HOST_ATTRIBUTE_MASK => 99, self::RETAINED_PROCESS_SERVICE_ATTRIBUTE_MASK => 100, self::RETAINED_CONTACT_HOST_ATTRIBUTE_MASK => 101, self::RETAINED_CONTACT_SERVICE_ATTRIBUTE_MASK => 102, self::CHECK_RESULT_REAPER_FREQUENCY => 103, self::MAX_CHECK_RESULT_REAPER_TIME => 104, self::CHECK_RESULT_PATH => 105, self::MAX_CHECK_RESULT_FILE_AGE => 106, self::TRANSLATE_PASSIVE_HOST_CHECKS => 107, self::PASSIVE_HOST_CHECKS_ARE_SOFT => 108, self::ENABLE_PREDICTIVE_HOST_DEPENDENCY_CHECKS => 109, self::ENABLE_PREDICTIVE_SERVICE_DEPENDENCY_CHECKS => 110, self::CACHED_HOST_CHECK_HORIZON => 111, self::CACHED_SERVICE_CHECK_HORIZON => 112, self::USE_LARGE_INSTALLATION_TWEAKS => 113, self::FREE_CHILD_PROCESS_MEMORY => 114, self::CHILD_PROCESSES_FORK_TWICE => 115, self::ENABLE_ENVIRONMENT_MACROS => 116, self::ADDITIONAL_FRESHNESS_LATENCY => 117, self::ENABLE_EMBEDDED_PERL => 118, self::USE_EMBEDDED_PERL_IMPLICITLY => 119, self::P1_FILE => 120, self::USE_TIMEZONE => 121, self::DEBUG_FILE => 122, self::DEBUG_LEVEL => 123, self::DEBUG_VERBOSITY => 124, self::MAX_DEBUG_FILE_SIZE => 125, self::TEMP_PATH => 126, self::CHECK_FOR_UPDATES => 127, self::CHECK_FOR_ORPHANED_HOSTS => 128, self::BARE_UPDATE_CHECK => 129, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('ID' => 0, 'CONFIG_DIR' => 1, 'LOG_FILE' => 2, 'TEMP_FILE' => 3, 'STATUS_FILE' => 4, 'STATUS_UPDATE_INTERVAL' => 5, 'NAGIOS_USER' => 6, 'NAGIOS_GROUP' => 7, 'ENABLE_NOTIFICATIONS' => 8, 'EXECUTE_SERVICE_CHECKS' => 9, 'ACCEPT_PASSIVE_SERVICE_CHECKS' => 10, 'ENABLE_EVENT_HANDLERS' => 11, 'LOG_ROTATION_METHOD' => 12, 'LOG_ARCHIVE_PATH' => 13, 'CHECK_EXTERNAL_COMMANDS' => 14, 'COMMAND_CHECK_INTERVAL' => 15, 'COMMAND_FILE' => 16, 'LOCK_FILE' => 17, 'RETAIN_STATE_INFORMATION' => 18, 'STATE_RETENTION_FILE' => 19, 'RETENTION_UPDATE_INTERVAL' => 20, 'USE_RETAINED_PROGRAM_STATE' => 21, 'USE_SYSLOG' => 22, 'LOG_NOTIFICATIONS' => 23, 'LOG_SERVICE_RETRIES' => 24, 'LOG_HOST_RETRIES' => 25, 'LOG_EVENT_HANDLERS' => 26, 'LOG_INITIAL_STATES' => 27, 'LOG_EXTERNAL_COMMANDS' => 28, 'LOG_PASSIVE_CHECKS' => 29, 'GLOBAL_HOST_EVENT_HANDLER' => 30, 'GLOBAL_SERVICE_EVENT_HANDLER' => 31, 'EXTERNAL_COMMAND_BUFFER_SLOTS' => 32, 'SLEEP_TIME' => 33, 'SERVICE_INTERLEAVE_FACTOR' => 34, 'MAX_CONCURRENT_CHECKS' => 35, 'SERVICE_REAPER_FREQUENCY' => 36, 'INTERVAL_LENGTH' => 37, 'USE_AGGRESSIVE_HOST_CHECKING' => 38, 'ENABLE_FLAP_DETECTION' => 39, 'LOW_SERVICE_FLAP_THRESHOLD' => 40, 'HIGH_SERVICE_FLAP_THRESHOLD' => 41, 'LOW_HOST_FLAP_THRESHOLD' => 42, 'HIGH_HOST_FLAP_THRESHOLD' => 43, 'SOFT_STATE_DEPENDENCIES' => 44, 'SERVICE_CHECK_TIMEOUT' => 45, 'HOST_CHECK_TIMEOUT' => 46, 'EVENT_HANDLER_TIMEOUT' => 47, 'NOTIFICATION_TIMEOUT' => 48, 'OCSP_TIMEOUT' => 49, 'OHCP_TIMEOUT' => 50, 'PERFDATA_TIMEOUT' => 51, 'OBSESS_OVER_SERVICES' => 52, 'OCSP_COMMAND' => 53, 'PROCESS_PERFORMANCE_DATA' => 54, 'CHECK_FOR_ORPHANED_SERVICES' => 55, 'CHECK_SERVICE_FRESHNESS' => 56, 'FRESHNESS_CHECK_INTERVAL' => 57, 'DATE_FORMAT' => 58, 'ILLEGAL_OBJECT_NAME_CHARS' => 59, 'ILLEGAL_MACRO_OUTPUT_CHARS' => 60, 'ADMIN_EMAIL' => 61, 'ADMIN_PAGER' => 62, 'EXECUTE_HOST_CHECKS' => 63, 'SERVICE_INTER_CHECK_DELAY_METHOD' => 64, 'USE_RETAINED_SCHEDULING_INFO' => 65, 'ACCEPT_PASSIVE_HOST_CHECKS' => 66, 'MAX_SERVICE_CHECK_SPREAD' => 67, 'HOST_INTER_CHECK_DELAY_METHOD' => 68, 'MAX_HOST_CHECK_SPREAD' => 69, 'AUTO_RESCHEDULE_CHECKS' => 70, 'AUTO_RESCHEDULING_INTERVAL' => 71, 'AUTO_RESCHEDULING_WINDOW' => 72, 'OCHP_TIMEOUT' => 73, 'OBSESS_OVER_HOSTS' => 74, 'OCHP_COMMAND' => 75, 'CHECK_HOST_FRESHNESS' => 76, 'HOST_FRESHNESS_CHECK_INTERVAL' => 77, 'SERVICE_FRESHNESS_CHECK_INTERVAL' => 78, 'USE_REGEXP_MATCHING' => 79, 'USE_TRUE_REGEXP_MATCHING' => 80, 'EVENT_BROKER_OPTIONS' => 81, 'DAEMON_DUMPS_CORE' => 82, 'HOST_PERFDATA_COMMAND' => 83, 'SERVICE_PERFDATA_COMMAND' => 84, 'HOST_PERFDATA_FILE' => 85, 'HOST_PERFDATA_FILE_TEMPLATE' => 86, 'SERVICE_PERFDATA_FILE' => 87, 'SERVICE_PERFDATA_FILE_TEMPLATE' => 88, 'HOST_PERFDATA_FILE_MODE' => 89, 'SERVICE_PERFDATA_FILE_MODE' => 90, 'HOST_PERFDATA_FILE_PROCESSING_COMMAND' => 91, 'SERVICE_PERFDATA_FILE_PROCESSING_COMMAND' => 92, 'HOST_PERFDATA_FILE_PROCESSING_INTERVAL' => 93, 'SERVICE_PERFDATA_FILE_PROCESSING_INTERVAL' => 94, 'OBJECT_CACHE_FILE' => 95, 'PRECACHED_OBJECT_FILE' => 96, 'RETAINED_HOST_ATTRIBUTE_MASK' => 97, 'RETAINED_SERVICE_ATTRIBUTE_MASK' => 98, 'RETAINED_PROCESS_HOST_ATTRIBUTE_MASK' => 99, 'RETAINED_PROCESS_SERVICE_ATTRIBUTE_MASK' => 100, 'RETAINED_CONTACT_HOST_ATTRIBUTE_MASK' => 101, 'RETAINED_CONTACT_SERVICE_ATTRIBUTE_MASK' => 102, 'CHECK_RESULT_REAPER_FREQUENCY' => 103, 'MAX_CHECK_RESULT_REAPER_TIME' => 104, 'CHECK_RESULT_PATH' => 105, 'MAX_CHECK_RESULT_FILE_AGE' => 106, 'TRANSLATE_PASSIVE_HOST_CHECKS' => 107, 'PASSIVE_HOST_CHECKS_ARE_SOFT' => 108, 'ENABLE_PREDICTIVE_HOST_DEPENDENCY_CHECKS' => 109, 'ENABLE_PREDICTIVE_SERVICE_DEPENDENCY_CHECKS' => 110, 'CACHED_HOST_CHECK_HORIZON' => 111, 'CACHED_SERVICE_CHECK_HORIZON' => 112, 'USE_LARGE_INSTALLATION_TWEAKS' => 113, 'FREE_CHILD_PROCESS_MEMORY' => 114, 'CHILD_PROCESSES_FORK_TWICE' => 115, 'ENABLE_ENVIRONMENT_MACROS' => 116, 'ADDITIONAL_FRESHNESS_LATENCY' => 117, 'ENABLE_EMBEDDED_PERL' => 118, 'USE_EMBEDDED_PERL_IMPLICITLY' => 119, 'P1_FILE' => 120, 'USE_TIMEZONE' => 121, 'DEBUG_FILE' => 122, 'DEBUG_LEVEL' => 123, 'DEBUG_VERBOSITY' => 124, 'MAX_DEBUG_FILE_SIZE' => 125, 'TEMP_PATH' => 126, 'CHECK_FOR_UPDATES' => 127, 'CHECK_FOR_ORPHANED_HOSTS' => 128, 'BARE_UPDATE_CHECK' => 129, ),
+		BasePeer::TYPE_FIELDNAME => array ('id' => 0, 'config_dir' => 1, 'log_file' => 2, 'temp_file' => 3, 'status_file' => 4, 'status_update_interval' => 5, 'nagios_user' => 6, 'nagios_group' => 7, 'enable_notifications' => 8, 'execute_service_checks' => 9, 'accept_passive_service_checks' => 10, 'enable_event_handlers' => 11, 'log_rotation_method' => 12, 'log_archive_path' => 13, 'check_external_commands' => 14, 'command_check_interval' => 15, 'command_file' => 16, 'lock_file' => 17, 'retain_state_information' => 18, 'state_retention_file' => 19, 'retention_update_interval' => 20, 'use_retained_program_state' => 21, 'use_syslog' => 22, 'log_notifications' => 23, 'log_service_retries' => 24, 'log_host_retries' => 25, 'log_event_handlers' => 26, 'log_initial_states' => 27, 'log_external_commands' => 28, 'log_passive_checks' => 29, 'global_host_event_handler' => 30, 'global_service_event_handler' => 31, 'external_command_buffer_slots' => 32, 'sleep_time' => 33, 'service_interleave_factor' => 34, 'max_concurrent_checks' => 35, 'service_reaper_frequency' => 36, 'interval_length' => 37, 'use_aggressive_host_checking' => 38, 'enable_flap_detection' => 39, 'low_service_flap_threshold' => 40, 'high_service_flap_threshold' => 41, 'low_host_flap_threshold' => 42, 'high_host_flap_threshold' => 43, 'soft_state_dependencies' => 44, 'service_check_timeout' => 45, 'host_check_timeout' => 46, 'event_handler_timeout' => 47, 'notification_timeout' => 48, 'ocsp_timeout' => 49, 'ohcp_timeout' => 50, 'perfdata_timeout' => 51, 'obsess_over_services' => 52, 'ocsp_command' => 53, 'process_performance_data' => 54, 'check_for_orphaned_services' => 55, 'check_service_freshness' => 56, 'freshness_check_interval' => 57, 'date_format' => 58, 'illegal_object_name_chars' => 59, 'illegal_macro_output_chars' => 60, 'admin_email' => 61, 'admin_pager' => 62, 'execute_host_checks' => 63, 'service_inter_check_delay_method' => 64, 'use_retained_scheduling_info' => 65, 'accept_passive_host_checks' => 66, 'max_service_check_spread' => 67, 'host_inter_check_delay_method' => 68, 'max_host_check_spread' => 69, 'auto_reschedule_checks' => 70, 'auto_rescheduling_interval' => 71, 'auto_rescheduling_window' => 72, 'ochp_timeout' => 73, 'obsess_over_hosts' => 74, 'ochp_command' => 75, 'check_host_freshness' => 76, 'host_freshness_check_interval' => 77, 'service_freshness_check_interval' => 78, 'use_regexp_matching' => 79, 'use_true_regexp_matching' => 80, 'event_broker_options' => 81, 'daemon_dumps_core' => 82, 'host_perfdata_command' => 83, 'service_perfdata_command' => 84, 'host_perfdata_file' => 85, 'host_perfdata_file_template' => 86, 'service_perfdata_file' => 87, 'service_perfdata_file_template' => 88, 'host_perfdata_file_mode' => 89, 'service_perfdata_file_mode' => 90, 'host_perfdata_file_processing_command' => 91, 'service_perfdata_file_processing_command' => 92, 'host_perfdata_file_processing_interval' => 93, 'service_perfdata_file_processing_interval' => 94, 'object_cache_file' => 95, 'precached_object_file' => 96, 'retained_host_attribute_mask' => 97, 'retained_service_attribute_mask' => 98, 'retained_process_host_attribute_mask' => 99, 'retained_process_service_attribute_mask' => 100, 'retained_contact_host_attribute_mask' => 101, 'retained_contact_service_attribute_mask' => 102, 'check_result_reaper_frequency' => 103, 'max_check_result_reaper_time' => 104, 'check_result_path' => 105, 'max_check_result_file_age' => 106, 'translate_passive_host_checks' => 107, 'passive_host_checks_are_soft' => 108, 'enable_predictive_host_dependency_checks' => 109, 'enable_predictive_service_dependency_checks' => 110, 'cached_host_check_horizon' => 111, 'cached_service_check_horizon' => 112, 'use_large_installation_tweaks' => 113, 'free_child_process_memory' => 114, 'child_processes_fork_twice' => 115, 'enable_environment_macros' => 116, 'additional_freshness_latency' => 117, 'enable_embedded_perl' => 118, 'use_embedded_perl_implicitly' => 119, 'p1_file' => 120, 'use_timezone' => 121, 'debug_file' => 122, 'debug_level' => 123, 'debug_verbosity' => 124, 'max_debug_file_size' => 125, 'temp_path' => 126, 'check_for_updates' => 127, 'check_for_orphaned_hosts' => 128, 'bare_update_check' => 129, ),
+		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128, 129, )
 	);
 
 	/**
@@ -471,7 +477,6 @@ abstract class BaseNagiosMainConfigurationPeer {
 	{
 		$toNames = self::getFieldNames($toType);
 		$key = isset(self::$fieldKeys[$fromType][$name]) ? self::$fieldKeys[$fromType][$name] : null;
-		
 		if ($key === null) {
 			throw new PropelException("'$name' could not be found in the field names of type '$fromType'. These are: " . print_r(self::$fieldKeys[$fromType], true));
 		}
@@ -654,6 +659,9 @@ abstract class BaseNagiosMainConfigurationPeer {
 			$criteria->addSelectColumn(NagiosMainConfigurationPeer::DEBUG_VERBOSITY);
 			$criteria->addSelectColumn(NagiosMainConfigurationPeer::MAX_DEBUG_FILE_SIZE);
 			$criteria->addSelectColumn(NagiosMainConfigurationPeer::TEMP_PATH);
+			$criteria->addSelectColumn(NagiosMainConfigurationPeer::CHECK_FOR_UPDATES);
+			$criteria->addSelectColumn(NagiosMainConfigurationPeer::CHECK_FOR_ORPHANED_HOSTS);
+			$criteria->addSelectColumn(NagiosMainConfigurationPeer::BARE_UPDATE_CHECK);
 		} else {
 			$criteria->addSelectColumn($alias . '.ID');
 			$criteria->addSelectColumn($alias . '.CONFIG_DIR');
@@ -782,6 +790,9 @@ abstract class BaseNagiosMainConfigurationPeer {
 			$criteria->addSelectColumn($alias . '.DEBUG_VERBOSITY');
 			$criteria->addSelectColumn($alias . '.MAX_DEBUG_FILE_SIZE');
 			$criteria->addSelectColumn($alias . '.TEMP_PATH');
+			$criteria->addSelectColumn($alias . '.CHECK_FOR_UPDATES');
+			$criteria->addSelectColumn($alias . '.CHECK_FOR_ORPHANED_HOSTS');
+			$criteria->addSelectColumn($alias . '.BARE_UPDATE_CHECK');
 		}
 	}
 
@@ -997,7 +1008,7 @@ abstract class BaseNagiosMainConfigurationPeer {
 	}
 
 	/**
-	 * Retrieves the primary key from the DB resultset row 
+	 * Retrieves the primary key from the DB resultset row
 	 * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
 	 * a multi-column primary key, an array of the primary key columns will be returned.
 	 *
@@ -1022,7 +1033,7 @@ abstract class BaseNagiosMainConfigurationPeer {
 		$results = array();
 	
 		// set the class once to avoid overhead in the loop
-		$cls = NagiosMainConfigurationPeer::getOMClass(false);
+		$cls = NagiosMainConfigurationPeer::getOMClass();
 		// populate the object(s)
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$key = NagiosMainConfigurationPeer::getPrimaryKeyHashFromRow($row, 0);
@@ -1094,9 +1105,9 @@ abstract class BaseNagiosMainConfigurationPeer {
 		if (!$criteria->hasSelectClause()) {
 			NagiosMainConfigurationPeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -1144,9 +1155,9 @@ abstract class BaseNagiosMainConfigurationPeer {
 		if (!$criteria->hasSelectClause()) {
 			NagiosMainConfigurationPeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -1194,9 +1205,9 @@ abstract class BaseNagiosMainConfigurationPeer {
 		if (!$criteria->hasSelectClause()) {
 			NagiosMainConfigurationPeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -1244,9 +1255,9 @@ abstract class BaseNagiosMainConfigurationPeer {
 		if (!$criteria->hasSelectClause()) {
 			NagiosMainConfigurationPeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -1294,9 +1305,9 @@ abstract class BaseNagiosMainConfigurationPeer {
 		if (!$criteria->hasSelectClause()) {
 			NagiosMainConfigurationPeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -1344,9 +1355,9 @@ abstract class BaseNagiosMainConfigurationPeer {
 		if (!$criteria->hasSelectClause()) {
 			NagiosMainConfigurationPeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -1394,9 +1405,9 @@ abstract class BaseNagiosMainConfigurationPeer {
 		if (!$criteria->hasSelectClause()) {
 			NagiosMainConfigurationPeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -1444,9 +1455,9 @@ abstract class BaseNagiosMainConfigurationPeer {
 		if (!$criteria->hasSelectClause()) {
 			NagiosMainConfigurationPeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -1503,7 +1514,7 @@ abstract class BaseNagiosMainConfigurationPeer {
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 
-				$cls = NagiosMainConfigurationPeer::getOMClass(false);
+				$cls = NagiosMainConfigurationPeer::getOMClass();
 
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
@@ -1515,7 +1526,7 @@ abstract class BaseNagiosMainConfigurationPeer {
 				$obj2 = NagiosCommandPeer::getInstanceFromPool($key2);
 				if (!$obj2) {
 
-					$cls = NagiosCommandPeer::getOMClass(false);
+					$cls = NagiosCommandPeer::getOMClass();
 
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol);
@@ -1569,7 +1580,7 @@ abstract class BaseNagiosMainConfigurationPeer {
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 
-				$cls = NagiosMainConfigurationPeer::getOMClass(false);
+				$cls = NagiosMainConfigurationPeer::getOMClass();
 
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
@@ -1581,7 +1592,7 @@ abstract class BaseNagiosMainConfigurationPeer {
 				$obj2 = NagiosCommandPeer::getInstanceFromPool($key2);
 				if (!$obj2) {
 
-					$cls = NagiosCommandPeer::getOMClass(false);
+					$cls = NagiosCommandPeer::getOMClass();
 
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol);
@@ -1635,7 +1646,7 @@ abstract class BaseNagiosMainConfigurationPeer {
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 
-				$cls = NagiosMainConfigurationPeer::getOMClass(false);
+				$cls = NagiosMainConfigurationPeer::getOMClass();
 
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
@@ -1647,7 +1658,7 @@ abstract class BaseNagiosMainConfigurationPeer {
 				$obj2 = NagiosCommandPeer::getInstanceFromPool($key2);
 				if (!$obj2) {
 
-					$cls = NagiosCommandPeer::getOMClass(false);
+					$cls = NagiosCommandPeer::getOMClass();
 
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol);
@@ -1701,7 +1712,7 @@ abstract class BaseNagiosMainConfigurationPeer {
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 
-				$cls = NagiosMainConfigurationPeer::getOMClass(false);
+				$cls = NagiosMainConfigurationPeer::getOMClass();
 
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
@@ -1713,7 +1724,7 @@ abstract class BaseNagiosMainConfigurationPeer {
 				$obj2 = NagiosCommandPeer::getInstanceFromPool($key2);
 				if (!$obj2) {
 
-					$cls = NagiosCommandPeer::getOMClass(false);
+					$cls = NagiosCommandPeer::getOMClass();
 
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol);
@@ -1767,7 +1778,7 @@ abstract class BaseNagiosMainConfigurationPeer {
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 
-				$cls = NagiosMainConfigurationPeer::getOMClass(false);
+				$cls = NagiosMainConfigurationPeer::getOMClass();
 
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
@@ -1779,7 +1790,7 @@ abstract class BaseNagiosMainConfigurationPeer {
 				$obj2 = NagiosCommandPeer::getInstanceFromPool($key2);
 				if (!$obj2) {
 
-					$cls = NagiosCommandPeer::getOMClass(false);
+					$cls = NagiosCommandPeer::getOMClass();
 
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol);
@@ -1833,7 +1844,7 @@ abstract class BaseNagiosMainConfigurationPeer {
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 
-				$cls = NagiosMainConfigurationPeer::getOMClass(false);
+				$cls = NagiosMainConfigurationPeer::getOMClass();
 
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
@@ -1845,7 +1856,7 @@ abstract class BaseNagiosMainConfigurationPeer {
 				$obj2 = NagiosCommandPeer::getInstanceFromPool($key2);
 				if (!$obj2) {
 
-					$cls = NagiosCommandPeer::getOMClass(false);
+					$cls = NagiosCommandPeer::getOMClass();
 
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol);
@@ -1899,7 +1910,7 @@ abstract class BaseNagiosMainConfigurationPeer {
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 
-				$cls = NagiosMainConfigurationPeer::getOMClass(false);
+				$cls = NagiosMainConfigurationPeer::getOMClass();
 
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
@@ -1911,7 +1922,7 @@ abstract class BaseNagiosMainConfigurationPeer {
 				$obj2 = NagiosCommandPeer::getInstanceFromPool($key2);
 				if (!$obj2) {
 
-					$cls = NagiosCommandPeer::getOMClass(false);
+					$cls = NagiosCommandPeer::getOMClass();
 
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol);
@@ -1965,7 +1976,7 @@ abstract class BaseNagiosMainConfigurationPeer {
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 
-				$cls = NagiosMainConfigurationPeer::getOMClass(false);
+				$cls = NagiosMainConfigurationPeer::getOMClass();
 
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
@@ -1977,7 +1988,7 @@ abstract class BaseNagiosMainConfigurationPeer {
 				$obj2 = NagiosCommandPeer::getInstanceFromPool($key2);
 				if (!$obj2) {
 
-					$cls = NagiosCommandPeer::getOMClass(false);
+					$cls = NagiosCommandPeer::getOMClass();
 
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol);
@@ -2022,9 +2033,9 @@ abstract class BaseNagiosMainConfigurationPeer {
 		if (!$criteria->hasSelectClause()) {
 			NagiosMainConfigurationPeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -2131,7 +2142,7 @@ abstract class BaseNagiosMainConfigurationPeer {
 				// See http://www.propelorm.org/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
-				$cls = NagiosMainConfigurationPeer::getOMClass(false);
+				$cls = NagiosMainConfigurationPeer::getOMClass();
 
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
@@ -2145,7 +2156,7 @@ abstract class BaseNagiosMainConfigurationPeer {
 				$obj2 = NagiosCommandPeer::getInstanceFromPool($key2);
 				if (!$obj2) {
 
-					$cls = NagiosCommandPeer::getOMClass(false);
+					$cls = NagiosCommandPeer::getOMClass();
 
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol2);
@@ -2163,7 +2174,7 @@ abstract class BaseNagiosMainConfigurationPeer {
 				$obj3 = NagiosCommandPeer::getInstanceFromPool($key3);
 				if (!$obj3) {
 
-					$cls = NagiosCommandPeer::getOMClass(false);
+					$cls = NagiosCommandPeer::getOMClass();
 
 					$obj3 = new $cls();
 					$obj3->hydrate($row, $startcol3);
@@ -2181,7 +2192,7 @@ abstract class BaseNagiosMainConfigurationPeer {
 				$obj4 = NagiosCommandPeer::getInstanceFromPool($key4);
 				if (!$obj4) {
 
-					$cls = NagiosCommandPeer::getOMClass(false);
+					$cls = NagiosCommandPeer::getOMClass();
 
 					$obj4 = new $cls();
 					$obj4->hydrate($row, $startcol4);
@@ -2199,7 +2210,7 @@ abstract class BaseNagiosMainConfigurationPeer {
 				$obj5 = NagiosCommandPeer::getInstanceFromPool($key5);
 				if (!$obj5) {
 
-					$cls = NagiosCommandPeer::getOMClass(false);
+					$cls = NagiosCommandPeer::getOMClass();
 
 					$obj5 = new $cls();
 					$obj5->hydrate($row, $startcol5);
@@ -2217,7 +2228,7 @@ abstract class BaseNagiosMainConfigurationPeer {
 				$obj6 = NagiosCommandPeer::getInstanceFromPool($key6);
 				if (!$obj6) {
 
-					$cls = NagiosCommandPeer::getOMClass(false);
+					$cls = NagiosCommandPeer::getOMClass();
 
 					$obj6 = new $cls();
 					$obj6->hydrate($row, $startcol6);
@@ -2235,7 +2246,7 @@ abstract class BaseNagiosMainConfigurationPeer {
 				$obj7 = NagiosCommandPeer::getInstanceFromPool($key7);
 				if (!$obj7) {
 
-					$cls = NagiosCommandPeer::getOMClass(false);
+					$cls = NagiosCommandPeer::getOMClass();
 
 					$obj7 = new $cls();
 					$obj7->hydrate($row, $startcol7);
@@ -2253,7 +2264,7 @@ abstract class BaseNagiosMainConfigurationPeer {
 				$obj8 = NagiosCommandPeer::getInstanceFromPool($key8);
 				if (!$obj8) {
 
-					$cls = NagiosCommandPeer::getOMClass(false);
+					$cls = NagiosCommandPeer::getOMClass();
 
 					$obj8 = new $cls();
 					$obj8->hydrate($row, $startcol8);
@@ -2271,7 +2282,7 @@ abstract class BaseNagiosMainConfigurationPeer {
 				$obj9 = NagiosCommandPeer::getInstanceFromPool($key9);
 				if (!$obj9) {
 
-					$cls = NagiosCommandPeer::getOMClass(false);
+					$cls = NagiosCommandPeer::getOMClass();
 
 					$obj9 = new $cls();
 					$obj9->hydrate($row, $startcol9);
@@ -2307,7 +2318,7 @@ abstract class BaseNagiosMainConfigurationPeer {
 		// it will be impossible for the BasePeer::createSelectSql() method to determine which
 		// tables go into the FROM clause.
 		$criteria->setPrimaryTableName(NagiosMainConfigurationPeer::TABLE_NAME);
-		
+
 		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
 			$criteria->setDistinct();
 		}
@@ -2315,9 +2326,9 @@ abstract class BaseNagiosMainConfigurationPeer {
 		if (!$criteria->hasSelectClause()) {
 			NagiosMainConfigurationPeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY should not affect count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -2355,7 +2366,7 @@ abstract class BaseNagiosMainConfigurationPeer {
 		// it will be impossible for the BasePeer::createSelectSql() method to determine which
 		// tables go into the FROM clause.
 		$criteria->setPrimaryTableName(NagiosMainConfigurationPeer::TABLE_NAME);
-		
+
 		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
 			$criteria->setDistinct();
 		}
@@ -2363,9 +2374,9 @@ abstract class BaseNagiosMainConfigurationPeer {
 		if (!$criteria->hasSelectClause()) {
 			NagiosMainConfigurationPeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY should not affect count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -2403,7 +2414,7 @@ abstract class BaseNagiosMainConfigurationPeer {
 		// it will be impossible for the BasePeer::createSelectSql() method to determine which
 		// tables go into the FROM clause.
 		$criteria->setPrimaryTableName(NagiosMainConfigurationPeer::TABLE_NAME);
-		
+
 		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
 			$criteria->setDistinct();
 		}
@@ -2411,9 +2422,9 @@ abstract class BaseNagiosMainConfigurationPeer {
 		if (!$criteria->hasSelectClause()) {
 			NagiosMainConfigurationPeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY should not affect count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -2451,7 +2462,7 @@ abstract class BaseNagiosMainConfigurationPeer {
 		// it will be impossible for the BasePeer::createSelectSql() method to determine which
 		// tables go into the FROM clause.
 		$criteria->setPrimaryTableName(NagiosMainConfigurationPeer::TABLE_NAME);
-		
+
 		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
 			$criteria->setDistinct();
 		}
@@ -2459,9 +2470,9 @@ abstract class BaseNagiosMainConfigurationPeer {
 		if (!$criteria->hasSelectClause()) {
 			NagiosMainConfigurationPeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY should not affect count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -2499,7 +2510,7 @@ abstract class BaseNagiosMainConfigurationPeer {
 		// it will be impossible for the BasePeer::createSelectSql() method to determine which
 		// tables go into the FROM clause.
 		$criteria->setPrimaryTableName(NagiosMainConfigurationPeer::TABLE_NAME);
-		
+
 		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
 			$criteria->setDistinct();
 		}
@@ -2507,9 +2518,9 @@ abstract class BaseNagiosMainConfigurationPeer {
 		if (!$criteria->hasSelectClause()) {
 			NagiosMainConfigurationPeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY should not affect count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -2547,7 +2558,7 @@ abstract class BaseNagiosMainConfigurationPeer {
 		// it will be impossible for the BasePeer::createSelectSql() method to determine which
 		// tables go into the FROM clause.
 		$criteria->setPrimaryTableName(NagiosMainConfigurationPeer::TABLE_NAME);
-		
+
 		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
 			$criteria->setDistinct();
 		}
@@ -2555,9 +2566,9 @@ abstract class BaseNagiosMainConfigurationPeer {
 		if (!$criteria->hasSelectClause()) {
 			NagiosMainConfigurationPeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY should not affect count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -2595,7 +2606,7 @@ abstract class BaseNagiosMainConfigurationPeer {
 		// it will be impossible for the BasePeer::createSelectSql() method to determine which
 		// tables go into the FROM clause.
 		$criteria->setPrimaryTableName(NagiosMainConfigurationPeer::TABLE_NAME);
-		
+
 		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
 			$criteria->setDistinct();
 		}
@@ -2603,9 +2614,9 @@ abstract class BaseNagiosMainConfigurationPeer {
 		if (!$criteria->hasSelectClause()) {
 			NagiosMainConfigurationPeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY should not affect count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -2643,7 +2654,7 @@ abstract class BaseNagiosMainConfigurationPeer {
 		// it will be impossible for the BasePeer::createSelectSql() method to determine which
 		// tables go into the FROM clause.
 		$criteria->setPrimaryTableName(NagiosMainConfigurationPeer::TABLE_NAME);
-		
+
 		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
 			$criteria->setDistinct();
 		}
@@ -2651,9 +2662,9 @@ abstract class BaseNagiosMainConfigurationPeer {
 		if (!$criteria->hasSelectClause()) {
 			NagiosMainConfigurationPeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY should not affect count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -2708,7 +2719,7 @@ abstract class BaseNagiosMainConfigurationPeer {
 				// See http://www.propelorm.org/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
-				$cls = NagiosMainConfigurationPeer::getOMClass(false);
+				$cls = NagiosMainConfigurationPeer::getOMClass();
 
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
@@ -2757,7 +2768,7 @@ abstract class BaseNagiosMainConfigurationPeer {
 				// See http://www.propelorm.org/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
-				$cls = NagiosMainConfigurationPeer::getOMClass(false);
+				$cls = NagiosMainConfigurationPeer::getOMClass();
 
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
@@ -2806,7 +2817,7 @@ abstract class BaseNagiosMainConfigurationPeer {
 				// See http://www.propelorm.org/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
-				$cls = NagiosMainConfigurationPeer::getOMClass(false);
+				$cls = NagiosMainConfigurationPeer::getOMClass();
 
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
@@ -2855,7 +2866,7 @@ abstract class BaseNagiosMainConfigurationPeer {
 				// See http://www.propelorm.org/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
-				$cls = NagiosMainConfigurationPeer::getOMClass(false);
+				$cls = NagiosMainConfigurationPeer::getOMClass();
 
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
@@ -2904,7 +2915,7 @@ abstract class BaseNagiosMainConfigurationPeer {
 				// See http://www.propelorm.org/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
-				$cls = NagiosMainConfigurationPeer::getOMClass(false);
+				$cls = NagiosMainConfigurationPeer::getOMClass();
 
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
@@ -2953,7 +2964,7 @@ abstract class BaseNagiosMainConfigurationPeer {
 				// See http://www.propelorm.org/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
-				$cls = NagiosMainConfigurationPeer::getOMClass(false);
+				$cls = NagiosMainConfigurationPeer::getOMClass();
 
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
@@ -3002,7 +3013,7 @@ abstract class BaseNagiosMainConfigurationPeer {
 				// See http://www.propelorm.org/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
-				$cls = NagiosMainConfigurationPeer::getOMClass(false);
+				$cls = NagiosMainConfigurationPeer::getOMClass();
 
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
@@ -3051,7 +3062,7 @@ abstract class BaseNagiosMainConfigurationPeer {
 				// See http://www.propelorm.org/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
-				$cls = NagiosMainConfigurationPeer::getOMClass(false);
+				$cls = NagiosMainConfigurationPeer::getOMClass();
 
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
@@ -3091,17 +3102,12 @@ abstract class BaseNagiosMainConfigurationPeer {
 	/**
 	 * The class that the Peer will make instances of.
 	 *
-	 * If $withPrefix is true, the returned path
-	 * uses a dot-path notation which is tranalted into a path
-	 * relative to a location on the PHP include_path.
-	 * (e.g. path.to.MyClass -> 'path/to/MyClass.php')
 	 *
-	 * @param      boolean $withPrefix Whether or not to return the path with the class name
-	 * @return     string path.to.ClassName
+	 * @return     string ClassName
 	 */
-	public static function getOMClass($withPrefix = true)
+	public static function getOMClass()
 	{
-		return $withPrefix ? NagiosMainConfigurationPeer::CLASS_DEFAULT : NagiosMainConfigurationPeer::OM_CLASS;
+		return NagiosMainConfigurationPeer::OM_CLASS;
 	}
 
 	/**

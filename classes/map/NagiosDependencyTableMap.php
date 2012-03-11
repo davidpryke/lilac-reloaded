@@ -45,23 +45,23 @@ class NagiosDependencyTableMap extends TableMap
 		$this->addForeignKey('SERVICE', 'Service', 'INTEGER', 'nagios_service', 'ID', false, null, null);
 		$this->addForeignKey('HOSTGROUP', 'Hostgroup', 'INTEGER', 'nagios_hostgroup', 'ID', false, null, null);
 		$this->addColumn('NAME', 'Name', 'VARCHAR', false, 255, null);
-		$this->addColumn('EXECUTION_FAILURE_CRITERIA_UP', 'ExecutionFailureCriteriaUp', 'BOOLEAN', false, null, null);
-		$this->addColumn('EXECUTION_FAILURE_CRITERIA_DOWN', 'ExecutionFailureCriteriaDown', 'BOOLEAN', false, null, null);
-		$this->addColumn('EXECUTION_FAILURE_CRITERIA_UNREACHABLE', 'ExecutionFailureCriteriaUnreachable', 'BOOLEAN', false, null, null);
-		$this->addColumn('EXECUTION_FAILURE_CRITERIA_PENDING', 'ExecutionFailureCriteriaPending', 'BOOLEAN', false, null, null);
-		$this->addColumn('EXECUTION_FAILURE_CRITERIA_OK', 'ExecutionFailureCriteriaOk', 'BOOLEAN', false, null, null);
-		$this->addColumn('EXECUTION_FAILURE_CRITERIA_WARNING', 'ExecutionFailureCriteriaWarning', 'BOOLEAN', false, null, null);
-		$this->addColumn('EXECUTION_FAILURE_CRITERIA_UNKNOWN', 'ExecutionFailureCriteriaUnknown', 'BOOLEAN', false, null, null);
-		$this->addColumn('EXECUTION_FAILURE_CRITERIA_CRITICAL', 'ExecutionFailureCriteriaCritical', 'BOOLEAN', false, null, null);
-		$this->addColumn('NOTIFICATION_FAILURE_CRITERIA_OK', 'NotificationFailureCriteriaOk', 'BOOLEAN', false, null, null);
-		$this->addColumn('NOTIFICATION_FAILURE_CRITERIA_WARNING', 'NotificationFailureCriteriaWarning', 'BOOLEAN', false, null, null);
-		$this->addColumn('NOTIFICATION_FAILURE_CRITERIA_UNKNOWN', 'NotificationFailureCriteriaUnknown', 'BOOLEAN', false, null, null);
-		$this->addColumn('NOTIFICATION_FAILURE_CRITERIA_CRITICAL', 'NotificationFailureCriteriaCritical', 'BOOLEAN', false, null, null);
-		$this->addColumn('NOTIFICATION_FAILURE_CRITERIA_PENDING', 'NotificationFailureCriteriaPending', 'BOOLEAN', false, null, null);
-		$this->addColumn('NOTIFICATION_FAILURE_CRITERIA_UP', 'NotificationFailureCriteriaUp', 'BOOLEAN', false, null, null);
-		$this->addColumn('NOTIFICATION_FAILURE_CRITERIA_DOWN', 'NotificationFailureCriteriaDown', 'BOOLEAN', false, null, null);
-		$this->addColumn('NOTIFICATION_FAILURE_CRITERIA_UNREACHABLE', 'NotificationFailureCriteriaUnreachable', 'BOOLEAN', false, null, null);
-		$this->addColumn('INHERITS_PARENT', 'InheritsParent', 'BOOLEAN', false, null, null);
+		$this->addColumn('EXECUTION_FAILURE_CRITERIA_UP', 'ExecutionFailureCriteriaUp', 'BOOLEAN', false, 1, null);
+		$this->addColumn('EXECUTION_FAILURE_CRITERIA_DOWN', 'ExecutionFailureCriteriaDown', 'BOOLEAN', false, 1, null);
+		$this->addColumn('EXECUTION_FAILURE_CRITERIA_UNREACHABLE', 'ExecutionFailureCriteriaUnreachable', 'BOOLEAN', false, 1, null);
+		$this->addColumn('EXECUTION_FAILURE_CRITERIA_PENDING', 'ExecutionFailureCriteriaPending', 'BOOLEAN', false, 1, null);
+		$this->addColumn('EXECUTION_FAILURE_CRITERIA_OK', 'ExecutionFailureCriteriaOk', 'BOOLEAN', false, 1, null);
+		$this->addColumn('EXECUTION_FAILURE_CRITERIA_WARNING', 'ExecutionFailureCriteriaWarning', 'BOOLEAN', false, 1, null);
+		$this->addColumn('EXECUTION_FAILURE_CRITERIA_UNKNOWN', 'ExecutionFailureCriteriaUnknown', 'BOOLEAN', false, 1, null);
+		$this->addColumn('EXECUTION_FAILURE_CRITERIA_CRITICAL', 'ExecutionFailureCriteriaCritical', 'BOOLEAN', false, 1, null);
+		$this->addColumn('NOTIFICATION_FAILURE_CRITERIA_OK', 'NotificationFailureCriteriaOk', 'BOOLEAN', false, 1, null);
+		$this->addColumn('NOTIFICATION_FAILURE_CRITERIA_WARNING', 'NotificationFailureCriteriaWarning', 'BOOLEAN', false, 1, null);
+		$this->addColumn('NOTIFICATION_FAILURE_CRITERIA_UNKNOWN', 'NotificationFailureCriteriaUnknown', 'BOOLEAN', false, 1, null);
+		$this->addColumn('NOTIFICATION_FAILURE_CRITERIA_CRITICAL', 'NotificationFailureCriteriaCritical', 'BOOLEAN', false, 1, null);
+		$this->addColumn('NOTIFICATION_FAILURE_CRITERIA_PENDING', 'NotificationFailureCriteriaPending', 'BOOLEAN', false, 1, null);
+		$this->addColumn('NOTIFICATION_FAILURE_CRITERIA_UP', 'NotificationFailureCriteriaUp', 'BOOLEAN', false, 1, null);
+		$this->addColumn('NOTIFICATION_FAILURE_CRITERIA_DOWN', 'NotificationFailureCriteriaDown', 'BOOLEAN', false, 1, null);
+		$this->addColumn('NOTIFICATION_FAILURE_CRITERIA_UNREACHABLE', 'NotificationFailureCriteriaUnreachable', 'BOOLEAN', false, 1, null);
+		$this->addColumn('INHERITS_PARENT', 'InheritsParent', 'BOOLEAN', false, 1, null);
 		$this->addForeignKey('DEPENDENCY_PERIOD', 'DependencyPeriod', 'INTEGER', 'nagios_timeperiod', 'ID', false, null, null);
 		// validators
 	} // initialize()
@@ -77,7 +77,7 @@ class NagiosDependencyTableMap extends TableMap
 		$this->addRelation('NagiosService', 'NagiosService', RelationMap::MANY_TO_ONE, array('service' => 'id', ), 'CASCADE', null);
 		$this->addRelation('NagiosHostgroup', 'NagiosHostgroup', RelationMap::MANY_TO_ONE, array('hostgroup' => 'id', ), 'CASCADE', null);
 		$this->addRelation('NagiosTimeperiod', 'NagiosTimeperiod', RelationMap::MANY_TO_ONE, array('dependency_period' => 'id', ), 'CASCADE', null);
-		$this->addRelation('NagiosDependencyTarget', 'NagiosDependencyTarget', RelationMap::ONE_TO_MANY, array('id' => 'dependency', ), 'CASCADE', null);
+		$this->addRelation('NagiosDependencyTarget', 'NagiosDependencyTarget', RelationMap::ONE_TO_MANY, array('id' => 'dependency', ), 'CASCADE', null, 'NagiosDependencyTargets');
 	} // buildRelations()
 
 } // NagiosDependencyTableMap

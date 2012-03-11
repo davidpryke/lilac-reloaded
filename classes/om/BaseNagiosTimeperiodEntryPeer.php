@@ -19,12 +19,9 @@ abstract class BaseNagiosTimeperiodEntryPeer {
 	/** the related Propel class for this table */
 	const OM_CLASS = 'NagiosTimeperiodEntry';
 
-	/** A class that can be returned by this peer. */
-	const CLASS_DEFAULT = 'NagiosTimeperiodEntry';
-
 	/** the related TableMap class for this table */
 	const TM_CLASS = 'NagiosTimeperiodEntryTableMap';
-	
+
 	/** The total number of columns. */
 	const NUM_COLUMNS = 4;
 
@@ -48,7 +45,7 @@ abstract class BaseNagiosTimeperiodEntryPeer {
 
 	/** The default string format for model objects of the related table **/
 	const DEFAULT_STRING_FORMAT = 'YAML';
-	
+
 	/**
 	 * An identiy map to hold any loaded instances of NagiosTimeperiodEntry objects.
 	 * This must be public so that other peer classes can access this when hydrating from JOIN
@@ -381,7 +378,7 @@ abstract class BaseNagiosTimeperiodEntryPeer {
 	}
 
 	/**
-	 * Retrieves the primary key from the DB resultset row 
+	 * Retrieves the primary key from the DB resultset row
 	 * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
 	 * a multi-column primary key, an array of the primary key columns will be returned.
 	 *
@@ -406,7 +403,7 @@ abstract class BaseNagiosTimeperiodEntryPeer {
 		$results = array();
 	
 		// set the class once to avoid overhead in the loop
-		$cls = NagiosTimeperiodEntryPeer::getOMClass(false);
+		$cls = NagiosTimeperiodEntryPeer::getOMClass();
 		// populate the object(s)
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$key = NagiosTimeperiodEntryPeer::getPrimaryKeyHashFromRow($row, 0);
@@ -478,9 +475,9 @@ abstract class BaseNagiosTimeperiodEntryPeer {
 		if (!$criteria->hasSelectClause()) {
 			NagiosTimeperiodEntryPeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -537,7 +534,7 @@ abstract class BaseNagiosTimeperiodEntryPeer {
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 
-				$cls = NagiosTimeperiodEntryPeer::getOMClass(false);
+				$cls = NagiosTimeperiodEntryPeer::getOMClass();
 
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
@@ -549,7 +546,7 @@ abstract class BaseNagiosTimeperiodEntryPeer {
 				$obj2 = NagiosTimeperiodPeer::getInstanceFromPool($key2);
 				if (!$obj2) {
 
-					$cls = NagiosTimeperiodPeer::getOMClass(false);
+					$cls = NagiosTimeperiodPeer::getOMClass();
 
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol);
@@ -594,9 +591,9 @@ abstract class BaseNagiosTimeperiodEntryPeer {
 		if (!$criteria->hasSelectClause()) {
 			NagiosTimeperiodEntryPeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -654,7 +651,7 @@ abstract class BaseNagiosTimeperiodEntryPeer {
 				// See http://www.propelorm.org/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
-				$cls = NagiosTimeperiodEntryPeer::getOMClass(false);
+				$cls = NagiosTimeperiodEntryPeer::getOMClass();
 
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
@@ -668,7 +665,7 @@ abstract class BaseNagiosTimeperiodEntryPeer {
 				$obj2 = NagiosTimeperiodPeer::getInstanceFromPool($key2);
 				if (!$obj2) {
 
-					$cls = NagiosTimeperiodPeer::getOMClass(false);
+					$cls = NagiosTimeperiodPeer::getOMClass();
 
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol2);
@@ -712,17 +709,12 @@ abstract class BaseNagiosTimeperiodEntryPeer {
 	/**
 	 * The class that the Peer will make instances of.
 	 *
-	 * If $withPrefix is true, the returned path
-	 * uses a dot-path notation which is tranalted into a path
-	 * relative to a location on the PHP include_path.
-	 * (e.g. path.to.MyClass -> 'path/to/MyClass.php')
 	 *
-	 * @param      boolean $withPrefix Whether or not to return the path with the class name
-	 * @return     string path.to.ClassName
+	 * @return     string ClassName
 	 */
-	public static function getOMClass($withPrefix = true)
+	public static function getOMClass()
 	{
-		return $withPrefix ? NagiosTimeperiodEntryPeer::CLASS_DEFAULT : NagiosTimeperiodEntryPeer::OM_CLASS;
+		return NagiosTimeperiodEntryPeer::OM_CLASS;
 	}
 
 	/**

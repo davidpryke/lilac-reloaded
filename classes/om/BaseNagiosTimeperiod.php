@@ -25,6 +25,12 @@ abstract class BaseNagiosTimeperiod extends BaseObject  implements Persistent
 	protected static $peer;
 
 	/**
+	 * The flag var to prevent infinit loop in deep copy
+	 * @var       boolean
+	 */
+	protected $startCopy = false;
+
+	/**
 	 * The value for the id field.
 	 * @var        int
 	 */
@@ -130,6 +136,96 @@ abstract class BaseNagiosTimeperiod extends BaseObject  implements Persistent
 	 * @var        boolean
 	 */
 	protected $alreadyInValidation = false;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $nagiosTimeperiodEntrysScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $nagiosTimeperiodExcludesRelatedByTimeperiodIdScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $nagiosTimeperiodExcludesRelatedByExcludedTimeperiodScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $nagiosContactsRelatedByHostNotificationPeriodScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $nagiosContactsRelatedByServiceNotificationPeriodScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $nagiosHostTemplatesRelatedByCheckPeriodScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $nagiosHostTemplatesRelatedByNotificationPeriodScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $nagiosHostsRelatedByCheckPeriodScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $nagiosHostsRelatedByNotificationPeriodScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $nagiosServiceTemplatesRelatedByCheckPeriodScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $nagiosServiceTemplatesRelatedByNotificationPeriodScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $nagiosServicesRelatedByCheckPeriodScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $nagiosServicesRelatedByNotificationPeriodScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $nagiosDependencysScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $nagiosEscalationsScheduledForDeletion = null;
 
 	/**
 	 * Get the [id] column value.
@@ -380,18 +476,18 @@ abstract class BaseNagiosTimeperiod extends BaseObject  implements Persistent
 
 		$con->beginTransaction();
 		try {
+			$deleteQuery = NagiosTimeperiodQuery::create()
+				->filterByPrimaryKey($this->getPrimaryKey());
 			$ret = $this->preDelete($con);
 			if ($ret) {
-				NagiosTimeperiodQuery::create()
-					->filterByPrimaryKey($this->getPrimaryKey())
-					->delete($con);
+				$deleteQuery->delete($con);
 				$this->postDelete($con);
 				$con->commit();
 				$this->setDeleted(true);
 			} else {
 				$con->commit();
 			}
-		} catch (PropelException $e) {
+		} catch (Exception $e) {
 			$con->rollBack();
 			throw $e;
 		}
@@ -443,7 +539,7 @@ abstract class BaseNagiosTimeperiod extends BaseObject  implements Persistent
 			}
 			$con->commit();
 			return $affectedRows;
-		} catch (PropelException $e) {
+		} catch (Exception $e) {
 			$con->rollBack();
 			throw $e;
 		}
@@ -466,27 +562,24 @@ abstract class BaseNagiosTimeperiod extends BaseObject  implements Persistent
 		if (!$this->alreadyInSave) {
 			$this->alreadyInSave = true;
 
-			if ($this->isNew() ) {
-				$this->modifiedColumns[] = NagiosTimeperiodPeer::ID;
+			if ($this->isNew() || $this->isModified()) {
+				// persist changes
+				if ($this->isNew()) {
+					$this->doInsert($con);
+				} else {
+					$this->doUpdate($con);
+				}
+				$affectedRows += 1;
+				$this->resetModified();
 			}
 
-			// If this object has been modified, then save it to the database.
-			if ($this->isModified()) {
-				if ($this->isNew()) {
-					$criteria = $this->buildCriteria();
-					if ($criteria->keyContainsValue(NagiosTimeperiodPeer::ID) ) {
-						throw new PropelException('Cannot insert a value for auto-increment primary key ('.NagiosTimeperiodPeer::ID.')');
-					}
-
-					$pk = BasePeer::doInsert($criteria, $con);
-					$affectedRows = 1;
-					$this->setId($pk);  //[IMV] update autoincrement primary key
-					$this->setNew(false);
-				} else {
-					$affectedRows = NagiosTimeperiodPeer::doUpdate($this, $con);
+			if ($this->nagiosTimeperiodEntrysScheduledForDeletion !== null) {
+				if (!$this->nagiosTimeperiodEntrysScheduledForDeletion->isEmpty()) {
+					NagiosTimeperiodEntryQuery::create()
+						->filterByPrimaryKeys($this->nagiosTimeperiodEntrysScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->nagiosTimeperiodEntrysScheduledForDeletion = null;
 				}
-
-				$this->resetModified(); // [HL] After being saved an object is no longer 'modified'
 			}
 
 			if ($this->collNagiosTimeperiodEntrys !== null) {
@@ -494,6 +587,15 @@ abstract class BaseNagiosTimeperiod extends BaseObject  implements Persistent
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
+				}
+			}
+
+			if ($this->nagiosTimeperiodExcludesRelatedByTimeperiodIdScheduledForDeletion !== null) {
+				if (!$this->nagiosTimeperiodExcludesRelatedByTimeperiodIdScheduledForDeletion->isEmpty()) {
+					NagiosTimeperiodExcludeQuery::create()
+						->filterByPrimaryKeys($this->nagiosTimeperiodExcludesRelatedByTimeperiodIdScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->nagiosTimeperiodExcludesRelatedByTimeperiodIdScheduledForDeletion = null;
 				}
 			}
 
@@ -505,11 +607,29 @@ abstract class BaseNagiosTimeperiod extends BaseObject  implements Persistent
 				}
 			}
 
+			if ($this->nagiosTimeperiodExcludesRelatedByExcludedTimeperiodScheduledForDeletion !== null) {
+				if (!$this->nagiosTimeperiodExcludesRelatedByExcludedTimeperiodScheduledForDeletion->isEmpty()) {
+					NagiosTimeperiodExcludeQuery::create()
+						->filterByPrimaryKeys($this->nagiosTimeperiodExcludesRelatedByExcludedTimeperiodScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->nagiosTimeperiodExcludesRelatedByExcludedTimeperiodScheduledForDeletion = null;
+				}
+			}
+
 			if ($this->collNagiosTimeperiodExcludesRelatedByExcludedTimeperiod !== null) {
 				foreach ($this->collNagiosTimeperiodExcludesRelatedByExcludedTimeperiod as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
+				}
+			}
+
+			if ($this->nagiosContactsRelatedByHostNotificationPeriodScheduledForDeletion !== null) {
+				if (!$this->nagiosContactsRelatedByHostNotificationPeriodScheduledForDeletion->isEmpty()) {
+					NagiosContactQuery::create()
+						->filterByPrimaryKeys($this->nagiosContactsRelatedByHostNotificationPeriodScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->nagiosContactsRelatedByHostNotificationPeriodScheduledForDeletion = null;
 				}
 			}
 
@@ -521,11 +641,29 @@ abstract class BaseNagiosTimeperiod extends BaseObject  implements Persistent
 				}
 			}
 
+			if ($this->nagiosContactsRelatedByServiceNotificationPeriodScheduledForDeletion !== null) {
+				if (!$this->nagiosContactsRelatedByServiceNotificationPeriodScheduledForDeletion->isEmpty()) {
+					NagiosContactQuery::create()
+						->filterByPrimaryKeys($this->nagiosContactsRelatedByServiceNotificationPeriodScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->nagiosContactsRelatedByServiceNotificationPeriodScheduledForDeletion = null;
+				}
+			}
+
 			if ($this->collNagiosContactsRelatedByServiceNotificationPeriod !== null) {
 				foreach ($this->collNagiosContactsRelatedByServiceNotificationPeriod as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
+				}
+			}
+
+			if ($this->nagiosHostTemplatesRelatedByCheckPeriodScheduledForDeletion !== null) {
+				if (!$this->nagiosHostTemplatesRelatedByCheckPeriodScheduledForDeletion->isEmpty()) {
+					NagiosHostTemplateQuery::create()
+						->filterByPrimaryKeys($this->nagiosHostTemplatesRelatedByCheckPeriodScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->nagiosHostTemplatesRelatedByCheckPeriodScheduledForDeletion = null;
 				}
 			}
 
@@ -537,11 +675,29 @@ abstract class BaseNagiosTimeperiod extends BaseObject  implements Persistent
 				}
 			}
 
+			if ($this->nagiosHostTemplatesRelatedByNotificationPeriodScheduledForDeletion !== null) {
+				if (!$this->nagiosHostTemplatesRelatedByNotificationPeriodScheduledForDeletion->isEmpty()) {
+					NagiosHostTemplateQuery::create()
+						->filterByPrimaryKeys($this->nagiosHostTemplatesRelatedByNotificationPeriodScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->nagiosHostTemplatesRelatedByNotificationPeriodScheduledForDeletion = null;
+				}
+			}
+
 			if ($this->collNagiosHostTemplatesRelatedByNotificationPeriod !== null) {
 				foreach ($this->collNagiosHostTemplatesRelatedByNotificationPeriod as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
+				}
+			}
+
+			if ($this->nagiosHostsRelatedByCheckPeriodScheduledForDeletion !== null) {
+				if (!$this->nagiosHostsRelatedByCheckPeriodScheduledForDeletion->isEmpty()) {
+					NagiosHostQuery::create()
+						->filterByPrimaryKeys($this->nagiosHostsRelatedByCheckPeriodScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->nagiosHostsRelatedByCheckPeriodScheduledForDeletion = null;
 				}
 			}
 
@@ -553,11 +709,29 @@ abstract class BaseNagiosTimeperiod extends BaseObject  implements Persistent
 				}
 			}
 
+			if ($this->nagiosHostsRelatedByNotificationPeriodScheduledForDeletion !== null) {
+				if (!$this->nagiosHostsRelatedByNotificationPeriodScheduledForDeletion->isEmpty()) {
+					NagiosHostQuery::create()
+						->filterByPrimaryKeys($this->nagiosHostsRelatedByNotificationPeriodScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->nagiosHostsRelatedByNotificationPeriodScheduledForDeletion = null;
+				}
+			}
+
 			if ($this->collNagiosHostsRelatedByNotificationPeriod !== null) {
 				foreach ($this->collNagiosHostsRelatedByNotificationPeriod as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
+				}
+			}
+
+			if ($this->nagiosServiceTemplatesRelatedByCheckPeriodScheduledForDeletion !== null) {
+				if (!$this->nagiosServiceTemplatesRelatedByCheckPeriodScheduledForDeletion->isEmpty()) {
+					NagiosServiceTemplateQuery::create()
+						->filterByPrimaryKeys($this->nagiosServiceTemplatesRelatedByCheckPeriodScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->nagiosServiceTemplatesRelatedByCheckPeriodScheduledForDeletion = null;
 				}
 			}
 
@@ -569,11 +743,29 @@ abstract class BaseNagiosTimeperiod extends BaseObject  implements Persistent
 				}
 			}
 
+			if ($this->nagiosServiceTemplatesRelatedByNotificationPeriodScheduledForDeletion !== null) {
+				if (!$this->nagiosServiceTemplatesRelatedByNotificationPeriodScheduledForDeletion->isEmpty()) {
+					NagiosServiceTemplateQuery::create()
+						->filterByPrimaryKeys($this->nagiosServiceTemplatesRelatedByNotificationPeriodScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->nagiosServiceTemplatesRelatedByNotificationPeriodScheduledForDeletion = null;
+				}
+			}
+
 			if ($this->collNagiosServiceTemplatesRelatedByNotificationPeriod !== null) {
 				foreach ($this->collNagiosServiceTemplatesRelatedByNotificationPeriod as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
+				}
+			}
+
+			if ($this->nagiosServicesRelatedByCheckPeriodScheduledForDeletion !== null) {
+				if (!$this->nagiosServicesRelatedByCheckPeriodScheduledForDeletion->isEmpty()) {
+					NagiosServiceQuery::create()
+						->filterByPrimaryKeys($this->nagiosServicesRelatedByCheckPeriodScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->nagiosServicesRelatedByCheckPeriodScheduledForDeletion = null;
 				}
 			}
 
@@ -585,6 +777,15 @@ abstract class BaseNagiosTimeperiod extends BaseObject  implements Persistent
 				}
 			}
 
+			if ($this->nagiosServicesRelatedByNotificationPeriodScheduledForDeletion !== null) {
+				if (!$this->nagiosServicesRelatedByNotificationPeriodScheduledForDeletion->isEmpty()) {
+					NagiosServiceQuery::create()
+						->filterByPrimaryKeys($this->nagiosServicesRelatedByNotificationPeriodScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->nagiosServicesRelatedByNotificationPeriodScheduledForDeletion = null;
+				}
+			}
+
 			if ($this->collNagiosServicesRelatedByNotificationPeriod !== null) {
 				foreach ($this->collNagiosServicesRelatedByNotificationPeriod as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
@@ -593,11 +794,29 @@ abstract class BaseNagiosTimeperiod extends BaseObject  implements Persistent
 				}
 			}
 
+			if ($this->nagiosDependencysScheduledForDeletion !== null) {
+				if (!$this->nagiosDependencysScheduledForDeletion->isEmpty()) {
+					NagiosDependencyQuery::create()
+						->filterByPrimaryKeys($this->nagiosDependencysScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->nagiosDependencysScheduledForDeletion = null;
+				}
+			}
+
 			if ($this->collNagiosDependencys !== null) {
 				foreach ($this->collNagiosDependencys as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
+				}
+			}
+
+			if ($this->nagiosEscalationsScheduledForDeletion !== null) {
+				if (!$this->nagiosEscalationsScheduledForDeletion->isEmpty()) {
+					NagiosEscalationQuery::create()
+						->filterByPrimaryKeys($this->nagiosEscalationsScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->nagiosEscalationsScheduledForDeletion = null;
 				}
 			}
 
@@ -614,6 +833,86 @@ abstract class BaseNagiosTimeperiod extends BaseObject  implements Persistent
 		}
 		return $affectedRows;
 	} // doSave()
+
+	/**
+	 * Insert the row in the database.
+	 *
+	 * @param      PropelPDO $con
+	 *
+	 * @throws     PropelException
+	 * @see        doSave()
+	 */
+	protected function doInsert(PropelPDO $con)
+	{
+		$modifiedColumns = array();
+		$index = 0;
+
+		$this->modifiedColumns[] = NagiosTimeperiodPeer::ID;
+		if (null !== $this->id) {
+			throw new PropelException('Cannot insert a value for auto-increment primary key (' . NagiosTimeperiodPeer::ID . ')');
+		}
+
+		 // check the columns in natural order for more readable SQL queries
+		if ($this->isColumnModified(NagiosTimeperiodPeer::ID)) {
+			$modifiedColumns[':p' . $index++]  = '`ID`';
+		}
+		if ($this->isColumnModified(NagiosTimeperiodPeer::NAME)) {
+			$modifiedColumns[':p' . $index++]  = '`NAME`';
+		}
+		if ($this->isColumnModified(NagiosTimeperiodPeer::ALIAS)) {
+			$modifiedColumns[':p' . $index++]  = '`ALIAS`';
+		}
+
+		$sql = sprintf(
+			'INSERT INTO `nagios_timeperiod` (%s) VALUES (%s)',
+			implode(', ', $modifiedColumns),
+			implode(', ', array_keys($modifiedColumns))
+		);
+
+		try {
+			$stmt = $con->prepare($sql);
+			foreach ($modifiedColumns as $identifier => $columnName) {
+				switch ($columnName) {
+					case '`ID`':
+						$stmt->bindValue($identifier, $this->id, PDO::PARAM_INT);
+						break;
+					case '`NAME`':
+						$stmt->bindValue($identifier, $this->name, PDO::PARAM_STR);
+						break;
+					case '`ALIAS`':
+						$stmt->bindValue($identifier, $this->alias, PDO::PARAM_STR);
+						break;
+				}
+			}
+			$stmt->execute();
+		} catch (Exception $e) {
+			Propel::log($e->getMessage(), Propel::LOG_ERR);
+			throw new PropelException(sprintf('Unable to execute INSERT statement [%s]', $sql), $e);
+		}
+
+		try {
+			$pk = $con->lastInsertId();
+		} catch (Exception $e) {
+			throw new PropelException('Unable to get autoincrement id.', $e);
+		}
+		$this->setId($pk);
+
+		$this->setNew(false);
+	}
+
+	/**
+	 * Update the row in the database.
+	 *
+	 * @param      PropelPDO $con
+	 *
+	 * @see        doSave()
+	 */
+	protected function doUpdate(PropelPDO $con)
+	{
+		$selectCriteria = $this->buildPkeyCriteria();
+		$valuesCriteria = $this->buildCriteria();
+		BasePeer::doUpdate($selectCriteria, $valuesCriteria, $con);
+	}
 
 	/**
 	 * Array of ValidationFailed objects.
@@ -1067,10 +1366,12 @@ abstract class BaseNagiosTimeperiod extends BaseObject  implements Persistent
 		$copyObj->setName($this->getName());
 		$copyObj->setAlias($this->getAlias());
 
-		if ($deepCopy) {
+		if ($deepCopy && !$this->startCopy) {
 			// important: temporarily setNew(false) because this affects the behavior of
 			// the getter/setter methods for fkey referrer objects.
 			$copyObj->setNew(false);
+			// store object hash to prevent cycle
+			$this->startCopy = true;
 
 			foreach ($this->getNagiosTimeperiodEntrys() as $relObj) {
 				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
@@ -1162,6 +1463,8 @@ abstract class BaseNagiosTimeperiod extends BaseObject  implements Persistent
 				}
 			}
 
+			//unflag object copy
+			$this->startCopy = false;
 		} // if ($deepCopy)
 
 		if ($makeNew) {
@@ -1211,7 +1514,7 @@ abstract class BaseNagiosTimeperiod extends BaseObject  implements Persistent
 
 	/**
 	 * Initializes a collection based on the name of a relation.
-	 * Avoids crafting an 'init[$relationName]s' method name 
+	 * Avoids crafting an 'init[$relationName]s' method name
 	 * that wouldn't work when StandardEnglishPluralizer is used.
 	 *
 	 * @param      string $relationName The name of the relation to initialize
@@ -1335,6 +1638,30 @@ abstract class BaseNagiosTimeperiod extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of NagiosTimeperiodEntry objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $nagiosTimeperiodEntrys A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setNagiosTimeperiodEntrys(PropelCollection $nagiosTimeperiodEntrys, PropelPDO $con = null)
+	{
+		$this->nagiosTimeperiodEntrysScheduledForDeletion = $this->getNagiosTimeperiodEntrys(new Criteria(), $con)->diff($nagiosTimeperiodEntrys);
+
+		foreach ($nagiosTimeperiodEntrys as $nagiosTimeperiodEntry) {
+			// Fix issue with collection modified by reference
+			if ($nagiosTimeperiodEntry->isNew()) {
+				$nagiosTimeperiodEntry->setNagiosTimeperiod($this);
+			}
+			$this->addNagiosTimeperiodEntry($nagiosTimeperiodEntry);
+		}
+
+		$this->collNagiosTimeperiodEntrys = $nagiosTimeperiodEntrys;
+	}
+
+	/**
 	 * Returns the number of related NagiosTimeperiodEntry objects.
 	 *
 	 * @param      Criteria $criteria
@@ -1367,8 +1694,7 @@ abstract class BaseNagiosTimeperiod extends BaseObject  implements Persistent
 	 * through the NagiosTimeperiodEntry foreign key attribute.
 	 *
 	 * @param      NagiosTimeperiodEntry $l NagiosTimeperiodEntry
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     NagiosTimeperiod The current object (for fluent API support)
 	 */
 	public function addNagiosTimeperiodEntry(NagiosTimeperiodEntry $l)
 	{
@@ -1376,9 +1702,19 @@ abstract class BaseNagiosTimeperiod extends BaseObject  implements Persistent
 			$this->initNagiosTimeperiodEntrys();
 		}
 		if (!$this->collNagiosTimeperiodEntrys->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collNagiosTimeperiodEntrys[]= $l;
-			$l->setNagiosTimeperiod($this);
+			$this->doAddNagiosTimeperiodEntry($l);
 		}
+
+		return $this;
+	}
+
+	/**
+	 * @param	NagiosTimeperiodEntry $nagiosTimeperiodEntry The nagiosTimeperiodEntry object to add.
+	 */
+	protected function doAddNagiosTimeperiodEntry($nagiosTimeperiodEntry)
+	{
+		$this->collNagiosTimeperiodEntrys[]= $nagiosTimeperiodEntry;
+		$nagiosTimeperiodEntry->setNagiosTimeperiod($this);
 	}
 
 	/**
@@ -1450,6 +1786,30 @@ abstract class BaseNagiosTimeperiod extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of NagiosTimeperiodExcludeRelatedByTimeperiodId objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $nagiosTimeperiodExcludesRelatedByTimeperiodId A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setNagiosTimeperiodExcludesRelatedByTimeperiodId(PropelCollection $nagiosTimeperiodExcludesRelatedByTimeperiodId, PropelPDO $con = null)
+	{
+		$this->nagiosTimeperiodExcludesRelatedByTimeperiodIdScheduledForDeletion = $this->getNagiosTimeperiodExcludesRelatedByTimeperiodId(new Criteria(), $con)->diff($nagiosTimeperiodExcludesRelatedByTimeperiodId);
+
+		foreach ($nagiosTimeperiodExcludesRelatedByTimeperiodId as $nagiosTimeperiodExcludeRelatedByTimeperiodId) {
+			// Fix issue with collection modified by reference
+			if ($nagiosTimeperiodExcludeRelatedByTimeperiodId->isNew()) {
+				$nagiosTimeperiodExcludeRelatedByTimeperiodId->setNagiosTimeperiodRelatedByTimeperiodId($this);
+			}
+			$this->addNagiosTimeperiodExcludeRelatedByTimeperiodId($nagiosTimeperiodExcludeRelatedByTimeperiodId);
+		}
+
+		$this->collNagiosTimeperiodExcludesRelatedByTimeperiodId = $nagiosTimeperiodExcludesRelatedByTimeperiodId;
+	}
+
+	/**
 	 * Returns the number of related NagiosTimeperiodExclude objects.
 	 *
 	 * @param      Criteria $criteria
@@ -1482,8 +1842,7 @@ abstract class BaseNagiosTimeperiod extends BaseObject  implements Persistent
 	 * through the NagiosTimeperiodExclude foreign key attribute.
 	 *
 	 * @param      NagiosTimeperiodExclude $l NagiosTimeperiodExclude
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     NagiosTimeperiod The current object (for fluent API support)
 	 */
 	public function addNagiosTimeperiodExcludeRelatedByTimeperiodId(NagiosTimeperiodExclude $l)
 	{
@@ -1491,9 +1850,19 @@ abstract class BaseNagiosTimeperiod extends BaseObject  implements Persistent
 			$this->initNagiosTimeperiodExcludesRelatedByTimeperiodId();
 		}
 		if (!$this->collNagiosTimeperiodExcludesRelatedByTimeperiodId->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collNagiosTimeperiodExcludesRelatedByTimeperiodId[]= $l;
-			$l->setNagiosTimeperiodRelatedByTimeperiodId($this);
+			$this->doAddNagiosTimeperiodExcludeRelatedByTimeperiodId($l);
 		}
+
+		return $this;
+	}
+
+	/**
+	 * @param	NagiosTimeperiodExcludeRelatedByTimeperiodId $nagiosTimeperiodExcludeRelatedByTimeperiodId The nagiosTimeperiodExcludeRelatedByTimeperiodId object to add.
+	 */
+	protected function doAddNagiosTimeperiodExcludeRelatedByTimeperiodId($nagiosTimeperiodExcludeRelatedByTimeperiodId)
+	{
+		$this->collNagiosTimeperiodExcludesRelatedByTimeperiodId[]= $nagiosTimeperiodExcludeRelatedByTimeperiodId;
+		$nagiosTimeperiodExcludeRelatedByTimeperiodId->setNagiosTimeperiodRelatedByTimeperiodId($this);
 	}
 
 	/**
@@ -1565,6 +1934,30 @@ abstract class BaseNagiosTimeperiod extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of NagiosTimeperiodExcludeRelatedByExcludedTimeperiod objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $nagiosTimeperiodExcludesRelatedByExcludedTimeperiod A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setNagiosTimeperiodExcludesRelatedByExcludedTimeperiod(PropelCollection $nagiosTimeperiodExcludesRelatedByExcludedTimeperiod, PropelPDO $con = null)
+	{
+		$this->nagiosTimeperiodExcludesRelatedByExcludedTimeperiodScheduledForDeletion = $this->getNagiosTimeperiodExcludesRelatedByExcludedTimeperiod(new Criteria(), $con)->diff($nagiosTimeperiodExcludesRelatedByExcludedTimeperiod);
+
+		foreach ($nagiosTimeperiodExcludesRelatedByExcludedTimeperiod as $nagiosTimeperiodExcludeRelatedByExcludedTimeperiod) {
+			// Fix issue with collection modified by reference
+			if ($nagiosTimeperiodExcludeRelatedByExcludedTimeperiod->isNew()) {
+				$nagiosTimeperiodExcludeRelatedByExcludedTimeperiod->setNagiosTimeperiodRelatedByExcludedTimeperiod($this);
+			}
+			$this->addNagiosTimeperiodExcludeRelatedByExcludedTimeperiod($nagiosTimeperiodExcludeRelatedByExcludedTimeperiod);
+		}
+
+		$this->collNagiosTimeperiodExcludesRelatedByExcludedTimeperiod = $nagiosTimeperiodExcludesRelatedByExcludedTimeperiod;
+	}
+
+	/**
 	 * Returns the number of related NagiosTimeperiodExclude objects.
 	 *
 	 * @param      Criteria $criteria
@@ -1597,8 +1990,7 @@ abstract class BaseNagiosTimeperiod extends BaseObject  implements Persistent
 	 * through the NagiosTimeperiodExclude foreign key attribute.
 	 *
 	 * @param      NagiosTimeperiodExclude $l NagiosTimeperiodExclude
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     NagiosTimeperiod The current object (for fluent API support)
 	 */
 	public function addNagiosTimeperiodExcludeRelatedByExcludedTimeperiod(NagiosTimeperiodExclude $l)
 	{
@@ -1606,9 +1998,19 @@ abstract class BaseNagiosTimeperiod extends BaseObject  implements Persistent
 			$this->initNagiosTimeperiodExcludesRelatedByExcludedTimeperiod();
 		}
 		if (!$this->collNagiosTimeperiodExcludesRelatedByExcludedTimeperiod->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collNagiosTimeperiodExcludesRelatedByExcludedTimeperiod[]= $l;
-			$l->setNagiosTimeperiodRelatedByExcludedTimeperiod($this);
+			$this->doAddNagiosTimeperiodExcludeRelatedByExcludedTimeperiod($l);
 		}
+
+		return $this;
+	}
+
+	/**
+	 * @param	NagiosTimeperiodExcludeRelatedByExcludedTimeperiod $nagiosTimeperiodExcludeRelatedByExcludedTimeperiod The nagiosTimeperiodExcludeRelatedByExcludedTimeperiod object to add.
+	 */
+	protected function doAddNagiosTimeperiodExcludeRelatedByExcludedTimeperiod($nagiosTimeperiodExcludeRelatedByExcludedTimeperiod)
+	{
+		$this->collNagiosTimeperiodExcludesRelatedByExcludedTimeperiod[]= $nagiosTimeperiodExcludeRelatedByExcludedTimeperiod;
+		$nagiosTimeperiodExcludeRelatedByExcludedTimeperiod->setNagiosTimeperiodRelatedByExcludedTimeperiod($this);
 	}
 
 	/**
@@ -1680,6 +2082,30 @@ abstract class BaseNagiosTimeperiod extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of NagiosContactRelatedByHostNotificationPeriod objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $nagiosContactsRelatedByHostNotificationPeriod A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setNagiosContactsRelatedByHostNotificationPeriod(PropelCollection $nagiosContactsRelatedByHostNotificationPeriod, PropelPDO $con = null)
+	{
+		$this->nagiosContactsRelatedByHostNotificationPeriodScheduledForDeletion = $this->getNagiosContactsRelatedByHostNotificationPeriod(new Criteria(), $con)->diff($nagiosContactsRelatedByHostNotificationPeriod);
+
+		foreach ($nagiosContactsRelatedByHostNotificationPeriod as $nagiosContactRelatedByHostNotificationPeriod) {
+			// Fix issue with collection modified by reference
+			if ($nagiosContactRelatedByHostNotificationPeriod->isNew()) {
+				$nagiosContactRelatedByHostNotificationPeriod->setNagiosTimeperiodRelatedByHostNotificationPeriod($this);
+			}
+			$this->addNagiosContactRelatedByHostNotificationPeriod($nagiosContactRelatedByHostNotificationPeriod);
+		}
+
+		$this->collNagiosContactsRelatedByHostNotificationPeriod = $nagiosContactsRelatedByHostNotificationPeriod;
+	}
+
+	/**
 	 * Returns the number of related NagiosContact objects.
 	 *
 	 * @param      Criteria $criteria
@@ -1712,8 +2138,7 @@ abstract class BaseNagiosTimeperiod extends BaseObject  implements Persistent
 	 * through the NagiosContact foreign key attribute.
 	 *
 	 * @param      NagiosContact $l NagiosContact
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     NagiosTimeperiod The current object (for fluent API support)
 	 */
 	public function addNagiosContactRelatedByHostNotificationPeriod(NagiosContact $l)
 	{
@@ -1721,9 +2146,19 @@ abstract class BaseNagiosTimeperiod extends BaseObject  implements Persistent
 			$this->initNagiosContactsRelatedByHostNotificationPeriod();
 		}
 		if (!$this->collNagiosContactsRelatedByHostNotificationPeriod->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collNagiosContactsRelatedByHostNotificationPeriod[]= $l;
-			$l->setNagiosTimeperiodRelatedByHostNotificationPeriod($this);
+			$this->doAddNagiosContactRelatedByHostNotificationPeriod($l);
 		}
+
+		return $this;
+	}
+
+	/**
+	 * @param	NagiosContactRelatedByHostNotificationPeriod $nagiosContactRelatedByHostNotificationPeriod The nagiosContactRelatedByHostNotificationPeriod object to add.
+	 */
+	protected function doAddNagiosContactRelatedByHostNotificationPeriod($nagiosContactRelatedByHostNotificationPeriod)
+	{
+		$this->collNagiosContactsRelatedByHostNotificationPeriod[]= $nagiosContactRelatedByHostNotificationPeriod;
+		$nagiosContactRelatedByHostNotificationPeriod->setNagiosTimeperiodRelatedByHostNotificationPeriod($this);
 	}
 
 	/**
@@ -1795,6 +2230,30 @@ abstract class BaseNagiosTimeperiod extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of NagiosContactRelatedByServiceNotificationPeriod objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $nagiosContactsRelatedByServiceNotificationPeriod A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setNagiosContactsRelatedByServiceNotificationPeriod(PropelCollection $nagiosContactsRelatedByServiceNotificationPeriod, PropelPDO $con = null)
+	{
+		$this->nagiosContactsRelatedByServiceNotificationPeriodScheduledForDeletion = $this->getNagiosContactsRelatedByServiceNotificationPeriod(new Criteria(), $con)->diff($nagiosContactsRelatedByServiceNotificationPeriod);
+
+		foreach ($nagiosContactsRelatedByServiceNotificationPeriod as $nagiosContactRelatedByServiceNotificationPeriod) {
+			// Fix issue with collection modified by reference
+			if ($nagiosContactRelatedByServiceNotificationPeriod->isNew()) {
+				$nagiosContactRelatedByServiceNotificationPeriod->setNagiosTimeperiodRelatedByServiceNotificationPeriod($this);
+			}
+			$this->addNagiosContactRelatedByServiceNotificationPeriod($nagiosContactRelatedByServiceNotificationPeriod);
+		}
+
+		$this->collNagiosContactsRelatedByServiceNotificationPeriod = $nagiosContactsRelatedByServiceNotificationPeriod;
+	}
+
+	/**
 	 * Returns the number of related NagiosContact objects.
 	 *
 	 * @param      Criteria $criteria
@@ -1827,8 +2286,7 @@ abstract class BaseNagiosTimeperiod extends BaseObject  implements Persistent
 	 * through the NagiosContact foreign key attribute.
 	 *
 	 * @param      NagiosContact $l NagiosContact
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     NagiosTimeperiod The current object (for fluent API support)
 	 */
 	public function addNagiosContactRelatedByServiceNotificationPeriod(NagiosContact $l)
 	{
@@ -1836,9 +2294,19 @@ abstract class BaseNagiosTimeperiod extends BaseObject  implements Persistent
 			$this->initNagiosContactsRelatedByServiceNotificationPeriod();
 		}
 		if (!$this->collNagiosContactsRelatedByServiceNotificationPeriod->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collNagiosContactsRelatedByServiceNotificationPeriod[]= $l;
-			$l->setNagiosTimeperiodRelatedByServiceNotificationPeriod($this);
+			$this->doAddNagiosContactRelatedByServiceNotificationPeriod($l);
 		}
+
+		return $this;
+	}
+
+	/**
+	 * @param	NagiosContactRelatedByServiceNotificationPeriod $nagiosContactRelatedByServiceNotificationPeriod The nagiosContactRelatedByServiceNotificationPeriod object to add.
+	 */
+	protected function doAddNagiosContactRelatedByServiceNotificationPeriod($nagiosContactRelatedByServiceNotificationPeriod)
+	{
+		$this->collNagiosContactsRelatedByServiceNotificationPeriod[]= $nagiosContactRelatedByServiceNotificationPeriod;
+		$nagiosContactRelatedByServiceNotificationPeriod->setNagiosTimeperiodRelatedByServiceNotificationPeriod($this);
 	}
 
 	/**
@@ -1910,6 +2378,30 @@ abstract class BaseNagiosTimeperiod extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of NagiosHostTemplateRelatedByCheckPeriod objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $nagiosHostTemplatesRelatedByCheckPeriod A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setNagiosHostTemplatesRelatedByCheckPeriod(PropelCollection $nagiosHostTemplatesRelatedByCheckPeriod, PropelPDO $con = null)
+	{
+		$this->nagiosHostTemplatesRelatedByCheckPeriodScheduledForDeletion = $this->getNagiosHostTemplatesRelatedByCheckPeriod(new Criteria(), $con)->diff($nagiosHostTemplatesRelatedByCheckPeriod);
+
+		foreach ($nagiosHostTemplatesRelatedByCheckPeriod as $nagiosHostTemplateRelatedByCheckPeriod) {
+			// Fix issue with collection modified by reference
+			if ($nagiosHostTemplateRelatedByCheckPeriod->isNew()) {
+				$nagiosHostTemplateRelatedByCheckPeriod->setNagiosTimeperiodRelatedByCheckPeriod($this);
+			}
+			$this->addNagiosHostTemplateRelatedByCheckPeriod($nagiosHostTemplateRelatedByCheckPeriod);
+		}
+
+		$this->collNagiosHostTemplatesRelatedByCheckPeriod = $nagiosHostTemplatesRelatedByCheckPeriod;
+	}
+
+	/**
 	 * Returns the number of related NagiosHostTemplate objects.
 	 *
 	 * @param      Criteria $criteria
@@ -1942,8 +2434,7 @@ abstract class BaseNagiosTimeperiod extends BaseObject  implements Persistent
 	 * through the NagiosHostTemplate foreign key attribute.
 	 *
 	 * @param      NagiosHostTemplate $l NagiosHostTemplate
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     NagiosTimeperiod The current object (for fluent API support)
 	 */
 	public function addNagiosHostTemplateRelatedByCheckPeriod(NagiosHostTemplate $l)
 	{
@@ -1951,9 +2442,19 @@ abstract class BaseNagiosTimeperiod extends BaseObject  implements Persistent
 			$this->initNagiosHostTemplatesRelatedByCheckPeriod();
 		}
 		if (!$this->collNagiosHostTemplatesRelatedByCheckPeriod->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collNagiosHostTemplatesRelatedByCheckPeriod[]= $l;
-			$l->setNagiosTimeperiodRelatedByCheckPeriod($this);
+			$this->doAddNagiosHostTemplateRelatedByCheckPeriod($l);
 		}
+
+		return $this;
+	}
+
+	/**
+	 * @param	NagiosHostTemplateRelatedByCheckPeriod $nagiosHostTemplateRelatedByCheckPeriod The nagiosHostTemplateRelatedByCheckPeriod object to add.
+	 */
+	protected function doAddNagiosHostTemplateRelatedByCheckPeriod($nagiosHostTemplateRelatedByCheckPeriod)
+	{
+		$this->collNagiosHostTemplatesRelatedByCheckPeriod[]= $nagiosHostTemplateRelatedByCheckPeriod;
+		$nagiosHostTemplateRelatedByCheckPeriod->setNagiosTimeperiodRelatedByCheckPeriod($this);
 	}
 
 
@@ -2075,6 +2576,30 @@ abstract class BaseNagiosTimeperiod extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of NagiosHostTemplateRelatedByNotificationPeriod objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $nagiosHostTemplatesRelatedByNotificationPeriod A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setNagiosHostTemplatesRelatedByNotificationPeriod(PropelCollection $nagiosHostTemplatesRelatedByNotificationPeriod, PropelPDO $con = null)
+	{
+		$this->nagiosHostTemplatesRelatedByNotificationPeriodScheduledForDeletion = $this->getNagiosHostTemplatesRelatedByNotificationPeriod(new Criteria(), $con)->diff($nagiosHostTemplatesRelatedByNotificationPeriod);
+
+		foreach ($nagiosHostTemplatesRelatedByNotificationPeriod as $nagiosHostTemplateRelatedByNotificationPeriod) {
+			// Fix issue with collection modified by reference
+			if ($nagiosHostTemplateRelatedByNotificationPeriod->isNew()) {
+				$nagiosHostTemplateRelatedByNotificationPeriod->setNagiosTimeperiodRelatedByNotificationPeriod($this);
+			}
+			$this->addNagiosHostTemplateRelatedByNotificationPeriod($nagiosHostTemplateRelatedByNotificationPeriod);
+		}
+
+		$this->collNagiosHostTemplatesRelatedByNotificationPeriod = $nagiosHostTemplatesRelatedByNotificationPeriod;
+	}
+
+	/**
 	 * Returns the number of related NagiosHostTemplate objects.
 	 *
 	 * @param      Criteria $criteria
@@ -2107,8 +2632,7 @@ abstract class BaseNagiosTimeperiod extends BaseObject  implements Persistent
 	 * through the NagiosHostTemplate foreign key attribute.
 	 *
 	 * @param      NagiosHostTemplate $l NagiosHostTemplate
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     NagiosTimeperiod The current object (for fluent API support)
 	 */
 	public function addNagiosHostTemplateRelatedByNotificationPeriod(NagiosHostTemplate $l)
 	{
@@ -2116,9 +2640,19 @@ abstract class BaseNagiosTimeperiod extends BaseObject  implements Persistent
 			$this->initNagiosHostTemplatesRelatedByNotificationPeriod();
 		}
 		if (!$this->collNagiosHostTemplatesRelatedByNotificationPeriod->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collNagiosHostTemplatesRelatedByNotificationPeriod[]= $l;
-			$l->setNagiosTimeperiodRelatedByNotificationPeriod($this);
+			$this->doAddNagiosHostTemplateRelatedByNotificationPeriod($l);
 		}
+
+		return $this;
+	}
+
+	/**
+	 * @param	NagiosHostTemplateRelatedByNotificationPeriod $nagiosHostTemplateRelatedByNotificationPeriod The nagiosHostTemplateRelatedByNotificationPeriod object to add.
+	 */
+	protected function doAddNagiosHostTemplateRelatedByNotificationPeriod($nagiosHostTemplateRelatedByNotificationPeriod)
+	{
+		$this->collNagiosHostTemplatesRelatedByNotificationPeriod[]= $nagiosHostTemplateRelatedByNotificationPeriod;
+		$nagiosHostTemplateRelatedByNotificationPeriod->setNagiosTimeperiodRelatedByNotificationPeriod($this);
 	}
 
 
@@ -2240,6 +2774,30 @@ abstract class BaseNagiosTimeperiod extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of NagiosHostRelatedByCheckPeriod objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $nagiosHostsRelatedByCheckPeriod A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setNagiosHostsRelatedByCheckPeriod(PropelCollection $nagiosHostsRelatedByCheckPeriod, PropelPDO $con = null)
+	{
+		$this->nagiosHostsRelatedByCheckPeriodScheduledForDeletion = $this->getNagiosHostsRelatedByCheckPeriod(new Criteria(), $con)->diff($nagiosHostsRelatedByCheckPeriod);
+
+		foreach ($nagiosHostsRelatedByCheckPeriod as $nagiosHostRelatedByCheckPeriod) {
+			// Fix issue with collection modified by reference
+			if ($nagiosHostRelatedByCheckPeriod->isNew()) {
+				$nagiosHostRelatedByCheckPeriod->setNagiosTimeperiodRelatedByCheckPeriod($this);
+			}
+			$this->addNagiosHostRelatedByCheckPeriod($nagiosHostRelatedByCheckPeriod);
+		}
+
+		$this->collNagiosHostsRelatedByCheckPeriod = $nagiosHostsRelatedByCheckPeriod;
+	}
+
+	/**
 	 * Returns the number of related NagiosHost objects.
 	 *
 	 * @param      Criteria $criteria
@@ -2272,8 +2830,7 @@ abstract class BaseNagiosTimeperiod extends BaseObject  implements Persistent
 	 * through the NagiosHost foreign key attribute.
 	 *
 	 * @param      NagiosHost $l NagiosHost
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     NagiosTimeperiod The current object (for fluent API support)
 	 */
 	public function addNagiosHostRelatedByCheckPeriod(NagiosHost $l)
 	{
@@ -2281,9 +2838,19 @@ abstract class BaseNagiosTimeperiod extends BaseObject  implements Persistent
 			$this->initNagiosHostsRelatedByCheckPeriod();
 		}
 		if (!$this->collNagiosHostsRelatedByCheckPeriod->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collNagiosHostsRelatedByCheckPeriod[]= $l;
-			$l->setNagiosTimeperiodRelatedByCheckPeriod($this);
+			$this->doAddNagiosHostRelatedByCheckPeriod($l);
 		}
+
+		return $this;
+	}
+
+	/**
+	 * @param	NagiosHostRelatedByCheckPeriod $nagiosHostRelatedByCheckPeriod The nagiosHostRelatedByCheckPeriod object to add.
+	 */
+	protected function doAddNagiosHostRelatedByCheckPeriod($nagiosHostRelatedByCheckPeriod)
+	{
+		$this->collNagiosHostsRelatedByCheckPeriod[]= $nagiosHostRelatedByCheckPeriod;
+		$nagiosHostRelatedByCheckPeriod->setNagiosTimeperiodRelatedByCheckPeriod($this);
 	}
 
 
@@ -2405,6 +2972,30 @@ abstract class BaseNagiosTimeperiod extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of NagiosHostRelatedByNotificationPeriod objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $nagiosHostsRelatedByNotificationPeriod A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setNagiosHostsRelatedByNotificationPeriod(PropelCollection $nagiosHostsRelatedByNotificationPeriod, PropelPDO $con = null)
+	{
+		$this->nagiosHostsRelatedByNotificationPeriodScheduledForDeletion = $this->getNagiosHostsRelatedByNotificationPeriod(new Criteria(), $con)->diff($nagiosHostsRelatedByNotificationPeriod);
+
+		foreach ($nagiosHostsRelatedByNotificationPeriod as $nagiosHostRelatedByNotificationPeriod) {
+			// Fix issue with collection modified by reference
+			if ($nagiosHostRelatedByNotificationPeriod->isNew()) {
+				$nagiosHostRelatedByNotificationPeriod->setNagiosTimeperiodRelatedByNotificationPeriod($this);
+			}
+			$this->addNagiosHostRelatedByNotificationPeriod($nagiosHostRelatedByNotificationPeriod);
+		}
+
+		$this->collNagiosHostsRelatedByNotificationPeriod = $nagiosHostsRelatedByNotificationPeriod;
+	}
+
+	/**
 	 * Returns the number of related NagiosHost objects.
 	 *
 	 * @param      Criteria $criteria
@@ -2437,8 +3028,7 @@ abstract class BaseNagiosTimeperiod extends BaseObject  implements Persistent
 	 * through the NagiosHost foreign key attribute.
 	 *
 	 * @param      NagiosHost $l NagiosHost
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     NagiosTimeperiod The current object (for fluent API support)
 	 */
 	public function addNagiosHostRelatedByNotificationPeriod(NagiosHost $l)
 	{
@@ -2446,9 +3036,19 @@ abstract class BaseNagiosTimeperiod extends BaseObject  implements Persistent
 			$this->initNagiosHostsRelatedByNotificationPeriod();
 		}
 		if (!$this->collNagiosHostsRelatedByNotificationPeriod->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collNagiosHostsRelatedByNotificationPeriod[]= $l;
-			$l->setNagiosTimeperiodRelatedByNotificationPeriod($this);
+			$this->doAddNagiosHostRelatedByNotificationPeriod($l);
 		}
+
+		return $this;
+	}
+
+	/**
+	 * @param	NagiosHostRelatedByNotificationPeriod $nagiosHostRelatedByNotificationPeriod The nagiosHostRelatedByNotificationPeriod object to add.
+	 */
+	protected function doAddNagiosHostRelatedByNotificationPeriod($nagiosHostRelatedByNotificationPeriod)
+	{
+		$this->collNagiosHostsRelatedByNotificationPeriod[]= $nagiosHostRelatedByNotificationPeriod;
+		$nagiosHostRelatedByNotificationPeriod->setNagiosTimeperiodRelatedByNotificationPeriod($this);
 	}
 
 
@@ -2570,6 +3170,30 @@ abstract class BaseNagiosTimeperiod extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of NagiosServiceTemplateRelatedByCheckPeriod objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $nagiosServiceTemplatesRelatedByCheckPeriod A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setNagiosServiceTemplatesRelatedByCheckPeriod(PropelCollection $nagiosServiceTemplatesRelatedByCheckPeriod, PropelPDO $con = null)
+	{
+		$this->nagiosServiceTemplatesRelatedByCheckPeriodScheduledForDeletion = $this->getNagiosServiceTemplatesRelatedByCheckPeriod(new Criteria(), $con)->diff($nagiosServiceTemplatesRelatedByCheckPeriod);
+
+		foreach ($nagiosServiceTemplatesRelatedByCheckPeriod as $nagiosServiceTemplateRelatedByCheckPeriod) {
+			// Fix issue with collection modified by reference
+			if ($nagiosServiceTemplateRelatedByCheckPeriod->isNew()) {
+				$nagiosServiceTemplateRelatedByCheckPeriod->setNagiosTimeperiodRelatedByCheckPeriod($this);
+			}
+			$this->addNagiosServiceTemplateRelatedByCheckPeriod($nagiosServiceTemplateRelatedByCheckPeriod);
+		}
+
+		$this->collNagiosServiceTemplatesRelatedByCheckPeriod = $nagiosServiceTemplatesRelatedByCheckPeriod;
+	}
+
+	/**
 	 * Returns the number of related NagiosServiceTemplate objects.
 	 *
 	 * @param      Criteria $criteria
@@ -2602,8 +3226,7 @@ abstract class BaseNagiosTimeperiod extends BaseObject  implements Persistent
 	 * through the NagiosServiceTemplate foreign key attribute.
 	 *
 	 * @param      NagiosServiceTemplate $l NagiosServiceTemplate
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     NagiosTimeperiod The current object (for fluent API support)
 	 */
 	public function addNagiosServiceTemplateRelatedByCheckPeriod(NagiosServiceTemplate $l)
 	{
@@ -2611,9 +3234,19 @@ abstract class BaseNagiosTimeperiod extends BaseObject  implements Persistent
 			$this->initNagiosServiceTemplatesRelatedByCheckPeriod();
 		}
 		if (!$this->collNagiosServiceTemplatesRelatedByCheckPeriod->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collNagiosServiceTemplatesRelatedByCheckPeriod[]= $l;
-			$l->setNagiosTimeperiodRelatedByCheckPeriod($this);
+			$this->doAddNagiosServiceTemplateRelatedByCheckPeriod($l);
 		}
+
+		return $this;
+	}
+
+	/**
+	 * @param	NagiosServiceTemplateRelatedByCheckPeriod $nagiosServiceTemplateRelatedByCheckPeriod The nagiosServiceTemplateRelatedByCheckPeriod object to add.
+	 */
+	protected function doAddNagiosServiceTemplateRelatedByCheckPeriod($nagiosServiceTemplateRelatedByCheckPeriod)
+	{
+		$this->collNagiosServiceTemplatesRelatedByCheckPeriod[]= $nagiosServiceTemplateRelatedByCheckPeriod;
+		$nagiosServiceTemplateRelatedByCheckPeriod->setNagiosTimeperiodRelatedByCheckPeriod($this);
 	}
 
 
@@ -2735,6 +3368,30 @@ abstract class BaseNagiosTimeperiod extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of NagiosServiceTemplateRelatedByNotificationPeriod objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $nagiosServiceTemplatesRelatedByNotificationPeriod A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setNagiosServiceTemplatesRelatedByNotificationPeriod(PropelCollection $nagiosServiceTemplatesRelatedByNotificationPeriod, PropelPDO $con = null)
+	{
+		$this->nagiosServiceTemplatesRelatedByNotificationPeriodScheduledForDeletion = $this->getNagiosServiceTemplatesRelatedByNotificationPeriod(new Criteria(), $con)->diff($nagiosServiceTemplatesRelatedByNotificationPeriod);
+
+		foreach ($nagiosServiceTemplatesRelatedByNotificationPeriod as $nagiosServiceTemplateRelatedByNotificationPeriod) {
+			// Fix issue with collection modified by reference
+			if ($nagiosServiceTemplateRelatedByNotificationPeriod->isNew()) {
+				$nagiosServiceTemplateRelatedByNotificationPeriod->setNagiosTimeperiodRelatedByNotificationPeriod($this);
+			}
+			$this->addNagiosServiceTemplateRelatedByNotificationPeriod($nagiosServiceTemplateRelatedByNotificationPeriod);
+		}
+
+		$this->collNagiosServiceTemplatesRelatedByNotificationPeriod = $nagiosServiceTemplatesRelatedByNotificationPeriod;
+	}
+
+	/**
 	 * Returns the number of related NagiosServiceTemplate objects.
 	 *
 	 * @param      Criteria $criteria
@@ -2767,8 +3424,7 @@ abstract class BaseNagiosTimeperiod extends BaseObject  implements Persistent
 	 * through the NagiosServiceTemplate foreign key attribute.
 	 *
 	 * @param      NagiosServiceTemplate $l NagiosServiceTemplate
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     NagiosTimeperiod The current object (for fluent API support)
 	 */
 	public function addNagiosServiceTemplateRelatedByNotificationPeriod(NagiosServiceTemplate $l)
 	{
@@ -2776,9 +3432,19 @@ abstract class BaseNagiosTimeperiod extends BaseObject  implements Persistent
 			$this->initNagiosServiceTemplatesRelatedByNotificationPeriod();
 		}
 		if (!$this->collNagiosServiceTemplatesRelatedByNotificationPeriod->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collNagiosServiceTemplatesRelatedByNotificationPeriod[]= $l;
-			$l->setNagiosTimeperiodRelatedByNotificationPeriod($this);
+			$this->doAddNagiosServiceTemplateRelatedByNotificationPeriod($l);
 		}
+
+		return $this;
+	}
+
+	/**
+	 * @param	NagiosServiceTemplateRelatedByNotificationPeriod $nagiosServiceTemplateRelatedByNotificationPeriod The nagiosServiceTemplateRelatedByNotificationPeriod object to add.
+	 */
+	protected function doAddNagiosServiceTemplateRelatedByNotificationPeriod($nagiosServiceTemplateRelatedByNotificationPeriod)
+	{
+		$this->collNagiosServiceTemplatesRelatedByNotificationPeriod[]= $nagiosServiceTemplateRelatedByNotificationPeriod;
+		$nagiosServiceTemplateRelatedByNotificationPeriod->setNagiosTimeperiodRelatedByNotificationPeriod($this);
 	}
 
 
@@ -2900,6 +3566,30 @@ abstract class BaseNagiosTimeperiod extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of NagiosServiceRelatedByCheckPeriod objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $nagiosServicesRelatedByCheckPeriod A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setNagiosServicesRelatedByCheckPeriod(PropelCollection $nagiosServicesRelatedByCheckPeriod, PropelPDO $con = null)
+	{
+		$this->nagiosServicesRelatedByCheckPeriodScheduledForDeletion = $this->getNagiosServicesRelatedByCheckPeriod(new Criteria(), $con)->diff($nagiosServicesRelatedByCheckPeriod);
+
+		foreach ($nagiosServicesRelatedByCheckPeriod as $nagiosServiceRelatedByCheckPeriod) {
+			// Fix issue with collection modified by reference
+			if ($nagiosServiceRelatedByCheckPeriod->isNew()) {
+				$nagiosServiceRelatedByCheckPeriod->setNagiosTimeperiodRelatedByCheckPeriod($this);
+			}
+			$this->addNagiosServiceRelatedByCheckPeriod($nagiosServiceRelatedByCheckPeriod);
+		}
+
+		$this->collNagiosServicesRelatedByCheckPeriod = $nagiosServicesRelatedByCheckPeriod;
+	}
+
+	/**
 	 * Returns the number of related NagiosService objects.
 	 *
 	 * @param      Criteria $criteria
@@ -2932,8 +3622,7 @@ abstract class BaseNagiosTimeperiod extends BaseObject  implements Persistent
 	 * through the NagiosService foreign key attribute.
 	 *
 	 * @param      NagiosService $l NagiosService
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     NagiosTimeperiod The current object (for fluent API support)
 	 */
 	public function addNagiosServiceRelatedByCheckPeriod(NagiosService $l)
 	{
@@ -2941,9 +3630,19 @@ abstract class BaseNagiosTimeperiod extends BaseObject  implements Persistent
 			$this->initNagiosServicesRelatedByCheckPeriod();
 		}
 		if (!$this->collNagiosServicesRelatedByCheckPeriod->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collNagiosServicesRelatedByCheckPeriod[]= $l;
-			$l->setNagiosTimeperiodRelatedByCheckPeriod($this);
+			$this->doAddNagiosServiceRelatedByCheckPeriod($l);
 		}
+
+		return $this;
+	}
+
+	/**
+	 * @param	NagiosServiceRelatedByCheckPeriod $nagiosServiceRelatedByCheckPeriod The nagiosServiceRelatedByCheckPeriod object to add.
+	 */
+	protected function doAddNagiosServiceRelatedByCheckPeriod($nagiosServiceRelatedByCheckPeriod)
+	{
+		$this->collNagiosServicesRelatedByCheckPeriod[]= $nagiosServiceRelatedByCheckPeriod;
+		$nagiosServiceRelatedByCheckPeriod->setNagiosTimeperiodRelatedByCheckPeriod($this);
 	}
 
 
@@ -3140,6 +3839,30 @@ abstract class BaseNagiosTimeperiod extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of NagiosServiceRelatedByNotificationPeriod objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $nagiosServicesRelatedByNotificationPeriod A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setNagiosServicesRelatedByNotificationPeriod(PropelCollection $nagiosServicesRelatedByNotificationPeriod, PropelPDO $con = null)
+	{
+		$this->nagiosServicesRelatedByNotificationPeriodScheduledForDeletion = $this->getNagiosServicesRelatedByNotificationPeriod(new Criteria(), $con)->diff($nagiosServicesRelatedByNotificationPeriod);
+
+		foreach ($nagiosServicesRelatedByNotificationPeriod as $nagiosServiceRelatedByNotificationPeriod) {
+			// Fix issue with collection modified by reference
+			if ($nagiosServiceRelatedByNotificationPeriod->isNew()) {
+				$nagiosServiceRelatedByNotificationPeriod->setNagiosTimeperiodRelatedByNotificationPeriod($this);
+			}
+			$this->addNagiosServiceRelatedByNotificationPeriod($nagiosServiceRelatedByNotificationPeriod);
+		}
+
+		$this->collNagiosServicesRelatedByNotificationPeriod = $nagiosServicesRelatedByNotificationPeriod;
+	}
+
+	/**
 	 * Returns the number of related NagiosService objects.
 	 *
 	 * @param      Criteria $criteria
@@ -3172,8 +3895,7 @@ abstract class BaseNagiosTimeperiod extends BaseObject  implements Persistent
 	 * through the NagiosService foreign key attribute.
 	 *
 	 * @param      NagiosService $l NagiosService
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     NagiosTimeperiod The current object (for fluent API support)
 	 */
 	public function addNagiosServiceRelatedByNotificationPeriod(NagiosService $l)
 	{
@@ -3181,9 +3903,19 @@ abstract class BaseNagiosTimeperiod extends BaseObject  implements Persistent
 			$this->initNagiosServicesRelatedByNotificationPeriod();
 		}
 		if (!$this->collNagiosServicesRelatedByNotificationPeriod->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collNagiosServicesRelatedByNotificationPeriod[]= $l;
-			$l->setNagiosTimeperiodRelatedByNotificationPeriod($this);
+			$this->doAddNagiosServiceRelatedByNotificationPeriod($l);
 		}
+
+		return $this;
+	}
+
+	/**
+	 * @param	NagiosServiceRelatedByNotificationPeriod $nagiosServiceRelatedByNotificationPeriod The nagiosServiceRelatedByNotificationPeriod object to add.
+	 */
+	protected function doAddNagiosServiceRelatedByNotificationPeriod($nagiosServiceRelatedByNotificationPeriod)
+	{
+		$this->collNagiosServicesRelatedByNotificationPeriod[]= $nagiosServiceRelatedByNotificationPeriod;
+		$nagiosServiceRelatedByNotificationPeriod->setNagiosTimeperiodRelatedByNotificationPeriod($this);
 	}
 
 
@@ -3380,6 +4112,30 @@ abstract class BaseNagiosTimeperiod extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of NagiosDependency objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $nagiosDependencys A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setNagiosDependencys(PropelCollection $nagiosDependencys, PropelPDO $con = null)
+	{
+		$this->nagiosDependencysScheduledForDeletion = $this->getNagiosDependencys(new Criteria(), $con)->diff($nagiosDependencys);
+
+		foreach ($nagiosDependencys as $nagiosDependency) {
+			// Fix issue with collection modified by reference
+			if ($nagiosDependency->isNew()) {
+				$nagiosDependency->setNagiosTimeperiod($this);
+			}
+			$this->addNagiosDependency($nagiosDependency);
+		}
+
+		$this->collNagiosDependencys = $nagiosDependencys;
+	}
+
+	/**
 	 * Returns the number of related NagiosDependency objects.
 	 *
 	 * @param      Criteria $criteria
@@ -3412,8 +4168,7 @@ abstract class BaseNagiosTimeperiod extends BaseObject  implements Persistent
 	 * through the NagiosDependency foreign key attribute.
 	 *
 	 * @param      NagiosDependency $l NagiosDependency
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     NagiosTimeperiod The current object (for fluent API support)
 	 */
 	public function addNagiosDependency(NagiosDependency $l)
 	{
@@ -3421,9 +4176,19 @@ abstract class BaseNagiosTimeperiod extends BaseObject  implements Persistent
 			$this->initNagiosDependencys();
 		}
 		if (!$this->collNagiosDependencys->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collNagiosDependencys[]= $l;
-			$l->setNagiosTimeperiod($this);
+			$this->doAddNagiosDependency($l);
 		}
+
+		return $this;
+	}
+
+	/**
+	 * @param	NagiosDependency $nagiosDependency The nagiosDependency object to add.
+	 */
+	protected function doAddNagiosDependency($nagiosDependency)
+	{
+		$this->collNagiosDependencys[]= $nagiosDependency;
+		$nagiosDependency->setNagiosTimeperiod($this);
 	}
 
 
@@ -3620,6 +4385,30 @@ abstract class BaseNagiosTimeperiod extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of NagiosEscalation objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $nagiosEscalations A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setNagiosEscalations(PropelCollection $nagiosEscalations, PropelPDO $con = null)
+	{
+		$this->nagiosEscalationsScheduledForDeletion = $this->getNagiosEscalations(new Criteria(), $con)->diff($nagiosEscalations);
+
+		foreach ($nagiosEscalations as $nagiosEscalation) {
+			// Fix issue with collection modified by reference
+			if ($nagiosEscalation->isNew()) {
+				$nagiosEscalation->setNagiosTimeperiod($this);
+			}
+			$this->addNagiosEscalation($nagiosEscalation);
+		}
+
+		$this->collNagiosEscalations = $nagiosEscalations;
+	}
+
+	/**
 	 * Returns the number of related NagiosEscalation objects.
 	 *
 	 * @param      Criteria $criteria
@@ -3652,8 +4441,7 @@ abstract class BaseNagiosTimeperiod extends BaseObject  implements Persistent
 	 * through the NagiosEscalation foreign key attribute.
 	 *
 	 * @param      NagiosEscalation $l NagiosEscalation
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     NagiosTimeperiod The current object (for fluent API support)
 	 */
 	public function addNagiosEscalation(NagiosEscalation $l)
 	{
@@ -3661,9 +4449,19 @@ abstract class BaseNagiosTimeperiod extends BaseObject  implements Persistent
 			$this->initNagiosEscalations();
 		}
 		if (!$this->collNagiosEscalations->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collNagiosEscalations[]= $l;
-			$l->setNagiosTimeperiod($this);
+			$this->doAddNagiosEscalation($l);
 		}
+
+		return $this;
+	}
+
+	/**
+	 * @param	NagiosEscalation $nagiosEscalation The nagiosEscalation object to add.
+	 */
+	protected function doAddNagiosEscalation($nagiosEscalation)
+	{
+		$this->collNagiosEscalations[]= $nagiosEscalation;
+		$nagiosEscalation->setNagiosTimeperiod($this);
 	}
 
 
@@ -3966,25 +4764,6 @@ abstract class BaseNagiosTimeperiod extends BaseObject  implements Persistent
 	public function __toString()
 	{
 		return (string) $this->exportTo(NagiosTimeperiodPeer::DEFAULT_STRING_FORMAT);
-	}
-
-	/**
-	 * Catches calls to virtual methods
-	 */
-	public function __call($name, $params)
-	{
-		if (preg_match('/get(\w+)/', $name, $matches)) {
-			$virtualColumn = $matches[1];
-			if ($this->hasVirtualColumn($virtualColumn)) {
-				return $this->getVirtualColumn($virtualColumn);
-			}
-			// no lcfirst in php<5.3...
-			$virtualColumn[0] = strtolower($virtualColumn[0]);
-			if ($this->hasVirtualColumn($virtualColumn)) {
-				return $this->getVirtualColumn($virtualColumn);
-			}
-		}
-		return parent::__call($name, $params);
 	}
 
 } // BaseNagiosTimeperiod

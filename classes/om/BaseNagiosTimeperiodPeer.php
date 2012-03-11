@@ -19,12 +19,9 @@ abstract class BaseNagiosTimeperiodPeer {
 	/** the related Propel class for this table */
 	const OM_CLASS = 'NagiosTimeperiod';
 
-	/** A class that can be returned by this peer. */
-	const CLASS_DEFAULT = 'NagiosTimeperiod';
-
 	/** the related TableMap class for this table */
 	const TM_CLASS = 'NagiosTimeperiodTableMap';
-	
+
 	/** The total number of columns. */
 	const NUM_COLUMNS = 3;
 
@@ -45,7 +42,7 @@ abstract class BaseNagiosTimeperiodPeer {
 
 	/** The default string format for model objects of the related table **/
 	const DEFAULT_STRING_FORMAT = 'YAML';
-	
+
 	/**
 	 * An identiy map to hold any loaded instances of NagiosTimeperiod objects.
 	 * This must be public so that other peer classes can access this when hydrating from JOIN
@@ -354,49 +351,49 @@ abstract class BaseNagiosTimeperiodPeer {
 	 */
 	public static function clearRelatedInstancePool()
 	{
-		// Invalidate objects in NagiosTimeperiodEntryPeer instance pool, 
+		// Invalidate objects in NagiosTimeperiodEntryPeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		NagiosTimeperiodEntryPeer::clearInstancePool();
-		// Invalidate objects in NagiosTimeperiodExcludePeer instance pool, 
+		// Invalidate objects in NagiosTimeperiodExcludePeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		NagiosTimeperiodExcludePeer::clearInstancePool();
-		// Invalidate objects in NagiosTimeperiodExcludePeer instance pool, 
+		// Invalidate objects in NagiosTimeperiodExcludePeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		NagiosTimeperiodExcludePeer::clearInstancePool();
-		// Invalidate objects in NagiosContactPeer instance pool, 
+		// Invalidate objects in NagiosContactPeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		NagiosContactPeer::clearInstancePool();
-		// Invalidate objects in NagiosContactPeer instance pool, 
+		// Invalidate objects in NagiosContactPeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		NagiosContactPeer::clearInstancePool();
-		// Invalidate objects in NagiosHostTemplatePeer instance pool, 
+		// Invalidate objects in NagiosHostTemplatePeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		NagiosHostTemplatePeer::clearInstancePool();
-		// Invalidate objects in NagiosHostTemplatePeer instance pool, 
+		// Invalidate objects in NagiosHostTemplatePeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		NagiosHostTemplatePeer::clearInstancePool();
-		// Invalidate objects in NagiosHostPeer instance pool, 
+		// Invalidate objects in NagiosHostPeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		NagiosHostPeer::clearInstancePool();
-		// Invalidate objects in NagiosHostPeer instance pool, 
+		// Invalidate objects in NagiosHostPeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		NagiosHostPeer::clearInstancePool();
-		// Invalidate objects in NagiosServiceTemplatePeer instance pool, 
+		// Invalidate objects in NagiosServiceTemplatePeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		NagiosServiceTemplatePeer::clearInstancePool();
-		// Invalidate objects in NagiosServiceTemplatePeer instance pool, 
+		// Invalidate objects in NagiosServiceTemplatePeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		NagiosServiceTemplatePeer::clearInstancePool();
-		// Invalidate objects in NagiosServicePeer instance pool, 
+		// Invalidate objects in NagiosServicePeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		NagiosServicePeer::clearInstancePool();
-		// Invalidate objects in NagiosServicePeer instance pool, 
+		// Invalidate objects in NagiosServicePeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		NagiosServicePeer::clearInstancePool();
-		// Invalidate objects in NagiosDependencyPeer instance pool, 
+		// Invalidate objects in NagiosDependencyPeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		NagiosDependencyPeer::clearInstancePool();
-		// Invalidate objects in NagiosEscalationPeer instance pool, 
+		// Invalidate objects in NagiosEscalationPeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		NagiosEscalationPeer::clearInstancePool();
 	}
@@ -421,7 +418,7 @@ abstract class BaseNagiosTimeperiodPeer {
 	}
 
 	/**
-	 * Retrieves the primary key from the DB resultset row 
+	 * Retrieves the primary key from the DB resultset row
 	 * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
 	 * a multi-column primary key, an array of the primary key columns will be returned.
 	 *
@@ -446,7 +443,7 @@ abstract class BaseNagiosTimeperiodPeer {
 		$results = array();
 	
 		// set the class once to avoid overhead in the loop
-		$cls = NagiosTimeperiodPeer::getOMClass(false);
+		$cls = NagiosTimeperiodPeer::getOMClass();
 		// populate the object(s)
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$key = NagiosTimeperiodPeer::getPrimaryKeyHashFromRow($row, 0);
@@ -518,17 +515,12 @@ abstract class BaseNagiosTimeperiodPeer {
 	/**
 	 * The class that the Peer will make instances of.
 	 *
-	 * If $withPrefix is true, the returned path
-	 * uses a dot-path notation which is tranalted into a path
-	 * relative to a location on the PHP include_path.
-	 * (e.g. path.to.MyClass -> 'path/to/MyClass.php')
 	 *
-	 * @param      boolean $withPrefix Whether or not to return the path with the class name
-	 * @return     string path.to.ClassName
+	 * @return     string ClassName
 	 */
-	public static function getOMClass($withPrefix = true)
+	public static function getOMClass()
 	{
-		return $withPrefix ? NagiosTimeperiodPeer::CLASS_DEFAULT : NagiosTimeperiodPeer::OM_CLASS;
+		return NagiosTimeperiodPeer::OM_CLASS;
 	}
 
 	/**

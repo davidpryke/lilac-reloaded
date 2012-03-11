@@ -49,7 +49,7 @@
  */
 abstract class BaseNagiosHostParentQuery extends ModelCriteria
 {
-
+	
 	/**
 	 * Initializes internal state of BaseNagiosHostParentQuery object.
 	 *
@@ -86,11 +86,14 @@ abstract class BaseNagiosHostParentQuery extends ModelCriteria
 	}
 
 	/**
-	 * Find object by primary key
-	 * Use instance pooling to avoid a database query if the object exists
+	 * Find object by primary key.
+	 * Propel uses the instance pool to skip the database if the object exists.
+	 * Go fast if the query is untouched.
+	 *
 	 * <code>
 	 * $obj  = $c->findPk(12, $con);
 	 * </code>
+	 *
 	 * @param     mixed $key Primary key to use for the query
 	 * @param     PropelPDO $con an optional connection object
 	 *
@@ -98,17 +101,73 @@ abstract class BaseNagiosHostParentQuery extends ModelCriteria
 	 */
 	public function findPk($key, $con = null)
 	{
-		if ((null !== ($obj = NagiosHostParentPeer::getInstanceFromPool((string) $key))) && $this->getFormatter()->isObjectFormatter()) {
+		if ($key === null) {
+			return null;
+		}
+		if ((null !== ($obj = NagiosHostParentPeer::getInstanceFromPool((string) $key))) && !$this->formatter) {
 			// the object is alredy in the instance pool
 			return $obj;
-		} else {
-			// the object has not been requested yet, or the formatter is not an object formatter
-			$criteria = $this->isKeepQuery() ? clone $this : $this;
-			$stmt = $criteria
-				->filterByPrimaryKey($key)
-				->getSelectStatement($con);
-			return $criteria->getFormatter()->init($criteria)->formatOne($stmt);
 		}
+		if ($con === null) {
+			$con = Propel::getConnection(NagiosHostParentPeer::DATABASE_NAME, Propel::CONNECTION_READ);
+		}
+		$this->basePreSelect($con);
+		if ($this->formatter || $this->modelAlias || $this->with || $this->select
+		 || $this->selectColumns || $this->asColumns || $this->selectModifiers
+		 || $this->map || $this->having || $this->joins) {
+			return $this->findPkComplex($key, $con);
+		} else {
+			return $this->findPkSimple($key, $con);
+		}
+	}
+
+	/**
+	 * Find object by primary key using raw SQL to go fast.
+	 * Bypass doSelect() and the object formatter by using generated code.
+	 *
+	 * @param     mixed $key Primary key to use for the query
+	 * @param     PropelPDO $con A connection object
+	 *
+	 * @return    NagiosHostParent A model object, or null if the key is not found
+	 */
+	protected function findPkSimple($key, $con)
+	{
+		$sql = 'SELECT `ID`, `CHILD_HOST`, `CHILD_HOST_TEMPLATE`, `PARENT_HOST` FROM `nagios_host_parent` WHERE `ID` = :p0';
+		try {
+			$stmt = $con->prepare($sql);
+			$stmt->bindValue(':p0', $key, PDO::PARAM_INT);
+			$stmt->execute();
+		} catch (Exception $e) {
+			Propel::log($e->getMessage(), Propel::LOG_ERR);
+			throw new PropelException(sprintf('Unable to execute SELECT statement [%s]', $sql), $e);
+		}
+		$obj = null;
+		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+			$obj = new NagiosHostParent();
+			$obj->hydrate($row);
+			NagiosHostParentPeer::addInstanceToPool($obj, (string) $key);
+		}
+		$stmt->closeCursor();
+
+		return $obj;
+	}
+
+	/**
+	 * Find object by primary key.
+	 *
+	 * @param     mixed $key Primary key to use for the query
+	 * @param     PropelPDO $con A connection object
+	 *
+	 * @return    NagiosHostParent|array|mixed the result, formatted by the current formatter
+	 */
+	protected function findPkComplex($key, $con)
+	{
+		// As the query uses a PK condition, no limit(1) is necessary.
+		$criteria = $this->isKeepQuery() ? clone $this : $this;
+		$stmt = $criteria
+			->filterByPrimaryKey($key)
+			->doSelect($con);
+		return $criteria->getFormatter()->init($criteria)->formatOne($stmt);
 	}
 
 	/**
@@ -123,10 +182,15 @@ abstract class BaseNagiosHostParentQuery extends ModelCriteria
 	 */
 	public function findPks($keys, $con = null)
 	{
+		if ($con === null) {
+			$con = Propel::getConnection($this->getDbName(), Propel::CONNECTION_READ);
+		}
+		$this->basePreSelect($con);
 		$criteria = $this->isKeepQuery() ? clone $this : $this;
-		return $this
+		$stmt = $criteria
 			->filterByPrimaryKeys($keys)
-			->find($con);
+			->doSelect($con);
+		return $criteria->getFormatter()->init($criteria)->format($stmt);
 	}
 
 	/**
@@ -155,7 +219,7 @@ abstract class BaseNagiosHostParentQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the id column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterById(1234); // WHERE id = 1234
@@ -181,7 +245,7 @@ abstract class BaseNagiosHostParentQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the child_host column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByChildHost(1234); // WHERE child_host = 1234
@@ -223,7 +287,7 @@ abstract class BaseNagiosHostParentQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the child_host_template column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByChildHostTemplate(1234); // WHERE child_host_template = 1234
@@ -265,7 +329,7 @@ abstract class BaseNagiosHostParentQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the parent_host column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByParentHost(1234); // WHERE parent_host = 1234
@@ -331,7 +395,7 @@ abstract class BaseNagiosHostParentQuery extends ModelCriteria
 
 	/**
 	 * Adds a JOIN clause to the query using the NagiosHostRelatedByChildHost relation
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
@@ -341,7 +405,7 @@ abstract class BaseNagiosHostParentQuery extends ModelCriteria
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('NagiosHostRelatedByChildHost');
-		
+
 		// create a ModelJoin object for this join
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
@@ -349,7 +413,7 @@ abstract class BaseNagiosHostParentQuery extends ModelCriteria
 		if ($previousJoin = $this->getPreviousJoin()) {
 			$join->setPreviousJoin($previousJoin);
 		}
-		
+
 		// add the ModelJoin to the current object
 		if($relationAlias) {
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
@@ -357,7 +421,7 @@ abstract class BaseNagiosHostParentQuery extends ModelCriteria
 		} else {
 			$this->addJoinObject($join, 'NagiosHostRelatedByChildHost');
 		}
-		
+
 		return $this;
 	}
 
@@ -365,7 +429,7 @@ abstract class BaseNagiosHostParentQuery extends ModelCriteria
 	 * Use the NagiosHostRelatedByChildHost relation NagiosHost object
 	 *
 	 * @see       useQuery()
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation,
 	 *                                   to be used as main alias in the secondary query
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
@@ -405,7 +469,7 @@ abstract class BaseNagiosHostParentQuery extends ModelCriteria
 
 	/**
 	 * Adds a JOIN clause to the query using the NagiosHostRelatedByParentHost relation
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
@@ -415,7 +479,7 @@ abstract class BaseNagiosHostParentQuery extends ModelCriteria
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('NagiosHostRelatedByParentHost');
-		
+
 		// create a ModelJoin object for this join
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
@@ -423,7 +487,7 @@ abstract class BaseNagiosHostParentQuery extends ModelCriteria
 		if ($previousJoin = $this->getPreviousJoin()) {
 			$join->setPreviousJoin($previousJoin);
 		}
-		
+
 		// add the ModelJoin to the current object
 		if($relationAlias) {
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
@@ -431,7 +495,7 @@ abstract class BaseNagiosHostParentQuery extends ModelCriteria
 		} else {
 			$this->addJoinObject($join, 'NagiosHostRelatedByParentHost');
 		}
-		
+
 		return $this;
 	}
 
@@ -439,7 +503,7 @@ abstract class BaseNagiosHostParentQuery extends ModelCriteria
 	 * Use the NagiosHostRelatedByParentHost relation NagiosHost object
 	 *
 	 * @see       useQuery()
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation,
 	 *                                   to be used as main alias in the secondary query
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
@@ -479,7 +543,7 @@ abstract class BaseNagiosHostParentQuery extends ModelCriteria
 
 	/**
 	 * Adds a JOIN clause to the query using the NagiosHostTemplate relation
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
@@ -489,7 +553,7 @@ abstract class BaseNagiosHostParentQuery extends ModelCriteria
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('NagiosHostTemplate');
-		
+
 		// create a ModelJoin object for this join
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
@@ -497,7 +561,7 @@ abstract class BaseNagiosHostParentQuery extends ModelCriteria
 		if ($previousJoin = $this->getPreviousJoin()) {
 			$join->setPreviousJoin($previousJoin);
 		}
-		
+
 		// add the ModelJoin to the current object
 		if($relationAlias) {
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
@@ -505,7 +569,7 @@ abstract class BaseNagiosHostParentQuery extends ModelCriteria
 		} else {
 			$this->addJoinObject($join, 'NagiosHostTemplate');
 		}
-		
+
 		return $this;
 	}
 
@@ -513,7 +577,7 @@ abstract class BaseNagiosHostParentQuery extends ModelCriteria
 	 * Use the NagiosHostTemplate relation NagiosHostTemplate object
 	 *
 	 * @see       useQuery()
-	 * 
+	 *
 	 * @param     string $relationAlias optional alias for the relation,
 	 *                                   to be used as main alias in the secondary query
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
@@ -538,8 +602,8 @@ abstract class BaseNagiosHostParentQuery extends ModelCriteria
 	{
 		if ($nagiosHostParent) {
 			$this->addUsingAlias(NagiosHostParentPeer::ID, $nagiosHostParent->getId(), Criteria::NOT_EQUAL);
-	  }
-	  
+		}
+
 		return $this;
 	}
 

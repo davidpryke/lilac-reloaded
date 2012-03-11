@@ -19,12 +19,9 @@ abstract class BaseAutodiscoveryDeviceServicePeer {
 	/** the related Propel class for this table */
 	const OM_CLASS = 'AutodiscoveryDeviceService';
 
-	/** A class that can be returned by this peer. */
-	const CLASS_DEFAULT = 'AutodiscoveryDeviceService';
-
 	/** the related TableMap class for this table */
 	const TM_CLASS = 'AutodiscoveryDeviceServiceTableMap';
-	
+
 	/** The total number of columns. */
 	const NUM_COLUMNS = 8;
 
@@ -60,7 +57,7 @@ abstract class BaseAutodiscoveryDeviceServicePeer {
 
 	/** The default string format for model objects of the related table **/
 	const DEFAULT_STRING_FORMAT = 'YAML';
-	
+
 	/**
 	 * An identiy map to hold any loaded instances of AutodiscoveryDeviceService objects.
 	 * This must be public so that other peer classes can access this when hydrating from JOIN
@@ -401,7 +398,7 @@ abstract class BaseAutodiscoveryDeviceServicePeer {
 	}
 
 	/**
-	 * Retrieves the primary key from the DB resultset row 
+	 * Retrieves the primary key from the DB resultset row
 	 * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
 	 * a multi-column primary key, an array of the primary key columns will be returned.
 	 *
@@ -426,7 +423,7 @@ abstract class BaseAutodiscoveryDeviceServicePeer {
 		$results = array();
 	
 		// set the class once to avoid overhead in the loop
-		$cls = AutodiscoveryDeviceServicePeer::getOMClass(false);
+		$cls = AutodiscoveryDeviceServicePeer::getOMClass();
 		// populate the object(s)
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$key = AutodiscoveryDeviceServicePeer::getPrimaryKeyHashFromRow($row, 0);
@@ -498,9 +495,9 @@ abstract class BaseAutodiscoveryDeviceServicePeer {
 		if (!$criteria->hasSelectClause()) {
 			AutodiscoveryDeviceServicePeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -557,7 +554,7 @@ abstract class BaseAutodiscoveryDeviceServicePeer {
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 
-				$cls = AutodiscoveryDeviceServicePeer::getOMClass(false);
+				$cls = AutodiscoveryDeviceServicePeer::getOMClass();
 
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
@@ -569,7 +566,7 @@ abstract class BaseAutodiscoveryDeviceServicePeer {
 				$obj2 = AutodiscoveryDevicePeer::getInstanceFromPool($key2);
 				if (!$obj2) {
 
-					$cls = AutodiscoveryDevicePeer::getOMClass(false);
+					$cls = AutodiscoveryDevicePeer::getOMClass();
 
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol);
@@ -614,9 +611,9 @@ abstract class BaseAutodiscoveryDeviceServicePeer {
 		if (!$criteria->hasSelectClause()) {
 			AutodiscoveryDeviceServicePeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -674,7 +671,7 @@ abstract class BaseAutodiscoveryDeviceServicePeer {
 				// See http://www.propelorm.org/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
-				$cls = AutodiscoveryDeviceServicePeer::getOMClass(false);
+				$cls = AutodiscoveryDeviceServicePeer::getOMClass();
 
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
@@ -688,7 +685,7 @@ abstract class BaseAutodiscoveryDeviceServicePeer {
 				$obj2 = AutodiscoveryDevicePeer::getInstanceFromPool($key2);
 				if (!$obj2) {
 
-					$cls = AutodiscoveryDevicePeer::getOMClass(false);
+					$cls = AutodiscoveryDevicePeer::getOMClass();
 
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol2);
@@ -732,17 +729,12 @@ abstract class BaseAutodiscoveryDeviceServicePeer {
 	/**
 	 * The class that the Peer will make instances of.
 	 *
-	 * If $withPrefix is true, the returned path
-	 * uses a dot-path notation which is tranalted into a path
-	 * relative to a location on the PHP include_path.
-	 * (e.g. path.to.MyClass -> 'path/to/MyClass.php')
 	 *
-	 * @param      boolean $withPrefix Whether or not to return the path with the class name
-	 * @return     string path.to.ClassName
+	 * @return     string ClassName
 	 */
-	public static function getOMClass($withPrefix = true)
+	public static function getOMClass()
 	{
-		return $withPrefix ? AutodiscoveryDeviceServicePeer::CLASS_DEFAULT : AutodiscoveryDeviceServicePeer::OM_CLASS;
+		return AutodiscoveryDeviceServicePeer::OM_CLASS;
 	}
 
 	/**

@@ -25,6 +25,12 @@ abstract class BaseNagiosContact extends BaseObject  implements Persistent
 	protected static $peer;
 
 	/**
+	 * The flag var to prevent infinit loop in deep copy
+	 * @var       boolean
+	 */
+	protected $startCopy = false;
+
+	/**
 	 * The value for the id field.
 	 * @var        int
 	 */
@@ -209,6 +215,42 @@ abstract class BaseNagiosContact extends BaseObject  implements Persistent
 	 * @var        boolean
 	 */
 	protected $alreadyInValidation = false;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $nagiosContactAddresssScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $nagiosContactGroupMembersScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $nagiosContactNotificationCommandsScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $nagiosHostContactMembersScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $nagiosServiceContactMembersScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $nagiosEscalationContactsScheduledForDeletion = null;
 
 	/**
 	 * Get the [id] column value.
@@ -531,7 +573,7 @@ abstract class BaseNagiosContact extends BaseObject  implements Persistent
 	} // setPager()
 
 	/**
-	 * Sets the value of the [host_notifications_enabled] column. 
+	 * Sets the value of the [host_notifications_enabled] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -559,7 +601,7 @@ abstract class BaseNagiosContact extends BaseObject  implements Persistent
 	} // setHostNotificationsEnabled()
 
 	/**
-	 * Sets the value of the [service_notifications_enabled] column. 
+	 * Sets the value of the [service_notifications_enabled] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -635,7 +677,7 @@ abstract class BaseNagiosContact extends BaseObject  implements Persistent
 	} // setServiceNotificationPeriod()
 
 	/**
-	 * Sets the value of the [host_notification_on_down] column. 
+	 * Sets the value of the [host_notification_on_down] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -663,7 +705,7 @@ abstract class BaseNagiosContact extends BaseObject  implements Persistent
 	} // setHostNotificationOnDown()
 
 	/**
-	 * Sets the value of the [host_notification_on_unreachable] column. 
+	 * Sets the value of the [host_notification_on_unreachable] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -691,7 +733,7 @@ abstract class BaseNagiosContact extends BaseObject  implements Persistent
 	} // setHostNotificationOnUnreachable()
 
 	/**
-	 * Sets the value of the [host_notification_on_recovery] column. 
+	 * Sets the value of the [host_notification_on_recovery] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -719,7 +761,7 @@ abstract class BaseNagiosContact extends BaseObject  implements Persistent
 	} // setHostNotificationOnRecovery()
 
 	/**
-	 * Sets the value of the [host_notification_on_flapping] column. 
+	 * Sets the value of the [host_notification_on_flapping] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -747,7 +789,7 @@ abstract class BaseNagiosContact extends BaseObject  implements Persistent
 	} // setHostNotificationOnFlapping()
 
 	/**
-	 * Sets the value of the [host_notification_on_scheduled_downtime] column. 
+	 * Sets the value of the [host_notification_on_scheduled_downtime] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -775,7 +817,7 @@ abstract class BaseNagiosContact extends BaseObject  implements Persistent
 	} // setHostNotificationOnScheduledDowntime()
 
 	/**
-	 * Sets the value of the [service_notification_on_warning] column. 
+	 * Sets the value of the [service_notification_on_warning] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -803,7 +845,7 @@ abstract class BaseNagiosContact extends BaseObject  implements Persistent
 	} // setServiceNotificationOnWarning()
 
 	/**
-	 * Sets the value of the [service_notification_on_unknown] column. 
+	 * Sets the value of the [service_notification_on_unknown] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -831,7 +873,7 @@ abstract class BaseNagiosContact extends BaseObject  implements Persistent
 	} // setServiceNotificationOnUnknown()
 
 	/**
-	 * Sets the value of the [service_notification_on_critical] column. 
+	 * Sets the value of the [service_notification_on_critical] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -859,7 +901,7 @@ abstract class BaseNagiosContact extends BaseObject  implements Persistent
 	} // setServiceNotificationOnCritical()
 
 	/**
-	 * Sets the value of the [service_notification_on_recovery] column. 
+	 * Sets the value of the [service_notification_on_recovery] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -887,7 +929,7 @@ abstract class BaseNagiosContact extends BaseObject  implements Persistent
 	} // setServiceNotificationOnRecovery()
 
 	/**
-	 * Sets the value of the [service_notification_on_flapping] column. 
+	 * Sets the value of the [service_notification_on_flapping] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -915,7 +957,7 @@ abstract class BaseNagiosContact extends BaseObject  implements Persistent
 	} // setServiceNotificationOnFlapping()
 
 	/**
-	 * Sets the value of the [can_submit_commands] column. 
+	 * Sets the value of the [can_submit_commands] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -943,7 +985,7 @@ abstract class BaseNagiosContact extends BaseObject  implements Persistent
 	} // setCanSubmitCommands()
 
 	/**
-	 * Sets the value of the [retain_status_information] column. 
+	 * Sets the value of the [retain_status_information] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -971,7 +1013,7 @@ abstract class BaseNagiosContact extends BaseObject  implements Persistent
 	} // setRetainStatusInformation()
 
 	/**
-	 * Sets the value of the [retain_nonstatus_information] column. 
+	 * Sets the value of the [retain_nonstatus_information] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -1166,18 +1208,18 @@ abstract class BaseNagiosContact extends BaseObject  implements Persistent
 
 		$con->beginTransaction();
 		try {
+			$deleteQuery = NagiosContactQuery::create()
+				->filterByPrimaryKey($this->getPrimaryKey());
 			$ret = $this->preDelete($con);
 			if ($ret) {
-				NagiosContactQuery::create()
-					->filterByPrimaryKey($this->getPrimaryKey())
-					->delete($con);
+				$deleteQuery->delete($con);
 				$this->postDelete($con);
 				$con->commit();
 				$this->setDeleted(true);
 			} else {
 				$con->commit();
 			}
-		} catch (PropelException $e) {
+		} catch (Exception $e) {
 			$con->rollBack();
 			throw $e;
 		}
@@ -1229,7 +1271,7 @@ abstract class BaseNagiosContact extends BaseObject  implements Persistent
 			}
 			$con->commit();
 			return $affectedRows;
-		} catch (PropelException $e) {
+		} catch (Exception $e) {
 			$con->rollBack();
 			throw $e;
 		}
@@ -1271,27 +1313,24 @@ abstract class BaseNagiosContact extends BaseObject  implements Persistent
 				$this->setNagiosTimeperiodRelatedByServiceNotificationPeriod($this->aNagiosTimeperiodRelatedByServiceNotificationPeriod);
 			}
 
-			if ($this->isNew() ) {
-				$this->modifiedColumns[] = NagiosContactPeer::ID;
+			if ($this->isNew() || $this->isModified()) {
+				// persist changes
+				if ($this->isNew()) {
+					$this->doInsert($con);
+				} else {
+					$this->doUpdate($con);
+				}
+				$affectedRows += 1;
+				$this->resetModified();
 			}
 
-			// If this object has been modified, then save it to the database.
-			if ($this->isModified()) {
-				if ($this->isNew()) {
-					$criteria = $this->buildCriteria();
-					if ($criteria->keyContainsValue(NagiosContactPeer::ID) ) {
-						throw new PropelException('Cannot insert a value for auto-increment primary key ('.NagiosContactPeer::ID.')');
-					}
-
-					$pk = BasePeer::doInsert($criteria, $con);
-					$affectedRows += 1;
-					$this->setId($pk);  //[IMV] update autoincrement primary key
-					$this->setNew(false);
-				} else {
-					$affectedRows += NagiosContactPeer::doUpdate($this, $con);
+			if ($this->nagiosContactAddresssScheduledForDeletion !== null) {
+				if (!$this->nagiosContactAddresssScheduledForDeletion->isEmpty()) {
+					NagiosContactAddressQuery::create()
+						->filterByPrimaryKeys($this->nagiosContactAddresssScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->nagiosContactAddresssScheduledForDeletion = null;
 				}
-
-				$this->resetModified(); // [HL] After being saved an object is no longer 'modified'
 			}
 
 			if ($this->collNagiosContactAddresss !== null) {
@@ -1299,6 +1338,15 @@ abstract class BaseNagiosContact extends BaseObject  implements Persistent
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
+				}
+			}
+
+			if ($this->nagiosContactGroupMembersScheduledForDeletion !== null) {
+				if (!$this->nagiosContactGroupMembersScheduledForDeletion->isEmpty()) {
+					NagiosContactGroupMemberQuery::create()
+						->filterByPrimaryKeys($this->nagiosContactGroupMembersScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->nagiosContactGroupMembersScheduledForDeletion = null;
 				}
 			}
 
@@ -1310,11 +1358,29 @@ abstract class BaseNagiosContact extends BaseObject  implements Persistent
 				}
 			}
 
+			if ($this->nagiosContactNotificationCommandsScheduledForDeletion !== null) {
+				if (!$this->nagiosContactNotificationCommandsScheduledForDeletion->isEmpty()) {
+					NagiosContactNotificationCommandQuery::create()
+						->filterByPrimaryKeys($this->nagiosContactNotificationCommandsScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->nagiosContactNotificationCommandsScheduledForDeletion = null;
+				}
+			}
+
 			if ($this->collNagiosContactNotificationCommands !== null) {
 				foreach ($this->collNagiosContactNotificationCommands as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
+				}
+			}
+
+			if ($this->nagiosHostContactMembersScheduledForDeletion !== null) {
+				if (!$this->nagiosHostContactMembersScheduledForDeletion->isEmpty()) {
+					NagiosHostContactMemberQuery::create()
+						->filterByPrimaryKeys($this->nagiosHostContactMembersScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->nagiosHostContactMembersScheduledForDeletion = null;
 				}
 			}
 
@@ -1326,11 +1392,29 @@ abstract class BaseNagiosContact extends BaseObject  implements Persistent
 				}
 			}
 
+			if ($this->nagiosServiceContactMembersScheduledForDeletion !== null) {
+				if (!$this->nagiosServiceContactMembersScheduledForDeletion->isEmpty()) {
+					NagiosServiceContactMemberQuery::create()
+						->filterByPrimaryKeys($this->nagiosServiceContactMembersScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->nagiosServiceContactMembersScheduledForDeletion = null;
+				}
+			}
+
 			if ($this->collNagiosServiceContactMembers !== null) {
 				foreach ($this->collNagiosServiceContactMembers as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
+				}
+			}
+
+			if ($this->nagiosEscalationContactsScheduledForDeletion !== null) {
+				if (!$this->nagiosEscalationContactsScheduledForDeletion->isEmpty()) {
+					NagiosEscalationContactQuery::create()
+						->filterByPrimaryKeys($this->nagiosEscalationContactsScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->nagiosEscalationContactsScheduledForDeletion = null;
 				}
 			}
 
@@ -1347,6 +1431,200 @@ abstract class BaseNagiosContact extends BaseObject  implements Persistent
 		}
 		return $affectedRows;
 	} // doSave()
+
+	/**
+	 * Insert the row in the database.
+	 *
+	 * @param      PropelPDO $con
+	 *
+	 * @throws     PropelException
+	 * @see        doSave()
+	 */
+	protected function doInsert(PropelPDO $con)
+	{
+		$modifiedColumns = array();
+		$index = 0;
+
+		$this->modifiedColumns[] = NagiosContactPeer::ID;
+		if (null !== $this->id) {
+			throw new PropelException('Cannot insert a value for auto-increment primary key (' . NagiosContactPeer::ID . ')');
+		}
+
+		 // check the columns in natural order for more readable SQL queries
+		if ($this->isColumnModified(NagiosContactPeer::ID)) {
+			$modifiedColumns[':p' . $index++]  = '`ID`';
+		}
+		if ($this->isColumnModified(NagiosContactPeer::NAME)) {
+			$modifiedColumns[':p' . $index++]  = '`NAME`';
+		}
+		if ($this->isColumnModified(NagiosContactPeer::ALIAS)) {
+			$modifiedColumns[':p' . $index++]  = '`ALIAS`';
+		}
+		if ($this->isColumnModified(NagiosContactPeer::EMAIL)) {
+			$modifiedColumns[':p' . $index++]  = '`EMAIL`';
+		}
+		if ($this->isColumnModified(NagiosContactPeer::PAGER)) {
+			$modifiedColumns[':p' . $index++]  = '`PAGER`';
+		}
+		if ($this->isColumnModified(NagiosContactPeer::HOST_NOTIFICATIONS_ENABLED)) {
+			$modifiedColumns[':p' . $index++]  = '`HOST_NOTIFICATIONS_ENABLED`';
+		}
+		if ($this->isColumnModified(NagiosContactPeer::SERVICE_NOTIFICATIONS_ENABLED)) {
+			$modifiedColumns[':p' . $index++]  = '`SERVICE_NOTIFICATIONS_ENABLED`';
+		}
+		if ($this->isColumnModified(NagiosContactPeer::HOST_NOTIFICATION_PERIOD)) {
+			$modifiedColumns[':p' . $index++]  = '`HOST_NOTIFICATION_PERIOD`';
+		}
+		if ($this->isColumnModified(NagiosContactPeer::SERVICE_NOTIFICATION_PERIOD)) {
+			$modifiedColumns[':p' . $index++]  = '`SERVICE_NOTIFICATION_PERIOD`';
+		}
+		if ($this->isColumnModified(NagiosContactPeer::HOST_NOTIFICATION_ON_DOWN)) {
+			$modifiedColumns[':p' . $index++]  = '`HOST_NOTIFICATION_ON_DOWN`';
+		}
+		if ($this->isColumnModified(NagiosContactPeer::HOST_NOTIFICATION_ON_UNREACHABLE)) {
+			$modifiedColumns[':p' . $index++]  = '`HOST_NOTIFICATION_ON_UNREACHABLE`';
+		}
+		if ($this->isColumnModified(NagiosContactPeer::HOST_NOTIFICATION_ON_RECOVERY)) {
+			$modifiedColumns[':p' . $index++]  = '`HOST_NOTIFICATION_ON_RECOVERY`';
+		}
+		if ($this->isColumnModified(NagiosContactPeer::HOST_NOTIFICATION_ON_FLAPPING)) {
+			$modifiedColumns[':p' . $index++]  = '`HOST_NOTIFICATION_ON_FLAPPING`';
+		}
+		if ($this->isColumnModified(NagiosContactPeer::HOST_NOTIFICATION_ON_SCHEDULED_DOWNTIME)) {
+			$modifiedColumns[':p' . $index++]  = '`HOST_NOTIFICATION_ON_SCHEDULED_DOWNTIME`';
+		}
+		if ($this->isColumnModified(NagiosContactPeer::SERVICE_NOTIFICATION_ON_WARNING)) {
+			$modifiedColumns[':p' . $index++]  = '`SERVICE_NOTIFICATION_ON_WARNING`';
+		}
+		if ($this->isColumnModified(NagiosContactPeer::SERVICE_NOTIFICATION_ON_UNKNOWN)) {
+			$modifiedColumns[':p' . $index++]  = '`SERVICE_NOTIFICATION_ON_UNKNOWN`';
+		}
+		if ($this->isColumnModified(NagiosContactPeer::SERVICE_NOTIFICATION_ON_CRITICAL)) {
+			$modifiedColumns[':p' . $index++]  = '`SERVICE_NOTIFICATION_ON_CRITICAL`';
+		}
+		if ($this->isColumnModified(NagiosContactPeer::SERVICE_NOTIFICATION_ON_RECOVERY)) {
+			$modifiedColumns[':p' . $index++]  = '`SERVICE_NOTIFICATION_ON_RECOVERY`';
+		}
+		if ($this->isColumnModified(NagiosContactPeer::SERVICE_NOTIFICATION_ON_FLAPPING)) {
+			$modifiedColumns[':p' . $index++]  = '`SERVICE_NOTIFICATION_ON_FLAPPING`';
+		}
+		if ($this->isColumnModified(NagiosContactPeer::CAN_SUBMIT_COMMANDS)) {
+			$modifiedColumns[':p' . $index++]  = '`CAN_SUBMIT_COMMANDS`';
+		}
+		if ($this->isColumnModified(NagiosContactPeer::RETAIN_STATUS_INFORMATION)) {
+			$modifiedColumns[':p' . $index++]  = '`RETAIN_STATUS_INFORMATION`';
+		}
+		if ($this->isColumnModified(NagiosContactPeer::RETAIN_NONSTATUS_INFORMATION)) {
+			$modifiedColumns[':p' . $index++]  = '`RETAIN_NONSTATUS_INFORMATION`';
+		}
+
+		$sql = sprintf(
+			'INSERT INTO `nagios_contact` (%s) VALUES (%s)',
+			implode(', ', $modifiedColumns),
+			implode(', ', array_keys($modifiedColumns))
+		);
+
+		try {
+			$stmt = $con->prepare($sql);
+			foreach ($modifiedColumns as $identifier => $columnName) {
+				switch ($columnName) {
+					case '`ID`':
+						$stmt->bindValue($identifier, $this->id, PDO::PARAM_INT);
+						break;
+					case '`NAME`':
+						$stmt->bindValue($identifier, $this->name, PDO::PARAM_STR);
+						break;
+					case '`ALIAS`':
+						$stmt->bindValue($identifier, $this->alias, PDO::PARAM_STR);
+						break;
+					case '`EMAIL`':
+						$stmt->bindValue($identifier, $this->email, PDO::PARAM_STR);
+						break;
+					case '`PAGER`':
+						$stmt->bindValue($identifier, $this->pager, PDO::PARAM_STR);
+						break;
+					case '`HOST_NOTIFICATIONS_ENABLED`':
+						$stmt->bindValue($identifier, (int) $this->host_notifications_enabled, PDO::PARAM_INT);
+						break;
+					case '`SERVICE_NOTIFICATIONS_ENABLED`':
+						$stmt->bindValue($identifier, (int) $this->service_notifications_enabled, PDO::PARAM_INT);
+						break;
+					case '`HOST_NOTIFICATION_PERIOD`':
+						$stmt->bindValue($identifier, $this->host_notification_period, PDO::PARAM_INT);
+						break;
+					case '`SERVICE_NOTIFICATION_PERIOD`':
+						$stmt->bindValue($identifier, $this->service_notification_period, PDO::PARAM_INT);
+						break;
+					case '`HOST_NOTIFICATION_ON_DOWN`':
+						$stmt->bindValue($identifier, (int) $this->host_notification_on_down, PDO::PARAM_INT);
+						break;
+					case '`HOST_NOTIFICATION_ON_UNREACHABLE`':
+						$stmt->bindValue($identifier, (int) $this->host_notification_on_unreachable, PDO::PARAM_INT);
+						break;
+					case '`HOST_NOTIFICATION_ON_RECOVERY`':
+						$stmt->bindValue($identifier, (int) $this->host_notification_on_recovery, PDO::PARAM_INT);
+						break;
+					case '`HOST_NOTIFICATION_ON_FLAPPING`':
+						$stmt->bindValue($identifier, (int) $this->host_notification_on_flapping, PDO::PARAM_INT);
+						break;
+					case '`HOST_NOTIFICATION_ON_SCHEDULED_DOWNTIME`':
+						$stmt->bindValue($identifier, (int) $this->host_notification_on_scheduled_downtime, PDO::PARAM_INT);
+						break;
+					case '`SERVICE_NOTIFICATION_ON_WARNING`':
+						$stmt->bindValue($identifier, (int) $this->service_notification_on_warning, PDO::PARAM_INT);
+						break;
+					case '`SERVICE_NOTIFICATION_ON_UNKNOWN`':
+						$stmt->bindValue($identifier, (int) $this->service_notification_on_unknown, PDO::PARAM_INT);
+						break;
+					case '`SERVICE_NOTIFICATION_ON_CRITICAL`':
+						$stmt->bindValue($identifier, (int) $this->service_notification_on_critical, PDO::PARAM_INT);
+						break;
+					case '`SERVICE_NOTIFICATION_ON_RECOVERY`':
+						$stmt->bindValue($identifier, (int) $this->service_notification_on_recovery, PDO::PARAM_INT);
+						break;
+					case '`SERVICE_NOTIFICATION_ON_FLAPPING`':
+						$stmt->bindValue($identifier, (int) $this->service_notification_on_flapping, PDO::PARAM_INT);
+						break;
+					case '`CAN_SUBMIT_COMMANDS`':
+						$stmt->bindValue($identifier, (int) $this->can_submit_commands, PDO::PARAM_INT);
+						break;
+					case '`RETAIN_STATUS_INFORMATION`':
+						$stmt->bindValue($identifier, (int) $this->retain_status_information, PDO::PARAM_INT);
+						break;
+					case '`RETAIN_NONSTATUS_INFORMATION`':
+						$stmt->bindValue($identifier, (int) $this->retain_nonstatus_information, PDO::PARAM_INT);
+						break;
+				}
+			}
+			$stmt->execute();
+		} catch (Exception $e) {
+			Propel::log($e->getMessage(), Propel::LOG_ERR);
+			throw new PropelException(sprintf('Unable to execute INSERT statement [%s]', $sql), $e);
+		}
+
+		try {
+			$pk = $con->lastInsertId();
+		} catch (Exception $e) {
+			throw new PropelException('Unable to get autoincrement id.', $e);
+		}
+		$this->setId($pk);
+
+		$this->setNew(false);
+	}
+
+	/**
+	 * Update the row in the database.
+	 *
+	 * @param      PropelPDO $con
+	 *
+	 * @see        doSave()
+	 */
+	protected function doUpdate(PropelPDO $con)
+	{
+		$selectCriteria = $this->buildPkeyCriteria();
+		$valuesCriteria = $this->buildCriteria();
+		BasePeer::doUpdate($selectCriteria, $valuesCriteria, $con);
+	}
 
 	/**
 	 * Array of ValidationFailed objects.
@@ -1915,10 +2193,12 @@ abstract class BaseNagiosContact extends BaseObject  implements Persistent
 		$copyObj->setRetainStatusInformation($this->getRetainStatusInformation());
 		$copyObj->setRetainNonstatusInformation($this->getRetainNonstatusInformation());
 
-		if ($deepCopy) {
+		if ($deepCopy && !$this->startCopy) {
 			// important: temporarily setNew(false) because this affects the behavior of
 			// the getter/setter methods for fkey referrer objects.
 			$copyObj->setNew(false);
+			// store object hash to prevent cycle
+			$this->startCopy = true;
 
 			foreach ($this->getNagiosContactAddresss() as $relObj) {
 				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
@@ -1956,6 +2236,8 @@ abstract class BaseNagiosContact extends BaseObject  implements Persistent
 				}
 			}
 
+			//unflag object copy
+			$this->startCopy = false;
 		} // if ($deepCopy)
 
 		if ($makeNew) {
@@ -2103,7 +2385,7 @@ abstract class BaseNagiosContact extends BaseObject  implements Persistent
 
 	/**
 	 * Initializes a collection based on the name of a relation.
-	 * Avoids crafting an 'init[$relationName]s' method name 
+	 * Avoids crafting an 'init[$relationName]s' method name
 	 * that wouldn't work when StandardEnglishPluralizer is used.
 	 *
 	 * @param      string $relationName The name of the relation to initialize
@@ -2200,6 +2482,30 @@ abstract class BaseNagiosContact extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of NagiosContactAddress objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $nagiosContactAddresss A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setNagiosContactAddresss(PropelCollection $nagiosContactAddresss, PropelPDO $con = null)
+	{
+		$this->nagiosContactAddresssScheduledForDeletion = $this->getNagiosContactAddresss(new Criteria(), $con)->diff($nagiosContactAddresss);
+
+		foreach ($nagiosContactAddresss as $nagiosContactAddress) {
+			// Fix issue with collection modified by reference
+			if ($nagiosContactAddress->isNew()) {
+				$nagiosContactAddress->setNagiosContact($this);
+			}
+			$this->addNagiosContactAddress($nagiosContactAddress);
+		}
+
+		$this->collNagiosContactAddresss = $nagiosContactAddresss;
+	}
+
+	/**
 	 * Returns the number of related NagiosContactAddress objects.
 	 *
 	 * @param      Criteria $criteria
@@ -2232,8 +2538,7 @@ abstract class BaseNagiosContact extends BaseObject  implements Persistent
 	 * through the NagiosContactAddress foreign key attribute.
 	 *
 	 * @param      NagiosContactAddress $l NagiosContactAddress
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     NagiosContact The current object (for fluent API support)
 	 */
 	public function addNagiosContactAddress(NagiosContactAddress $l)
 	{
@@ -2241,9 +2546,19 @@ abstract class BaseNagiosContact extends BaseObject  implements Persistent
 			$this->initNagiosContactAddresss();
 		}
 		if (!$this->collNagiosContactAddresss->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collNagiosContactAddresss[]= $l;
-			$l->setNagiosContact($this);
+			$this->doAddNagiosContactAddress($l);
 		}
+
+		return $this;
+	}
+
+	/**
+	 * @param	NagiosContactAddress $nagiosContactAddress The nagiosContactAddress object to add.
+	 */
+	protected function doAddNagiosContactAddress($nagiosContactAddress)
+	{
+		$this->collNagiosContactAddresss[]= $nagiosContactAddress;
+		$nagiosContactAddress->setNagiosContact($this);
 	}
 
 	/**
@@ -2315,6 +2630,30 @@ abstract class BaseNagiosContact extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of NagiosContactGroupMember objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $nagiosContactGroupMembers A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setNagiosContactGroupMembers(PropelCollection $nagiosContactGroupMembers, PropelPDO $con = null)
+	{
+		$this->nagiosContactGroupMembersScheduledForDeletion = $this->getNagiosContactGroupMembers(new Criteria(), $con)->diff($nagiosContactGroupMembers);
+
+		foreach ($nagiosContactGroupMembers as $nagiosContactGroupMember) {
+			// Fix issue with collection modified by reference
+			if ($nagiosContactGroupMember->isNew()) {
+				$nagiosContactGroupMember->setNagiosContact($this);
+			}
+			$this->addNagiosContactGroupMember($nagiosContactGroupMember);
+		}
+
+		$this->collNagiosContactGroupMembers = $nagiosContactGroupMembers;
+	}
+
+	/**
 	 * Returns the number of related NagiosContactGroupMember objects.
 	 *
 	 * @param      Criteria $criteria
@@ -2347,8 +2686,7 @@ abstract class BaseNagiosContact extends BaseObject  implements Persistent
 	 * through the NagiosContactGroupMember foreign key attribute.
 	 *
 	 * @param      NagiosContactGroupMember $l NagiosContactGroupMember
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     NagiosContact The current object (for fluent API support)
 	 */
 	public function addNagiosContactGroupMember(NagiosContactGroupMember $l)
 	{
@@ -2356,9 +2694,19 @@ abstract class BaseNagiosContact extends BaseObject  implements Persistent
 			$this->initNagiosContactGroupMembers();
 		}
 		if (!$this->collNagiosContactGroupMembers->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collNagiosContactGroupMembers[]= $l;
-			$l->setNagiosContact($this);
+			$this->doAddNagiosContactGroupMember($l);
 		}
+
+		return $this;
+	}
+
+	/**
+	 * @param	NagiosContactGroupMember $nagiosContactGroupMember The nagiosContactGroupMember object to add.
+	 */
+	protected function doAddNagiosContactGroupMember($nagiosContactGroupMember)
+	{
+		$this->collNagiosContactGroupMembers[]= $nagiosContactGroupMember;
+		$nagiosContactGroupMember->setNagiosContact($this);
 	}
 
 
@@ -2455,6 +2803,30 @@ abstract class BaseNagiosContact extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of NagiosContactNotificationCommand objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $nagiosContactNotificationCommands A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setNagiosContactNotificationCommands(PropelCollection $nagiosContactNotificationCommands, PropelPDO $con = null)
+	{
+		$this->nagiosContactNotificationCommandsScheduledForDeletion = $this->getNagiosContactNotificationCommands(new Criteria(), $con)->diff($nagiosContactNotificationCommands);
+
+		foreach ($nagiosContactNotificationCommands as $nagiosContactNotificationCommand) {
+			// Fix issue with collection modified by reference
+			if ($nagiosContactNotificationCommand->isNew()) {
+				$nagiosContactNotificationCommand->setNagiosContact($this);
+			}
+			$this->addNagiosContactNotificationCommand($nagiosContactNotificationCommand);
+		}
+
+		$this->collNagiosContactNotificationCommands = $nagiosContactNotificationCommands;
+	}
+
+	/**
 	 * Returns the number of related NagiosContactNotificationCommand objects.
 	 *
 	 * @param      Criteria $criteria
@@ -2487,8 +2859,7 @@ abstract class BaseNagiosContact extends BaseObject  implements Persistent
 	 * through the NagiosContactNotificationCommand foreign key attribute.
 	 *
 	 * @param      NagiosContactNotificationCommand $l NagiosContactNotificationCommand
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     NagiosContact The current object (for fluent API support)
 	 */
 	public function addNagiosContactNotificationCommand(NagiosContactNotificationCommand $l)
 	{
@@ -2496,9 +2867,19 @@ abstract class BaseNagiosContact extends BaseObject  implements Persistent
 			$this->initNagiosContactNotificationCommands();
 		}
 		if (!$this->collNagiosContactNotificationCommands->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collNagiosContactNotificationCommands[]= $l;
-			$l->setNagiosContact($this);
+			$this->doAddNagiosContactNotificationCommand($l);
 		}
+
+		return $this;
+	}
+
+	/**
+	 * @param	NagiosContactNotificationCommand $nagiosContactNotificationCommand The nagiosContactNotificationCommand object to add.
+	 */
+	protected function doAddNagiosContactNotificationCommand($nagiosContactNotificationCommand)
+	{
+		$this->collNagiosContactNotificationCommands[]= $nagiosContactNotificationCommand;
+		$nagiosContactNotificationCommand->setNagiosContact($this);
 	}
 
 
@@ -2595,6 +2976,30 @@ abstract class BaseNagiosContact extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of NagiosHostContactMember objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $nagiosHostContactMembers A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setNagiosHostContactMembers(PropelCollection $nagiosHostContactMembers, PropelPDO $con = null)
+	{
+		$this->nagiosHostContactMembersScheduledForDeletion = $this->getNagiosHostContactMembers(new Criteria(), $con)->diff($nagiosHostContactMembers);
+
+		foreach ($nagiosHostContactMembers as $nagiosHostContactMember) {
+			// Fix issue with collection modified by reference
+			if ($nagiosHostContactMember->isNew()) {
+				$nagiosHostContactMember->setNagiosContact($this);
+			}
+			$this->addNagiosHostContactMember($nagiosHostContactMember);
+		}
+
+		$this->collNagiosHostContactMembers = $nagiosHostContactMembers;
+	}
+
+	/**
 	 * Returns the number of related NagiosHostContactMember objects.
 	 *
 	 * @param      Criteria $criteria
@@ -2627,8 +3032,7 @@ abstract class BaseNagiosContact extends BaseObject  implements Persistent
 	 * through the NagiosHostContactMember foreign key attribute.
 	 *
 	 * @param      NagiosHostContactMember $l NagiosHostContactMember
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     NagiosContact The current object (for fluent API support)
 	 */
 	public function addNagiosHostContactMember(NagiosHostContactMember $l)
 	{
@@ -2636,9 +3040,19 @@ abstract class BaseNagiosContact extends BaseObject  implements Persistent
 			$this->initNagiosHostContactMembers();
 		}
 		if (!$this->collNagiosHostContactMembers->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collNagiosHostContactMembers[]= $l;
-			$l->setNagiosContact($this);
+			$this->doAddNagiosHostContactMember($l);
 		}
+
+		return $this;
+	}
+
+	/**
+	 * @param	NagiosHostContactMember $nagiosHostContactMember The nagiosHostContactMember object to add.
+	 */
+	protected function doAddNagiosHostContactMember($nagiosHostContactMember)
+	{
+		$this->collNagiosHostContactMembers[]= $nagiosHostContactMember;
+		$nagiosHostContactMember->setNagiosContact($this);
 	}
 
 
@@ -2760,6 +3174,30 @@ abstract class BaseNagiosContact extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of NagiosServiceContactMember objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $nagiosServiceContactMembers A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setNagiosServiceContactMembers(PropelCollection $nagiosServiceContactMembers, PropelPDO $con = null)
+	{
+		$this->nagiosServiceContactMembersScheduledForDeletion = $this->getNagiosServiceContactMembers(new Criteria(), $con)->diff($nagiosServiceContactMembers);
+
+		foreach ($nagiosServiceContactMembers as $nagiosServiceContactMember) {
+			// Fix issue with collection modified by reference
+			if ($nagiosServiceContactMember->isNew()) {
+				$nagiosServiceContactMember->setNagiosContact($this);
+			}
+			$this->addNagiosServiceContactMember($nagiosServiceContactMember);
+		}
+
+		$this->collNagiosServiceContactMembers = $nagiosServiceContactMembers;
+	}
+
+	/**
 	 * Returns the number of related NagiosServiceContactMember objects.
 	 *
 	 * @param      Criteria $criteria
@@ -2792,8 +3230,7 @@ abstract class BaseNagiosContact extends BaseObject  implements Persistent
 	 * through the NagiosServiceContactMember foreign key attribute.
 	 *
 	 * @param      NagiosServiceContactMember $l NagiosServiceContactMember
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     NagiosContact The current object (for fluent API support)
 	 */
 	public function addNagiosServiceContactMember(NagiosServiceContactMember $l)
 	{
@@ -2801,9 +3238,19 @@ abstract class BaseNagiosContact extends BaseObject  implements Persistent
 			$this->initNagiosServiceContactMembers();
 		}
 		if (!$this->collNagiosServiceContactMembers->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collNagiosServiceContactMembers[]= $l;
-			$l->setNagiosContact($this);
+			$this->doAddNagiosServiceContactMember($l);
 		}
+
+		return $this;
+	}
+
+	/**
+	 * @param	NagiosServiceContactMember $nagiosServiceContactMember The nagiosServiceContactMember object to add.
+	 */
+	protected function doAddNagiosServiceContactMember($nagiosServiceContactMember)
+	{
+		$this->collNagiosServiceContactMembers[]= $nagiosServiceContactMember;
+		$nagiosServiceContactMember->setNagiosContact($this);
 	}
 
 
@@ -2925,6 +3372,30 @@ abstract class BaseNagiosContact extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of NagiosEscalationContact objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $nagiosEscalationContacts A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setNagiosEscalationContacts(PropelCollection $nagiosEscalationContacts, PropelPDO $con = null)
+	{
+		$this->nagiosEscalationContactsScheduledForDeletion = $this->getNagiosEscalationContacts(new Criteria(), $con)->diff($nagiosEscalationContacts);
+
+		foreach ($nagiosEscalationContacts as $nagiosEscalationContact) {
+			// Fix issue with collection modified by reference
+			if ($nagiosEscalationContact->isNew()) {
+				$nagiosEscalationContact->setNagiosContact($this);
+			}
+			$this->addNagiosEscalationContact($nagiosEscalationContact);
+		}
+
+		$this->collNagiosEscalationContacts = $nagiosEscalationContacts;
+	}
+
+	/**
 	 * Returns the number of related NagiosEscalationContact objects.
 	 *
 	 * @param      Criteria $criteria
@@ -2957,8 +3428,7 @@ abstract class BaseNagiosContact extends BaseObject  implements Persistent
 	 * through the NagiosEscalationContact foreign key attribute.
 	 *
 	 * @param      NagiosEscalationContact $l NagiosEscalationContact
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     NagiosContact The current object (for fluent API support)
 	 */
 	public function addNagiosEscalationContact(NagiosEscalationContact $l)
 	{
@@ -2966,9 +3436,19 @@ abstract class BaseNagiosContact extends BaseObject  implements Persistent
 			$this->initNagiosEscalationContacts();
 		}
 		if (!$this->collNagiosEscalationContacts->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collNagiosEscalationContacts[]= $l;
-			$l->setNagiosContact($this);
+			$this->doAddNagiosEscalationContact($l);
 		}
+
+		return $this;
+	}
+
+	/**
+	 * @param	NagiosEscalationContact $nagiosEscalationContact The nagiosEscalationContact object to add.
+	 */
+	protected function doAddNagiosEscalationContact($nagiosEscalationContact)
+	{
+		$this->collNagiosEscalationContacts[]= $nagiosEscalationContact;
+		$nagiosEscalationContact->setNagiosContact($this);
 	}
 
 
@@ -3111,25 +3591,6 @@ abstract class BaseNagiosContact extends BaseObject  implements Persistent
 	public function __toString()
 	{
 		return (string) $this->exportTo(NagiosContactPeer::DEFAULT_STRING_FORMAT);
-	}
-
-	/**
-	 * Catches calls to virtual methods
-	 */
-	public function __call($name, $params)
-	{
-		if (preg_match('/get(\w+)/', $name, $matches)) {
-			$virtualColumn = $matches[1];
-			if ($this->hasVirtualColumn($virtualColumn)) {
-				return $this->getVirtualColumn($virtualColumn);
-			}
-			// no lcfirst in php<5.3...
-			$virtualColumn[0] = strtolower($virtualColumn[0]);
-			if ($this->hasVirtualColumn($virtualColumn)) {
-				return $this->getVirtualColumn($virtualColumn);
-			}
-		}
-		return parent::__call($name, $params);
 	}
 
 } // BaseNagiosContact

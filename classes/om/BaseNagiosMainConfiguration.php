@@ -25,6 +25,12 @@ abstract class BaseNagiosMainConfiguration extends BaseObject  implements Persis
 	protected static $peer;
 
 	/**
+	 * The flag var to prevent infinit loop in deep copy
+	 * @var       boolean
+	 */
+	protected $startCopy = false;
+
+	/**
 	 * The value for the id field.
 	 * @var        int
 	 */
@@ -47,12 +53,6 @@ abstract class BaseNagiosMainConfiguration extends BaseObject  implements Persis
 	 * @var        string
 	 */
 	protected $temp_file;
-	
-	/**
-	 * The value for the temp_path field.
-	 * @var        string
-	 */
-	protected $temp_path;
 
 	/**
 	 * The value for the status_file field.
@@ -787,6 +787,30 @@ abstract class BaseNagiosMainConfiguration extends BaseObject  implements Persis
 	protected $max_debug_file_size;
 
 	/**
+	 * The value for the temp_path field.
+	 * @var        string
+	 */
+	protected $temp_path;
+
+	/**
+	 * The value for the check_for_updates field.
+	 * @var        boolean
+	 */
+	protected $check_for_updates;
+
+	/**
+	 * The value for the check_for_orphaned_hosts field.
+	 * @var        boolean
+	 */
+	protected $check_for_orphaned_hosts;
+
+	/**
+	 * The value for the bare_update_check field.
+	 * @var        boolean
+	 */
+	protected $bare_update_check;
+
+	/**
 	 * @var        NagiosCommand
 	 */
 	protected $aNagiosCommandRelatedByOcspCommand;
@@ -878,16 +902,6 @@ abstract class BaseNagiosMainConfiguration extends BaseObject  implements Persis
 	public function getTempFile()
 	{
 		return $this->temp_file;
-	}
-	
-	/**
-	 * Get the [temp_path] column value.
-	 *
-	 * @return     string
-	 */
-	public function getTempPath()
-	{
-		return $this->temp_path;
 	}
 
 	/**
@@ -2111,6 +2125,46 @@ abstract class BaseNagiosMainConfiguration extends BaseObject  implements Persis
 	}
 
 	/**
+	 * Get the [temp_path] column value.
+	 * 
+	 * @return     string
+	 */
+	public function getTempPath()
+	{
+		return $this->temp_path;
+	}
+
+	/**
+	 * Get the [check_for_updates] column value.
+	 * 
+	 * @return     boolean
+	 */
+	public function getCheckForUpdates()
+	{
+		return $this->check_for_updates;
+	}
+
+	/**
+	 * Get the [check_for_orphaned_hosts] column value.
+	 * 
+	 * @return     boolean
+	 */
+	public function getCheckForOrphanedHosts()
+	{
+		return $this->check_for_orphaned_hosts;
+	}
+
+	/**
+	 * Get the [bare_update_check] column value.
+	 * 
+	 * @return     boolean
+	 */
+	public function getBareUpdateCheck()
+	{
+		return $this->bare_update_check;
+	}
+
+	/**
 	 * Set the value of [id] column.
 	 * 
 	 * @param      int $v new value
@@ -2189,26 +2243,6 @@ abstract class BaseNagiosMainConfiguration extends BaseObject  implements Persis
 
 		return $this;
 	} // setTempFile()
-	
-	/**
-	 * Set the value of [temp_path] column.
-	 *
-	 * @param      string $v new value
-	 * @return     NagiosMainConfiguration The current object (for fluent API support)
-	 */
-	public function setTempPath($v)
-	{
-		if ($v !== null) {
-			$v = (string) $v;
-		}
-	
-		if ($this->temp_path !== $v) {
-			$this->temp_path = $v;
-			$this->modifiedColumns[] = NagiosMainConfigurationPeer::TEMP_PATH;
-		}
-	
-		return $this;
-	} // setTempPath()
 
 	/**
 	 * Set the value of [status_file] column.
@@ -2291,7 +2325,7 @@ abstract class BaseNagiosMainConfiguration extends BaseObject  implements Persis
 	} // setNagiosGroup()
 
 	/**
-	 * Sets the value of the [enable_notifications] column. 
+	 * Sets the value of the [enable_notifications] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -2319,7 +2353,7 @@ abstract class BaseNagiosMainConfiguration extends BaseObject  implements Persis
 	} // setEnableNotifications()
 
 	/**
-	 * Sets the value of the [execute_service_checks] column. 
+	 * Sets the value of the [execute_service_checks] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -2347,7 +2381,7 @@ abstract class BaseNagiosMainConfiguration extends BaseObject  implements Persis
 	} // setExecuteServiceChecks()
 
 	/**
-	 * Sets the value of the [accept_passive_service_checks] column. 
+	 * Sets the value of the [accept_passive_service_checks] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -2375,7 +2409,7 @@ abstract class BaseNagiosMainConfiguration extends BaseObject  implements Persis
 	} // setAcceptPassiveServiceChecks()
 
 	/**
-	 * Sets the value of the [enable_event_handlers] column. 
+	 * Sets the value of the [enable_event_handlers] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -2443,7 +2477,7 @@ abstract class BaseNagiosMainConfiguration extends BaseObject  implements Persis
 	} // setLogArchivePath()
 
 	/**
-	 * Sets the value of the [check_external_commands] column. 
+	 * Sets the value of the [check_external_commands] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -2531,7 +2565,7 @@ abstract class BaseNagiosMainConfiguration extends BaseObject  implements Persis
 	} // setLockFile()
 
 	/**
-	 * Sets the value of the [retain_state_information] column. 
+	 * Sets the value of the [retain_state_information] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -2599,7 +2633,7 @@ abstract class BaseNagiosMainConfiguration extends BaseObject  implements Persis
 	} // setRetentionUpdateInterval()
 
 	/**
-	 * Sets the value of the [use_retained_program_state] column. 
+	 * Sets the value of the [use_retained_program_state] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -2627,7 +2661,7 @@ abstract class BaseNagiosMainConfiguration extends BaseObject  implements Persis
 	} // setUseRetainedProgramState()
 
 	/**
-	 * Sets the value of the [use_syslog] column. 
+	 * Sets the value of the [use_syslog] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -2655,7 +2689,7 @@ abstract class BaseNagiosMainConfiguration extends BaseObject  implements Persis
 	} // setUseSyslog()
 
 	/**
-	 * Sets the value of the [log_notifications] column. 
+	 * Sets the value of the [log_notifications] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -2683,7 +2717,7 @@ abstract class BaseNagiosMainConfiguration extends BaseObject  implements Persis
 	} // setLogNotifications()
 
 	/**
-	 * Sets the value of the [log_service_retries] column. 
+	 * Sets the value of the [log_service_retries] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -2711,7 +2745,7 @@ abstract class BaseNagiosMainConfiguration extends BaseObject  implements Persis
 	} // setLogServiceRetries()
 
 	/**
-	 * Sets the value of the [log_host_retries] column. 
+	 * Sets the value of the [log_host_retries] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -2739,7 +2773,7 @@ abstract class BaseNagiosMainConfiguration extends BaseObject  implements Persis
 	} // setLogHostRetries()
 
 	/**
-	 * Sets the value of the [log_event_handlers] column. 
+	 * Sets the value of the [log_event_handlers] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -2767,7 +2801,7 @@ abstract class BaseNagiosMainConfiguration extends BaseObject  implements Persis
 	} // setLogEventHandlers()
 
 	/**
-	 * Sets the value of the [log_initial_states] column. 
+	 * Sets the value of the [log_initial_states] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -2795,7 +2829,7 @@ abstract class BaseNagiosMainConfiguration extends BaseObject  implements Persis
 	} // setLogInitialStates()
 
 	/**
-	 * Sets the value of the [log_external_commands] column. 
+	 * Sets the value of the [log_external_commands] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -2823,7 +2857,7 @@ abstract class BaseNagiosMainConfiguration extends BaseObject  implements Persis
 	} // setLogExternalCommands()
 
 	/**
-	 * Sets the value of the [log_passive_checks] column. 
+	 * Sets the value of the [log_passive_checks] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -3019,7 +3053,7 @@ abstract class BaseNagiosMainConfiguration extends BaseObject  implements Persis
 	} // setIntervalLength()
 
 	/**
-	 * Sets the value of the [use_aggressive_host_checking] column. 
+	 * Sets the value of the [use_aggressive_host_checking] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -3047,7 +3081,7 @@ abstract class BaseNagiosMainConfiguration extends BaseObject  implements Persis
 	} // setUseAggressiveHostChecking()
 
 	/**
-	 * Sets the value of the [enable_flap_detection] column. 
+	 * Sets the value of the [enable_flap_detection] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -3155,7 +3189,7 @@ abstract class BaseNagiosMainConfiguration extends BaseObject  implements Persis
 	} // setHighHostFlapThreshold()
 
 	/**
-	 * Sets the value of the [soft_state_dependencies] column. 
+	 * Sets the value of the [soft_state_dependencies] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -3323,7 +3357,7 @@ abstract class BaseNagiosMainConfiguration extends BaseObject  implements Persis
 	} // setPerfdataTimeout()
 
 	/**
-	 * Sets the value of the [obsess_over_services] column. 
+	 * Sets the value of the [obsess_over_services] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -3375,7 +3409,7 @@ abstract class BaseNagiosMainConfiguration extends BaseObject  implements Persis
 	} // setOcspCommand()
 
 	/**
-	 * Sets the value of the [process_performance_data] column. 
+	 * Sets the value of the [process_performance_data] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -3403,7 +3437,7 @@ abstract class BaseNagiosMainConfiguration extends BaseObject  implements Persis
 	} // setProcessPerformanceData()
 
 	/**
-	 * Sets the value of the [check_for_orphaned_services] column. 
+	 * Sets the value of the [check_for_orphaned_services] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -3431,7 +3465,7 @@ abstract class BaseNagiosMainConfiguration extends BaseObject  implements Persis
 	} // setCheckForOrphanedServices()
 
 	/**
-	 * Sets the value of the [check_service_freshness] column. 
+	 * Sets the value of the [check_service_freshness] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -3579,7 +3613,7 @@ abstract class BaseNagiosMainConfiguration extends BaseObject  implements Persis
 	} // setAdminPager()
 
 	/**
-	 * Sets the value of the [execute_host_checks] column. 
+	 * Sets the value of the [execute_host_checks] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -3627,7 +3661,7 @@ abstract class BaseNagiosMainConfiguration extends BaseObject  implements Persis
 	} // setServiceInterCheckDelayMethod()
 
 	/**
-	 * Sets the value of the [use_retained_scheduling_info] column. 
+	 * Sets the value of the [use_retained_scheduling_info] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -3655,7 +3689,7 @@ abstract class BaseNagiosMainConfiguration extends BaseObject  implements Persis
 	} // setUseRetainedSchedulingInfo()
 
 	/**
-	 * Sets the value of the [accept_passive_host_checks] column. 
+	 * Sets the value of the [accept_passive_host_checks] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -3743,7 +3777,7 @@ abstract class BaseNagiosMainConfiguration extends BaseObject  implements Persis
 	} // setMaxHostCheckSpread()
 
 	/**
-	 * Sets the value of the [auto_reschedule_checks] column. 
+	 * Sets the value of the [auto_reschedule_checks] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -3831,7 +3865,7 @@ abstract class BaseNagiosMainConfiguration extends BaseObject  implements Persis
 	} // setOchpTimeout()
 
 	/**
-	 * Sets the value of the [obsess_over_hosts] column. 
+	 * Sets the value of the [obsess_over_hosts] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -3883,7 +3917,7 @@ abstract class BaseNagiosMainConfiguration extends BaseObject  implements Persis
 	} // setOchpCommand()
 
 	/**
-	 * Sets the value of the [check_host_freshness] column. 
+	 * Sets the value of the [check_host_freshness] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -3951,7 +3985,7 @@ abstract class BaseNagiosMainConfiguration extends BaseObject  implements Persis
 	} // setServiceFreshnessCheckInterval()
 
 	/**
-	 * Sets the value of the [use_regexp_matching] column. 
+	 * Sets the value of the [use_regexp_matching] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -3979,7 +4013,7 @@ abstract class BaseNagiosMainConfiguration extends BaseObject  implements Persis
 	} // setUseRegexpMatching()
 
 	/**
-	 * Sets the value of the [use_true_regexp_matching] column. 
+	 * Sets the value of the [use_true_regexp_matching] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -4027,7 +4061,7 @@ abstract class BaseNagiosMainConfiguration extends BaseObject  implements Persis
 	} // setEventBrokerOptions()
 
 	/**
-	 * Sets the value of the [daemon_dumps_core] column. 
+	 * Sets the value of the [daemon_dumps_core] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -4551,7 +4585,7 @@ abstract class BaseNagiosMainConfiguration extends BaseObject  implements Persis
 	} // setMaxCheckResultFileAge()
 
 	/**
-	 * Sets the value of the [translate_passive_host_checks] column. 
+	 * Sets the value of the [translate_passive_host_checks] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -4579,7 +4613,7 @@ abstract class BaseNagiosMainConfiguration extends BaseObject  implements Persis
 	} // setTranslatePassiveHostChecks()
 
 	/**
-	 * Sets the value of the [passive_host_checks_are_soft] column. 
+	 * Sets the value of the [passive_host_checks_are_soft] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -4607,7 +4641,7 @@ abstract class BaseNagiosMainConfiguration extends BaseObject  implements Persis
 	} // setPassiveHostChecksAreSoft()
 
 	/**
-	 * Sets the value of the [enable_predictive_host_dependency_checks] column. 
+	 * Sets the value of the [enable_predictive_host_dependency_checks] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -4635,7 +4669,7 @@ abstract class BaseNagiosMainConfiguration extends BaseObject  implements Persis
 	} // setEnablePredictiveHostDependencyChecks()
 
 	/**
-	 * Sets the value of the [enable_predictive_service_dependency_checks] column. 
+	 * Sets the value of the [enable_predictive_service_dependency_checks] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -4703,7 +4737,7 @@ abstract class BaseNagiosMainConfiguration extends BaseObject  implements Persis
 	} // setCachedServiceCheckHorizon()
 
 	/**
-	 * Sets the value of the [use_large_installation_tweaks] column. 
+	 * Sets the value of the [use_large_installation_tweaks] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -4731,7 +4765,7 @@ abstract class BaseNagiosMainConfiguration extends BaseObject  implements Persis
 	} // setUseLargeInstallationTweaks()
 
 	/**
-	 * Sets the value of the [free_child_process_memory] column. 
+	 * Sets the value of the [free_child_process_memory] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -4759,7 +4793,7 @@ abstract class BaseNagiosMainConfiguration extends BaseObject  implements Persis
 	} // setFreeChildProcessMemory()
 
 	/**
-	 * Sets the value of the [child_processes_fork_twice] column. 
+	 * Sets the value of the [child_processes_fork_twice] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -4787,7 +4821,7 @@ abstract class BaseNagiosMainConfiguration extends BaseObject  implements Persis
 	} // setChildProcessesForkTwice()
 
 	/**
-	 * Sets the value of the [enable_environment_macros] column. 
+	 * Sets the value of the [enable_environment_macros] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -4835,7 +4869,7 @@ abstract class BaseNagiosMainConfiguration extends BaseObject  implements Persis
 	} // setAdditionalFreshnessLatency()
 
 	/**
-	 * Sets the value of the [enable_embedded_perl] column. 
+	 * Sets the value of the [enable_embedded_perl] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -4863,7 +4897,7 @@ abstract class BaseNagiosMainConfiguration extends BaseObject  implements Persis
 	} // setEnableEmbeddedPerl()
 
 	/**
-	 * Sets the value of the [use_embedded_perl_implicitly] column. 
+	 * Sets the value of the [use_embedded_perl_implicitly] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -5009,6 +5043,110 @@ abstract class BaseNagiosMainConfiguration extends BaseObject  implements Persis
 
 		return $this;
 	} // setMaxDebugFileSize()
+
+	/**
+	 * Set the value of [temp_path] column.
+	 * 
+	 * @param      string $v new value
+	 * @return     NagiosMainConfiguration The current object (for fluent API support)
+	 */
+	public function setTempPath($v)
+	{
+		if ($v !== null) {
+			$v = (string) $v;
+		}
+
+		if ($this->temp_path !== $v) {
+			$this->temp_path = $v;
+			$this->modifiedColumns[] = NagiosMainConfigurationPeer::TEMP_PATH;
+		}
+
+		return $this;
+	} // setTempPath()
+
+	/**
+	 * Sets the value of the [check_for_updates] column.
+	 * Non-boolean arguments are converted using the following rules:
+	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
+	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
+	 * Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
+	 * 
+	 * @param      boolean|integer|string $v The new value
+	 * @return     NagiosMainConfiguration The current object (for fluent API support)
+	 */
+	public function setCheckForUpdates($v)
+	{
+		if ($v !== null) {
+			if (is_string($v)) {
+				$v = in_array(strtolower($v), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+			} else {
+				$v = (boolean) $v;
+			}
+		}
+
+		if ($this->check_for_updates !== $v) {
+			$this->check_for_updates = $v;
+			$this->modifiedColumns[] = NagiosMainConfigurationPeer::CHECK_FOR_UPDATES;
+		}
+
+		return $this;
+	} // setCheckForUpdates()
+
+	/**
+	 * Sets the value of the [check_for_orphaned_hosts] column.
+	 * Non-boolean arguments are converted using the following rules:
+	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
+	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
+	 * Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
+	 * 
+	 * @param      boolean|integer|string $v The new value
+	 * @return     NagiosMainConfiguration The current object (for fluent API support)
+	 */
+	public function setCheckForOrphanedHosts($v)
+	{
+		if ($v !== null) {
+			if (is_string($v)) {
+				$v = in_array(strtolower($v), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+			} else {
+				$v = (boolean) $v;
+			}
+		}
+
+		if ($this->check_for_orphaned_hosts !== $v) {
+			$this->check_for_orphaned_hosts = $v;
+			$this->modifiedColumns[] = NagiosMainConfigurationPeer::CHECK_FOR_ORPHANED_HOSTS;
+		}
+
+		return $this;
+	} // setCheckForOrphanedHosts()
+
+	/**
+	 * Sets the value of the [bare_update_check] column.
+	 * Non-boolean arguments are converted using the following rules:
+	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
+	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
+	 * Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
+	 * 
+	 * @param      boolean|integer|string $v The new value
+	 * @return     NagiosMainConfiguration The current object (for fluent API support)
+	 */
+	public function setBareUpdateCheck($v)
+	{
+		if ($v !== null) {
+			if (is_string($v)) {
+				$v = in_array(strtolower($v), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+			} else {
+				$v = (boolean) $v;
+			}
+		}
+
+		if ($this->bare_update_check !== $v) {
+			$this->bare_update_check = $v;
+			$this->modifiedColumns[] = NagiosMainConfigurationPeer::BARE_UPDATE_CHECK;
+		}
+
+		return $this;
+	} // setBareUpdateCheck()
 
 	/**
 	 * Indicates whether the columns in this object are only set to default values.
@@ -5169,6 +5307,9 @@ abstract class BaseNagiosMainConfiguration extends BaseObject  implements Persis
 			$this->debug_verbosity = ($row[$startcol + 124] !== null) ? (int) $row[$startcol + 124] : null;
 			$this->max_debug_file_size = ($row[$startcol + 125] !== null) ? (int) $row[$startcol + 125] : null;
 			$this->temp_path = ($row[$startcol + 126] !== null) ? (string) $row[$startcol + 126] : null;
+			$this->check_for_updates = ($row[$startcol + 127] !== null) ? (boolean) $row[$startcol + 127] : null;
+			$this->check_for_orphaned_hosts = ($row[$startcol + 128] !== null) ? (boolean) $row[$startcol + 128] : null;
+			$this->bare_update_check = ($row[$startcol + 129] !== null) ? (boolean) $row[$startcol + 129] : null;
 			$this->resetModified();
 
 			$this->setNew(false);
@@ -5177,7 +5318,7 @@ abstract class BaseNagiosMainConfiguration extends BaseObject  implements Persis
 				$this->ensureConsistency();
 			}
 
-			return $startcol + 126; // 126 = NagiosMainConfigurationPeer::NUM_HYDRATE_COLUMNS.
+			return $startcol + 130; // 130 = NagiosMainConfigurationPeer::NUM_HYDRATE_COLUMNS.
 
 		} catch (Exception $e) {
 			throw new PropelException("Error populating NagiosMainConfiguration object", $e);
@@ -5295,18 +5436,18 @@ abstract class BaseNagiosMainConfiguration extends BaseObject  implements Persis
 
 		$con->beginTransaction();
 		try {
+			$deleteQuery = NagiosMainConfigurationQuery::create()
+				->filterByPrimaryKey($this->getPrimaryKey());
 			$ret = $this->preDelete($con);
 			if ($ret) {
-				NagiosMainConfigurationQuery::create()
-					->filterByPrimaryKey($this->getPrimaryKey())
-					->delete($con);
+				$deleteQuery->delete($con);
 				$this->postDelete($con);
 				$con->commit();
 				$this->setDeleted(true);
 			} else {
 				$con->commit();
 			}
-		} catch (PropelException $e) {
+		} catch (Exception $e) {
 			$con->rollBack();
 			throw $e;
 		}
@@ -5358,7 +5499,7 @@ abstract class BaseNagiosMainConfiguration extends BaseObject  implements Persis
 			}
 			$con->commit();
 			return $affectedRows;
-		} catch (PropelException $e) {
+		} catch (Exception $e) {
 			$con->rollBack();
 			throw $e;
 		}
@@ -5442,27 +5583,15 @@ abstract class BaseNagiosMainConfiguration extends BaseObject  implements Persis
 				$this->setNagiosCommandRelatedByGlobalHostEventHandler($this->aNagiosCommandRelatedByGlobalHostEventHandler);
 			}
 
-			if ($this->isNew() ) {
-				$this->modifiedColumns[] = NagiosMainConfigurationPeer::ID;
-			}
-
-			// If this object has been modified, then save it to the database.
-			if ($this->isModified()) {
+			if ($this->isNew() || $this->isModified()) {
+				// persist changes
 				if ($this->isNew()) {
-					$criteria = $this->buildCriteria();
-					if ($criteria->keyContainsValue(NagiosMainConfigurationPeer::ID) ) {
-						throw new PropelException('Cannot insert a value for auto-increment primary key ('.NagiosMainConfigurationPeer::ID.')');
-					}
-
-					$pk = BasePeer::doInsert($criteria, $con);
-					$affectedRows += 1;
-					$this->setId($pk);  //[IMV] update autoincrement primary key
-					$this->setNew(false);
+					$this->doInsert($con);
 				} else {
-					$affectedRows += NagiosMainConfigurationPeer::doUpdate($this, $con);
+					$this->doUpdate($con);
 				}
-
-				$this->resetModified(); // [HL] After being saved an object is no longer 'modified'
+				$affectedRows += 1;
+				$this->resetModified();
 			}
 
 			$this->alreadyInSave = false;
@@ -5470,6 +5599,848 @@ abstract class BaseNagiosMainConfiguration extends BaseObject  implements Persis
 		}
 		return $affectedRows;
 	} // doSave()
+
+	/**
+	 * Insert the row in the database.
+	 *
+	 * @param      PropelPDO $con
+	 *
+	 * @throws     PropelException
+	 * @see        doSave()
+	 */
+	protected function doInsert(PropelPDO $con)
+	{
+		$modifiedColumns = array();
+		$index = 0;
+
+		$this->modifiedColumns[] = NagiosMainConfigurationPeer::ID;
+		if (null !== $this->id) {
+			throw new PropelException('Cannot insert a value for auto-increment primary key (' . NagiosMainConfigurationPeer::ID . ')');
+		}
+
+		 // check the columns in natural order for more readable SQL queries
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::ID)) {
+			$modifiedColumns[':p' . $index++]  = '`ID`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::CONFIG_DIR)) {
+			$modifiedColumns[':p' . $index++]  = '`CONFIG_DIR`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::LOG_FILE)) {
+			$modifiedColumns[':p' . $index++]  = '`LOG_FILE`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::TEMP_FILE)) {
+			$modifiedColumns[':p' . $index++]  = '`TEMP_FILE`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::STATUS_FILE)) {
+			$modifiedColumns[':p' . $index++]  = '`STATUS_FILE`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::STATUS_UPDATE_INTERVAL)) {
+			$modifiedColumns[':p' . $index++]  = '`STATUS_UPDATE_INTERVAL`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::NAGIOS_USER)) {
+			$modifiedColumns[':p' . $index++]  = '`NAGIOS_USER`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::NAGIOS_GROUP)) {
+			$modifiedColumns[':p' . $index++]  = '`NAGIOS_GROUP`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::ENABLE_NOTIFICATIONS)) {
+			$modifiedColumns[':p' . $index++]  = '`ENABLE_NOTIFICATIONS`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::EXECUTE_SERVICE_CHECKS)) {
+			$modifiedColumns[':p' . $index++]  = '`EXECUTE_SERVICE_CHECKS`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::ACCEPT_PASSIVE_SERVICE_CHECKS)) {
+			$modifiedColumns[':p' . $index++]  = '`ACCEPT_PASSIVE_SERVICE_CHECKS`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::ENABLE_EVENT_HANDLERS)) {
+			$modifiedColumns[':p' . $index++]  = '`ENABLE_EVENT_HANDLERS`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::LOG_ROTATION_METHOD)) {
+			$modifiedColumns[':p' . $index++]  = '`LOG_ROTATION_METHOD`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::LOG_ARCHIVE_PATH)) {
+			$modifiedColumns[':p' . $index++]  = '`LOG_ARCHIVE_PATH`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::CHECK_EXTERNAL_COMMANDS)) {
+			$modifiedColumns[':p' . $index++]  = '`CHECK_EXTERNAL_COMMANDS`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::COMMAND_CHECK_INTERVAL)) {
+			$modifiedColumns[':p' . $index++]  = '`COMMAND_CHECK_INTERVAL`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::COMMAND_FILE)) {
+			$modifiedColumns[':p' . $index++]  = '`COMMAND_FILE`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::LOCK_FILE)) {
+			$modifiedColumns[':p' . $index++]  = '`LOCK_FILE`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::RETAIN_STATE_INFORMATION)) {
+			$modifiedColumns[':p' . $index++]  = '`RETAIN_STATE_INFORMATION`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::STATE_RETENTION_FILE)) {
+			$modifiedColumns[':p' . $index++]  = '`STATE_RETENTION_FILE`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::RETENTION_UPDATE_INTERVAL)) {
+			$modifiedColumns[':p' . $index++]  = '`RETENTION_UPDATE_INTERVAL`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::USE_RETAINED_PROGRAM_STATE)) {
+			$modifiedColumns[':p' . $index++]  = '`USE_RETAINED_PROGRAM_STATE`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::USE_SYSLOG)) {
+			$modifiedColumns[':p' . $index++]  = '`USE_SYSLOG`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::LOG_NOTIFICATIONS)) {
+			$modifiedColumns[':p' . $index++]  = '`LOG_NOTIFICATIONS`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::LOG_SERVICE_RETRIES)) {
+			$modifiedColumns[':p' . $index++]  = '`LOG_SERVICE_RETRIES`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::LOG_HOST_RETRIES)) {
+			$modifiedColumns[':p' . $index++]  = '`LOG_HOST_RETRIES`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::LOG_EVENT_HANDLERS)) {
+			$modifiedColumns[':p' . $index++]  = '`LOG_EVENT_HANDLERS`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::LOG_INITIAL_STATES)) {
+			$modifiedColumns[':p' . $index++]  = '`LOG_INITIAL_STATES`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::LOG_EXTERNAL_COMMANDS)) {
+			$modifiedColumns[':p' . $index++]  = '`LOG_EXTERNAL_COMMANDS`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::LOG_PASSIVE_CHECKS)) {
+			$modifiedColumns[':p' . $index++]  = '`LOG_PASSIVE_CHECKS`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::GLOBAL_HOST_EVENT_HANDLER)) {
+			$modifiedColumns[':p' . $index++]  = '`GLOBAL_HOST_EVENT_HANDLER`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::GLOBAL_SERVICE_EVENT_HANDLER)) {
+			$modifiedColumns[':p' . $index++]  = '`GLOBAL_SERVICE_EVENT_HANDLER`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::EXTERNAL_COMMAND_BUFFER_SLOTS)) {
+			$modifiedColumns[':p' . $index++]  = '`EXTERNAL_COMMAND_BUFFER_SLOTS`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::SLEEP_TIME)) {
+			$modifiedColumns[':p' . $index++]  = '`SLEEP_TIME`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::SERVICE_INTERLEAVE_FACTOR)) {
+			$modifiedColumns[':p' . $index++]  = '`SERVICE_INTERLEAVE_FACTOR`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::MAX_CONCURRENT_CHECKS)) {
+			$modifiedColumns[':p' . $index++]  = '`MAX_CONCURRENT_CHECKS`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::SERVICE_REAPER_FREQUENCY)) {
+			$modifiedColumns[':p' . $index++]  = '`SERVICE_REAPER_FREQUENCY`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::INTERVAL_LENGTH)) {
+			$modifiedColumns[':p' . $index++]  = '`INTERVAL_LENGTH`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::USE_AGGRESSIVE_HOST_CHECKING)) {
+			$modifiedColumns[':p' . $index++]  = '`USE_AGGRESSIVE_HOST_CHECKING`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::ENABLE_FLAP_DETECTION)) {
+			$modifiedColumns[':p' . $index++]  = '`ENABLE_FLAP_DETECTION`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::LOW_SERVICE_FLAP_THRESHOLD)) {
+			$modifiedColumns[':p' . $index++]  = '`LOW_SERVICE_FLAP_THRESHOLD`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::HIGH_SERVICE_FLAP_THRESHOLD)) {
+			$modifiedColumns[':p' . $index++]  = '`HIGH_SERVICE_FLAP_THRESHOLD`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::LOW_HOST_FLAP_THRESHOLD)) {
+			$modifiedColumns[':p' . $index++]  = '`LOW_HOST_FLAP_THRESHOLD`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::HIGH_HOST_FLAP_THRESHOLD)) {
+			$modifiedColumns[':p' . $index++]  = '`HIGH_HOST_FLAP_THRESHOLD`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::SOFT_STATE_DEPENDENCIES)) {
+			$modifiedColumns[':p' . $index++]  = '`SOFT_STATE_DEPENDENCIES`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::SERVICE_CHECK_TIMEOUT)) {
+			$modifiedColumns[':p' . $index++]  = '`SERVICE_CHECK_TIMEOUT`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::HOST_CHECK_TIMEOUT)) {
+			$modifiedColumns[':p' . $index++]  = '`HOST_CHECK_TIMEOUT`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::EVENT_HANDLER_TIMEOUT)) {
+			$modifiedColumns[':p' . $index++]  = '`EVENT_HANDLER_TIMEOUT`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::NOTIFICATION_TIMEOUT)) {
+			$modifiedColumns[':p' . $index++]  = '`NOTIFICATION_TIMEOUT`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::OCSP_TIMEOUT)) {
+			$modifiedColumns[':p' . $index++]  = '`OCSP_TIMEOUT`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::OHCP_TIMEOUT)) {
+			$modifiedColumns[':p' . $index++]  = '`OHCP_TIMEOUT`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::PERFDATA_TIMEOUT)) {
+			$modifiedColumns[':p' . $index++]  = '`PERFDATA_TIMEOUT`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::OBSESS_OVER_SERVICES)) {
+			$modifiedColumns[':p' . $index++]  = '`OBSESS_OVER_SERVICES`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::OCSP_COMMAND)) {
+			$modifiedColumns[':p' . $index++]  = '`OCSP_COMMAND`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::PROCESS_PERFORMANCE_DATA)) {
+			$modifiedColumns[':p' . $index++]  = '`PROCESS_PERFORMANCE_DATA`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::CHECK_FOR_ORPHANED_SERVICES)) {
+			$modifiedColumns[':p' . $index++]  = '`CHECK_FOR_ORPHANED_SERVICES`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::CHECK_SERVICE_FRESHNESS)) {
+			$modifiedColumns[':p' . $index++]  = '`CHECK_SERVICE_FRESHNESS`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::FRESHNESS_CHECK_INTERVAL)) {
+			$modifiedColumns[':p' . $index++]  = '`FRESHNESS_CHECK_INTERVAL`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::DATE_FORMAT)) {
+			$modifiedColumns[':p' . $index++]  = '`DATE_FORMAT`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::ILLEGAL_OBJECT_NAME_CHARS)) {
+			$modifiedColumns[':p' . $index++]  = '`ILLEGAL_OBJECT_NAME_CHARS`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::ILLEGAL_MACRO_OUTPUT_CHARS)) {
+			$modifiedColumns[':p' . $index++]  = '`ILLEGAL_MACRO_OUTPUT_CHARS`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::ADMIN_EMAIL)) {
+			$modifiedColumns[':p' . $index++]  = '`ADMIN_EMAIL`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::ADMIN_PAGER)) {
+			$modifiedColumns[':p' . $index++]  = '`ADMIN_PAGER`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::EXECUTE_HOST_CHECKS)) {
+			$modifiedColumns[':p' . $index++]  = '`EXECUTE_HOST_CHECKS`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::SERVICE_INTER_CHECK_DELAY_METHOD)) {
+			$modifiedColumns[':p' . $index++]  = '`SERVICE_INTER_CHECK_DELAY_METHOD`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::USE_RETAINED_SCHEDULING_INFO)) {
+			$modifiedColumns[':p' . $index++]  = '`USE_RETAINED_SCHEDULING_INFO`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::ACCEPT_PASSIVE_HOST_CHECKS)) {
+			$modifiedColumns[':p' . $index++]  = '`ACCEPT_PASSIVE_HOST_CHECKS`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::MAX_SERVICE_CHECK_SPREAD)) {
+			$modifiedColumns[':p' . $index++]  = '`MAX_SERVICE_CHECK_SPREAD`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::HOST_INTER_CHECK_DELAY_METHOD)) {
+			$modifiedColumns[':p' . $index++]  = '`HOST_INTER_CHECK_DELAY_METHOD`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::MAX_HOST_CHECK_SPREAD)) {
+			$modifiedColumns[':p' . $index++]  = '`MAX_HOST_CHECK_SPREAD`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::AUTO_RESCHEDULE_CHECKS)) {
+			$modifiedColumns[':p' . $index++]  = '`AUTO_RESCHEDULE_CHECKS`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::AUTO_RESCHEDULING_INTERVAL)) {
+			$modifiedColumns[':p' . $index++]  = '`AUTO_RESCHEDULING_INTERVAL`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::AUTO_RESCHEDULING_WINDOW)) {
+			$modifiedColumns[':p' . $index++]  = '`AUTO_RESCHEDULING_WINDOW`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::OCHP_TIMEOUT)) {
+			$modifiedColumns[':p' . $index++]  = '`OCHP_TIMEOUT`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::OBSESS_OVER_HOSTS)) {
+			$modifiedColumns[':p' . $index++]  = '`OBSESS_OVER_HOSTS`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::OCHP_COMMAND)) {
+			$modifiedColumns[':p' . $index++]  = '`OCHP_COMMAND`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::CHECK_HOST_FRESHNESS)) {
+			$modifiedColumns[':p' . $index++]  = '`CHECK_HOST_FRESHNESS`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::HOST_FRESHNESS_CHECK_INTERVAL)) {
+			$modifiedColumns[':p' . $index++]  = '`HOST_FRESHNESS_CHECK_INTERVAL`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::SERVICE_FRESHNESS_CHECK_INTERVAL)) {
+			$modifiedColumns[':p' . $index++]  = '`SERVICE_FRESHNESS_CHECK_INTERVAL`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::USE_REGEXP_MATCHING)) {
+			$modifiedColumns[':p' . $index++]  = '`USE_REGEXP_MATCHING`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::USE_TRUE_REGEXP_MATCHING)) {
+			$modifiedColumns[':p' . $index++]  = '`USE_TRUE_REGEXP_MATCHING`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::EVENT_BROKER_OPTIONS)) {
+			$modifiedColumns[':p' . $index++]  = '`EVENT_BROKER_OPTIONS`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::DAEMON_DUMPS_CORE)) {
+			$modifiedColumns[':p' . $index++]  = '`DAEMON_DUMPS_CORE`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::HOST_PERFDATA_COMMAND)) {
+			$modifiedColumns[':p' . $index++]  = '`HOST_PERFDATA_COMMAND`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::SERVICE_PERFDATA_COMMAND)) {
+			$modifiedColumns[':p' . $index++]  = '`SERVICE_PERFDATA_COMMAND`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::HOST_PERFDATA_FILE)) {
+			$modifiedColumns[':p' . $index++]  = '`HOST_PERFDATA_FILE`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::HOST_PERFDATA_FILE_TEMPLATE)) {
+			$modifiedColumns[':p' . $index++]  = '`HOST_PERFDATA_FILE_TEMPLATE`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::SERVICE_PERFDATA_FILE)) {
+			$modifiedColumns[':p' . $index++]  = '`SERVICE_PERFDATA_FILE`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::SERVICE_PERFDATA_FILE_TEMPLATE)) {
+			$modifiedColumns[':p' . $index++]  = '`SERVICE_PERFDATA_FILE_TEMPLATE`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::HOST_PERFDATA_FILE_MODE)) {
+			$modifiedColumns[':p' . $index++]  = '`HOST_PERFDATA_FILE_MODE`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::SERVICE_PERFDATA_FILE_MODE)) {
+			$modifiedColumns[':p' . $index++]  = '`SERVICE_PERFDATA_FILE_MODE`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::HOST_PERFDATA_FILE_PROCESSING_COMMAND)) {
+			$modifiedColumns[':p' . $index++]  = '`HOST_PERFDATA_FILE_PROCESSING_COMMAND`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::SERVICE_PERFDATA_FILE_PROCESSING_COMMAND)) {
+			$modifiedColumns[':p' . $index++]  = '`SERVICE_PERFDATA_FILE_PROCESSING_COMMAND`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::HOST_PERFDATA_FILE_PROCESSING_INTERVAL)) {
+			$modifiedColumns[':p' . $index++]  = '`HOST_PERFDATA_FILE_PROCESSING_INTERVAL`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::SERVICE_PERFDATA_FILE_PROCESSING_INTERVAL)) {
+			$modifiedColumns[':p' . $index++]  = '`SERVICE_PERFDATA_FILE_PROCESSING_INTERVAL`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::OBJECT_CACHE_FILE)) {
+			$modifiedColumns[':p' . $index++]  = '`OBJECT_CACHE_FILE`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::PRECACHED_OBJECT_FILE)) {
+			$modifiedColumns[':p' . $index++]  = '`PRECACHED_OBJECT_FILE`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::RETAINED_HOST_ATTRIBUTE_MASK)) {
+			$modifiedColumns[':p' . $index++]  = '`RETAINED_HOST_ATTRIBUTE_MASK`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::RETAINED_SERVICE_ATTRIBUTE_MASK)) {
+			$modifiedColumns[':p' . $index++]  = '`RETAINED_SERVICE_ATTRIBUTE_MASK`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::RETAINED_PROCESS_HOST_ATTRIBUTE_MASK)) {
+			$modifiedColumns[':p' . $index++]  = '`RETAINED_PROCESS_HOST_ATTRIBUTE_MASK`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::RETAINED_PROCESS_SERVICE_ATTRIBUTE_MASK)) {
+			$modifiedColumns[':p' . $index++]  = '`RETAINED_PROCESS_SERVICE_ATTRIBUTE_MASK`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::RETAINED_CONTACT_HOST_ATTRIBUTE_MASK)) {
+			$modifiedColumns[':p' . $index++]  = '`RETAINED_CONTACT_HOST_ATTRIBUTE_MASK`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::RETAINED_CONTACT_SERVICE_ATTRIBUTE_MASK)) {
+			$modifiedColumns[':p' . $index++]  = '`RETAINED_CONTACT_SERVICE_ATTRIBUTE_MASK`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::CHECK_RESULT_REAPER_FREQUENCY)) {
+			$modifiedColumns[':p' . $index++]  = '`CHECK_RESULT_REAPER_FREQUENCY`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::MAX_CHECK_RESULT_REAPER_TIME)) {
+			$modifiedColumns[':p' . $index++]  = '`MAX_CHECK_RESULT_REAPER_TIME`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::CHECK_RESULT_PATH)) {
+			$modifiedColumns[':p' . $index++]  = '`CHECK_RESULT_PATH`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::MAX_CHECK_RESULT_FILE_AGE)) {
+			$modifiedColumns[':p' . $index++]  = '`MAX_CHECK_RESULT_FILE_AGE`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::TRANSLATE_PASSIVE_HOST_CHECKS)) {
+			$modifiedColumns[':p' . $index++]  = '`TRANSLATE_PASSIVE_HOST_CHECKS`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::PASSIVE_HOST_CHECKS_ARE_SOFT)) {
+			$modifiedColumns[':p' . $index++]  = '`PASSIVE_HOST_CHECKS_ARE_SOFT`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::ENABLE_PREDICTIVE_HOST_DEPENDENCY_CHECKS)) {
+			$modifiedColumns[':p' . $index++]  = '`ENABLE_PREDICTIVE_HOST_DEPENDENCY_CHECKS`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::ENABLE_PREDICTIVE_SERVICE_DEPENDENCY_CHECKS)) {
+			$modifiedColumns[':p' . $index++]  = '`ENABLE_PREDICTIVE_SERVICE_DEPENDENCY_CHECKS`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::CACHED_HOST_CHECK_HORIZON)) {
+			$modifiedColumns[':p' . $index++]  = '`CACHED_HOST_CHECK_HORIZON`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::CACHED_SERVICE_CHECK_HORIZON)) {
+			$modifiedColumns[':p' . $index++]  = '`CACHED_SERVICE_CHECK_HORIZON`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::USE_LARGE_INSTALLATION_TWEAKS)) {
+			$modifiedColumns[':p' . $index++]  = '`USE_LARGE_INSTALLATION_TWEAKS`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::FREE_CHILD_PROCESS_MEMORY)) {
+			$modifiedColumns[':p' . $index++]  = '`FREE_CHILD_PROCESS_MEMORY`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::CHILD_PROCESSES_FORK_TWICE)) {
+			$modifiedColumns[':p' . $index++]  = '`CHILD_PROCESSES_FORK_TWICE`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::ENABLE_ENVIRONMENT_MACROS)) {
+			$modifiedColumns[':p' . $index++]  = '`ENABLE_ENVIRONMENT_MACROS`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::ADDITIONAL_FRESHNESS_LATENCY)) {
+			$modifiedColumns[':p' . $index++]  = '`ADDITIONAL_FRESHNESS_LATENCY`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::ENABLE_EMBEDDED_PERL)) {
+			$modifiedColumns[':p' . $index++]  = '`ENABLE_EMBEDDED_PERL`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::USE_EMBEDDED_PERL_IMPLICITLY)) {
+			$modifiedColumns[':p' . $index++]  = '`USE_EMBEDDED_PERL_IMPLICITLY`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::P1_FILE)) {
+			$modifiedColumns[':p' . $index++]  = '`P1_FILE`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::USE_TIMEZONE)) {
+			$modifiedColumns[':p' . $index++]  = '`USE_TIMEZONE`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::DEBUG_FILE)) {
+			$modifiedColumns[':p' . $index++]  = '`DEBUG_FILE`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::DEBUG_LEVEL)) {
+			$modifiedColumns[':p' . $index++]  = '`DEBUG_LEVEL`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::DEBUG_VERBOSITY)) {
+			$modifiedColumns[':p' . $index++]  = '`DEBUG_VERBOSITY`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::MAX_DEBUG_FILE_SIZE)) {
+			$modifiedColumns[':p' . $index++]  = '`MAX_DEBUG_FILE_SIZE`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::TEMP_PATH)) {
+			$modifiedColumns[':p' . $index++]  = '`TEMP_PATH`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::CHECK_FOR_UPDATES)) {
+			$modifiedColumns[':p' . $index++]  = '`CHECK_FOR_UPDATES`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::CHECK_FOR_ORPHANED_HOSTS)) {
+			$modifiedColumns[':p' . $index++]  = '`CHECK_FOR_ORPHANED_HOSTS`';
+		}
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::BARE_UPDATE_CHECK)) {
+			$modifiedColumns[':p' . $index++]  = '`BARE_UPDATE_CHECK`';
+		}
+
+		$sql = sprintf(
+			'INSERT INTO `nagios_main_configuration` (%s) VALUES (%s)',
+			implode(', ', $modifiedColumns),
+			implode(', ', array_keys($modifiedColumns))
+		);
+
+		try {
+			$stmt = $con->prepare($sql);
+			foreach ($modifiedColumns as $identifier => $columnName) {
+				switch ($columnName) {
+					case '`ID`':
+						$stmt->bindValue($identifier, $this->id, PDO::PARAM_INT);
+						break;
+					case '`CONFIG_DIR`':
+						$stmt->bindValue($identifier, $this->config_dir, PDO::PARAM_STR);
+						break;
+					case '`LOG_FILE`':
+						$stmt->bindValue($identifier, $this->log_file, PDO::PARAM_STR);
+						break;
+					case '`TEMP_FILE`':
+						$stmt->bindValue($identifier, $this->temp_file, PDO::PARAM_STR);
+						break;
+					case '`STATUS_FILE`':
+						$stmt->bindValue($identifier, $this->status_file, PDO::PARAM_STR);
+						break;
+					case '`STATUS_UPDATE_INTERVAL`':
+						$stmt->bindValue($identifier, $this->status_update_interval, PDO::PARAM_INT);
+						break;
+					case '`NAGIOS_USER`':
+						$stmt->bindValue($identifier, $this->nagios_user, PDO::PARAM_STR);
+						break;
+					case '`NAGIOS_GROUP`':
+						$stmt->bindValue($identifier, $this->nagios_group, PDO::PARAM_STR);
+						break;
+					case '`ENABLE_NOTIFICATIONS`':
+						$stmt->bindValue($identifier, (int) $this->enable_notifications, PDO::PARAM_INT);
+						break;
+					case '`EXECUTE_SERVICE_CHECKS`':
+						$stmt->bindValue($identifier, (int) $this->execute_service_checks, PDO::PARAM_INT);
+						break;
+					case '`ACCEPT_PASSIVE_SERVICE_CHECKS`':
+						$stmt->bindValue($identifier, (int) $this->accept_passive_service_checks, PDO::PARAM_INT);
+						break;
+					case '`ENABLE_EVENT_HANDLERS`':
+						$stmt->bindValue($identifier, (int) $this->enable_event_handlers, PDO::PARAM_INT);
+						break;
+					case '`LOG_ROTATION_METHOD`':
+						$stmt->bindValue($identifier, $this->log_rotation_method, PDO::PARAM_STR);
+						break;
+					case '`LOG_ARCHIVE_PATH`':
+						$stmt->bindValue($identifier, $this->log_archive_path, PDO::PARAM_STR);
+						break;
+					case '`CHECK_EXTERNAL_COMMANDS`':
+						$stmt->bindValue($identifier, (int) $this->check_external_commands, PDO::PARAM_INT);
+						break;
+					case '`COMMAND_CHECK_INTERVAL`':
+						$stmt->bindValue($identifier, $this->command_check_interval, PDO::PARAM_STR);
+						break;
+					case '`COMMAND_FILE`':
+						$stmt->bindValue($identifier, $this->command_file, PDO::PARAM_STR);
+						break;
+					case '`LOCK_FILE`':
+						$stmt->bindValue($identifier, $this->lock_file, PDO::PARAM_STR);
+						break;
+					case '`RETAIN_STATE_INFORMATION`':
+						$stmt->bindValue($identifier, (int) $this->retain_state_information, PDO::PARAM_INT);
+						break;
+					case '`STATE_RETENTION_FILE`':
+						$stmt->bindValue($identifier, $this->state_retention_file, PDO::PARAM_STR);
+						break;
+					case '`RETENTION_UPDATE_INTERVAL`':
+						$stmt->bindValue($identifier, $this->retention_update_interval, PDO::PARAM_INT);
+						break;
+					case '`USE_RETAINED_PROGRAM_STATE`':
+						$stmt->bindValue($identifier, (int) $this->use_retained_program_state, PDO::PARAM_INT);
+						break;
+					case '`USE_SYSLOG`':
+						$stmt->bindValue($identifier, (int) $this->use_syslog, PDO::PARAM_INT);
+						break;
+					case '`LOG_NOTIFICATIONS`':
+						$stmt->bindValue($identifier, (int) $this->log_notifications, PDO::PARAM_INT);
+						break;
+					case '`LOG_SERVICE_RETRIES`':
+						$stmt->bindValue($identifier, (int) $this->log_service_retries, PDO::PARAM_INT);
+						break;
+					case '`LOG_HOST_RETRIES`':
+						$stmt->bindValue($identifier, (int) $this->log_host_retries, PDO::PARAM_INT);
+						break;
+					case '`LOG_EVENT_HANDLERS`':
+						$stmt->bindValue($identifier, (int) $this->log_event_handlers, PDO::PARAM_INT);
+						break;
+					case '`LOG_INITIAL_STATES`':
+						$stmt->bindValue($identifier, (int) $this->log_initial_states, PDO::PARAM_INT);
+						break;
+					case '`LOG_EXTERNAL_COMMANDS`':
+						$stmt->bindValue($identifier, (int) $this->log_external_commands, PDO::PARAM_INT);
+						break;
+					case '`LOG_PASSIVE_CHECKS`':
+						$stmt->bindValue($identifier, (int) $this->log_passive_checks, PDO::PARAM_INT);
+						break;
+					case '`GLOBAL_HOST_EVENT_HANDLER`':
+						$stmt->bindValue($identifier, $this->global_host_event_handler, PDO::PARAM_INT);
+						break;
+					case '`GLOBAL_SERVICE_EVENT_HANDLER`':
+						$stmt->bindValue($identifier, $this->global_service_event_handler, PDO::PARAM_INT);
+						break;
+					case '`EXTERNAL_COMMAND_BUFFER_SLOTS`':
+						$stmt->bindValue($identifier, $this->external_command_buffer_slots, PDO::PARAM_INT);
+						break;
+					case '`SLEEP_TIME`':
+						$stmt->bindValue($identifier, $this->sleep_time, PDO::PARAM_STR);
+						break;
+					case '`SERVICE_INTERLEAVE_FACTOR`':
+						$stmt->bindValue($identifier, $this->service_interleave_factor, PDO::PARAM_STR);
+						break;
+					case '`MAX_CONCURRENT_CHECKS`':
+						$stmt->bindValue($identifier, $this->max_concurrent_checks, PDO::PARAM_INT);
+						break;
+					case '`SERVICE_REAPER_FREQUENCY`':
+						$stmt->bindValue($identifier, $this->service_reaper_frequency, PDO::PARAM_INT);
+						break;
+					case '`INTERVAL_LENGTH`':
+						$stmt->bindValue($identifier, $this->interval_length, PDO::PARAM_INT);
+						break;
+					case '`USE_AGGRESSIVE_HOST_CHECKING`':
+						$stmt->bindValue($identifier, (int) $this->use_aggressive_host_checking, PDO::PARAM_INT);
+						break;
+					case '`ENABLE_FLAP_DETECTION`':
+						$stmt->bindValue($identifier, (int) $this->enable_flap_detection, PDO::PARAM_INT);
+						break;
+					case '`LOW_SERVICE_FLAP_THRESHOLD`':
+						$stmt->bindValue($identifier, $this->low_service_flap_threshold, PDO::PARAM_STR);
+						break;
+					case '`HIGH_SERVICE_FLAP_THRESHOLD`':
+						$stmt->bindValue($identifier, $this->high_service_flap_threshold, PDO::PARAM_STR);
+						break;
+					case '`LOW_HOST_FLAP_THRESHOLD`':
+						$stmt->bindValue($identifier, $this->low_host_flap_threshold, PDO::PARAM_STR);
+						break;
+					case '`HIGH_HOST_FLAP_THRESHOLD`':
+						$stmt->bindValue($identifier, $this->high_host_flap_threshold, PDO::PARAM_STR);
+						break;
+					case '`SOFT_STATE_DEPENDENCIES`':
+						$stmt->bindValue($identifier, (int) $this->soft_state_dependencies, PDO::PARAM_INT);
+						break;
+					case '`SERVICE_CHECK_TIMEOUT`':
+						$stmt->bindValue($identifier, $this->service_check_timeout, PDO::PARAM_INT);
+						break;
+					case '`HOST_CHECK_TIMEOUT`':
+						$stmt->bindValue($identifier, $this->host_check_timeout, PDO::PARAM_INT);
+						break;
+					case '`EVENT_HANDLER_TIMEOUT`':
+						$stmt->bindValue($identifier, $this->event_handler_timeout, PDO::PARAM_INT);
+						break;
+					case '`NOTIFICATION_TIMEOUT`':
+						$stmt->bindValue($identifier, $this->notification_timeout, PDO::PARAM_INT);
+						break;
+					case '`OCSP_TIMEOUT`':
+						$stmt->bindValue($identifier, $this->ocsp_timeout, PDO::PARAM_INT);
+						break;
+					case '`OHCP_TIMEOUT`':
+						$stmt->bindValue($identifier, $this->ohcp_timeout, PDO::PARAM_INT);
+						break;
+					case '`PERFDATA_TIMEOUT`':
+						$stmt->bindValue($identifier, $this->perfdata_timeout, PDO::PARAM_INT);
+						break;
+					case '`OBSESS_OVER_SERVICES`':
+						$stmt->bindValue($identifier, (int) $this->obsess_over_services, PDO::PARAM_INT);
+						break;
+					case '`OCSP_COMMAND`':
+						$stmt->bindValue($identifier, $this->ocsp_command, PDO::PARAM_INT);
+						break;
+					case '`PROCESS_PERFORMANCE_DATA`':
+						$stmt->bindValue($identifier, (int) $this->process_performance_data, PDO::PARAM_INT);
+						break;
+					case '`CHECK_FOR_ORPHANED_SERVICES`':
+						$stmt->bindValue($identifier, (int) $this->check_for_orphaned_services, PDO::PARAM_INT);
+						break;
+					case '`CHECK_SERVICE_FRESHNESS`':
+						$stmt->bindValue($identifier, (int) $this->check_service_freshness, PDO::PARAM_INT);
+						break;
+					case '`FRESHNESS_CHECK_INTERVAL`':
+						$stmt->bindValue($identifier, $this->freshness_check_interval, PDO::PARAM_INT);
+						break;
+					case '`DATE_FORMAT`':
+						$stmt->bindValue($identifier, $this->date_format, PDO::PARAM_STR);
+						break;
+					case '`ILLEGAL_OBJECT_NAME_CHARS`':
+						$stmt->bindValue($identifier, $this->illegal_object_name_chars, PDO::PARAM_STR);
+						break;
+					case '`ILLEGAL_MACRO_OUTPUT_CHARS`':
+						$stmt->bindValue($identifier, $this->illegal_macro_output_chars, PDO::PARAM_STR);
+						break;
+					case '`ADMIN_EMAIL`':
+						$stmt->bindValue($identifier, $this->admin_email, PDO::PARAM_STR);
+						break;
+					case '`ADMIN_PAGER`':
+						$stmt->bindValue($identifier, $this->admin_pager, PDO::PARAM_STR);
+						break;
+					case '`EXECUTE_HOST_CHECKS`':
+						$stmt->bindValue($identifier, (int) $this->execute_host_checks, PDO::PARAM_INT);
+						break;
+					case '`SERVICE_INTER_CHECK_DELAY_METHOD`':
+						$stmt->bindValue($identifier, $this->service_inter_check_delay_method, PDO::PARAM_STR);
+						break;
+					case '`USE_RETAINED_SCHEDULING_INFO`':
+						$stmt->bindValue($identifier, (int) $this->use_retained_scheduling_info, PDO::PARAM_INT);
+						break;
+					case '`ACCEPT_PASSIVE_HOST_CHECKS`':
+						$stmt->bindValue($identifier, (int) $this->accept_passive_host_checks, PDO::PARAM_INT);
+						break;
+					case '`MAX_SERVICE_CHECK_SPREAD`':
+						$stmt->bindValue($identifier, $this->max_service_check_spread, PDO::PARAM_INT);
+						break;
+					case '`HOST_INTER_CHECK_DELAY_METHOD`':
+						$stmt->bindValue($identifier, $this->host_inter_check_delay_method, PDO::PARAM_STR);
+						break;
+					case '`MAX_HOST_CHECK_SPREAD`':
+						$stmt->bindValue($identifier, $this->max_host_check_spread, PDO::PARAM_INT);
+						break;
+					case '`AUTO_RESCHEDULE_CHECKS`':
+						$stmt->bindValue($identifier, (int) $this->auto_reschedule_checks, PDO::PARAM_INT);
+						break;
+					case '`AUTO_RESCHEDULING_INTERVAL`':
+						$stmt->bindValue($identifier, $this->auto_rescheduling_interval, PDO::PARAM_INT);
+						break;
+					case '`AUTO_RESCHEDULING_WINDOW`':
+						$stmt->bindValue($identifier, $this->auto_rescheduling_window, PDO::PARAM_INT);
+						break;
+					case '`OCHP_TIMEOUT`':
+						$stmt->bindValue($identifier, $this->ochp_timeout, PDO::PARAM_INT);
+						break;
+					case '`OBSESS_OVER_HOSTS`':
+						$stmt->bindValue($identifier, (int) $this->obsess_over_hosts, PDO::PARAM_INT);
+						break;
+					case '`OCHP_COMMAND`':
+						$stmt->bindValue($identifier, $this->ochp_command, PDO::PARAM_INT);
+						break;
+					case '`CHECK_HOST_FRESHNESS`':
+						$stmt->bindValue($identifier, (int) $this->check_host_freshness, PDO::PARAM_INT);
+						break;
+					case '`HOST_FRESHNESS_CHECK_INTERVAL`':
+						$stmt->bindValue($identifier, $this->host_freshness_check_interval, PDO::PARAM_INT);
+						break;
+					case '`SERVICE_FRESHNESS_CHECK_INTERVAL`':
+						$stmt->bindValue($identifier, $this->service_freshness_check_interval, PDO::PARAM_INT);
+						break;
+					case '`USE_REGEXP_MATCHING`':
+						$stmt->bindValue($identifier, (int) $this->use_regexp_matching, PDO::PARAM_INT);
+						break;
+					case '`USE_TRUE_REGEXP_MATCHING`':
+						$stmt->bindValue($identifier, (int) $this->use_true_regexp_matching, PDO::PARAM_INT);
+						break;
+					case '`EVENT_BROKER_OPTIONS`':
+						$stmt->bindValue($identifier, $this->event_broker_options, PDO::PARAM_STR);
+						break;
+					case '`DAEMON_DUMPS_CORE`':
+						$stmt->bindValue($identifier, (int) $this->daemon_dumps_core, PDO::PARAM_INT);
+						break;
+					case '`HOST_PERFDATA_COMMAND`':
+						$stmt->bindValue($identifier, $this->host_perfdata_command, PDO::PARAM_INT);
+						break;
+					case '`SERVICE_PERFDATA_COMMAND`':
+						$stmt->bindValue($identifier, $this->service_perfdata_command, PDO::PARAM_INT);
+						break;
+					case '`HOST_PERFDATA_FILE`':
+						$stmt->bindValue($identifier, $this->host_perfdata_file, PDO::PARAM_STR);
+						break;
+					case '`HOST_PERFDATA_FILE_TEMPLATE`':
+						$stmt->bindValue($identifier, $this->host_perfdata_file_template, PDO::PARAM_STR);
+						break;
+					case '`SERVICE_PERFDATA_FILE`':
+						$stmt->bindValue($identifier, $this->service_perfdata_file, PDO::PARAM_STR);
+						break;
+					case '`SERVICE_PERFDATA_FILE_TEMPLATE`':
+						$stmt->bindValue($identifier, $this->service_perfdata_file_template, PDO::PARAM_STR);
+						break;
+					case '`HOST_PERFDATA_FILE_MODE`':
+						$stmt->bindValue($identifier, $this->host_perfdata_file_mode, PDO::PARAM_STR);
+						break;
+					case '`SERVICE_PERFDATA_FILE_MODE`':
+						$stmt->bindValue($identifier, $this->service_perfdata_file_mode, PDO::PARAM_STR);
+						break;
+					case '`HOST_PERFDATA_FILE_PROCESSING_COMMAND`':
+						$stmt->bindValue($identifier, $this->host_perfdata_file_processing_command, PDO::PARAM_INT);
+						break;
+					case '`SERVICE_PERFDATA_FILE_PROCESSING_COMMAND`':
+						$stmt->bindValue($identifier, $this->service_perfdata_file_processing_command, PDO::PARAM_INT);
+						break;
+					case '`HOST_PERFDATA_FILE_PROCESSING_INTERVAL`':
+						$stmt->bindValue($identifier, $this->host_perfdata_file_processing_interval, PDO::PARAM_INT);
+						break;
+					case '`SERVICE_PERFDATA_FILE_PROCESSING_INTERVAL`':
+						$stmt->bindValue($identifier, $this->service_perfdata_file_processing_interval, PDO::PARAM_INT);
+						break;
+					case '`OBJECT_CACHE_FILE`':
+						$stmt->bindValue($identifier, $this->object_cache_file, PDO::PARAM_STR);
+						break;
+					case '`PRECACHED_OBJECT_FILE`':
+						$stmt->bindValue($identifier, $this->precached_object_file, PDO::PARAM_STR);
+						break;
+					case '`RETAINED_HOST_ATTRIBUTE_MASK`':
+						$stmt->bindValue($identifier, $this->retained_host_attribute_mask, PDO::PARAM_INT);
+						break;
+					case '`RETAINED_SERVICE_ATTRIBUTE_MASK`':
+						$stmt->bindValue($identifier, $this->retained_service_attribute_mask, PDO::PARAM_INT);
+						break;
+					case '`RETAINED_PROCESS_HOST_ATTRIBUTE_MASK`':
+						$stmt->bindValue($identifier, $this->retained_process_host_attribute_mask, PDO::PARAM_INT);
+						break;
+					case '`RETAINED_PROCESS_SERVICE_ATTRIBUTE_MASK`':
+						$stmt->bindValue($identifier, $this->retained_process_service_attribute_mask, PDO::PARAM_INT);
+						break;
+					case '`RETAINED_CONTACT_HOST_ATTRIBUTE_MASK`':
+						$stmt->bindValue($identifier, $this->retained_contact_host_attribute_mask, PDO::PARAM_INT);
+						break;
+					case '`RETAINED_CONTACT_SERVICE_ATTRIBUTE_MASK`':
+						$stmt->bindValue($identifier, $this->retained_contact_service_attribute_mask, PDO::PARAM_INT);
+						break;
+					case '`CHECK_RESULT_REAPER_FREQUENCY`':
+						$stmt->bindValue($identifier, $this->check_result_reaper_frequency, PDO::PARAM_INT);
+						break;
+					case '`MAX_CHECK_RESULT_REAPER_TIME`':
+						$stmt->bindValue($identifier, $this->max_check_result_reaper_time, PDO::PARAM_INT);
+						break;
+					case '`CHECK_RESULT_PATH`':
+						$stmt->bindValue($identifier, $this->check_result_path, PDO::PARAM_STR);
+						break;
+					case '`MAX_CHECK_RESULT_FILE_AGE`':
+						$stmt->bindValue($identifier, $this->max_check_result_file_age, PDO::PARAM_INT);
+						break;
+					case '`TRANSLATE_PASSIVE_HOST_CHECKS`':
+						$stmt->bindValue($identifier, (int) $this->translate_passive_host_checks, PDO::PARAM_INT);
+						break;
+					case '`PASSIVE_HOST_CHECKS_ARE_SOFT`':
+						$stmt->bindValue($identifier, (int) $this->passive_host_checks_are_soft, PDO::PARAM_INT);
+						break;
+					case '`ENABLE_PREDICTIVE_HOST_DEPENDENCY_CHECKS`':
+						$stmt->bindValue($identifier, (int) $this->enable_predictive_host_dependency_checks, PDO::PARAM_INT);
+						break;
+					case '`ENABLE_PREDICTIVE_SERVICE_DEPENDENCY_CHECKS`':
+						$stmt->bindValue($identifier, (int) $this->enable_predictive_service_dependency_checks, PDO::PARAM_INT);
+						break;
+					case '`CACHED_HOST_CHECK_HORIZON`':
+						$stmt->bindValue($identifier, $this->cached_host_check_horizon, PDO::PARAM_INT);
+						break;
+					case '`CACHED_SERVICE_CHECK_HORIZON`':
+						$stmt->bindValue($identifier, $this->cached_service_check_horizon, PDO::PARAM_INT);
+						break;
+					case '`USE_LARGE_INSTALLATION_TWEAKS`':
+						$stmt->bindValue($identifier, (int) $this->use_large_installation_tweaks, PDO::PARAM_INT);
+						break;
+					case '`FREE_CHILD_PROCESS_MEMORY`':
+						$stmt->bindValue($identifier, (int) $this->free_child_process_memory, PDO::PARAM_INT);
+						break;
+					case '`CHILD_PROCESSES_FORK_TWICE`':
+						$stmt->bindValue($identifier, (int) $this->child_processes_fork_twice, PDO::PARAM_INT);
+						break;
+					case '`ENABLE_ENVIRONMENT_MACROS`':
+						$stmt->bindValue($identifier, (int) $this->enable_environment_macros, PDO::PARAM_INT);
+						break;
+					case '`ADDITIONAL_FRESHNESS_LATENCY`':
+						$stmt->bindValue($identifier, $this->additional_freshness_latency, PDO::PARAM_INT);
+						break;
+					case '`ENABLE_EMBEDDED_PERL`':
+						$stmt->bindValue($identifier, (int) $this->enable_embedded_perl, PDO::PARAM_INT);
+						break;
+					case '`USE_EMBEDDED_PERL_IMPLICITLY`':
+						$stmt->bindValue($identifier, (int) $this->use_embedded_perl_implicitly, PDO::PARAM_INT);
+						break;
+					case '`P1_FILE`':
+						$stmt->bindValue($identifier, $this->p1_file, PDO::PARAM_STR);
+						break;
+					case '`USE_TIMEZONE`':
+						$stmt->bindValue($identifier, $this->use_timezone, PDO::PARAM_STR);
+						break;
+					case '`DEBUG_FILE`':
+						$stmt->bindValue($identifier, $this->debug_file, PDO::PARAM_STR);
+						break;
+					case '`DEBUG_LEVEL`':
+						$stmt->bindValue($identifier, $this->debug_level, PDO::PARAM_INT);
+						break;
+					case '`DEBUG_VERBOSITY`':
+						$stmt->bindValue($identifier, $this->debug_verbosity, PDO::PARAM_INT);
+						break;
+					case '`MAX_DEBUG_FILE_SIZE`':
+						$stmt->bindValue($identifier, $this->max_debug_file_size, PDO::PARAM_INT);
+						break;
+					case '`TEMP_PATH`':
+						$stmt->bindValue($identifier, $this->temp_path, PDO::PARAM_STR);
+						break;
+					case '`CHECK_FOR_UPDATES`':
+						$stmt->bindValue($identifier, (int) $this->check_for_updates, PDO::PARAM_INT);
+						break;
+					case '`CHECK_FOR_ORPHANED_HOSTS`':
+						$stmt->bindValue($identifier, (int) $this->check_for_orphaned_hosts, PDO::PARAM_INT);
+						break;
+					case '`BARE_UPDATE_CHECK`':
+						$stmt->bindValue($identifier, (int) $this->bare_update_check, PDO::PARAM_INT);
+						break;
+				}
+			}
+			$stmt->execute();
+		} catch (Exception $e) {
+			Propel::log($e->getMessage(), Propel::LOG_ERR);
+			throw new PropelException(sprintf('Unable to execute INSERT statement [%s]', $sql), $e);
+		}
+
+		try {
+			$pk = $con->lastInsertId();
+		} catch (Exception $e) {
+			throw new PropelException('Unable to get autoincrement id.', $e);
+		}
+		$this->setId($pk);
+
+		$this->setNew(false);
+	}
+
+	/**
+	 * Update the row in the database.
+	 *
+	 * @param      PropelPDO $con
+	 *
+	 * @see        doSave()
+	 */
+	protected function doUpdate(PropelPDO $con)
+	{
+		$selectCriteria = $this->buildPkeyCriteria();
+		$valuesCriteria = $this->buildCriteria();
+		BasePeer::doUpdate($selectCriteria, $valuesCriteria, $con);
+	}
 
 	/**
 	 * Array of ValidationFailed objects.
@@ -6001,6 +6972,18 @@ abstract class BaseNagiosMainConfiguration extends BaseObject  implements Persis
 			case 125:
 				return $this->getMaxDebugFileSize();
 				break;
+			case 126:
+				return $this->getTempPath();
+				break;
+			case 127:
+				return $this->getCheckForUpdates();
+				break;
+			case 128:
+				return $this->getCheckForOrphanedHosts();
+				break;
+			case 129:
+				return $this->getBareUpdateCheck();
+				break;
 			default:
 				return null;
 				break;
@@ -6156,6 +7139,10 @@ abstract class BaseNagiosMainConfiguration extends BaseObject  implements Persis
 			$keys[123] => $this->getDebugLevel(),
 			$keys[124] => $this->getDebugVerbosity(),
 			$keys[125] => $this->getMaxDebugFileSize(),
+			$keys[126] => $this->getTempPath(),
+			$keys[127] => $this->getCheckForUpdates(),
+			$keys[128] => $this->getCheckForOrphanedHosts(),
+			$keys[129] => $this->getBareUpdateCheck(),
 		);
 		if ($includeForeignObjects) {
 			if (null !== $this->aNagiosCommandRelatedByOcspCommand) {
@@ -6591,6 +7578,18 @@ abstract class BaseNagiosMainConfiguration extends BaseObject  implements Persis
 			case 125:
 				$this->setMaxDebugFileSize($value);
 				break;
+			case 126:
+				$this->setTempPath($value);
+				break;
+			case 127:
+				$this->setCheckForUpdates($value);
+				break;
+			case 128:
+				$this->setCheckForOrphanedHosts($value);
+				break;
+			case 129:
+				$this->setBareUpdateCheck($value);
+				break;
 		} // switch()
 	}
 
@@ -6741,6 +7740,10 @@ abstract class BaseNagiosMainConfiguration extends BaseObject  implements Persis
 		if (array_key_exists($keys[123], $arr)) $this->setDebugLevel($arr[$keys[123]]);
 		if (array_key_exists($keys[124], $arr)) $this->setDebugVerbosity($arr[$keys[124]]);
 		if (array_key_exists($keys[125], $arr)) $this->setMaxDebugFileSize($arr[$keys[125]]);
+		if (array_key_exists($keys[126], $arr)) $this->setTempPath($arr[$keys[126]]);
+		if (array_key_exists($keys[127], $arr)) $this->setCheckForUpdates($arr[$keys[127]]);
+		if (array_key_exists($keys[128], $arr)) $this->setCheckForOrphanedHosts($arr[$keys[128]]);
+		if (array_key_exists($keys[129], $arr)) $this->setBareUpdateCheck($arr[$keys[129]]);
 	}
 
 	/**
@@ -6756,7 +7759,6 @@ abstract class BaseNagiosMainConfiguration extends BaseObject  implements Persis
 		if ($this->isColumnModified(NagiosMainConfigurationPeer::CONFIG_DIR)) $criteria->add(NagiosMainConfigurationPeer::CONFIG_DIR, $this->config_dir);
 		if ($this->isColumnModified(NagiosMainConfigurationPeer::LOG_FILE)) $criteria->add(NagiosMainConfigurationPeer::LOG_FILE, $this->log_file);
 		if ($this->isColumnModified(NagiosMainConfigurationPeer::TEMP_FILE)) $criteria->add(NagiosMainConfigurationPeer::TEMP_FILE, $this->temp_file);
-		if ($this->isColumnModified(NagiosMainConfigurationPeer::TEMP_PATH)) $criteria->add(NagiosMainConfigurationPeer::TEMP_PATH, $this->temp_path);
 		if ($this->isColumnModified(NagiosMainConfigurationPeer::STATUS_FILE)) $criteria->add(NagiosMainConfigurationPeer::STATUS_FILE, $this->status_file);
 		if ($this->isColumnModified(NagiosMainConfigurationPeer::STATUS_UPDATE_INTERVAL)) $criteria->add(NagiosMainConfigurationPeer::STATUS_UPDATE_INTERVAL, $this->status_update_interval);
 		if ($this->isColumnModified(NagiosMainConfigurationPeer::NAGIOS_USER)) $criteria->add(NagiosMainConfigurationPeer::NAGIOS_USER, $this->nagios_user);
@@ -6879,6 +7881,10 @@ abstract class BaseNagiosMainConfiguration extends BaseObject  implements Persis
 		if ($this->isColumnModified(NagiosMainConfigurationPeer::DEBUG_LEVEL)) $criteria->add(NagiosMainConfigurationPeer::DEBUG_LEVEL, $this->debug_level);
 		if ($this->isColumnModified(NagiosMainConfigurationPeer::DEBUG_VERBOSITY)) $criteria->add(NagiosMainConfigurationPeer::DEBUG_VERBOSITY, $this->debug_verbosity);
 		if ($this->isColumnModified(NagiosMainConfigurationPeer::MAX_DEBUG_FILE_SIZE)) $criteria->add(NagiosMainConfigurationPeer::MAX_DEBUG_FILE_SIZE, $this->max_debug_file_size);
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::TEMP_PATH)) $criteria->add(NagiosMainConfigurationPeer::TEMP_PATH, $this->temp_path);
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::CHECK_FOR_UPDATES)) $criteria->add(NagiosMainConfigurationPeer::CHECK_FOR_UPDATES, $this->check_for_updates);
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::CHECK_FOR_ORPHANED_HOSTS)) $criteria->add(NagiosMainConfigurationPeer::CHECK_FOR_ORPHANED_HOSTS, $this->check_for_orphaned_hosts);
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::BARE_UPDATE_CHECK)) $criteria->add(NagiosMainConfigurationPeer::BARE_UPDATE_CHECK, $this->bare_update_check);
 
 		return $criteria;
 	}
@@ -7066,6 +8072,22 @@ abstract class BaseNagiosMainConfiguration extends BaseObject  implements Persis
 		$copyObj->setDebugLevel($this->getDebugLevel());
 		$copyObj->setDebugVerbosity($this->getDebugVerbosity());
 		$copyObj->setMaxDebugFileSize($this->getMaxDebugFileSize());
+		$copyObj->setTempPath($this->getTempPath());
+		$copyObj->setCheckForUpdates($this->getCheckForUpdates());
+		$copyObj->setCheckForOrphanedHosts($this->getCheckForOrphanedHosts());
+		$copyObj->setBareUpdateCheck($this->getBareUpdateCheck());
+
+		if ($deepCopy && !$this->startCopy) {
+			// important: temporarily setNew(false) because this affects the behavior of
+			// the getter/setter methods for fkey referrer objects.
+			$copyObj->setNew(false);
+			// store object hash to prevent cycle
+			$this->startCopy = true;
+
+			//unflag object copy
+			$this->startCopy = false;
+		} // if ($deepCopy)
+
 		if ($makeNew) {
 			$copyObj->setNew(true);
 			$copyObj->setId(NULL); // this is a auto-increment column, so set to default value
@@ -7511,7 +8533,6 @@ abstract class BaseNagiosMainConfiguration extends BaseObject  implements Persis
 		$this->config_dir = null;
 		$this->log_file = null;
 		$this->temp_file = null;
-		$this->temp_path = null;
 		$this->status_file = null;
 		$this->status_update_interval = null;
 		$this->nagios_user = null;
@@ -7634,6 +8655,10 @@ abstract class BaseNagiosMainConfiguration extends BaseObject  implements Persis
 		$this->debug_level = null;
 		$this->debug_verbosity = null;
 		$this->max_debug_file_size = null;
+		$this->temp_path = null;
+		$this->check_for_updates = null;
+		$this->check_for_orphaned_hosts = null;
+		$this->bare_update_check = null;
 		$this->alreadyInSave = false;
 		$this->alreadyInValidation = false;
 		$this->clearAllReferences();
@@ -7674,25 +8699,6 @@ abstract class BaseNagiosMainConfiguration extends BaseObject  implements Persis
 	public function __toString()
 	{
 		return (string) $this->exportTo(NagiosMainConfigurationPeer::DEFAULT_STRING_FORMAT);
-	}
-
-	/**
-	 * Catches calls to virtual methods
-	 */
-	public function __call($name, $params)
-	{
-		if (preg_match('/get(\w+)/', $name, $matches)) {
-			$virtualColumn = $matches[1];
-			if ($this->hasVirtualColumn($virtualColumn)) {
-				return $this->getVirtualColumn($virtualColumn);
-			}
-			// no lcfirst in php<5.3...
-			$virtualColumn[0] = strtolower($virtualColumn[0]);
-			if ($this->hasVirtualColumn($virtualColumn)) {
-				return $this->getVirtualColumn($virtualColumn);
-			}
-		}
-		return parent::__call($name, $params);
 	}
 
 } // BaseNagiosMainConfiguration

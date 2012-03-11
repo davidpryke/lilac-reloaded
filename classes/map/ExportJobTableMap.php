@@ -57,7 +57,7 @@ class ExportJobTableMap extends TableMap
 	 */
 	public function buildRelations()
 	{
-		$this->addRelation('ExportLogEntry', 'ExportLogEntry', RelationMap::ONE_TO_MANY, array('id' => 'job', ), 'CASCADE', null);
+		$this->addRelation('ExportLogEntry', 'ExportLogEntry', RelationMap::ONE_TO_MANY, array('id' => 'job', ), 'CASCADE', null, 'ExportLogEntrys');
 	} // buildRelations()
 
 } // ExportJobTableMap

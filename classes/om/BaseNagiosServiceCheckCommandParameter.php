@@ -25,6 +25,12 @@ abstract class BaseNagiosServiceCheckCommandParameter extends BaseObject  implem
 	protected static $peer;
 
 	/**
+	 * The flag var to prevent infinit loop in deep copy
+	 * @var       boolean
+	 */
+	protected $startCopy = false;
+
+	/**
 	 * The value for the id field.
 	 * @var        int
 	 */
@@ -338,18 +344,18 @@ abstract class BaseNagiosServiceCheckCommandParameter extends BaseObject  implem
 
 		$con->beginTransaction();
 		try {
+			$deleteQuery = NagiosServiceCheckCommandParameterQuery::create()
+				->filterByPrimaryKey($this->getPrimaryKey());
 			$ret = $this->preDelete($con);
 			if ($ret) {
-				NagiosServiceCheckCommandParameterQuery::create()
-					->filterByPrimaryKey($this->getPrimaryKey())
-					->delete($con);
+				$deleteQuery->delete($con);
 				$this->postDelete($con);
 				$con->commit();
 				$this->setDeleted(true);
 			} else {
 				$con->commit();
 			}
-		} catch (PropelException $e) {
+		} catch (Exception $e) {
 			$con->rollBack();
 			throw $e;
 		}
@@ -401,7 +407,7 @@ abstract class BaseNagiosServiceCheckCommandParameter extends BaseObject  implem
 			}
 			$con->commit();
 			return $affectedRows;
-		} catch (PropelException $e) {
+		} catch (Exception $e) {
 			$con->rollBack();
 			throw $e;
 		}
@@ -443,27 +449,15 @@ abstract class BaseNagiosServiceCheckCommandParameter extends BaseObject  implem
 				$this->setNagiosServiceTemplate($this->aNagiosServiceTemplate);
 			}
 
-			if ($this->isNew() ) {
-				$this->modifiedColumns[] = NagiosServiceCheckCommandParameterPeer::ID;
-			}
-
-			// If this object has been modified, then save it to the database.
-			if ($this->isModified()) {
+			if ($this->isNew() || $this->isModified()) {
+				// persist changes
 				if ($this->isNew()) {
-					$criteria = $this->buildCriteria();
-					if ($criteria->keyContainsValue(NagiosServiceCheckCommandParameterPeer::ID) ) {
-						throw new PropelException('Cannot insert a value for auto-increment primary key ('.NagiosServiceCheckCommandParameterPeer::ID.')');
-					}
-
-					$pk = BasePeer::doInsert($criteria, $con);
-					$affectedRows += 1;
-					$this->setId($pk);  //[IMV] update autoincrement primary key
-					$this->setNew(false);
+					$this->doInsert($con);
 				} else {
-					$affectedRows += NagiosServiceCheckCommandParameterPeer::doUpdate($this, $con);
+					$this->doUpdate($con);
 				}
-
-				$this->resetModified(); // [HL] After being saved an object is no longer 'modified'
+				$affectedRows += 1;
+				$this->resetModified();
 			}
 
 			$this->alreadyInSave = false;
@@ -471,6 +465,92 @@ abstract class BaseNagiosServiceCheckCommandParameter extends BaseObject  implem
 		}
 		return $affectedRows;
 	} // doSave()
+
+	/**
+	 * Insert the row in the database.
+	 *
+	 * @param      PropelPDO $con
+	 *
+	 * @throws     PropelException
+	 * @see        doSave()
+	 */
+	protected function doInsert(PropelPDO $con)
+	{
+		$modifiedColumns = array();
+		$index = 0;
+
+		$this->modifiedColumns[] = NagiosServiceCheckCommandParameterPeer::ID;
+		if (null !== $this->id) {
+			throw new PropelException('Cannot insert a value for auto-increment primary key (' . NagiosServiceCheckCommandParameterPeer::ID . ')');
+		}
+
+		 // check the columns in natural order for more readable SQL queries
+		if ($this->isColumnModified(NagiosServiceCheckCommandParameterPeer::ID)) {
+			$modifiedColumns[':p' . $index++]  = '`ID`';
+		}
+		if ($this->isColumnModified(NagiosServiceCheckCommandParameterPeer::SERVICE)) {
+			$modifiedColumns[':p' . $index++]  = '`SERVICE`';
+		}
+		if ($this->isColumnModified(NagiosServiceCheckCommandParameterPeer::TEMPLATE)) {
+			$modifiedColumns[':p' . $index++]  = '`TEMPLATE`';
+		}
+		if ($this->isColumnModified(NagiosServiceCheckCommandParameterPeer::PARAMETER)) {
+			$modifiedColumns[':p' . $index++]  = '`PARAMETER`';
+		}
+
+		$sql = sprintf(
+			'INSERT INTO `nagios_service_check_command_parameter` (%s) VALUES (%s)',
+			implode(', ', $modifiedColumns),
+			implode(', ', array_keys($modifiedColumns))
+		);
+
+		try {
+			$stmt = $con->prepare($sql);
+			foreach ($modifiedColumns as $identifier => $columnName) {
+				switch ($columnName) {
+					case '`ID`':
+						$stmt->bindValue($identifier, $this->id, PDO::PARAM_INT);
+						break;
+					case '`SERVICE`':
+						$stmt->bindValue($identifier, $this->service, PDO::PARAM_INT);
+						break;
+					case '`TEMPLATE`':
+						$stmt->bindValue($identifier, $this->template, PDO::PARAM_INT);
+						break;
+					case '`PARAMETER`':
+						$stmt->bindValue($identifier, $this->parameter, PDO::PARAM_STR);
+						break;
+				}
+			}
+			$stmt->execute();
+		} catch (Exception $e) {
+			Propel::log($e->getMessage(), Propel::LOG_ERR);
+			throw new PropelException(sprintf('Unable to execute INSERT statement [%s]', $sql), $e);
+		}
+
+		try {
+			$pk = $con->lastInsertId();
+		} catch (Exception $e) {
+			throw new PropelException('Unable to get autoincrement id.', $e);
+		}
+		$this->setId($pk);
+
+		$this->setNew(false);
+	}
+
+	/**
+	 * Update the row in the database.
+	 *
+	 * @param      PropelPDO $con
+	 *
+	 * @see        doSave()
+	 */
+	protected function doUpdate(PropelPDO $con)
+	{
+		$selectCriteria = $this->buildPkeyCriteria();
+		$valuesCriteria = $this->buildCriteria();
+		BasePeer::doUpdate($selectCriteria, $valuesCriteria, $con);
+	}
 
 	/**
 	 * Array of ValidationFailed objects.
@@ -792,6 +872,18 @@ abstract class BaseNagiosServiceCheckCommandParameter extends BaseObject  implem
 		$copyObj->setService($this->getService());
 		$copyObj->setTemplate($this->getTemplate());
 		$copyObj->setParameter($this->getParameter());
+
+		if ($deepCopy && !$this->startCopy) {
+			// important: temporarily setNew(false) because this affects the behavior of
+			// the getter/setter methods for fkey referrer objects.
+			$copyObj->setNew(false);
+			// store object hash to prevent cycle
+			$this->startCopy = true;
+
+			//unflag object copy
+			$this->startCopy = false;
+		} // if ($deepCopy)
+
 		if ($makeNew) {
 			$copyObj->setNew(true);
 			$copyObj->setId(NULL); // this is a auto-increment column, so set to default value
@@ -977,25 +1069,6 @@ abstract class BaseNagiosServiceCheckCommandParameter extends BaseObject  implem
 	public function __toString()
 	{
 		return (string) $this->exportTo(NagiosServiceCheckCommandParameterPeer::DEFAULT_STRING_FORMAT);
-	}
-
-	/**
-	 * Catches calls to virtual methods
-	 */
-	public function __call($name, $params)
-	{
-		if (preg_match('/get(\w+)/', $name, $matches)) {
-			$virtualColumn = $matches[1];
-			if ($this->hasVirtualColumn($virtualColumn)) {
-				return $this->getVirtualColumn($virtualColumn);
-			}
-			// no lcfirst in php<5.3...
-			$virtualColumn[0] = strtolower($virtualColumn[0]);
-			if ($this->hasVirtualColumn($virtualColumn)) {
-				return $this->getVirtualColumn($virtualColumn);
-			}
-		}
-		return parent::__call($name, $params);
 	}
 
 } // BaseNagiosServiceCheckCommandParameter

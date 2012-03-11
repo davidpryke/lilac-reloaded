@@ -19,12 +19,9 @@ abstract class BaseNagiosServiceCheckCommandParameterPeer {
 	/** the related Propel class for this table */
 	const OM_CLASS = 'NagiosServiceCheckCommandParameter';
 
-	/** A class that can be returned by this peer. */
-	const CLASS_DEFAULT = 'NagiosServiceCheckCommandParameter';
-
 	/** the related TableMap class for this table */
 	const TM_CLASS = 'NagiosServiceCheckCommandParameterTableMap';
-	
+
 	/** The total number of columns. */
 	const NUM_COLUMNS = 4;
 
@@ -48,7 +45,7 @@ abstract class BaseNagiosServiceCheckCommandParameterPeer {
 
 	/** The default string format for model objects of the related table **/
 	const DEFAULT_STRING_FORMAT = 'YAML';
-	
+
 	/**
 	 * An identiy map to hold any loaded instances of NagiosServiceCheckCommandParameter objects.
 	 * This must be public so that other peer classes can access this when hydrating from JOIN
@@ -381,7 +378,7 @@ abstract class BaseNagiosServiceCheckCommandParameterPeer {
 	}
 
 	/**
-	 * Retrieves the primary key from the DB resultset row 
+	 * Retrieves the primary key from the DB resultset row
 	 * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
 	 * a multi-column primary key, an array of the primary key columns will be returned.
 	 *
@@ -406,7 +403,7 @@ abstract class BaseNagiosServiceCheckCommandParameterPeer {
 		$results = array();
 	
 		// set the class once to avoid overhead in the loop
-		$cls = NagiosServiceCheckCommandParameterPeer::getOMClass(false);
+		$cls = NagiosServiceCheckCommandParameterPeer::getOMClass();
 		// populate the object(s)
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$key = NagiosServiceCheckCommandParameterPeer::getPrimaryKeyHashFromRow($row, 0);
@@ -478,9 +475,9 @@ abstract class BaseNagiosServiceCheckCommandParameterPeer {
 		if (!$criteria->hasSelectClause()) {
 			NagiosServiceCheckCommandParameterPeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -528,9 +525,9 @@ abstract class BaseNagiosServiceCheckCommandParameterPeer {
 		if (!$criteria->hasSelectClause()) {
 			NagiosServiceCheckCommandParameterPeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -587,7 +584,7 @@ abstract class BaseNagiosServiceCheckCommandParameterPeer {
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 
-				$cls = NagiosServiceCheckCommandParameterPeer::getOMClass(false);
+				$cls = NagiosServiceCheckCommandParameterPeer::getOMClass();
 
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
@@ -599,7 +596,7 @@ abstract class BaseNagiosServiceCheckCommandParameterPeer {
 				$obj2 = NagiosServicePeer::getInstanceFromPool($key2);
 				if (!$obj2) {
 
-					$cls = NagiosServicePeer::getOMClass(false);
+					$cls = NagiosServicePeer::getOMClass();
 
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol);
@@ -653,7 +650,7 @@ abstract class BaseNagiosServiceCheckCommandParameterPeer {
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 
-				$cls = NagiosServiceCheckCommandParameterPeer::getOMClass(false);
+				$cls = NagiosServiceCheckCommandParameterPeer::getOMClass();
 
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
@@ -665,7 +662,7 @@ abstract class BaseNagiosServiceCheckCommandParameterPeer {
 				$obj2 = NagiosServiceTemplatePeer::getInstanceFromPool($key2);
 				if (!$obj2) {
 
-					$cls = NagiosServiceTemplatePeer::getOMClass(false);
+					$cls = NagiosServiceTemplatePeer::getOMClass();
 
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol);
@@ -710,9 +707,9 @@ abstract class BaseNagiosServiceCheckCommandParameterPeer {
 		if (!$criteria->hasSelectClause()) {
 			NagiosServiceCheckCommandParameterPeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -777,7 +774,7 @@ abstract class BaseNagiosServiceCheckCommandParameterPeer {
 				// See http://www.propelorm.org/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
-				$cls = NagiosServiceCheckCommandParameterPeer::getOMClass(false);
+				$cls = NagiosServiceCheckCommandParameterPeer::getOMClass();
 
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
@@ -791,7 +788,7 @@ abstract class BaseNagiosServiceCheckCommandParameterPeer {
 				$obj2 = NagiosServicePeer::getInstanceFromPool($key2);
 				if (!$obj2) {
 
-					$cls = NagiosServicePeer::getOMClass(false);
+					$cls = NagiosServicePeer::getOMClass();
 
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol2);
@@ -809,7 +806,7 @@ abstract class BaseNagiosServiceCheckCommandParameterPeer {
 				$obj3 = NagiosServiceTemplatePeer::getInstanceFromPool($key3);
 				if (!$obj3) {
 
-					$cls = NagiosServiceTemplatePeer::getOMClass(false);
+					$cls = NagiosServiceTemplatePeer::getOMClass();
 
 					$obj3 = new $cls();
 					$obj3->hydrate($row, $startcol3);
@@ -845,7 +842,7 @@ abstract class BaseNagiosServiceCheckCommandParameterPeer {
 		// it will be impossible for the BasePeer::createSelectSql() method to determine which
 		// tables go into the FROM clause.
 		$criteria->setPrimaryTableName(NagiosServiceCheckCommandParameterPeer::TABLE_NAME);
-		
+
 		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
 			$criteria->setDistinct();
 		}
@@ -853,9 +850,9 @@ abstract class BaseNagiosServiceCheckCommandParameterPeer {
 		if (!$criteria->hasSelectClause()) {
 			NagiosServiceCheckCommandParameterPeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY should not affect count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -895,7 +892,7 @@ abstract class BaseNagiosServiceCheckCommandParameterPeer {
 		// it will be impossible for the BasePeer::createSelectSql() method to determine which
 		// tables go into the FROM clause.
 		$criteria->setPrimaryTableName(NagiosServiceCheckCommandParameterPeer::TABLE_NAME);
-		
+
 		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
 			$criteria->setDistinct();
 		}
@@ -903,9 +900,9 @@ abstract class BaseNagiosServiceCheckCommandParameterPeer {
 		if (!$criteria->hasSelectClause()) {
 			NagiosServiceCheckCommandParameterPeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY should not affect count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -967,7 +964,7 @@ abstract class BaseNagiosServiceCheckCommandParameterPeer {
 				// See http://www.propelorm.org/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
-				$cls = NagiosServiceCheckCommandParameterPeer::getOMClass(false);
+				$cls = NagiosServiceCheckCommandParameterPeer::getOMClass();
 
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
@@ -981,7 +978,7 @@ abstract class BaseNagiosServiceCheckCommandParameterPeer {
 					$obj2 = NagiosServiceTemplatePeer::getInstanceFromPool($key2);
 					if (!$obj2) {
 	
-						$cls = NagiosServiceTemplatePeer::getOMClass(false);
+						$cls = NagiosServiceTemplatePeer::getOMClass();
 
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol2);
@@ -1040,7 +1037,7 @@ abstract class BaseNagiosServiceCheckCommandParameterPeer {
 				// See http://www.propelorm.org/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
-				$cls = NagiosServiceCheckCommandParameterPeer::getOMClass(false);
+				$cls = NagiosServiceCheckCommandParameterPeer::getOMClass();
 
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
@@ -1054,7 +1051,7 @@ abstract class BaseNagiosServiceCheckCommandParameterPeer {
 					$obj2 = NagiosServicePeer::getInstanceFromPool($key2);
 					if (!$obj2) {
 	
-						$cls = NagiosServicePeer::getOMClass(false);
+						$cls = NagiosServicePeer::getOMClass();
 
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol2);
@@ -1099,17 +1096,12 @@ abstract class BaseNagiosServiceCheckCommandParameterPeer {
 	/**
 	 * The class that the Peer will make instances of.
 	 *
-	 * If $withPrefix is true, the returned path
-	 * uses a dot-path notation which is tranalted into a path
-	 * relative to a location on the PHP include_path.
-	 * (e.g. path.to.MyClass -> 'path/to/MyClass.php')
 	 *
-	 * @param      boolean $withPrefix Whether or not to return the path with the class name
-	 * @return     string path.to.ClassName
+	 * @return     string ClassName
 	 */
-	public static function getOMClass($withPrefix = true)
+	public static function getOMClass()
 	{
-		return $withPrefix ? NagiosServiceCheckCommandParameterPeer::CLASS_DEFAULT : NagiosServiceCheckCommandParameterPeer::OM_CLASS;
+		return NagiosServiceCheckCommandParameterPeer::OM_CLASS;
 	}
 
 	/**

@@ -19,12 +19,9 @@ abstract class BaseNagiosContactAddressPeer {
 	/** the related Propel class for this table */
 	const OM_CLASS = 'NagiosContactAddress';
 
-	/** A class that can be returned by this peer. */
-	const CLASS_DEFAULT = 'NagiosContactAddress';
-
 	/** the related TableMap class for this table */
 	const TM_CLASS = 'NagiosContactAddressTableMap';
-	
+
 	/** The total number of columns. */
 	const NUM_COLUMNS = 3;
 
@@ -45,7 +42,7 @@ abstract class BaseNagiosContactAddressPeer {
 
 	/** The default string format for model objects of the related table **/
 	const DEFAULT_STRING_FORMAT = 'YAML';
-	
+
 	/**
 	 * An identiy map to hold any loaded instances of NagiosContactAddress objects.
 	 * This must be public so that other peer classes can access this when hydrating from JOIN
@@ -376,7 +373,7 @@ abstract class BaseNagiosContactAddressPeer {
 	}
 
 	/**
-	 * Retrieves the primary key from the DB resultset row 
+	 * Retrieves the primary key from the DB resultset row
 	 * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
 	 * a multi-column primary key, an array of the primary key columns will be returned.
 	 *
@@ -401,7 +398,7 @@ abstract class BaseNagiosContactAddressPeer {
 		$results = array();
 	
 		// set the class once to avoid overhead in the loop
-		$cls = NagiosContactAddressPeer::getOMClass(false);
+		$cls = NagiosContactAddressPeer::getOMClass();
 		// populate the object(s)
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$key = NagiosContactAddressPeer::getPrimaryKeyHashFromRow($row, 0);
@@ -473,9 +470,9 @@ abstract class BaseNagiosContactAddressPeer {
 		if (!$criteria->hasSelectClause()) {
 			NagiosContactAddressPeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -532,7 +529,7 @@ abstract class BaseNagiosContactAddressPeer {
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 
-				$cls = NagiosContactAddressPeer::getOMClass(false);
+				$cls = NagiosContactAddressPeer::getOMClass();
 
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
@@ -544,7 +541,7 @@ abstract class BaseNagiosContactAddressPeer {
 				$obj2 = NagiosContactPeer::getInstanceFromPool($key2);
 				if (!$obj2) {
 
-					$cls = NagiosContactPeer::getOMClass(false);
+					$cls = NagiosContactPeer::getOMClass();
 
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol);
@@ -589,9 +586,9 @@ abstract class BaseNagiosContactAddressPeer {
 		if (!$criteria->hasSelectClause()) {
 			NagiosContactAddressPeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -649,7 +646,7 @@ abstract class BaseNagiosContactAddressPeer {
 				// See http://www.propelorm.org/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
-				$cls = NagiosContactAddressPeer::getOMClass(false);
+				$cls = NagiosContactAddressPeer::getOMClass();
 
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
@@ -663,7 +660,7 @@ abstract class BaseNagiosContactAddressPeer {
 				$obj2 = NagiosContactPeer::getInstanceFromPool($key2);
 				if (!$obj2) {
 
-					$cls = NagiosContactPeer::getOMClass(false);
+					$cls = NagiosContactPeer::getOMClass();
 
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol2);
@@ -707,17 +704,12 @@ abstract class BaseNagiosContactAddressPeer {
 	/**
 	 * The class that the Peer will make instances of.
 	 *
-	 * If $withPrefix is true, the returned path
-	 * uses a dot-path notation which is tranalted into a path
-	 * relative to a location on the PHP include_path.
-	 * (e.g. path.to.MyClass -> 'path/to/MyClass.php')
 	 *
-	 * @param      boolean $withPrefix Whether or not to return the path with the class name
-	 * @return     string path.to.ClassName
+	 * @return     string ClassName
 	 */
-	public static function getOMClass($withPrefix = true)
+	public static function getOMClass()
 	{
-		return $withPrefix ? NagiosContactAddressPeer::CLASS_DEFAULT : NagiosContactAddressPeer::OM_CLASS;
+		return NagiosContactAddressPeer::OM_CLASS;
 	}
 
 	/**

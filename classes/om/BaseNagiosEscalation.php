@@ -25,6 +25,12 @@ abstract class BaseNagiosEscalation extends BaseObject  implements Persistent
 	protected static $peer;
 
 	/**
+	 * The flag var to prevent infinit loop in deep copy
+	 * @var       boolean
+	 */
+	protected $startCopy = false;
+
+	/**
 	 * The value for the id field.
 	 * @var        int
 	 */
@@ -185,6 +191,18 @@ abstract class BaseNagiosEscalation extends BaseObject  implements Persistent
 	 * @var        boolean
 	 */
 	protected $alreadyInValidation = false;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $nagiosEscalationContactsScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $nagiosEscalationContactgroupsScheduledForDeletion = null;
 
 	/**
 	 * Get the [id] column value.
@@ -611,7 +629,7 @@ abstract class BaseNagiosEscalation extends BaseObject  implements Persistent
 	} // setEscalationPeriod()
 
 	/**
-	 * Sets the value of the [escalation_options_up] column. 
+	 * Sets the value of the [escalation_options_up] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -639,7 +657,7 @@ abstract class BaseNagiosEscalation extends BaseObject  implements Persistent
 	} // setEscalationOptionsUp()
 
 	/**
-	 * Sets the value of the [escalation_options_down] column. 
+	 * Sets the value of the [escalation_options_down] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -667,7 +685,7 @@ abstract class BaseNagiosEscalation extends BaseObject  implements Persistent
 	} // setEscalationOptionsDown()
 
 	/**
-	 * Sets the value of the [escalation_options_unreachable] column. 
+	 * Sets the value of the [escalation_options_unreachable] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -695,7 +713,7 @@ abstract class BaseNagiosEscalation extends BaseObject  implements Persistent
 	} // setEscalationOptionsUnreachable()
 
 	/**
-	 * Sets the value of the [escalation_options_ok] column. 
+	 * Sets the value of the [escalation_options_ok] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -723,7 +741,7 @@ abstract class BaseNagiosEscalation extends BaseObject  implements Persistent
 	} // setEscalationOptionsOk()
 
 	/**
-	 * Sets the value of the [escalation_options_warning] column. 
+	 * Sets the value of the [escalation_options_warning] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -751,7 +769,7 @@ abstract class BaseNagiosEscalation extends BaseObject  implements Persistent
 	} // setEscalationOptionsWarning()
 
 	/**
-	 * Sets the value of the [escalation_options_unknown] column. 
+	 * Sets the value of the [escalation_options_unknown] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -779,7 +797,7 @@ abstract class BaseNagiosEscalation extends BaseObject  implements Persistent
 	} // setEscalationOptionsUnknown()
 
 	/**
-	 * Sets the value of the [escalation_options_critical] column. 
+	 * Sets the value of the [escalation_options_critical] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -978,18 +996,18 @@ abstract class BaseNagiosEscalation extends BaseObject  implements Persistent
 
 		$con->beginTransaction();
 		try {
+			$deleteQuery = NagiosEscalationQuery::create()
+				->filterByPrimaryKey($this->getPrimaryKey());
 			$ret = $this->preDelete($con);
 			if ($ret) {
-				NagiosEscalationQuery::create()
-					->filterByPrimaryKey($this->getPrimaryKey())
-					->delete($con);
+				$deleteQuery->delete($con);
 				$this->postDelete($con);
 				$con->commit();
 				$this->setDeleted(true);
 			} else {
 				$con->commit();
 			}
-		} catch (PropelException $e) {
+		} catch (Exception $e) {
 			$con->rollBack();
 			throw $e;
 		}
@@ -1041,7 +1059,7 @@ abstract class BaseNagiosEscalation extends BaseObject  implements Persistent
 			}
 			$con->commit();
 			return $affectedRows;
-		} catch (PropelException $e) {
+		} catch (Exception $e) {
 			$con->rollBack();
 			throw $e;
 		}
@@ -1111,27 +1129,24 @@ abstract class BaseNagiosEscalation extends BaseObject  implements Persistent
 				$this->setNagiosTimeperiod($this->aNagiosTimeperiod);
 			}
 
-			if ($this->isNew() ) {
-				$this->modifiedColumns[] = NagiosEscalationPeer::ID;
+			if ($this->isNew() || $this->isModified()) {
+				// persist changes
+				if ($this->isNew()) {
+					$this->doInsert($con);
+				} else {
+					$this->doUpdate($con);
+				}
+				$affectedRows += 1;
+				$this->resetModified();
 			}
 
-			// If this object has been modified, then save it to the database.
-			if ($this->isModified()) {
-				if ($this->isNew()) {
-					$criteria = $this->buildCriteria();
-					if ($criteria->keyContainsValue(NagiosEscalationPeer::ID) ) {
-						throw new PropelException('Cannot insert a value for auto-increment primary key ('.NagiosEscalationPeer::ID.')');
-					}
-
-					$pk = BasePeer::doInsert($criteria, $con);
-					$affectedRows += 1;
-					$this->setId($pk);  //[IMV] update autoincrement primary key
-					$this->setNew(false);
-				} else {
-					$affectedRows += NagiosEscalationPeer::doUpdate($this, $con);
+			if ($this->nagiosEscalationContactsScheduledForDeletion !== null) {
+				if (!$this->nagiosEscalationContactsScheduledForDeletion->isEmpty()) {
+					NagiosEscalationContactQuery::create()
+						->filterByPrimaryKeys($this->nagiosEscalationContactsScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->nagiosEscalationContactsScheduledForDeletion = null;
 				}
-
-				$this->resetModified(); // [HL] After being saved an object is no longer 'modified'
 			}
 
 			if ($this->collNagiosEscalationContacts !== null) {
@@ -1139,6 +1154,15 @@ abstract class BaseNagiosEscalation extends BaseObject  implements Persistent
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
+				}
+			}
+
+			if ($this->nagiosEscalationContactgroupsScheduledForDeletion !== null) {
+				if (!$this->nagiosEscalationContactgroupsScheduledForDeletion->isEmpty()) {
+					NagiosEscalationContactgroupQuery::create()
+						->filterByPrimaryKeys($this->nagiosEscalationContactgroupsScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->nagiosEscalationContactgroupsScheduledForDeletion = null;
 				}
 			}
 
@@ -1155,6 +1179,176 @@ abstract class BaseNagiosEscalation extends BaseObject  implements Persistent
 		}
 		return $affectedRows;
 	} // doSave()
+
+	/**
+	 * Insert the row in the database.
+	 *
+	 * @param      PropelPDO $con
+	 *
+	 * @throws     PropelException
+	 * @see        doSave()
+	 */
+	protected function doInsert(PropelPDO $con)
+	{
+		$modifiedColumns = array();
+		$index = 0;
+
+		$this->modifiedColumns[] = NagiosEscalationPeer::ID;
+		if (null !== $this->id) {
+			throw new PropelException('Cannot insert a value for auto-increment primary key (' . NagiosEscalationPeer::ID . ')');
+		}
+
+		 // check the columns in natural order for more readable SQL queries
+		if ($this->isColumnModified(NagiosEscalationPeer::ID)) {
+			$modifiedColumns[':p' . $index++]  = '`ID`';
+		}
+		if ($this->isColumnModified(NagiosEscalationPeer::DESCRIPTION)) {
+			$modifiedColumns[':p' . $index++]  = '`DESCRIPTION`';
+		}
+		if ($this->isColumnModified(NagiosEscalationPeer::HOST_TEMPLATE)) {
+			$modifiedColumns[':p' . $index++]  = '`HOST_TEMPLATE`';
+		}
+		if ($this->isColumnModified(NagiosEscalationPeer::HOST)) {
+			$modifiedColumns[':p' . $index++]  = '`HOST`';
+		}
+		if ($this->isColumnModified(NagiosEscalationPeer::HOSTGROUP)) {
+			$modifiedColumns[':p' . $index++]  = '`HOSTGROUP`';
+		}
+		if ($this->isColumnModified(NagiosEscalationPeer::SERVICE_TEMPLATE)) {
+			$modifiedColumns[':p' . $index++]  = '`SERVICE_TEMPLATE`';
+		}
+		if ($this->isColumnModified(NagiosEscalationPeer::SERVICE)) {
+			$modifiedColumns[':p' . $index++]  = '`SERVICE`';
+		}
+		if ($this->isColumnModified(NagiosEscalationPeer::FIRST_NOTIFICATION)) {
+			$modifiedColumns[':p' . $index++]  = '`FIRST_NOTIFICATION`';
+		}
+		if ($this->isColumnModified(NagiosEscalationPeer::LAST_NOTIFICATION)) {
+			$modifiedColumns[':p' . $index++]  = '`LAST_NOTIFICATION`';
+		}
+		if ($this->isColumnModified(NagiosEscalationPeer::NOTIFICATION_INTERVAL)) {
+			$modifiedColumns[':p' . $index++]  = '`NOTIFICATION_INTERVAL`';
+		}
+		if ($this->isColumnModified(NagiosEscalationPeer::ESCALATION_PERIOD)) {
+			$modifiedColumns[':p' . $index++]  = '`ESCALATION_PERIOD`';
+		}
+		if ($this->isColumnModified(NagiosEscalationPeer::ESCALATION_OPTIONS_UP)) {
+			$modifiedColumns[':p' . $index++]  = '`ESCALATION_OPTIONS_UP`';
+		}
+		if ($this->isColumnModified(NagiosEscalationPeer::ESCALATION_OPTIONS_DOWN)) {
+			$modifiedColumns[':p' . $index++]  = '`ESCALATION_OPTIONS_DOWN`';
+		}
+		if ($this->isColumnModified(NagiosEscalationPeer::ESCALATION_OPTIONS_UNREACHABLE)) {
+			$modifiedColumns[':p' . $index++]  = '`ESCALATION_OPTIONS_UNREACHABLE`';
+		}
+		if ($this->isColumnModified(NagiosEscalationPeer::ESCALATION_OPTIONS_OK)) {
+			$modifiedColumns[':p' . $index++]  = '`ESCALATION_OPTIONS_OK`';
+		}
+		if ($this->isColumnModified(NagiosEscalationPeer::ESCALATION_OPTIONS_WARNING)) {
+			$modifiedColumns[':p' . $index++]  = '`ESCALATION_OPTIONS_WARNING`';
+		}
+		if ($this->isColumnModified(NagiosEscalationPeer::ESCALATION_OPTIONS_UNKNOWN)) {
+			$modifiedColumns[':p' . $index++]  = '`ESCALATION_OPTIONS_UNKNOWN`';
+		}
+		if ($this->isColumnModified(NagiosEscalationPeer::ESCALATION_OPTIONS_CRITICAL)) {
+			$modifiedColumns[':p' . $index++]  = '`ESCALATION_OPTIONS_CRITICAL`';
+		}
+
+		$sql = sprintf(
+			'INSERT INTO `nagios_escalation` (%s) VALUES (%s)',
+			implode(', ', $modifiedColumns),
+			implode(', ', array_keys($modifiedColumns))
+		);
+
+		try {
+			$stmt = $con->prepare($sql);
+			foreach ($modifiedColumns as $identifier => $columnName) {
+				switch ($columnName) {
+					case '`ID`':
+						$stmt->bindValue($identifier, $this->id, PDO::PARAM_INT);
+						break;
+					case '`DESCRIPTION`':
+						$stmt->bindValue($identifier, $this->description, PDO::PARAM_STR);
+						break;
+					case '`HOST_TEMPLATE`':
+						$stmt->bindValue($identifier, $this->host_template, PDO::PARAM_INT);
+						break;
+					case '`HOST`':
+						$stmt->bindValue($identifier, $this->host, PDO::PARAM_INT);
+						break;
+					case '`HOSTGROUP`':
+						$stmt->bindValue($identifier, $this->hostgroup, PDO::PARAM_INT);
+						break;
+					case '`SERVICE_TEMPLATE`':
+						$stmt->bindValue($identifier, $this->service_template, PDO::PARAM_INT);
+						break;
+					case '`SERVICE`':
+						$stmt->bindValue($identifier, $this->service, PDO::PARAM_INT);
+						break;
+					case '`FIRST_NOTIFICATION`':
+						$stmt->bindValue($identifier, $this->first_notification, PDO::PARAM_INT);
+						break;
+					case '`LAST_NOTIFICATION`':
+						$stmt->bindValue($identifier, $this->last_notification, PDO::PARAM_INT);
+						break;
+					case '`NOTIFICATION_INTERVAL`':
+						$stmt->bindValue($identifier, $this->notification_interval, PDO::PARAM_INT);
+						break;
+					case '`ESCALATION_PERIOD`':
+						$stmt->bindValue($identifier, $this->escalation_period, PDO::PARAM_INT);
+						break;
+					case '`ESCALATION_OPTIONS_UP`':
+						$stmt->bindValue($identifier, (int) $this->escalation_options_up, PDO::PARAM_INT);
+						break;
+					case '`ESCALATION_OPTIONS_DOWN`':
+						$stmt->bindValue($identifier, (int) $this->escalation_options_down, PDO::PARAM_INT);
+						break;
+					case '`ESCALATION_OPTIONS_UNREACHABLE`':
+						$stmt->bindValue($identifier, (int) $this->escalation_options_unreachable, PDO::PARAM_INT);
+						break;
+					case '`ESCALATION_OPTIONS_OK`':
+						$stmt->bindValue($identifier, (int) $this->escalation_options_ok, PDO::PARAM_INT);
+						break;
+					case '`ESCALATION_OPTIONS_WARNING`':
+						$stmt->bindValue($identifier, (int) $this->escalation_options_warning, PDO::PARAM_INT);
+						break;
+					case '`ESCALATION_OPTIONS_UNKNOWN`':
+						$stmt->bindValue($identifier, (int) $this->escalation_options_unknown, PDO::PARAM_INT);
+						break;
+					case '`ESCALATION_OPTIONS_CRITICAL`':
+						$stmt->bindValue($identifier, (int) $this->escalation_options_critical, PDO::PARAM_INT);
+						break;
+				}
+			}
+			$stmt->execute();
+		} catch (Exception $e) {
+			Propel::log($e->getMessage(), Propel::LOG_ERR);
+			throw new PropelException(sprintf('Unable to execute INSERT statement [%s]', $sql), $e);
+		}
+
+		try {
+			$pk = $con->lastInsertId();
+		} catch (Exception $e) {
+			throw new PropelException('Unable to get autoincrement id.', $e);
+		}
+		$this->setId($pk);
+
+		$this->setNew(false);
+	}
+
+	/**
+	 * Update the row in the database.
+	 *
+	 * @param      PropelPDO $con
+	 *
+	 * @see        doSave()
+	 */
+	protected function doUpdate(PropelPDO $con)
+	{
+		$selectCriteria = $this->buildPkeyCriteria();
+		$valuesCriteria = $this->buildCriteria();
+		BasePeer::doUpdate($selectCriteria, $valuesCriteria, $con);
+	}
 
 	/**
 	 * Array of ValidationFailed objects.
@@ -1675,10 +1869,12 @@ abstract class BaseNagiosEscalation extends BaseObject  implements Persistent
 		$copyObj->setEscalationOptionsUnknown($this->getEscalationOptionsUnknown());
 		$copyObj->setEscalationOptionsCritical($this->getEscalationOptionsCritical());
 
-		if ($deepCopy) {
+		if ($deepCopy && !$this->startCopy) {
 			// important: temporarily setNew(false) because this affects the behavior of
 			// the getter/setter methods for fkey referrer objects.
 			$copyObj->setNew(false);
+			// store object hash to prevent cycle
+			$this->startCopy = true;
 
 			foreach ($this->getNagiosEscalationContacts() as $relObj) {
 				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
@@ -1692,6 +1888,8 @@ abstract class BaseNagiosEscalation extends BaseObject  implements Persistent
 				}
 			}
 
+			//unflag object copy
+			$this->startCopy = false;
 		} // if ($deepCopy)
 
 		if ($makeNew) {
@@ -2035,7 +2233,7 @@ abstract class BaseNagiosEscalation extends BaseObject  implements Persistent
 
 	/**
 	 * Initializes a collection based on the name of a relation.
-	 * Avoids crafting an 'init[$relationName]s' method name 
+	 * Avoids crafting an 'init[$relationName]s' method name
 	 * that wouldn't work when StandardEnglishPluralizer is used.
 	 *
 	 * @param      string $relationName The name of the relation to initialize
@@ -2120,6 +2318,30 @@ abstract class BaseNagiosEscalation extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of NagiosEscalationContact objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $nagiosEscalationContacts A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setNagiosEscalationContacts(PropelCollection $nagiosEscalationContacts, PropelPDO $con = null)
+	{
+		$this->nagiosEscalationContactsScheduledForDeletion = $this->getNagiosEscalationContacts(new Criteria(), $con)->diff($nagiosEscalationContacts);
+
+		foreach ($nagiosEscalationContacts as $nagiosEscalationContact) {
+			// Fix issue with collection modified by reference
+			if ($nagiosEscalationContact->isNew()) {
+				$nagiosEscalationContact->setNagiosEscalation($this);
+			}
+			$this->addNagiosEscalationContact($nagiosEscalationContact);
+		}
+
+		$this->collNagiosEscalationContacts = $nagiosEscalationContacts;
+	}
+
+	/**
 	 * Returns the number of related NagiosEscalationContact objects.
 	 *
 	 * @param      Criteria $criteria
@@ -2152,8 +2374,7 @@ abstract class BaseNagiosEscalation extends BaseObject  implements Persistent
 	 * through the NagiosEscalationContact foreign key attribute.
 	 *
 	 * @param      NagiosEscalationContact $l NagiosEscalationContact
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     NagiosEscalation The current object (for fluent API support)
 	 */
 	public function addNagiosEscalationContact(NagiosEscalationContact $l)
 	{
@@ -2161,9 +2382,19 @@ abstract class BaseNagiosEscalation extends BaseObject  implements Persistent
 			$this->initNagiosEscalationContacts();
 		}
 		if (!$this->collNagiosEscalationContacts->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collNagiosEscalationContacts[]= $l;
-			$l->setNagiosEscalation($this);
+			$this->doAddNagiosEscalationContact($l);
 		}
+
+		return $this;
+	}
+
+	/**
+	 * @param	NagiosEscalationContact $nagiosEscalationContact The nagiosEscalationContact object to add.
+	 */
+	protected function doAddNagiosEscalationContact($nagiosEscalationContact)
+	{
+		$this->collNagiosEscalationContacts[]= $nagiosEscalationContact;
+		$nagiosEscalationContact->setNagiosEscalation($this);
 	}
 
 
@@ -2260,6 +2491,30 @@ abstract class BaseNagiosEscalation extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of NagiosEscalationContactgroup objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $nagiosEscalationContactgroups A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setNagiosEscalationContactgroups(PropelCollection $nagiosEscalationContactgroups, PropelPDO $con = null)
+	{
+		$this->nagiosEscalationContactgroupsScheduledForDeletion = $this->getNagiosEscalationContactgroups(new Criteria(), $con)->diff($nagiosEscalationContactgroups);
+
+		foreach ($nagiosEscalationContactgroups as $nagiosEscalationContactgroup) {
+			// Fix issue with collection modified by reference
+			if ($nagiosEscalationContactgroup->isNew()) {
+				$nagiosEscalationContactgroup->setNagiosEscalation($this);
+			}
+			$this->addNagiosEscalationContactgroup($nagiosEscalationContactgroup);
+		}
+
+		$this->collNagiosEscalationContactgroups = $nagiosEscalationContactgroups;
+	}
+
+	/**
 	 * Returns the number of related NagiosEscalationContactgroup objects.
 	 *
 	 * @param      Criteria $criteria
@@ -2292,8 +2547,7 @@ abstract class BaseNagiosEscalation extends BaseObject  implements Persistent
 	 * through the NagiosEscalationContactgroup foreign key attribute.
 	 *
 	 * @param      NagiosEscalationContactgroup $l NagiosEscalationContactgroup
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     NagiosEscalation The current object (for fluent API support)
 	 */
 	public function addNagiosEscalationContactgroup(NagiosEscalationContactgroup $l)
 	{
@@ -2301,9 +2555,19 @@ abstract class BaseNagiosEscalation extends BaseObject  implements Persistent
 			$this->initNagiosEscalationContactgroups();
 		}
 		if (!$this->collNagiosEscalationContactgroups->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collNagiosEscalationContactgroups[]= $l;
-			$l->setNagiosEscalation($this);
+			$this->doAddNagiosEscalationContactgroup($l);
 		}
+
+		return $this;
+	}
+
+	/**
+	 * @param	NagiosEscalationContactgroup $nagiosEscalationContactgroup The nagiosEscalationContactgroup object to add.
+	 */
+	protected function doAddNagiosEscalationContactgroup($nagiosEscalationContactgroup)
+	{
+		$this->collNagiosEscalationContactgroups[]= $nagiosEscalationContactgroup;
+		$nagiosEscalationContactgroup->setNagiosEscalation($this);
 	}
 
 
@@ -2410,25 +2674,6 @@ abstract class BaseNagiosEscalation extends BaseObject  implements Persistent
 	public function __toString()
 	{
 		return (string) $this->exportTo(NagiosEscalationPeer::DEFAULT_STRING_FORMAT);
-	}
-
-	/**
-	 * Catches calls to virtual methods
-	 */
-	public function __call($name, $params)
-	{
-		if (preg_match('/get(\w+)/', $name, $matches)) {
-			$virtualColumn = $matches[1];
-			if ($this->hasVirtualColumn($virtualColumn)) {
-				return $this->getVirtualColumn($virtualColumn);
-			}
-			// no lcfirst in php<5.3...
-			$virtualColumn[0] = strtolower($virtualColumn[0]);
-			if ($this->hasVirtualColumn($virtualColumn)) {
-				return $this->getVirtualColumn($virtualColumn);
-			}
-		}
-		return parent::__call($name, $params);
 	}
 
 } // BaseNagiosEscalation

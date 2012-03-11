@@ -25,6 +25,12 @@ abstract class BaseNagiosHostTemplate extends BaseObject  implements Persistent
 	protected static $peer;
 
 	/**
+	 * The flag var to prevent infinit loop in deep copy
+	 * @var       boolean
+	 */
+	protected $startCopy = false;
+
+	/**
 	 * The value for the id field.
 	 * @var        int
 	 */
@@ -446,6 +452,84 @@ abstract class BaseNagiosHostTemplate extends BaseObject  implements Persistent
 	 * @var        boolean
 	 */
 	protected $alreadyInValidation = false;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $nagiosHostTemplateAutodiscoveryServicesScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $nagiosServicesScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $nagiosHostContactMembersScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $nagiosDependencysScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $nagiosEscalationsScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $nagiosHostContactgroupsScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $nagiosHostgroupMembershipsScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $nagiosHostCheckCommandParametersScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $nagiosHostParentsScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $nagiosHostTemplateInheritancesRelatedBySourceTemplateScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $nagiosHostTemplateInheritancesRelatedByTargetTemplateScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $autodiscoveryDevicesScheduledForDeletion = null;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $autodiscoveryDeviceTemplateMatchsScheduledForDeletion = null;
 
 	/**
 	 * Get the [id] column value.
@@ -1192,7 +1276,7 @@ abstract class BaseNagiosHostTemplate extends BaseObject  implements Persistent
 	} // setCheckInterval()
 
 	/**
-	 * Sets the value of the [passive_checks_enabled] column. 
+	 * Sets the value of the [passive_checks_enabled] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -1244,7 +1328,7 @@ abstract class BaseNagiosHostTemplate extends BaseObject  implements Persistent
 	} // setCheckPeriod()
 
 	/**
-	 * Sets the value of the [obsess_over_host] column. 
+	 * Sets the value of the [obsess_over_host] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -1272,7 +1356,7 @@ abstract class BaseNagiosHostTemplate extends BaseObject  implements Persistent
 	} // setObsessOverHost()
 
 	/**
-	 * Sets the value of the [check_freshness] column. 
+	 * Sets the value of the [check_freshness] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -1320,7 +1404,7 @@ abstract class BaseNagiosHostTemplate extends BaseObject  implements Persistent
 	} // setFreshnessThreshold()
 
 	/**
-	 * Sets the value of the [active_checks_enabled] column. 
+	 * Sets the value of the [active_checks_enabled] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -1348,7 +1432,7 @@ abstract class BaseNagiosHostTemplate extends BaseObject  implements Persistent
 	} // setActiveChecksEnabled()
 
 	/**
-	 * Sets the value of the [checks_enabled] column. 
+	 * Sets the value of the [checks_enabled] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -1400,7 +1484,7 @@ abstract class BaseNagiosHostTemplate extends BaseObject  implements Persistent
 	} // setEventHandler()
 
 	/**
-	 * Sets the value of the [event_handler_enabled] column. 
+	 * Sets the value of the [event_handler_enabled] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -1468,7 +1552,7 @@ abstract class BaseNagiosHostTemplate extends BaseObject  implements Persistent
 	} // setHighFlapThreshold()
 
 	/**
-	 * Sets the value of the [flap_detection_enabled] column. 
+	 * Sets the value of the [flap_detection_enabled] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -1496,7 +1580,7 @@ abstract class BaseNagiosHostTemplate extends BaseObject  implements Persistent
 	} // setFlapDetectionEnabled()
 
 	/**
-	 * Sets the value of the [process_perf_data] column. 
+	 * Sets the value of the [process_perf_data] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -1524,7 +1608,7 @@ abstract class BaseNagiosHostTemplate extends BaseObject  implements Persistent
 	} // setProcessPerfData()
 
 	/**
-	 * Sets the value of the [retain_status_information] column. 
+	 * Sets the value of the [retain_status_information] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -1552,7 +1636,7 @@ abstract class BaseNagiosHostTemplate extends BaseObject  implements Persistent
 	} // setRetainStatusInformation()
 
 	/**
-	 * Sets the value of the [retain_nonstatus_information] column. 
+	 * Sets the value of the [retain_nonstatus_information] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -1624,7 +1708,7 @@ abstract class BaseNagiosHostTemplate extends BaseObject  implements Persistent
 	} // setNotificationPeriod()
 
 	/**
-	 * Sets the value of the [notifications_enabled] column. 
+	 * Sets the value of the [notifications_enabled] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -1652,7 +1736,7 @@ abstract class BaseNagiosHostTemplate extends BaseObject  implements Persistent
 	} // setNotificationsEnabled()
 
 	/**
-	 * Sets the value of the [notification_on_down] column. 
+	 * Sets the value of the [notification_on_down] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -1680,7 +1764,7 @@ abstract class BaseNagiosHostTemplate extends BaseObject  implements Persistent
 	} // setNotificationOnDown()
 
 	/**
-	 * Sets the value of the [notification_on_unreachable] column. 
+	 * Sets the value of the [notification_on_unreachable] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -1708,7 +1792,7 @@ abstract class BaseNagiosHostTemplate extends BaseObject  implements Persistent
 	} // setNotificationOnUnreachable()
 
 	/**
-	 * Sets the value of the [notification_on_recovery] column. 
+	 * Sets the value of the [notification_on_recovery] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -1736,7 +1820,7 @@ abstract class BaseNagiosHostTemplate extends BaseObject  implements Persistent
 	} // setNotificationOnRecovery()
 
 	/**
-	 * Sets the value of the [notification_on_flapping] column. 
+	 * Sets the value of the [notification_on_flapping] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -1764,7 +1848,7 @@ abstract class BaseNagiosHostTemplate extends BaseObject  implements Persistent
 	} // setNotificationOnFlapping()
 
 	/**
-	 * Sets the value of the [notification_on_scheduled_downtime] column. 
+	 * Sets the value of the [notification_on_scheduled_downtime] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -1792,7 +1876,7 @@ abstract class BaseNagiosHostTemplate extends BaseObject  implements Persistent
 	} // setNotificationOnScheduledDowntime()
 
 	/**
-	 * Sets the value of the [stalking_on_up] column. 
+	 * Sets the value of the [stalking_on_up] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -1820,7 +1904,7 @@ abstract class BaseNagiosHostTemplate extends BaseObject  implements Persistent
 	} // setStalkingOnUp()
 
 	/**
-	 * Sets the value of the [stalking_on_down] column. 
+	 * Sets the value of the [stalking_on_down] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -1848,7 +1932,7 @@ abstract class BaseNagiosHostTemplate extends BaseObject  implements Persistent
 	} // setStalkingOnDown()
 
 	/**
-	 * Sets the value of the [stalking_on_unreachable] column. 
+	 * Sets the value of the [stalking_on_unreachable] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -1876,7 +1960,7 @@ abstract class BaseNagiosHostTemplate extends BaseObject  implements Persistent
 	} // setStalkingOnUnreachable()
 
 	/**
-	 * Sets the value of the [failure_prediction_enabled] column. 
+	 * Sets the value of the [failure_prediction_enabled] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -1904,7 +1988,7 @@ abstract class BaseNagiosHostTemplate extends BaseObject  implements Persistent
 	} // setFailurePredictionEnabled()
 
 	/**
-	 * Sets the value of the [flap_detection_on_up] column. 
+	 * Sets the value of the [flap_detection_on_up] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -1932,7 +2016,7 @@ abstract class BaseNagiosHostTemplate extends BaseObject  implements Persistent
 	} // setFlapDetectionOnUp()
 
 	/**
-	 * Sets the value of the [flap_detection_on_down] column. 
+	 * Sets the value of the [flap_detection_on_down] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -1960,7 +2044,7 @@ abstract class BaseNagiosHostTemplate extends BaseObject  implements Persistent
 	} // setFlapDetectionOnDown()
 
 	/**
-	 * Sets the value of the [flap_detection_on_unreachable] column. 
+	 * Sets the value of the [flap_detection_on_unreachable] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -2489,18 +2573,18 @@ abstract class BaseNagiosHostTemplate extends BaseObject  implements Persistent
 
 		$con->beginTransaction();
 		try {
+			$deleteQuery = NagiosHostTemplateQuery::create()
+				->filterByPrimaryKey($this->getPrimaryKey());
 			$ret = $this->preDelete($con);
 			if ($ret) {
-				NagiosHostTemplateQuery::create()
-					->filterByPrimaryKey($this->getPrimaryKey())
-					->delete($con);
+				$deleteQuery->delete($con);
 				$this->postDelete($con);
 				$con->commit();
 				$this->setDeleted(true);
 			} else {
 				$con->commit();
 			}
-		} catch (PropelException $e) {
+		} catch (Exception $e) {
 			$con->rollBack();
 			throw $e;
 		}
@@ -2552,7 +2636,7 @@ abstract class BaseNagiosHostTemplate extends BaseObject  implements Persistent
 			}
 			$con->commit();
 			return $affectedRows;
-		} catch (PropelException $e) {
+		} catch (Exception $e) {
 			$con->rollBack();
 			throw $e;
 		}
@@ -2608,27 +2692,24 @@ abstract class BaseNagiosHostTemplate extends BaseObject  implements Persistent
 				$this->setNagiosTimeperiodRelatedByNotificationPeriod($this->aNagiosTimeperiodRelatedByNotificationPeriod);
 			}
 
-			if ($this->isNew() ) {
-				$this->modifiedColumns[] = NagiosHostTemplatePeer::ID;
+			if ($this->isNew() || $this->isModified()) {
+				// persist changes
+				if ($this->isNew()) {
+					$this->doInsert($con);
+				} else {
+					$this->doUpdate($con);
+				}
+				$affectedRows += 1;
+				$this->resetModified();
 			}
 
-			// If this object has been modified, then save it to the database.
-			if ($this->isModified()) {
-				if ($this->isNew()) {
-					$criteria = $this->buildCriteria();
-					if ($criteria->keyContainsValue(NagiosHostTemplatePeer::ID) ) {
-						throw new PropelException('Cannot insert a value for auto-increment primary key ('.NagiosHostTemplatePeer::ID.')');
-					}
-
-					$pk = BasePeer::doInsert($criteria, $con);
-					$affectedRows += 1;
-					$this->setId($pk);  //[IMV] update autoincrement primary key
-					$this->setNew(false);
-				} else {
-					$affectedRows += NagiosHostTemplatePeer::doUpdate($this, $con);
+			if ($this->nagiosHostTemplateAutodiscoveryServicesScheduledForDeletion !== null) {
+				if (!$this->nagiosHostTemplateAutodiscoveryServicesScheduledForDeletion->isEmpty()) {
+					NagiosHostTemplateAutodiscoveryServiceQuery::create()
+						->filterByPrimaryKeys($this->nagiosHostTemplateAutodiscoveryServicesScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->nagiosHostTemplateAutodiscoveryServicesScheduledForDeletion = null;
 				}
-
-				$this->resetModified(); // [HL] After being saved an object is no longer 'modified'
 			}
 
 			if ($this->collNagiosHostTemplateAutodiscoveryServices !== null) {
@@ -2636,6 +2717,15 @@ abstract class BaseNagiosHostTemplate extends BaseObject  implements Persistent
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
+				}
+			}
+
+			if ($this->nagiosServicesScheduledForDeletion !== null) {
+				if (!$this->nagiosServicesScheduledForDeletion->isEmpty()) {
+					NagiosServiceQuery::create()
+						->filterByPrimaryKeys($this->nagiosServicesScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->nagiosServicesScheduledForDeletion = null;
 				}
 			}
 
@@ -2647,11 +2737,29 @@ abstract class BaseNagiosHostTemplate extends BaseObject  implements Persistent
 				}
 			}
 
+			if ($this->nagiosHostContactMembersScheduledForDeletion !== null) {
+				if (!$this->nagiosHostContactMembersScheduledForDeletion->isEmpty()) {
+					NagiosHostContactMemberQuery::create()
+						->filterByPrimaryKeys($this->nagiosHostContactMembersScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->nagiosHostContactMembersScheduledForDeletion = null;
+				}
+			}
+
 			if ($this->collNagiosHostContactMembers !== null) {
 				foreach ($this->collNagiosHostContactMembers as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
+				}
+			}
+
+			if ($this->nagiosDependencysScheduledForDeletion !== null) {
+				if (!$this->nagiosDependencysScheduledForDeletion->isEmpty()) {
+					NagiosDependencyQuery::create()
+						->filterByPrimaryKeys($this->nagiosDependencysScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->nagiosDependencysScheduledForDeletion = null;
 				}
 			}
 
@@ -2663,11 +2771,29 @@ abstract class BaseNagiosHostTemplate extends BaseObject  implements Persistent
 				}
 			}
 
+			if ($this->nagiosEscalationsScheduledForDeletion !== null) {
+				if (!$this->nagiosEscalationsScheduledForDeletion->isEmpty()) {
+					NagiosEscalationQuery::create()
+						->filterByPrimaryKeys($this->nagiosEscalationsScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->nagiosEscalationsScheduledForDeletion = null;
+				}
+			}
+
 			if ($this->collNagiosEscalations !== null) {
 				foreach ($this->collNagiosEscalations as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
+				}
+			}
+
+			if ($this->nagiosHostContactgroupsScheduledForDeletion !== null) {
+				if (!$this->nagiosHostContactgroupsScheduledForDeletion->isEmpty()) {
+					NagiosHostContactgroupQuery::create()
+						->filterByPrimaryKeys($this->nagiosHostContactgroupsScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->nagiosHostContactgroupsScheduledForDeletion = null;
 				}
 			}
 
@@ -2679,11 +2805,29 @@ abstract class BaseNagiosHostTemplate extends BaseObject  implements Persistent
 				}
 			}
 
+			if ($this->nagiosHostgroupMembershipsScheduledForDeletion !== null) {
+				if (!$this->nagiosHostgroupMembershipsScheduledForDeletion->isEmpty()) {
+					NagiosHostgroupMembershipQuery::create()
+						->filterByPrimaryKeys($this->nagiosHostgroupMembershipsScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->nagiosHostgroupMembershipsScheduledForDeletion = null;
+				}
+			}
+
 			if ($this->collNagiosHostgroupMemberships !== null) {
 				foreach ($this->collNagiosHostgroupMemberships as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
+				}
+			}
+
+			if ($this->nagiosHostCheckCommandParametersScheduledForDeletion !== null) {
+				if (!$this->nagiosHostCheckCommandParametersScheduledForDeletion->isEmpty()) {
+					NagiosHostCheckCommandParameterQuery::create()
+						->filterByPrimaryKeys($this->nagiosHostCheckCommandParametersScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->nagiosHostCheckCommandParametersScheduledForDeletion = null;
 				}
 			}
 
@@ -2695,11 +2839,29 @@ abstract class BaseNagiosHostTemplate extends BaseObject  implements Persistent
 				}
 			}
 
+			if ($this->nagiosHostParentsScheduledForDeletion !== null) {
+				if (!$this->nagiosHostParentsScheduledForDeletion->isEmpty()) {
+					NagiosHostParentQuery::create()
+						->filterByPrimaryKeys($this->nagiosHostParentsScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->nagiosHostParentsScheduledForDeletion = null;
+				}
+			}
+
 			if ($this->collNagiosHostParents !== null) {
 				foreach ($this->collNagiosHostParents as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
+				}
+			}
+
+			if ($this->nagiosHostTemplateInheritancesRelatedBySourceTemplateScheduledForDeletion !== null) {
+				if (!$this->nagiosHostTemplateInheritancesRelatedBySourceTemplateScheduledForDeletion->isEmpty()) {
+					NagiosHostTemplateInheritanceQuery::create()
+						->filterByPrimaryKeys($this->nagiosHostTemplateInheritancesRelatedBySourceTemplateScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->nagiosHostTemplateInheritancesRelatedBySourceTemplateScheduledForDeletion = null;
 				}
 			}
 
@@ -2711,6 +2873,15 @@ abstract class BaseNagiosHostTemplate extends BaseObject  implements Persistent
 				}
 			}
 
+			if ($this->nagiosHostTemplateInheritancesRelatedByTargetTemplateScheduledForDeletion !== null) {
+				if (!$this->nagiosHostTemplateInheritancesRelatedByTargetTemplateScheduledForDeletion->isEmpty()) {
+					NagiosHostTemplateInheritanceQuery::create()
+						->filterByPrimaryKeys($this->nagiosHostTemplateInheritancesRelatedByTargetTemplateScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->nagiosHostTemplateInheritancesRelatedByTargetTemplateScheduledForDeletion = null;
+				}
+			}
+
 			if ($this->collNagiosHostTemplateInheritancesRelatedByTargetTemplate !== null) {
 				foreach ($this->collNagiosHostTemplateInheritancesRelatedByTargetTemplate as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
@@ -2719,11 +2890,29 @@ abstract class BaseNagiosHostTemplate extends BaseObject  implements Persistent
 				}
 			}
 
+			if ($this->autodiscoveryDevicesScheduledForDeletion !== null) {
+				if (!$this->autodiscoveryDevicesScheduledForDeletion->isEmpty()) {
+					AutodiscoveryDeviceQuery::create()
+						->filterByPrimaryKeys($this->autodiscoveryDevicesScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->autodiscoveryDevicesScheduledForDeletion = null;
+				}
+			}
+
 			if ($this->collAutodiscoveryDevices !== null) {
 				foreach ($this->collAutodiscoveryDevices as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
+				}
+			}
+
+			if ($this->autodiscoveryDeviceTemplateMatchsScheduledForDeletion !== null) {
+				if (!$this->autodiscoveryDeviceTemplateMatchsScheduledForDeletion->isEmpty()) {
+					AutodiscoveryDeviceTemplateMatchQuery::create()
+						->filterByPrimaryKeys($this->autodiscoveryDeviceTemplateMatchsScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->autodiscoveryDeviceTemplateMatchsScheduledForDeletion = null;
 				}
 			}
 
@@ -2740,6 +2929,392 @@ abstract class BaseNagiosHostTemplate extends BaseObject  implements Persistent
 		}
 		return $affectedRows;
 	} // doSave()
+
+	/**
+	 * Insert the row in the database.
+	 *
+	 * @param      PropelPDO $con
+	 *
+	 * @throws     PropelException
+	 * @see        doSave()
+	 */
+	protected function doInsert(PropelPDO $con)
+	{
+		$modifiedColumns = array();
+		$index = 0;
+
+		$this->modifiedColumns[] = NagiosHostTemplatePeer::ID;
+		if (null !== $this->id) {
+			throw new PropelException('Cannot insert a value for auto-increment primary key (' . NagiosHostTemplatePeer::ID . ')');
+		}
+
+		 // check the columns in natural order for more readable SQL queries
+		if ($this->isColumnModified(NagiosHostTemplatePeer::ID)) {
+			$modifiedColumns[':p' . $index++]  = '`ID`';
+		}
+		if ($this->isColumnModified(NagiosHostTemplatePeer::NAME)) {
+			$modifiedColumns[':p' . $index++]  = '`NAME`';
+		}
+		if ($this->isColumnModified(NagiosHostTemplatePeer::DESCRIPTION)) {
+			$modifiedColumns[':p' . $index++]  = '`DESCRIPTION`';
+		}
+		if ($this->isColumnModified(NagiosHostTemplatePeer::DISPLAY_NAME)) {
+			$modifiedColumns[':p' . $index++]  = '`DISPLAY_NAME`';
+		}
+		if ($this->isColumnModified(NagiosHostTemplatePeer::INITIAL_STATE)) {
+			$modifiedColumns[':p' . $index++]  = '`INITIAL_STATE`';
+		}
+		if ($this->isColumnModified(NagiosHostTemplatePeer::CHECK_COMMAND)) {
+			$modifiedColumns[':p' . $index++]  = '`CHECK_COMMAND`';
+		}
+		if ($this->isColumnModified(NagiosHostTemplatePeer::RETRY_INTERVAL)) {
+			$modifiedColumns[':p' . $index++]  = '`RETRY_INTERVAL`';
+		}
+		if ($this->isColumnModified(NagiosHostTemplatePeer::FIRST_NOTIFICATION_DELAY)) {
+			$modifiedColumns[':p' . $index++]  = '`FIRST_NOTIFICATION_DELAY`';
+		}
+		if ($this->isColumnModified(NagiosHostTemplatePeer::MAXIMUM_CHECK_ATTEMPTS)) {
+			$modifiedColumns[':p' . $index++]  = '`MAXIMUM_CHECK_ATTEMPTS`';
+		}
+		if ($this->isColumnModified(NagiosHostTemplatePeer::CHECK_INTERVAL)) {
+			$modifiedColumns[':p' . $index++]  = '`CHECK_INTERVAL`';
+		}
+		if ($this->isColumnModified(NagiosHostTemplatePeer::PASSIVE_CHECKS_ENABLED)) {
+			$modifiedColumns[':p' . $index++]  = '`PASSIVE_CHECKS_ENABLED`';
+		}
+		if ($this->isColumnModified(NagiosHostTemplatePeer::CHECK_PERIOD)) {
+			$modifiedColumns[':p' . $index++]  = '`CHECK_PERIOD`';
+		}
+		if ($this->isColumnModified(NagiosHostTemplatePeer::OBSESS_OVER_HOST)) {
+			$modifiedColumns[':p' . $index++]  = '`OBSESS_OVER_HOST`';
+		}
+		if ($this->isColumnModified(NagiosHostTemplatePeer::CHECK_FRESHNESS)) {
+			$modifiedColumns[':p' . $index++]  = '`CHECK_FRESHNESS`';
+		}
+		if ($this->isColumnModified(NagiosHostTemplatePeer::FRESHNESS_THRESHOLD)) {
+			$modifiedColumns[':p' . $index++]  = '`FRESHNESS_THRESHOLD`';
+		}
+		if ($this->isColumnModified(NagiosHostTemplatePeer::ACTIVE_CHECKS_ENABLED)) {
+			$modifiedColumns[':p' . $index++]  = '`ACTIVE_CHECKS_ENABLED`';
+		}
+		if ($this->isColumnModified(NagiosHostTemplatePeer::CHECKS_ENABLED)) {
+			$modifiedColumns[':p' . $index++]  = '`CHECKS_ENABLED`';
+		}
+		if ($this->isColumnModified(NagiosHostTemplatePeer::EVENT_HANDLER)) {
+			$modifiedColumns[':p' . $index++]  = '`EVENT_HANDLER`';
+		}
+		if ($this->isColumnModified(NagiosHostTemplatePeer::EVENT_HANDLER_ENABLED)) {
+			$modifiedColumns[':p' . $index++]  = '`EVENT_HANDLER_ENABLED`';
+		}
+		if ($this->isColumnModified(NagiosHostTemplatePeer::LOW_FLAP_THRESHOLD)) {
+			$modifiedColumns[':p' . $index++]  = '`LOW_FLAP_THRESHOLD`';
+		}
+		if ($this->isColumnModified(NagiosHostTemplatePeer::HIGH_FLAP_THRESHOLD)) {
+			$modifiedColumns[':p' . $index++]  = '`HIGH_FLAP_THRESHOLD`';
+		}
+		if ($this->isColumnModified(NagiosHostTemplatePeer::FLAP_DETECTION_ENABLED)) {
+			$modifiedColumns[':p' . $index++]  = '`FLAP_DETECTION_ENABLED`';
+		}
+		if ($this->isColumnModified(NagiosHostTemplatePeer::PROCESS_PERF_DATA)) {
+			$modifiedColumns[':p' . $index++]  = '`PROCESS_PERF_DATA`';
+		}
+		if ($this->isColumnModified(NagiosHostTemplatePeer::RETAIN_STATUS_INFORMATION)) {
+			$modifiedColumns[':p' . $index++]  = '`RETAIN_STATUS_INFORMATION`';
+		}
+		if ($this->isColumnModified(NagiosHostTemplatePeer::RETAIN_NONSTATUS_INFORMATION)) {
+			$modifiedColumns[':p' . $index++]  = '`RETAIN_NONSTATUS_INFORMATION`';
+		}
+		if ($this->isColumnModified(NagiosHostTemplatePeer::NOTIFICATION_INTERVAL)) {
+			$modifiedColumns[':p' . $index++]  = '`NOTIFICATION_INTERVAL`';
+		}
+		if ($this->isColumnModified(NagiosHostTemplatePeer::NOTIFICATION_PERIOD)) {
+			$modifiedColumns[':p' . $index++]  = '`NOTIFICATION_PERIOD`';
+		}
+		if ($this->isColumnModified(NagiosHostTemplatePeer::NOTIFICATIONS_ENABLED)) {
+			$modifiedColumns[':p' . $index++]  = '`NOTIFICATIONS_ENABLED`';
+		}
+		if ($this->isColumnModified(NagiosHostTemplatePeer::NOTIFICATION_ON_DOWN)) {
+			$modifiedColumns[':p' . $index++]  = '`NOTIFICATION_ON_DOWN`';
+		}
+		if ($this->isColumnModified(NagiosHostTemplatePeer::NOTIFICATION_ON_UNREACHABLE)) {
+			$modifiedColumns[':p' . $index++]  = '`NOTIFICATION_ON_UNREACHABLE`';
+		}
+		if ($this->isColumnModified(NagiosHostTemplatePeer::NOTIFICATION_ON_RECOVERY)) {
+			$modifiedColumns[':p' . $index++]  = '`NOTIFICATION_ON_RECOVERY`';
+		}
+		if ($this->isColumnModified(NagiosHostTemplatePeer::NOTIFICATION_ON_FLAPPING)) {
+			$modifiedColumns[':p' . $index++]  = '`NOTIFICATION_ON_FLAPPING`';
+		}
+		if ($this->isColumnModified(NagiosHostTemplatePeer::NOTIFICATION_ON_SCHEDULED_DOWNTIME)) {
+			$modifiedColumns[':p' . $index++]  = '`NOTIFICATION_ON_SCHEDULED_DOWNTIME`';
+		}
+		if ($this->isColumnModified(NagiosHostTemplatePeer::STALKING_ON_UP)) {
+			$modifiedColumns[':p' . $index++]  = '`STALKING_ON_UP`';
+		}
+		if ($this->isColumnModified(NagiosHostTemplatePeer::STALKING_ON_DOWN)) {
+			$modifiedColumns[':p' . $index++]  = '`STALKING_ON_DOWN`';
+		}
+		if ($this->isColumnModified(NagiosHostTemplatePeer::STALKING_ON_UNREACHABLE)) {
+			$modifiedColumns[':p' . $index++]  = '`STALKING_ON_UNREACHABLE`';
+		}
+		if ($this->isColumnModified(NagiosHostTemplatePeer::FAILURE_PREDICTION_ENABLED)) {
+			$modifiedColumns[':p' . $index++]  = '`FAILURE_PREDICTION_ENABLED`';
+		}
+		if ($this->isColumnModified(NagiosHostTemplatePeer::FLAP_DETECTION_ON_UP)) {
+			$modifiedColumns[':p' . $index++]  = '`FLAP_DETECTION_ON_UP`';
+		}
+		if ($this->isColumnModified(NagiosHostTemplatePeer::FLAP_DETECTION_ON_DOWN)) {
+			$modifiedColumns[':p' . $index++]  = '`FLAP_DETECTION_ON_DOWN`';
+		}
+		if ($this->isColumnModified(NagiosHostTemplatePeer::FLAP_DETECTION_ON_UNREACHABLE)) {
+			$modifiedColumns[':p' . $index++]  = '`FLAP_DETECTION_ON_UNREACHABLE`';
+		}
+		if ($this->isColumnModified(NagiosHostTemplatePeer::NOTES)) {
+			$modifiedColumns[':p' . $index++]  = '`NOTES`';
+		}
+		if ($this->isColumnModified(NagiosHostTemplatePeer::NOTES_URL)) {
+			$modifiedColumns[':p' . $index++]  = '`NOTES_URL`';
+		}
+		if ($this->isColumnModified(NagiosHostTemplatePeer::ACTION_URL)) {
+			$modifiedColumns[':p' . $index++]  = '`ACTION_URL`';
+		}
+		if ($this->isColumnModified(NagiosHostTemplatePeer::ICON_IMAGE)) {
+			$modifiedColumns[':p' . $index++]  = '`ICON_IMAGE`';
+		}
+		if ($this->isColumnModified(NagiosHostTemplatePeer::ICON_IMAGE_ALT)) {
+			$modifiedColumns[':p' . $index++]  = '`ICON_IMAGE_ALT`';
+		}
+		if ($this->isColumnModified(NagiosHostTemplatePeer::VRML_IMAGE)) {
+			$modifiedColumns[':p' . $index++]  = '`VRML_IMAGE`';
+		}
+		if ($this->isColumnModified(NagiosHostTemplatePeer::STATUSMAP_IMAGE)) {
+			$modifiedColumns[':p' . $index++]  = '`STATUSMAP_IMAGE`';
+		}
+		if ($this->isColumnModified(NagiosHostTemplatePeer::TWO_D_COORDS)) {
+			$modifiedColumns[':p' . $index++]  = '`TWO_D_COORDS`';
+		}
+		if ($this->isColumnModified(NagiosHostTemplatePeer::THREE_D_COORDS)) {
+			$modifiedColumns[':p' . $index++]  = '`THREE_D_COORDS`';
+		}
+		if ($this->isColumnModified(NagiosHostTemplatePeer::AUTODISCOVERY_ADDRESS_FILTER)) {
+			$modifiedColumns[':p' . $index++]  = '`AUTODISCOVERY_ADDRESS_FILTER`';
+		}
+		if ($this->isColumnModified(NagiosHostTemplatePeer::AUTODISCOVERY_HOSTNAME_FILTER)) {
+			$modifiedColumns[':p' . $index++]  = '`AUTODISCOVERY_HOSTNAME_FILTER`';
+		}
+		if ($this->isColumnModified(NagiosHostTemplatePeer::AUTODISCOVERY_OS_FAMILY_FILTER)) {
+			$modifiedColumns[':p' . $index++]  = '`AUTODISCOVERY_OS_FAMILY_FILTER`';
+		}
+		if ($this->isColumnModified(NagiosHostTemplatePeer::AUTODISCOVERY_OS_GENERATION_FILTER)) {
+			$modifiedColumns[':p' . $index++]  = '`AUTODISCOVERY_OS_GENERATION_FILTER`';
+		}
+		if ($this->isColumnModified(NagiosHostTemplatePeer::AUTODISCOVERY_OS_VENDOR_FILTER)) {
+			$modifiedColumns[':p' . $index++]  = '`AUTODISCOVERY_OS_VENDOR_FILTER`';
+		}
+
+		$sql = sprintf(
+			'INSERT INTO `nagios_host_template` (%s) VALUES (%s)',
+			implode(', ', $modifiedColumns),
+			implode(', ', array_keys($modifiedColumns))
+		);
+
+		try {
+			$stmt = $con->prepare($sql);
+			foreach ($modifiedColumns as $identifier => $columnName) {
+				switch ($columnName) {
+					case '`ID`':
+						$stmt->bindValue($identifier, $this->id, PDO::PARAM_INT);
+						break;
+					case '`NAME`':
+						$stmt->bindValue($identifier, $this->name, PDO::PARAM_STR);
+						break;
+					case '`DESCRIPTION`':
+						$stmt->bindValue($identifier, $this->description, PDO::PARAM_STR);
+						break;
+					case '`DISPLAY_NAME`':
+						$stmt->bindValue($identifier, $this->display_name, PDO::PARAM_STR);
+						break;
+					case '`INITIAL_STATE`':
+						$stmt->bindValue($identifier, $this->initial_state, PDO::PARAM_STR);
+						break;
+					case '`CHECK_COMMAND`':
+						$stmt->bindValue($identifier, $this->check_command, PDO::PARAM_INT);
+						break;
+					case '`RETRY_INTERVAL`':
+						$stmt->bindValue($identifier, $this->retry_interval, PDO::PARAM_INT);
+						break;
+					case '`FIRST_NOTIFICATION_DELAY`':
+						$stmt->bindValue($identifier, $this->first_notification_delay, PDO::PARAM_INT);
+						break;
+					case '`MAXIMUM_CHECK_ATTEMPTS`':
+						$stmt->bindValue($identifier, $this->maximum_check_attempts, PDO::PARAM_INT);
+						break;
+					case '`CHECK_INTERVAL`':
+						$stmt->bindValue($identifier, $this->check_interval, PDO::PARAM_INT);
+						break;
+					case '`PASSIVE_CHECKS_ENABLED`':
+						$stmt->bindValue($identifier, (int) $this->passive_checks_enabled, PDO::PARAM_INT);
+						break;
+					case '`CHECK_PERIOD`':
+						$stmt->bindValue($identifier, $this->check_period, PDO::PARAM_INT);
+						break;
+					case '`OBSESS_OVER_HOST`':
+						$stmt->bindValue($identifier, (int) $this->obsess_over_host, PDO::PARAM_INT);
+						break;
+					case '`CHECK_FRESHNESS`':
+						$stmt->bindValue($identifier, (int) $this->check_freshness, PDO::PARAM_INT);
+						break;
+					case '`FRESHNESS_THRESHOLD`':
+						$stmt->bindValue($identifier, $this->freshness_threshold, PDO::PARAM_INT);
+						break;
+					case '`ACTIVE_CHECKS_ENABLED`':
+						$stmt->bindValue($identifier, (int) $this->active_checks_enabled, PDO::PARAM_INT);
+						break;
+					case '`CHECKS_ENABLED`':
+						$stmt->bindValue($identifier, (int) $this->checks_enabled, PDO::PARAM_INT);
+						break;
+					case '`EVENT_HANDLER`':
+						$stmt->bindValue($identifier, $this->event_handler, PDO::PARAM_INT);
+						break;
+					case '`EVENT_HANDLER_ENABLED`':
+						$stmt->bindValue($identifier, (int) $this->event_handler_enabled, PDO::PARAM_INT);
+						break;
+					case '`LOW_FLAP_THRESHOLD`':
+						$stmt->bindValue($identifier, $this->low_flap_threshold, PDO::PARAM_INT);
+						break;
+					case '`HIGH_FLAP_THRESHOLD`':
+						$stmt->bindValue($identifier, $this->high_flap_threshold, PDO::PARAM_INT);
+						break;
+					case '`FLAP_DETECTION_ENABLED`':
+						$stmt->bindValue($identifier, (int) $this->flap_detection_enabled, PDO::PARAM_INT);
+						break;
+					case '`PROCESS_PERF_DATA`':
+						$stmt->bindValue($identifier, (int) $this->process_perf_data, PDO::PARAM_INT);
+						break;
+					case '`RETAIN_STATUS_INFORMATION`':
+						$stmt->bindValue($identifier, (int) $this->retain_status_information, PDO::PARAM_INT);
+						break;
+					case '`RETAIN_NONSTATUS_INFORMATION`':
+						$stmt->bindValue($identifier, (int) $this->retain_nonstatus_information, PDO::PARAM_INT);
+						break;
+					case '`NOTIFICATION_INTERVAL`':
+						$stmt->bindValue($identifier, $this->notification_interval, PDO::PARAM_INT);
+						break;
+					case '`NOTIFICATION_PERIOD`':
+						$stmt->bindValue($identifier, $this->notification_period, PDO::PARAM_INT);
+						break;
+					case '`NOTIFICATIONS_ENABLED`':
+						$stmt->bindValue($identifier, (int) $this->notifications_enabled, PDO::PARAM_INT);
+						break;
+					case '`NOTIFICATION_ON_DOWN`':
+						$stmt->bindValue($identifier, (int) $this->notification_on_down, PDO::PARAM_INT);
+						break;
+					case '`NOTIFICATION_ON_UNREACHABLE`':
+						$stmt->bindValue($identifier, (int) $this->notification_on_unreachable, PDO::PARAM_INT);
+						break;
+					case '`NOTIFICATION_ON_RECOVERY`':
+						$stmt->bindValue($identifier, (int) $this->notification_on_recovery, PDO::PARAM_INT);
+						break;
+					case '`NOTIFICATION_ON_FLAPPING`':
+						$stmt->bindValue($identifier, (int) $this->notification_on_flapping, PDO::PARAM_INT);
+						break;
+					case '`NOTIFICATION_ON_SCHEDULED_DOWNTIME`':
+						$stmt->bindValue($identifier, (int) $this->notification_on_scheduled_downtime, PDO::PARAM_INT);
+						break;
+					case '`STALKING_ON_UP`':
+						$stmt->bindValue($identifier, (int) $this->stalking_on_up, PDO::PARAM_INT);
+						break;
+					case '`STALKING_ON_DOWN`':
+						$stmt->bindValue($identifier, (int) $this->stalking_on_down, PDO::PARAM_INT);
+						break;
+					case '`STALKING_ON_UNREACHABLE`':
+						$stmt->bindValue($identifier, (int) $this->stalking_on_unreachable, PDO::PARAM_INT);
+						break;
+					case '`FAILURE_PREDICTION_ENABLED`':
+						$stmt->bindValue($identifier, (int) $this->failure_prediction_enabled, PDO::PARAM_INT);
+						break;
+					case '`FLAP_DETECTION_ON_UP`':
+						$stmt->bindValue($identifier, (int) $this->flap_detection_on_up, PDO::PARAM_INT);
+						break;
+					case '`FLAP_DETECTION_ON_DOWN`':
+						$stmt->bindValue($identifier, (int) $this->flap_detection_on_down, PDO::PARAM_INT);
+						break;
+					case '`FLAP_DETECTION_ON_UNREACHABLE`':
+						$stmt->bindValue($identifier, (int) $this->flap_detection_on_unreachable, PDO::PARAM_INT);
+						break;
+					case '`NOTES`':
+						$stmt->bindValue($identifier, $this->notes, PDO::PARAM_STR);
+						break;
+					case '`NOTES_URL`':
+						$stmt->bindValue($identifier, $this->notes_url, PDO::PARAM_STR);
+						break;
+					case '`ACTION_URL`':
+						$stmt->bindValue($identifier, $this->action_url, PDO::PARAM_STR);
+						break;
+					case '`ICON_IMAGE`':
+						$stmt->bindValue($identifier, $this->icon_image, PDO::PARAM_STR);
+						break;
+					case '`ICON_IMAGE_ALT`':
+						$stmt->bindValue($identifier, $this->icon_image_alt, PDO::PARAM_STR);
+						break;
+					case '`VRML_IMAGE`':
+						$stmt->bindValue($identifier, $this->vrml_image, PDO::PARAM_STR);
+						break;
+					case '`STATUSMAP_IMAGE`':
+						$stmt->bindValue($identifier, $this->statusmap_image, PDO::PARAM_STR);
+						break;
+					case '`TWO_D_COORDS`':
+						$stmt->bindValue($identifier, $this->two_d_coords, PDO::PARAM_STR);
+						break;
+					case '`THREE_D_COORDS`':
+						$stmt->bindValue($identifier, $this->three_d_coords, PDO::PARAM_STR);
+						break;
+					case '`AUTODISCOVERY_ADDRESS_FILTER`':
+						$stmt->bindValue($identifier, $this->autodiscovery_address_filter, PDO::PARAM_STR);
+						break;
+					case '`AUTODISCOVERY_HOSTNAME_FILTER`':
+						$stmt->bindValue($identifier, $this->autodiscovery_hostname_filter, PDO::PARAM_STR);
+						break;
+					case '`AUTODISCOVERY_OS_FAMILY_FILTER`':
+						$stmt->bindValue($identifier, $this->autodiscovery_os_family_filter, PDO::PARAM_STR);
+						break;
+					case '`AUTODISCOVERY_OS_GENERATION_FILTER`':
+						$stmt->bindValue($identifier, $this->autodiscovery_os_generation_filter, PDO::PARAM_STR);
+						break;
+					case '`AUTODISCOVERY_OS_VENDOR_FILTER`':
+						$stmt->bindValue($identifier, $this->autodiscovery_os_vendor_filter, PDO::PARAM_STR);
+						break;
+				}
+			}
+			$stmt->execute();
+		} catch (Exception $e) {
+			Propel::log($e->getMessage(), Propel::LOG_ERR);
+			throw new PropelException(sprintf('Unable to execute INSERT statement [%s]', $sql), $e);
+		}
+
+		try {
+			$pk = $con->lastInsertId();
+		} catch (Exception $e) {
+			throw new PropelException('Unable to get autoincrement id.', $e);
+		}
+		$this->setId($pk);
+
+		$this->setNew(false);
+	}
+
+	/**
+	 * Update the row in the database.
+	 *
+	 * @param      PropelPDO $con
+	 *
+	 * @see        doSave()
+	 */
+	protected function doUpdate(PropelPDO $con)
+	{
+		$selectCriteria = $this->buildPkeyCriteria();
+		$valuesCriteria = $this->buildCriteria();
+		BasePeer::doUpdate($selectCriteria, $valuesCriteria, $con);
+	}
 
 	/**
 	 * Array of ValidationFailed objects.
@@ -3723,10 +4298,12 @@ abstract class BaseNagiosHostTemplate extends BaseObject  implements Persistent
 		$copyObj->setAutodiscoveryOsGenerationFilter($this->getAutodiscoveryOsGenerationFilter());
 		$copyObj->setAutodiscoveryOsVendorFilter($this->getAutodiscoveryOsVendorFilter());
 
-		if ($deepCopy) {
+		if ($deepCopy && !$this->startCopy) {
 			// important: temporarily setNew(false) because this affects the behavior of
 			// the getter/setter methods for fkey referrer objects.
 			$copyObj->setNew(false);
+			// store object hash to prevent cycle
+			$this->startCopy = true;
 
 			foreach ($this->getNagiosHostTemplateAutodiscoveryServices() as $relObj) {
 				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
@@ -3806,6 +4383,8 @@ abstract class BaseNagiosHostTemplate extends BaseObject  implements Persistent
 				}
 			}
 
+			//unflag object copy
+			$this->startCopy = false;
 		} // if ($deepCopy)
 
 		if ($makeNew) {
@@ -4051,7 +4630,7 @@ abstract class BaseNagiosHostTemplate extends BaseObject  implements Persistent
 
 	/**
 	 * Initializes a collection based on the name of a relation.
-	 * Avoids crafting an 'init[$relationName]s' method name 
+	 * Avoids crafting an 'init[$relationName]s' method name
 	 * that wouldn't work when StandardEnglishPluralizer is used.
 	 *
 	 * @param      string $relationName The name of the relation to initialize
@@ -4169,6 +4748,30 @@ abstract class BaseNagiosHostTemplate extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of NagiosHostTemplateAutodiscoveryService objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $nagiosHostTemplateAutodiscoveryServices A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setNagiosHostTemplateAutodiscoveryServices(PropelCollection $nagiosHostTemplateAutodiscoveryServices, PropelPDO $con = null)
+	{
+		$this->nagiosHostTemplateAutodiscoveryServicesScheduledForDeletion = $this->getNagiosHostTemplateAutodiscoveryServices(new Criteria(), $con)->diff($nagiosHostTemplateAutodiscoveryServices);
+
+		foreach ($nagiosHostTemplateAutodiscoveryServices as $nagiosHostTemplateAutodiscoveryService) {
+			// Fix issue with collection modified by reference
+			if ($nagiosHostTemplateAutodiscoveryService->isNew()) {
+				$nagiosHostTemplateAutodiscoveryService->setNagiosHostTemplate($this);
+			}
+			$this->addNagiosHostTemplateAutodiscoveryService($nagiosHostTemplateAutodiscoveryService);
+		}
+
+		$this->collNagiosHostTemplateAutodiscoveryServices = $nagiosHostTemplateAutodiscoveryServices;
+	}
+
+	/**
 	 * Returns the number of related NagiosHostTemplateAutodiscoveryService objects.
 	 *
 	 * @param      Criteria $criteria
@@ -4201,8 +4804,7 @@ abstract class BaseNagiosHostTemplate extends BaseObject  implements Persistent
 	 * through the NagiosHostTemplateAutodiscoveryService foreign key attribute.
 	 *
 	 * @param      NagiosHostTemplateAutodiscoveryService $l NagiosHostTemplateAutodiscoveryService
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     NagiosHostTemplate The current object (for fluent API support)
 	 */
 	public function addNagiosHostTemplateAutodiscoveryService(NagiosHostTemplateAutodiscoveryService $l)
 	{
@@ -4210,9 +4812,19 @@ abstract class BaseNagiosHostTemplate extends BaseObject  implements Persistent
 			$this->initNagiosHostTemplateAutodiscoveryServices();
 		}
 		if (!$this->collNagiosHostTemplateAutodiscoveryServices->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collNagiosHostTemplateAutodiscoveryServices[]= $l;
-			$l->setNagiosHostTemplate($this);
+			$this->doAddNagiosHostTemplateAutodiscoveryService($l);
 		}
+
+		return $this;
+	}
+
+	/**
+	 * @param	NagiosHostTemplateAutodiscoveryService $nagiosHostTemplateAutodiscoveryService The nagiosHostTemplateAutodiscoveryService object to add.
+	 */
+	protected function doAddNagiosHostTemplateAutodiscoveryService($nagiosHostTemplateAutodiscoveryService)
+	{
+		$this->collNagiosHostTemplateAutodiscoveryServices[]= $nagiosHostTemplateAutodiscoveryService;
+		$nagiosHostTemplateAutodiscoveryService->setNagiosHostTemplate($this);
 	}
 
 	/**
@@ -4284,6 +4896,30 @@ abstract class BaseNagiosHostTemplate extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of NagiosService objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $nagiosServices A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setNagiosServices(PropelCollection $nagiosServices, PropelPDO $con = null)
+	{
+		$this->nagiosServicesScheduledForDeletion = $this->getNagiosServices(new Criteria(), $con)->diff($nagiosServices);
+
+		foreach ($nagiosServices as $nagiosService) {
+			// Fix issue with collection modified by reference
+			if ($nagiosService->isNew()) {
+				$nagiosService->setNagiosHostTemplate($this);
+			}
+			$this->addNagiosService($nagiosService);
+		}
+
+		$this->collNagiosServices = $nagiosServices;
+	}
+
+	/**
 	 * Returns the number of related NagiosService objects.
 	 *
 	 * @param      Criteria $criteria
@@ -4316,8 +4952,7 @@ abstract class BaseNagiosHostTemplate extends BaseObject  implements Persistent
 	 * through the NagiosService foreign key attribute.
 	 *
 	 * @param      NagiosService $l NagiosService
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     NagiosHostTemplate The current object (for fluent API support)
 	 */
 	public function addNagiosService(NagiosService $l)
 	{
@@ -4325,9 +4960,19 @@ abstract class BaseNagiosHostTemplate extends BaseObject  implements Persistent
 			$this->initNagiosServices();
 		}
 		if (!$this->collNagiosServices->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collNagiosServices[]= $l;
-			$l->setNagiosHostTemplate($this);
+			$this->doAddNagiosService($l);
 		}
+
+		return $this;
+	}
+
+	/**
+	 * @param	NagiosService $nagiosService The nagiosService object to add.
+	 */
+	protected function doAddNagiosService($nagiosService)
+	{
+		$this->collNagiosServices[]= $nagiosService;
+		$nagiosService->setNagiosHostTemplate($this);
 	}
 
 
@@ -4549,6 +5194,30 @@ abstract class BaseNagiosHostTemplate extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of NagiosHostContactMember objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $nagiosHostContactMembers A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setNagiosHostContactMembers(PropelCollection $nagiosHostContactMembers, PropelPDO $con = null)
+	{
+		$this->nagiosHostContactMembersScheduledForDeletion = $this->getNagiosHostContactMembers(new Criteria(), $con)->diff($nagiosHostContactMembers);
+
+		foreach ($nagiosHostContactMembers as $nagiosHostContactMember) {
+			// Fix issue with collection modified by reference
+			if ($nagiosHostContactMember->isNew()) {
+				$nagiosHostContactMember->setNagiosHostTemplate($this);
+			}
+			$this->addNagiosHostContactMember($nagiosHostContactMember);
+		}
+
+		$this->collNagiosHostContactMembers = $nagiosHostContactMembers;
+	}
+
+	/**
 	 * Returns the number of related NagiosHostContactMember objects.
 	 *
 	 * @param      Criteria $criteria
@@ -4581,8 +5250,7 @@ abstract class BaseNagiosHostTemplate extends BaseObject  implements Persistent
 	 * through the NagiosHostContactMember foreign key attribute.
 	 *
 	 * @param      NagiosHostContactMember $l NagiosHostContactMember
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     NagiosHostTemplate The current object (for fluent API support)
 	 */
 	public function addNagiosHostContactMember(NagiosHostContactMember $l)
 	{
@@ -4590,9 +5258,19 @@ abstract class BaseNagiosHostTemplate extends BaseObject  implements Persistent
 			$this->initNagiosHostContactMembers();
 		}
 		if (!$this->collNagiosHostContactMembers->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collNagiosHostContactMembers[]= $l;
-			$l->setNagiosHostTemplate($this);
+			$this->doAddNagiosHostContactMember($l);
 		}
+
+		return $this;
+	}
+
+	/**
+	 * @param	NagiosHostContactMember $nagiosHostContactMember The nagiosHostContactMember object to add.
+	 */
+	protected function doAddNagiosHostContactMember($nagiosHostContactMember)
+	{
+		$this->collNagiosHostContactMembers[]= $nagiosHostContactMember;
+		$nagiosHostContactMember->setNagiosHostTemplate($this);
 	}
 
 
@@ -4714,6 +5392,30 @@ abstract class BaseNagiosHostTemplate extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of NagiosDependency objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $nagiosDependencys A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setNagiosDependencys(PropelCollection $nagiosDependencys, PropelPDO $con = null)
+	{
+		$this->nagiosDependencysScheduledForDeletion = $this->getNagiosDependencys(new Criteria(), $con)->diff($nagiosDependencys);
+
+		foreach ($nagiosDependencys as $nagiosDependency) {
+			// Fix issue with collection modified by reference
+			if ($nagiosDependency->isNew()) {
+				$nagiosDependency->setNagiosHostTemplate($this);
+			}
+			$this->addNagiosDependency($nagiosDependency);
+		}
+
+		$this->collNagiosDependencys = $nagiosDependencys;
+	}
+
+	/**
 	 * Returns the number of related NagiosDependency objects.
 	 *
 	 * @param      Criteria $criteria
@@ -4746,8 +5448,7 @@ abstract class BaseNagiosHostTemplate extends BaseObject  implements Persistent
 	 * through the NagiosDependency foreign key attribute.
 	 *
 	 * @param      NagiosDependency $l NagiosDependency
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     NagiosHostTemplate The current object (for fluent API support)
 	 */
 	public function addNagiosDependency(NagiosDependency $l)
 	{
@@ -4755,9 +5456,19 @@ abstract class BaseNagiosHostTemplate extends BaseObject  implements Persistent
 			$this->initNagiosDependencys();
 		}
 		if (!$this->collNagiosDependencys->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collNagiosDependencys[]= $l;
-			$l->setNagiosHostTemplate($this);
+			$this->doAddNagiosDependency($l);
 		}
+
+		return $this;
+	}
+
+	/**
+	 * @param	NagiosDependency $nagiosDependency The nagiosDependency object to add.
+	 */
+	protected function doAddNagiosDependency($nagiosDependency)
+	{
+		$this->collNagiosDependencys[]= $nagiosDependency;
+		$nagiosDependency->setNagiosHostTemplate($this);
 	}
 
 
@@ -4954,6 +5665,30 @@ abstract class BaseNagiosHostTemplate extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of NagiosEscalation objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $nagiosEscalations A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setNagiosEscalations(PropelCollection $nagiosEscalations, PropelPDO $con = null)
+	{
+		$this->nagiosEscalationsScheduledForDeletion = $this->getNagiosEscalations(new Criteria(), $con)->diff($nagiosEscalations);
+
+		foreach ($nagiosEscalations as $nagiosEscalation) {
+			// Fix issue with collection modified by reference
+			if ($nagiosEscalation->isNew()) {
+				$nagiosEscalation->setNagiosHostTemplate($this);
+			}
+			$this->addNagiosEscalation($nagiosEscalation);
+		}
+
+		$this->collNagiosEscalations = $nagiosEscalations;
+	}
+
+	/**
 	 * Returns the number of related NagiosEscalation objects.
 	 *
 	 * @param      Criteria $criteria
@@ -4986,8 +5721,7 @@ abstract class BaseNagiosHostTemplate extends BaseObject  implements Persistent
 	 * through the NagiosEscalation foreign key attribute.
 	 *
 	 * @param      NagiosEscalation $l NagiosEscalation
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     NagiosHostTemplate The current object (for fluent API support)
 	 */
 	public function addNagiosEscalation(NagiosEscalation $l)
 	{
@@ -4995,9 +5729,19 @@ abstract class BaseNagiosHostTemplate extends BaseObject  implements Persistent
 			$this->initNagiosEscalations();
 		}
 		if (!$this->collNagiosEscalations->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collNagiosEscalations[]= $l;
-			$l->setNagiosHostTemplate($this);
+			$this->doAddNagiosEscalation($l);
 		}
+
+		return $this;
+	}
+
+	/**
+	 * @param	NagiosEscalation $nagiosEscalation The nagiosEscalation object to add.
+	 */
+	protected function doAddNagiosEscalation($nagiosEscalation)
+	{
+		$this->collNagiosEscalations[]= $nagiosEscalation;
+		$nagiosEscalation->setNagiosHostTemplate($this);
 	}
 
 
@@ -5194,6 +5938,30 @@ abstract class BaseNagiosHostTemplate extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of NagiosHostContactgroup objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $nagiosHostContactgroups A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setNagiosHostContactgroups(PropelCollection $nagiosHostContactgroups, PropelPDO $con = null)
+	{
+		$this->nagiosHostContactgroupsScheduledForDeletion = $this->getNagiosHostContactgroups(new Criteria(), $con)->diff($nagiosHostContactgroups);
+
+		foreach ($nagiosHostContactgroups as $nagiosHostContactgroup) {
+			// Fix issue with collection modified by reference
+			if ($nagiosHostContactgroup->isNew()) {
+				$nagiosHostContactgroup->setNagiosHostTemplate($this);
+			}
+			$this->addNagiosHostContactgroup($nagiosHostContactgroup);
+		}
+
+		$this->collNagiosHostContactgroups = $nagiosHostContactgroups;
+	}
+
+	/**
 	 * Returns the number of related NagiosHostContactgroup objects.
 	 *
 	 * @param      Criteria $criteria
@@ -5226,8 +5994,7 @@ abstract class BaseNagiosHostTemplate extends BaseObject  implements Persistent
 	 * through the NagiosHostContactgroup foreign key attribute.
 	 *
 	 * @param      NagiosHostContactgroup $l NagiosHostContactgroup
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     NagiosHostTemplate The current object (for fluent API support)
 	 */
 	public function addNagiosHostContactgroup(NagiosHostContactgroup $l)
 	{
@@ -5235,9 +6002,19 @@ abstract class BaseNagiosHostTemplate extends BaseObject  implements Persistent
 			$this->initNagiosHostContactgroups();
 		}
 		if (!$this->collNagiosHostContactgroups->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collNagiosHostContactgroups[]= $l;
-			$l->setNagiosHostTemplate($this);
+			$this->doAddNagiosHostContactgroup($l);
 		}
+
+		return $this;
+	}
+
+	/**
+	 * @param	NagiosHostContactgroup $nagiosHostContactgroup The nagiosHostContactgroup object to add.
+	 */
+	protected function doAddNagiosHostContactgroup($nagiosHostContactgroup)
+	{
+		$this->collNagiosHostContactgroups[]= $nagiosHostContactgroup;
+		$nagiosHostContactgroup->setNagiosHostTemplate($this);
 	}
 
 
@@ -5359,6 +6136,30 @@ abstract class BaseNagiosHostTemplate extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of NagiosHostgroupMembership objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $nagiosHostgroupMemberships A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setNagiosHostgroupMemberships(PropelCollection $nagiosHostgroupMemberships, PropelPDO $con = null)
+	{
+		$this->nagiosHostgroupMembershipsScheduledForDeletion = $this->getNagiosHostgroupMemberships(new Criteria(), $con)->diff($nagiosHostgroupMemberships);
+
+		foreach ($nagiosHostgroupMemberships as $nagiosHostgroupMembership) {
+			// Fix issue with collection modified by reference
+			if ($nagiosHostgroupMembership->isNew()) {
+				$nagiosHostgroupMembership->setNagiosHostTemplate($this);
+			}
+			$this->addNagiosHostgroupMembership($nagiosHostgroupMembership);
+		}
+
+		$this->collNagiosHostgroupMemberships = $nagiosHostgroupMemberships;
+	}
+
+	/**
 	 * Returns the number of related NagiosHostgroupMembership objects.
 	 *
 	 * @param      Criteria $criteria
@@ -5391,8 +6192,7 @@ abstract class BaseNagiosHostTemplate extends BaseObject  implements Persistent
 	 * through the NagiosHostgroupMembership foreign key attribute.
 	 *
 	 * @param      NagiosHostgroupMembership $l NagiosHostgroupMembership
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     NagiosHostTemplate The current object (for fluent API support)
 	 */
 	public function addNagiosHostgroupMembership(NagiosHostgroupMembership $l)
 	{
@@ -5400,9 +6200,19 @@ abstract class BaseNagiosHostTemplate extends BaseObject  implements Persistent
 			$this->initNagiosHostgroupMemberships();
 		}
 		if (!$this->collNagiosHostgroupMemberships->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collNagiosHostgroupMemberships[]= $l;
-			$l->setNagiosHostTemplate($this);
+			$this->doAddNagiosHostgroupMembership($l);
 		}
+
+		return $this;
+	}
+
+	/**
+	 * @param	NagiosHostgroupMembership $nagiosHostgroupMembership The nagiosHostgroupMembership object to add.
+	 */
+	protected function doAddNagiosHostgroupMembership($nagiosHostgroupMembership)
+	{
+		$this->collNagiosHostgroupMemberships[]= $nagiosHostgroupMembership;
+		$nagiosHostgroupMembership->setNagiosHostTemplate($this);
 	}
 
 
@@ -5524,6 +6334,30 @@ abstract class BaseNagiosHostTemplate extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of NagiosHostCheckCommandParameter objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $nagiosHostCheckCommandParameters A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setNagiosHostCheckCommandParameters(PropelCollection $nagiosHostCheckCommandParameters, PropelPDO $con = null)
+	{
+		$this->nagiosHostCheckCommandParametersScheduledForDeletion = $this->getNagiosHostCheckCommandParameters(new Criteria(), $con)->diff($nagiosHostCheckCommandParameters);
+
+		foreach ($nagiosHostCheckCommandParameters as $nagiosHostCheckCommandParameter) {
+			// Fix issue with collection modified by reference
+			if ($nagiosHostCheckCommandParameter->isNew()) {
+				$nagiosHostCheckCommandParameter->setNagiosHostTemplate($this);
+			}
+			$this->addNagiosHostCheckCommandParameter($nagiosHostCheckCommandParameter);
+		}
+
+		$this->collNagiosHostCheckCommandParameters = $nagiosHostCheckCommandParameters;
+	}
+
+	/**
 	 * Returns the number of related NagiosHostCheckCommandParameter objects.
 	 *
 	 * @param      Criteria $criteria
@@ -5556,8 +6390,7 @@ abstract class BaseNagiosHostTemplate extends BaseObject  implements Persistent
 	 * through the NagiosHostCheckCommandParameter foreign key attribute.
 	 *
 	 * @param      NagiosHostCheckCommandParameter $l NagiosHostCheckCommandParameter
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     NagiosHostTemplate The current object (for fluent API support)
 	 */
 	public function addNagiosHostCheckCommandParameter(NagiosHostCheckCommandParameter $l)
 	{
@@ -5565,9 +6398,19 @@ abstract class BaseNagiosHostTemplate extends BaseObject  implements Persistent
 			$this->initNagiosHostCheckCommandParameters();
 		}
 		if (!$this->collNagiosHostCheckCommandParameters->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collNagiosHostCheckCommandParameters[]= $l;
-			$l->setNagiosHostTemplate($this);
+			$this->doAddNagiosHostCheckCommandParameter($l);
 		}
+
+		return $this;
+	}
+
+	/**
+	 * @param	NagiosHostCheckCommandParameter $nagiosHostCheckCommandParameter The nagiosHostCheckCommandParameter object to add.
+	 */
+	protected function doAddNagiosHostCheckCommandParameter($nagiosHostCheckCommandParameter)
+	{
+		$this->collNagiosHostCheckCommandParameters[]= $nagiosHostCheckCommandParameter;
+		$nagiosHostCheckCommandParameter->setNagiosHostTemplate($this);
 	}
 
 
@@ -5664,6 +6507,30 @@ abstract class BaseNagiosHostTemplate extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of NagiosHostParent objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $nagiosHostParents A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setNagiosHostParents(PropelCollection $nagiosHostParents, PropelPDO $con = null)
+	{
+		$this->nagiosHostParentsScheduledForDeletion = $this->getNagiosHostParents(new Criteria(), $con)->diff($nagiosHostParents);
+
+		foreach ($nagiosHostParents as $nagiosHostParent) {
+			// Fix issue with collection modified by reference
+			if ($nagiosHostParent->isNew()) {
+				$nagiosHostParent->setNagiosHostTemplate($this);
+			}
+			$this->addNagiosHostParent($nagiosHostParent);
+		}
+
+		$this->collNagiosHostParents = $nagiosHostParents;
+	}
+
+	/**
 	 * Returns the number of related NagiosHostParent objects.
 	 *
 	 * @param      Criteria $criteria
@@ -5696,8 +6563,7 @@ abstract class BaseNagiosHostTemplate extends BaseObject  implements Persistent
 	 * through the NagiosHostParent foreign key attribute.
 	 *
 	 * @param      NagiosHostParent $l NagiosHostParent
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     NagiosHostTemplate The current object (for fluent API support)
 	 */
 	public function addNagiosHostParent(NagiosHostParent $l)
 	{
@@ -5705,9 +6571,19 @@ abstract class BaseNagiosHostTemplate extends BaseObject  implements Persistent
 			$this->initNagiosHostParents();
 		}
 		if (!$this->collNagiosHostParents->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collNagiosHostParents[]= $l;
-			$l->setNagiosHostTemplate($this);
+			$this->doAddNagiosHostParent($l);
 		}
+
+		return $this;
+	}
+
+	/**
+	 * @param	NagiosHostParent $nagiosHostParent The nagiosHostParent object to add.
+	 */
+	protected function doAddNagiosHostParent($nagiosHostParent)
+	{
+		$this->collNagiosHostParents[]= $nagiosHostParent;
+		$nagiosHostParent->setNagiosHostTemplate($this);
 	}
 
 
@@ -5829,6 +6705,30 @@ abstract class BaseNagiosHostTemplate extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of NagiosHostTemplateInheritanceRelatedBySourceTemplate objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $nagiosHostTemplateInheritancesRelatedBySourceTemplate A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setNagiosHostTemplateInheritancesRelatedBySourceTemplate(PropelCollection $nagiosHostTemplateInheritancesRelatedBySourceTemplate, PropelPDO $con = null)
+	{
+		$this->nagiosHostTemplateInheritancesRelatedBySourceTemplateScheduledForDeletion = $this->getNagiosHostTemplateInheritancesRelatedBySourceTemplate(new Criteria(), $con)->diff($nagiosHostTemplateInheritancesRelatedBySourceTemplate);
+
+		foreach ($nagiosHostTemplateInheritancesRelatedBySourceTemplate as $nagiosHostTemplateInheritanceRelatedBySourceTemplate) {
+			// Fix issue with collection modified by reference
+			if ($nagiosHostTemplateInheritanceRelatedBySourceTemplate->isNew()) {
+				$nagiosHostTemplateInheritanceRelatedBySourceTemplate->setNagiosHostTemplateRelatedBySourceTemplate($this);
+			}
+			$this->addNagiosHostTemplateInheritanceRelatedBySourceTemplate($nagiosHostTemplateInheritanceRelatedBySourceTemplate);
+		}
+
+		$this->collNagiosHostTemplateInheritancesRelatedBySourceTemplate = $nagiosHostTemplateInheritancesRelatedBySourceTemplate;
+	}
+
+	/**
 	 * Returns the number of related NagiosHostTemplateInheritance objects.
 	 *
 	 * @param      Criteria $criteria
@@ -5861,8 +6761,7 @@ abstract class BaseNagiosHostTemplate extends BaseObject  implements Persistent
 	 * through the NagiosHostTemplateInheritance foreign key attribute.
 	 *
 	 * @param      NagiosHostTemplateInheritance $l NagiosHostTemplateInheritance
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     NagiosHostTemplate The current object (for fluent API support)
 	 */
 	public function addNagiosHostTemplateInheritanceRelatedBySourceTemplate(NagiosHostTemplateInheritance $l)
 	{
@@ -5870,9 +6769,19 @@ abstract class BaseNagiosHostTemplate extends BaseObject  implements Persistent
 			$this->initNagiosHostTemplateInheritancesRelatedBySourceTemplate();
 		}
 		if (!$this->collNagiosHostTemplateInheritancesRelatedBySourceTemplate->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collNagiosHostTemplateInheritancesRelatedBySourceTemplate[]= $l;
-			$l->setNagiosHostTemplateRelatedBySourceTemplate($this);
+			$this->doAddNagiosHostTemplateInheritanceRelatedBySourceTemplate($l);
 		}
+
+		return $this;
+	}
+
+	/**
+	 * @param	NagiosHostTemplateInheritanceRelatedBySourceTemplate $nagiosHostTemplateInheritanceRelatedBySourceTemplate The nagiosHostTemplateInheritanceRelatedBySourceTemplate object to add.
+	 */
+	protected function doAddNagiosHostTemplateInheritanceRelatedBySourceTemplate($nagiosHostTemplateInheritanceRelatedBySourceTemplate)
+	{
+		$this->collNagiosHostTemplateInheritancesRelatedBySourceTemplate[]= $nagiosHostTemplateInheritanceRelatedBySourceTemplate;
+		$nagiosHostTemplateInheritanceRelatedBySourceTemplate->setNagiosHostTemplateRelatedBySourceTemplate($this);
 	}
 
 
@@ -5969,6 +6878,30 @@ abstract class BaseNagiosHostTemplate extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of NagiosHostTemplateInheritanceRelatedByTargetTemplate objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $nagiosHostTemplateInheritancesRelatedByTargetTemplate A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setNagiosHostTemplateInheritancesRelatedByTargetTemplate(PropelCollection $nagiosHostTemplateInheritancesRelatedByTargetTemplate, PropelPDO $con = null)
+	{
+		$this->nagiosHostTemplateInheritancesRelatedByTargetTemplateScheduledForDeletion = $this->getNagiosHostTemplateInheritancesRelatedByTargetTemplate(new Criteria(), $con)->diff($nagiosHostTemplateInheritancesRelatedByTargetTemplate);
+
+		foreach ($nagiosHostTemplateInheritancesRelatedByTargetTemplate as $nagiosHostTemplateInheritanceRelatedByTargetTemplate) {
+			// Fix issue with collection modified by reference
+			if ($nagiosHostTemplateInheritanceRelatedByTargetTemplate->isNew()) {
+				$nagiosHostTemplateInheritanceRelatedByTargetTemplate->setNagiosHostTemplateRelatedByTargetTemplate($this);
+			}
+			$this->addNagiosHostTemplateInheritanceRelatedByTargetTemplate($nagiosHostTemplateInheritanceRelatedByTargetTemplate);
+		}
+
+		$this->collNagiosHostTemplateInheritancesRelatedByTargetTemplate = $nagiosHostTemplateInheritancesRelatedByTargetTemplate;
+	}
+
+	/**
 	 * Returns the number of related NagiosHostTemplateInheritance objects.
 	 *
 	 * @param      Criteria $criteria
@@ -6001,8 +6934,7 @@ abstract class BaseNagiosHostTemplate extends BaseObject  implements Persistent
 	 * through the NagiosHostTemplateInheritance foreign key attribute.
 	 *
 	 * @param      NagiosHostTemplateInheritance $l NagiosHostTemplateInheritance
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     NagiosHostTemplate The current object (for fluent API support)
 	 */
 	public function addNagiosHostTemplateInheritanceRelatedByTargetTemplate(NagiosHostTemplateInheritance $l)
 	{
@@ -6010,9 +6942,19 @@ abstract class BaseNagiosHostTemplate extends BaseObject  implements Persistent
 			$this->initNagiosHostTemplateInheritancesRelatedByTargetTemplate();
 		}
 		if (!$this->collNagiosHostTemplateInheritancesRelatedByTargetTemplate->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collNagiosHostTemplateInheritancesRelatedByTargetTemplate[]= $l;
-			$l->setNagiosHostTemplateRelatedByTargetTemplate($this);
+			$this->doAddNagiosHostTemplateInheritanceRelatedByTargetTemplate($l);
 		}
+
+		return $this;
+	}
+
+	/**
+	 * @param	NagiosHostTemplateInheritanceRelatedByTargetTemplate $nagiosHostTemplateInheritanceRelatedByTargetTemplate The nagiosHostTemplateInheritanceRelatedByTargetTemplate object to add.
+	 */
+	protected function doAddNagiosHostTemplateInheritanceRelatedByTargetTemplate($nagiosHostTemplateInheritanceRelatedByTargetTemplate)
+	{
+		$this->collNagiosHostTemplateInheritancesRelatedByTargetTemplate[]= $nagiosHostTemplateInheritanceRelatedByTargetTemplate;
+		$nagiosHostTemplateInheritanceRelatedByTargetTemplate->setNagiosHostTemplateRelatedByTargetTemplate($this);
 	}
 
 
@@ -6109,6 +7051,30 @@ abstract class BaseNagiosHostTemplate extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of AutodiscoveryDevice objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $autodiscoveryDevices A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setAutodiscoveryDevices(PropelCollection $autodiscoveryDevices, PropelPDO $con = null)
+	{
+		$this->autodiscoveryDevicesScheduledForDeletion = $this->getAutodiscoveryDevices(new Criteria(), $con)->diff($autodiscoveryDevices);
+
+		foreach ($autodiscoveryDevices as $autodiscoveryDevice) {
+			// Fix issue with collection modified by reference
+			if ($autodiscoveryDevice->isNew()) {
+				$autodiscoveryDevice->setNagiosHostTemplate($this);
+			}
+			$this->addAutodiscoveryDevice($autodiscoveryDevice);
+		}
+
+		$this->collAutodiscoveryDevices = $autodiscoveryDevices;
+	}
+
+	/**
 	 * Returns the number of related AutodiscoveryDevice objects.
 	 *
 	 * @param      Criteria $criteria
@@ -6141,8 +7107,7 @@ abstract class BaseNagiosHostTemplate extends BaseObject  implements Persistent
 	 * through the AutodiscoveryDevice foreign key attribute.
 	 *
 	 * @param      AutodiscoveryDevice $l AutodiscoveryDevice
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     NagiosHostTemplate The current object (for fluent API support)
 	 */
 	public function addAutodiscoveryDevice(AutodiscoveryDevice $l)
 	{
@@ -6150,9 +7115,19 @@ abstract class BaseNagiosHostTemplate extends BaseObject  implements Persistent
 			$this->initAutodiscoveryDevices();
 		}
 		if (!$this->collAutodiscoveryDevices->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collAutodiscoveryDevices[]= $l;
-			$l->setNagiosHostTemplate($this);
+			$this->doAddAutodiscoveryDevice($l);
 		}
+
+		return $this;
+	}
+
+	/**
+	 * @param	AutodiscoveryDevice $autodiscoveryDevice The autodiscoveryDevice object to add.
+	 */
+	protected function doAddAutodiscoveryDevice($autodiscoveryDevice)
+	{
+		$this->collAutodiscoveryDevices[]= $autodiscoveryDevice;
+		$autodiscoveryDevice->setNagiosHostTemplate($this);
 	}
 
 
@@ -6274,6 +7249,30 @@ abstract class BaseNagiosHostTemplate extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of AutodiscoveryDeviceTemplateMatch objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $autodiscoveryDeviceTemplateMatchs A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setAutodiscoveryDeviceTemplateMatchs(PropelCollection $autodiscoveryDeviceTemplateMatchs, PropelPDO $con = null)
+	{
+		$this->autodiscoveryDeviceTemplateMatchsScheduledForDeletion = $this->getAutodiscoveryDeviceTemplateMatchs(new Criteria(), $con)->diff($autodiscoveryDeviceTemplateMatchs);
+
+		foreach ($autodiscoveryDeviceTemplateMatchs as $autodiscoveryDeviceTemplateMatch) {
+			// Fix issue with collection modified by reference
+			if ($autodiscoveryDeviceTemplateMatch->isNew()) {
+				$autodiscoveryDeviceTemplateMatch->setNagiosHostTemplate($this);
+			}
+			$this->addAutodiscoveryDeviceTemplateMatch($autodiscoveryDeviceTemplateMatch);
+		}
+
+		$this->collAutodiscoveryDeviceTemplateMatchs = $autodiscoveryDeviceTemplateMatchs;
+	}
+
+	/**
 	 * Returns the number of related AutodiscoveryDeviceTemplateMatch objects.
 	 *
 	 * @param      Criteria $criteria
@@ -6306,8 +7305,7 @@ abstract class BaseNagiosHostTemplate extends BaseObject  implements Persistent
 	 * through the AutodiscoveryDeviceTemplateMatch foreign key attribute.
 	 *
 	 * @param      AutodiscoveryDeviceTemplateMatch $l AutodiscoveryDeviceTemplateMatch
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     NagiosHostTemplate The current object (for fluent API support)
 	 */
 	public function addAutodiscoveryDeviceTemplateMatch(AutodiscoveryDeviceTemplateMatch $l)
 	{
@@ -6315,9 +7313,19 @@ abstract class BaseNagiosHostTemplate extends BaseObject  implements Persistent
 			$this->initAutodiscoveryDeviceTemplateMatchs();
 		}
 		if (!$this->collAutodiscoveryDeviceTemplateMatchs->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collAutodiscoveryDeviceTemplateMatchs[]= $l;
-			$l->setNagiosHostTemplate($this);
+			$this->doAddAutodiscoveryDeviceTemplateMatch($l);
 		}
+
+		return $this;
+	}
+
+	/**
+	 * @param	AutodiscoveryDeviceTemplateMatch $autodiscoveryDeviceTemplateMatch The autodiscoveryDeviceTemplateMatch object to add.
+	 */
+	protected function doAddAutodiscoveryDeviceTemplateMatch($autodiscoveryDeviceTemplateMatch)
+	{
+		$this->collAutodiscoveryDeviceTemplateMatchs[]= $autodiscoveryDeviceTemplateMatch;
+		$autodiscoveryDeviceTemplateMatch->setNagiosHostTemplate($this);
 	}
 
 
@@ -6557,25 +7565,6 @@ abstract class BaseNagiosHostTemplate extends BaseObject  implements Persistent
 	public function __toString()
 	{
 		return (string) $this->exportTo(NagiosHostTemplatePeer::DEFAULT_STRING_FORMAT);
-	}
-
-	/**
-	 * Catches calls to virtual methods
-	 */
-	public function __call($name, $params)
-	{
-		if (preg_match('/get(\w+)/', $name, $matches)) {
-			$virtualColumn = $matches[1];
-			if ($this->hasVirtualColumn($virtualColumn)) {
-				return $this->getVirtualColumn($virtualColumn);
-			}
-			// no lcfirst in php<5.3...
-			$virtualColumn[0] = strtolower($virtualColumn[0]);
-			if ($this->hasVirtualColumn($virtualColumn)) {
-				return $this->getVirtualColumn($virtualColumn);
-			}
-		}
-		return parent::__call($name, $params);
 	}
 
 } // BaseNagiosHostTemplate

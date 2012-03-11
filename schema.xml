@@ -968,6 +968,9 @@
         <column name="debug_verbosity" type="integer" />
         <column name="max_debug_file_size" type="integer" />
         <column name="temp_path" type="varchar" size="255" />
+        <column name="check_for_updates" type="boolean" />
+        <column name="check_for_orphaned_hosts" type="boolean" />
+        <column name="bare_update_check" type="boolean" />
 
         <!-- End new in Nagios 3.x -->
 

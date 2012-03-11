@@ -137,7 +137,7 @@
  */
 abstract class BaseNagiosCgiConfigurationQuery extends ModelCriteria
 {
-
+	
 	/**
 	 * Initializes internal state of BaseNagiosCgiConfigurationQuery object.
 	 *
@@ -174,11 +174,14 @@ abstract class BaseNagiosCgiConfigurationQuery extends ModelCriteria
 	}
 
 	/**
-	 * Find object by primary key
-	 * Use instance pooling to avoid a database query if the object exists
+	 * Find object by primary key.
+	 * Propel uses the instance pool to skip the database if the object exists.
+	 * Go fast if the query is untouched.
+	 *
 	 * <code>
 	 * $obj  = $c->findPk(12, $con);
 	 * </code>
+	 *
 	 * @param     mixed $key Primary key to use for the query
 	 * @param     PropelPDO $con an optional connection object
 	 *
@@ -186,17 +189,73 @@ abstract class BaseNagiosCgiConfigurationQuery extends ModelCriteria
 	 */
 	public function findPk($key, $con = null)
 	{
-		if ((null !== ($obj = NagiosCgiConfigurationPeer::getInstanceFromPool((string) $key))) && $this->getFormatter()->isObjectFormatter()) {
+		if ($key === null) {
+			return null;
+		}
+		if ((null !== ($obj = NagiosCgiConfigurationPeer::getInstanceFromPool((string) $key))) && !$this->formatter) {
 			// the object is alredy in the instance pool
 			return $obj;
-		} else {
-			// the object has not been requested yet, or the formatter is not an object formatter
-			$criteria = $this->isKeepQuery() ? clone $this : $this;
-			$stmt = $criteria
-				->filterByPrimaryKey($key)
-				->getSelectStatement($con);
-			return $criteria->getFormatter()->init($criteria)->formatOne($stmt);
 		}
+		if ($con === null) {
+			$con = Propel::getConnection(NagiosCgiConfigurationPeer::DATABASE_NAME, Propel::CONNECTION_READ);
+		}
+		$this->basePreSelect($con);
+		if ($this->formatter || $this->modelAlias || $this->with || $this->select
+		 || $this->selectColumns || $this->asColumns || $this->selectModifiers
+		 || $this->map || $this->having || $this->joins) {
+			return $this->findPkComplex($key, $con);
+		} else {
+			return $this->findPkSimple($key, $con);
+		}
+	}
+
+	/**
+	 * Find object by primary key using raw SQL to go fast.
+	 * Bypass doSelect() and the object formatter by using generated code.
+	 *
+	 * @param     mixed $key Primary key to use for the query
+	 * @param     PropelPDO $con A connection object
+	 *
+	 * @return    NagiosCgiConfiguration A model object, or null if the key is not found
+	 */
+	protected function findPkSimple($key, $con)
+	{
+		$sql = 'SELECT `ID`, `PHYSICAL_HTML_PATH`, `URL_HTML_PATH`, `USE_AUTHENTICATION`, `DEFAULT_USER_NAME`, `AUTHORIZED_FOR_SYSTEM_INFORMATION`, `AUTHORIZED_FOR_SYSTEM_COMMANDS`, `AUTHORIZED_FOR_CONFIGURATION_INFORMATION`, `AUTHORIZED_FOR_ALL_HOSTS`, `AUTHORIZED_FOR_ALL_HOST_COMMANDS`, `AUTHORIZED_FOR_ALL_SERVICES`, `AUTHORIZED_FOR_ALL_SERVICE_COMMANDS`, `LOCK_AUTHOR_NAMES`, `STATUSMAP_BACKGROUND_IMAGE`, `DEFAULT_STATUSMAP_LAYOUT`, `STATUSWRL_INCLUDE`, `DEFAULT_STATUSWRL_LAYOUT`, `REFRESH_RATE`, `HOST_UNREACHABLE_SOUND`, `HOST_DOWN_SOUND`, `SERVICE_CRITICAL_SOUND`, `SERVICE_WARNING_SOUND`, `SERVICE_UNKNOWN_SOUND`, `PING_SYNTAX`, `ESCAPE_HTML_TAGS`, `NOTES_URL_TARGET`, `ACTION_URL_TARGET`, `ENABLE_SPLUNK_INTEGRATION`, `SPLUNK_URL` FROM `nagios_cgi_configuration` WHERE `ID` = :p0';
+		try {
+			$stmt = $con->prepare($sql);
+			$stmt->bindValue(':p0', $key, PDO::PARAM_INT);
+			$stmt->execute();
+		} catch (Exception $e) {
+			Propel::log($e->getMessage(), Propel::LOG_ERR);
+			throw new PropelException(sprintf('Unable to execute SELECT statement [%s]', $sql), $e);
+		}
+		$obj = null;
+		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+			$obj = new NagiosCgiConfiguration();
+			$obj->hydrate($row);
+			NagiosCgiConfigurationPeer::addInstanceToPool($obj, (string) $key);
+		}
+		$stmt->closeCursor();
+
+		return $obj;
+	}
+
+	/**
+	 * Find object by primary key.
+	 *
+	 * @param     mixed $key Primary key to use for the query
+	 * @param     PropelPDO $con A connection object
+	 *
+	 * @return    NagiosCgiConfiguration|array|mixed the result, formatted by the current formatter
+	 */
+	protected function findPkComplex($key, $con)
+	{
+		// As the query uses a PK condition, no limit(1) is necessary.
+		$criteria = $this->isKeepQuery() ? clone $this : $this;
+		$stmt = $criteria
+			->filterByPrimaryKey($key)
+			->doSelect($con);
+		return $criteria->getFormatter()->init($criteria)->formatOne($stmt);
 	}
 
 	/**
@@ -211,10 +270,15 @@ abstract class BaseNagiosCgiConfigurationQuery extends ModelCriteria
 	 */
 	public function findPks($keys, $con = null)
 	{
+		if ($con === null) {
+			$con = Propel::getConnection($this->getDbName(), Propel::CONNECTION_READ);
+		}
+		$this->basePreSelect($con);
 		$criteria = $this->isKeepQuery() ? clone $this : $this;
-		return $this
+		$stmt = $criteria
 			->filterByPrimaryKeys($keys)
-			->find($con);
+			->doSelect($con);
+		return $criteria->getFormatter()->init($criteria)->format($stmt);
 	}
 
 	/**
@@ -243,7 +307,7 @@ abstract class BaseNagiosCgiConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the id column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterById(1234); // WHERE id = 1234
@@ -269,7 +333,7 @@ abstract class BaseNagiosCgiConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the physical_html_path column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByPhysicalHtmlPath('fooValue');   // WHERE physical_html_path = 'fooValue'
@@ -297,7 +361,7 @@ abstract class BaseNagiosCgiConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the url_html_path column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByUrlHtmlPath('fooValue');   // WHERE url_html_path = 'fooValue'
@@ -325,7 +389,7 @@ abstract class BaseNagiosCgiConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the use_authentication column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByUseAuthentication(true); // WHERE use_authentication = true
@@ -351,7 +415,7 @@ abstract class BaseNagiosCgiConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the default_user_name column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByDefaultUserName('fooValue');   // WHERE default_user_name = 'fooValue'
@@ -379,7 +443,7 @@ abstract class BaseNagiosCgiConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the authorized_for_system_information column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByAuthorizedForSystemInformation('fooValue');   // WHERE authorized_for_system_information = 'fooValue'
@@ -407,7 +471,7 @@ abstract class BaseNagiosCgiConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the authorized_for_system_commands column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByAuthorizedForSystemCommands('fooValue');   // WHERE authorized_for_system_commands = 'fooValue'
@@ -435,7 +499,7 @@ abstract class BaseNagiosCgiConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the authorized_for_configuration_information column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByAuthorizedForConfigurationInformation('fooValue');   // WHERE authorized_for_configuration_information = 'fooValue'
@@ -463,7 +527,7 @@ abstract class BaseNagiosCgiConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the authorized_for_all_hosts column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByAuthorizedForAllHosts('fooValue');   // WHERE authorized_for_all_hosts = 'fooValue'
@@ -491,7 +555,7 @@ abstract class BaseNagiosCgiConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the authorized_for_all_host_commands column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByAuthorizedForAllHostCommands('fooValue');   // WHERE authorized_for_all_host_commands = 'fooValue'
@@ -519,7 +583,7 @@ abstract class BaseNagiosCgiConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the authorized_for_all_services column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByAuthorizedForAllServices('fooValue');   // WHERE authorized_for_all_services = 'fooValue'
@@ -547,7 +611,7 @@ abstract class BaseNagiosCgiConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the authorized_for_all_service_commands column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByAuthorizedForAllServiceCommands('fooValue');   // WHERE authorized_for_all_service_commands = 'fooValue'
@@ -575,7 +639,7 @@ abstract class BaseNagiosCgiConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the lock_author_names column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByLockAuthorNames(true); // WHERE lock_author_names = true
@@ -601,7 +665,7 @@ abstract class BaseNagiosCgiConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the statusmap_background_image column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByStatusmapBackgroundImage('fooValue');   // WHERE statusmap_background_image = 'fooValue'
@@ -629,7 +693,7 @@ abstract class BaseNagiosCgiConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the default_statusmap_layout column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByDefaultStatusmapLayout(1234); // WHERE default_statusmap_layout = 1234
@@ -669,7 +733,7 @@ abstract class BaseNagiosCgiConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the statuswrl_include column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByStatuswrlInclude('fooValue');   // WHERE statuswrl_include = 'fooValue'
@@ -697,7 +761,7 @@ abstract class BaseNagiosCgiConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the default_statuswrl_layout column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByDefaultStatuswrlLayout(1234); // WHERE default_statuswrl_layout = 1234
@@ -737,7 +801,7 @@ abstract class BaseNagiosCgiConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the refresh_rate column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByRefreshRate(1234); // WHERE refresh_rate = 1234
@@ -777,7 +841,7 @@ abstract class BaseNagiosCgiConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the host_unreachable_sound column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByHostUnreachableSound('fooValue');   // WHERE host_unreachable_sound = 'fooValue'
@@ -805,7 +869,7 @@ abstract class BaseNagiosCgiConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the host_down_sound column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByHostDownSound('fooValue');   // WHERE host_down_sound = 'fooValue'
@@ -833,7 +897,7 @@ abstract class BaseNagiosCgiConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the service_critical_sound column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByServiceCriticalSound('fooValue');   // WHERE service_critical_sound = 'fooValue'
@@ -861,7 +925,7 @@ abstract class BaseNagiosCgiConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the service_warning_sound column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByServiceWarningSound('fooValue');   // WHERE service_warning_sound = 'fooValue'
@@ -889,7 +953,7 @@ abstract class BaseNagiosCgiConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the service_unknown_sound column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByServiceUnknownSound('fooValue');   // WHERE service_unknown_sound = 'fooValue'
@@ -917,7 +981,7 @@ abstract class BaseNagiosCgiConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the ping_syntax column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByPingSyntax('fooValue');   // WHERE ping_syntax = 'fooValue'
@@ -945,7 +1009,7 @@ abstract class BaseNagiosCgiConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the escape_html_tags column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByEscapeHtmlTags(true); // WHERE escape_html_tags = true
@@ -971,7 +1035,7 @@ abstract class BaseNagiosCgiConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the notes_url_target column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByNotesUrlTarget('fooValue');   // WHERE notes_url_target = 'fooValue'
@@ -999,7 +1063,7 @@ abstract class BaseNagiosCgiConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the action_url_target column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByActionUrlTarget('fooValue');   // WHERE action_url_target = 'fooValue'
@@ -1027,7 +1091,7 @@ abstract class BaseNagiosCgiConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the enable_splunk_integration column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterByEnableSplunkIntegration(true); // WHERE enable_splunk_integration = true
@@ -1053,7 +1117,7 @@ abstract class BaseNagiosCgiConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the splunk_url column
-	 * 
+	 *
 	 * Example usage:
 	 * <code>
 	 * $query->filterBySplunkUrl('fooValue');   // WHERE splunk_url = 'fooValue'
@@ -1090,8 +1154,8 @@ abstract class BaseNagiosCgiConfigurationQuery extends ModelCriteria
 	{
 		if ($nagiosCgiConfiguration) {
 			$this->addUsingAlias(NagiosCgiConfigurationPeer::ID, $nagiosCgiConfiguration->getId(), Criteria::NOT_EQUAL);
-	  }
-	  
+		}
+
 		return $this;
 	}
 

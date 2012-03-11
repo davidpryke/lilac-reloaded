@@ -41,7 +41,7 @@ class NagiosCgiConfigurationTableMap extends TableMap
 		$this->addPrimaryKey('ID', 'Id', 'INTEGER', true, null, null);
 		$this->addColumn('PHYSICAL_HTML_PATH', 'PhysicalHtmlPath', 'VARCHAR', false, 255, null);
 		$this->addColumn('URL_HTML_PATH', 'UrlHtmlPath', 'VARCHAR', false, 255, null);
-		$this->addColumn('USE_AUTHENTICATION', 'UseAuthentication', 'BOOLEAN', false, null, null);
+		$this->addColumn('USE_AUTHENTICATION', 'UseAuthentication', 'BOOLEAN', false, 1, null);
 		$this->addColumn('DEFAULT_USER_NAME', 'DefaultUserName', 'VARCHAR', false, 255, null);
 		$this->addColumn('AUTHORIZED_FOR_SYSTEM_INFORMATION', 'AuthorizedForSystemInformation', 'VARCHAR', false, 255, null);
 		$this->addColumn('AUTHORIZED_FOR_SYSTEM_COMMANDS', 'AuthorizedForSystemCommands', 'VARCHAR', false, 255, null);
@@ -50,7 +50,7 @@ class NagiosCgiConfigurationTableMap extends TableMap
 		$this->addColumn('AUTHORIZED_FOR_ALL_HOST_COMMANDS', 'AuthorizedForAllHostCommands', 'VARCHAR', false, 255, null);
 		$this->addColumn('AUTHORIZED_FOR_ALL_SERVICES', 'AuthorizedForAllServices', 'VARCHAR', false, 255, null);
 		$this->addColumn('AUTHORIZED_FOR_ALL_SERVICE_COMMANDS', 'AuthorizedForAllServiceCommands', 'VARCHAR', false, 255, null);
-		$this->addColumn('LOCK_AUTHOR_NAMES', 'LockAuthorNames', 'BOOLEAN', false, null, null);
+		$this->addColumn('LOCK_AUTHOR_NAMES', 'LockAuthorNames', 'BOOLEAN', false, 1, null);
 		$this->addColumn('STATUSMAP_BACKGROUND_IMAGE', 'StatusmapBackgroundImage', 'VARCHAR', false, 255, null);
 		$this->addColumn('DEFAULT_STATUSMAP_LAYOUT', 'DefaultStatusmapLayout', 'TINYINT', false, null, null);
 		$this->addColumn('STATUSWRL_INCLUDE', 'StatuswrlInclude', 'VARCHAR', false, 255, null);
@@ -62,10 +62,10 @@ class NagiosCgiConfigurationTableMap extends TableMap
 		$this->addColumn('SERVICE_WARNING_SOUND', 'ServiceWarningSound', 'VARCHAR', false, 255, null);
 		$this->addColumn('SERVICE_UNKNOWN_SOUND', 'ServiceUnknownSound', 'VARCHAR', false, 255, null);
 		$this->addColumn('PING_SYNTAX', 'PingSyntax', 'VARCHAR', false, 255, null);
-		$this->addColumn('ESCAPE_HTML_TAGS', 'EscapeHtmlTags', 'BOOLEAN', false, null, null);
+		$this->addColumn('ESCAPE_HTML_TAGS', 'EscapeHtmlTags', 'BOOLEAN', false, 1, null);
 		$this->addColumn('NOTES_URL_TARGET', 'NotesUrlTarget', 'VARCHAR', false, 255, null);
 		$this->addColumn('ACTION_URL_TARGET', 'ActionUrlTarget', 'VARCHAR', false, 255, null);
-		$this->addColumn('ENABLE_SPLUNK_INTEGRATION', 'EnableSplunkIntegration', 'BOOLEAN', false, null, null);
+		$this->addColumn('ENABLE_SPLUNK_INTEGRATION', 'EnableSplunkIntegration', 'BOOLEAN', false, 1, null);
 		$this->addColumn('SPLUNK_URL', 'SplunkUrl', 'VARCHAR', false, 255, null);
 		// validators
 	} // initialize()

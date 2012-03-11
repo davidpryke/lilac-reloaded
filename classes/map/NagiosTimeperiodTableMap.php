@@ -49,21 +49,21 @@ class NagiosTimeperiodTableMap extends TableMap
 	 */
 	public function buildRelations()
 	{
-		$this->addRelation('NagiosTimeperiodEntry', 'NagiosTimeperiodEntry', RelationMap::ONE_TO_MANY, array('id' => 'timeperiod_id', ), 'SET NULL', null);
-		$this->addRelation('NagiosTimeperiodExcludeRelatedByTimeperiodId', 'NagiosTimeperiodExclude', RelationMap::ONE_TO_MANY, array('id' => 'timeperiod_id', ), 'SET NULL', null);
-		$this->addRelation('NagiosTimeperiodExcludeRelatedByExcludedTimeperiod', 'NagiosTimeperiodExclude', RelationMap::ONE_TO_MANY, array('id' => 'excluded_timeperiod', ), 'SET NULL', null);
-		$this->addRelation('NagiosContactRelatedByHostNotificationPeriod', 'NagiosContact', RelationMap::ONE_TO_MANY, array('id' => 'host_notification_period', ), 'SET NULL', null);
-		$this->addRelation('NagiosContactRelatedByServiceNotificationPeriod', 'NagiosContact', RelationMap::ONE_TO_MANY, array('id' => 'service_notification_period', ), 'SET NULL', null);
-		$this->addRelation('NagiosHostTemplateRelatedByCheckPeriod', 'NagiosHostTemplate', RelationMap::ONE_TO_MANY, array('id' => 'check_period', ), 'SET NULL', null);
-		$this->addRelation('NagiosHostTemplateRelatedByNotificationPeriod', 'NagiosHostTemplate', RelationMap::ONE_TO_MANY, array('id' => 'notification_period', ), 'SET NULL', null);
-		$this->addRelation('NagiosHostRelatedByCheckPeriod', 'NagiosHost', RelationMap::ONE_TO_MANY, array('id' => 'check_period', ), 'SET NULL', null);
-		$this->addRelation('NagiosHostRelatedByNotificationPeriod', 'NagiosHost', RelationMap::ONE_TO_MANY, array('id' => 'notification_period', ), 'SET NULL', null);
-		$this->addRelation('NagiosServiceTemplateRelatedByCheckPeriod', 'NagiosServiceTemplate', RelationMap::ONE_TO_MANY, array('id' => 'check_period', ), 'SET NULL', null);
-		$this->addRelation('NagiosServiceTemplateRelatedByNotificationPeriod', 'NagiosServiceTemplate', RelationMap::ONE_TO_MANY, array('id' => 'notification_period', ), 'SET NULL', null);
-		$this->addRelation('NagiosServiceRelatedByCheckPeriod', 'NagiosService', RelationMap::ONE_TO_MANY, array('id' => 'check_period', ), 'SET NULL', null);
-		$this->addRelation('NagiosServiceRelatedByNotificationPeriod', 'NagiosService', RelationMap::ONE_TO_MANY, array('id' => 'notification_period', ), 'SET NULL', null);
-		$this->addRelation('NagiosDependency', 'NagiosDependency', RelationMap::ONE_TO_MANY, array('id' => 'dependency_period', ), 'CASCADE', null);
-		$this->addRelation('NagiosEscalation', 'NagiosEscalation', RelationMap::ONE_TO_MANY, array('id' => 'escalation_period', ), 'SET NULL', null);
+		$this->addRelation('NagiosTimeperiodEntry', 'NagiosTimeperiodEntry', RelationMap::ONE_TO_MANY, array('id' => 'timeperiod_id', ), 'SET NULL', null, 'NagiosTimeperiodEntrys');
+		$this->addRelation('NagiosTimeperiodExcludeRelatedByTimeperiodId', 'NagiosTimeperiodExclude', RelationMap::ONE_TO_MANY, array('id' => 'timeperiod_id', ), 'SET NULL', null, 'NagiosTimeperiodExcludesRelatedByTimeperiodId');
+		$this->addRelation('NagiosTimeperiodExcludeRelatedByExcludedTimeperiod', 'NagiosTimeperiodExclude', RelationMap::ONE_TO_MANY, array('id' => 'excluded_timeperiod', ), 'SET NULL', null, 'NagiosTimeperiodExcludesRelatedByExcludedTimeperiod');
+		$this->addRelation('NagiosContactRelatedByHostNotificationPeriod', 'NagiosContact', RelationMap::ONE_TO_MANY, array('id' => 'host_notification_period', ), 'SET NULL', null, 'NagiosContactsRelatedByHostNotificationPeriod');
+		$this->addRelation('NagiosContactRelatedByServiceNotificationPeriod', 'NagiosContact', RelationMap::ONE_TO_MANY, array('id' => 'service_notification_period', ), 'SET NULL', null, 'NagiosContactsRelatedByServiceNotificationPeriod');
+		$this->addRelation('NagiosHostTemplateRelatedByCheckPeriod', 'NagiosHostTemplate', RelationMap::ONE_TO_MANY, array('id' => 'check_period', ), 'SET NULL', null, 'NagiosHostTemplatesRelatedByCheckPeriod');
+		$this->addRelation('NagiosHostTemplateRelatedByNotificationPeriod', 'NagiosHostTemplate', RelationMap::ONE_TO_MANY, array('id' => 'notification_period', ), 'SET NULL', null, 'NagiosHostTemplatesRelatedByNotificationPeriod');
+		$this->addRelation('NagiosHostRelatedByCheckPeriod', 'NagiosHost', RelationMap::ONE_TO_MANY, array('id' => 'check_period', ), 'SET NULL', null, 'NagiosHostsRelatedByCheckPeriod');
+		$this->addRelation('NagiosHostRelatedByNotificationPeriod', 'NagiosHost', RelationMap::ONE_TO_MANY, array('id' => 'notification_period', ), 'SET NULL', null, 'NagiosHostsRelatedByNotificationPeriod');
+		$this->addRelation('NagiosServiceTemplateRelatedByCheckPeriod', 'NagiosServiceTemplate', RelationMap::ONE_TO_MANY, array('id' => 'check_period', ), 'SET NULL', null, 'NagiosServiceTemplatesRelatedByCheckPeriod');
+		$this->addRelation('NagiosServiceTemplateRelatedByNotificationPeriod', 'NagiosServiceTemplate', RelationMap::ONE_TO_MANY, array('id' => 'notification_period', ), 'SET NULL', null, 'NagiosServiceTemplatesRelatedByNotificationPeriod');
+		$this->addRelation('NagiosServiceRelatedByCheckPeriod', 'NagiosService', RelationMap::ONE_TO_MANY, array('id' => 'check_period', ), 'SET NULL', null, 'NagiosServicesRelatedByCheckPeriod');
+		$this->addRelation('NagiosServiceRelatedByNotificationPeriod', 'NagiosService', RelationMap::ONE_TO_MANY, array('id' => 'notification_period', ), 'SET NULL', null, 'NagiosServicesRelatedByNotificationPeriod');
+		$this->addRelation('NagiosDependency', 'NagiosDependency', RelationMap::ONE_TO_MANY, array('id' => 'dependency_period', ), 'CASCADE', null, 'NagiosDependencys');
+		$this->addRelation('NagiosEscalation', 'NagiosEscalation', RelationMap::ONE_TO_MANY, array('id' => 'escalation_period', ), 'SET NULL', null, 'NagiosEscalations');
 	} // buildRelations()
 
 } // NagiosTimeperiodTableMap

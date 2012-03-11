@@ -49,10 +49,10 @@ class NagiosContactGroupTableMap extends TableMap
 	 */
 	public function buildRelations()
 	{
-		$this->addRelation('NagiosContactGroupMember', 'NagiosContactGroupMember', RelationMap::ONE_TO_MANY, array('id' => 'contactgroup', ), 'CASCADE', null);
-		$this->addRelation('NagiosServiceContactGroupMember', 'NagiosServiceContactGroupMember', RelationMap::ONE_TO_MANY, array('id' => 'contact_group', ), 'CASCADE', null);
-		$this->addRelation('NagiosEscalationContactgroup', 'NagiosEscalationContactgroup', RelationMap::ONE_TO_MANY, array('id' => 'contactgroup', ), 'CASCADE', null);
-		$this->addRelation('NagiosHostContactgroup', 'NagiosHostContactgroup', RelationMap::ONE_TO_MANY, array('id' => 'contactgroup', ), 'CASCADE', null);
+		$this->addRelation('NagiosContactGroupMember', 'NagiosContactGroupMember', RelationMap::ONE_TO_MANY, array('id' => 'contactgroup', ), 'CASCADE', null, 'NagiosContactGroupMembers');
+		$this->addRelation('NagiosServiceContactGroupMember', 'NagiosServiceContactGroupMember', RelationMap::ONE_TO_MANY, array('id' => 'contact_group', ), 'CASCADE', null, 'NagiosServiceContactGroupMembers');
+		$this->addRelation('NagiosEscalationContactgroup', 'NagiosEscalationContactgroup', RelationMap::ONE_TO_MANY, array('id' => 'contactgroup', ), 'CASCADE', null, 'NagiosEscalationContactgroups');
+		$this->addRelation('NagiosHostContactgroup', 'NagiosHostContactgroup', RelationMap::ONE_TO_MANY, array('id' => 'contactgroup', ), 'CASCADE', null, 'NagiosHostContactgroups');
 	} // buildRelations()
 
 } // NagiosContactGroupTableMap

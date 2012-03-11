@@ -19,12 +19,9 @@ abstract class BaseNagiosResourcePeer {
 	/** the related Propel class for this table */
 	const OM_CLASS = 'NagiosResource';
 
-	/** A class that can be returned by this peer. */
-	const CLASS_DEFAULT = 'NagiosResource';
-
 	/** the related TableMap class for this table */
 	const TM_CLASS = 'NagiosResourceTableMap';
-	
+
 	/** The total number of columns. */
 	const NUM_COLUMNS = 33;
 
@@ -135,7 +132,7 @@ abstract class BaseNagiosResourcePeer {
 
 	/** The default string format for model objects of the related table **/
 	const DEFAULT_STRING_FORMAT = 'YAML';
-	
+
 	/**
 	 * An identiy map to hold any loaded instances of NagiosResource objects.
 	 * This must be public so that other peer classes can access this when hydrating from JOIN
@@ -526,7 +523,7 @@ abstract class BaseNagiosResourcePeer {
 	}
 
 	/**
-	 * Retrieves the primary key from the DB resultset row 
+	 * Retrieves the primary key from the DB resultset row
 	 * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
 	 * a multi-column primary key, an array of the primary key columns will be returned.
 	 *
@@ -551,7 +548,7 @@ abstract class BaseNagiosResourcePeer {
 		$results = array();
 	
 		// set the class once to avoid overhead in the loop
-		$cls = NagiosResourcePeer::getOMClass(false);
+		$cls = NagiosResourcePeer::getOMClass();
 		// populate the object(s)
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$key = NagiosResourcePeer::getPrimaryKeyHashFromRow($row, 0);
@@ -623,17 +620,12 @@ abstract class BaseNagiosResourcePeer {
 	/**
 	 * The class that the Peer will make instances of.
 	 *
-	 * If $withPrefix is true, the returned path
-	 * uses a dot-path notation which is tranalted into a path
-	 * relative to a location on the PHP include_path.
-	 * (e.g. path.to.MyClass -> 'path/to/MyClass.php')
 	 *
-	 * @param      boolean $withPrefix Whether or not to return the path with the class name
-	 * @return     string path.to.ClassName
+	 * @return     string ClassName
 	 */
-	public static function getOMClass($withPrefix = true)
+	public static function getOMClass()
 	{
-		return $withPrefix ? NagiosResourcePeer::CLASS_DEFAULT : NagiosResourcePeer::OM_CLASS;
+		return NagiosResourcePeer::OM_CLASS;
 	}
 
 	/**

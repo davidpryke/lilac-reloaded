@@ -25,6 +25,12 @@ abstract class BaseNagiosDependency extends BaseObject  implements Persistent
 	protected static $peer;
 
 	/**
+	 * The flag var to prevent infinit loop in deep copy
+	 * @var       boolean
+	 */
+	protected $startCopy = false;
+
+	/**
 	 * The value for the id field.
 	 * @var        int
 	 */
@@ -222,6 +228,12 @@ abstract class BaseNagiosDependency extends BaseObject  implements Persistent
 	 * @var        boolean
 	 */
 	protected $alreadyInValidation = false;
+
+	/**
+	 * An array of objects scheduled for deletion.
+	 * @var		array
+	 */
+	protected $nagiosDependencyTargetsScheduledForDeletion = null;
 
 	/**
 	 * Get the [id] column value.
@@ -634,7 +646,7 @@ abstract class BaseNagiosDependency extends BaseObject  implements Persistent
 	} // setName()
 
 	/**
-	 * Sets the value of the [execution_failure_criteria_up] column. 
+	 * Sets the value of the [execution_failure_criteria_up] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -662,7 +674,7 @@ abstract class BaseNagiosDependency extends BaseObject  implements Persistent
 	} // setExecutionFailureCriteriaUp()
 
 	/**
-	 * Sets the value of the [execution_failure_criteria_down] column. 
+	 * Sets the value of the [execution_failure_criteria_down] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -690,7 +702,7 @@ abstract class BaseNagiosDependency extends BaseObject  implements Persistent
 	} // setExecutionFailureCriteriaDown()
 
 	/**
-	 * Sets the value of the [execution_failure_criteria_unreachable] column. 
+	 * Sets the value of the [execution_failure_criteria_unreachable] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -718,7 +730,7 @@ abstract class BaseNagiosDependency extends BaseObject  implements Persistent
 	} // setExecutionFailureCriteriaUnreachable()
 
 	/**
-	 * Sets the value of the [execution_failure_criteria_pending] column. 
+	 * Sets the value of the [execution_failure_criteria_pending] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -746,7 +758,7 @@ abstract class BaseNagiosDependency extends BaseObject  implements Persistent
 	} // setExecutionFailureCriteriaPending()
 
 	/**
-	 * Sets the value of the [execution_failure_criteria_ok] column. 
+	 * Sets the value of the [execution_failure_criteria_ok] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -774,7 +786,7 @@ abstract class BaseNagiosDependency extends BaseObject  implements Persistent
 	} // setExecutionFailureCriteriaOk()
 
 	/**
-	 * Sets the value of the [execution_failure_criteria_warning] column. 
+	 * Sets the value of the [execution_failure_criteria_warning] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -802,7 +814,7 @@ abstract class BaseNagiosDependency extends BaseObject  implements Persistent
 	} // setExecutionFailureCriteriaWarning()
 
 	/**
-	 * Sets the value of the [execution_failure_criteria_unknown] column. 
+	 * Sets the value of the [execution_failure_criteria_unknown] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -830,7 +842,7 @@ abstract class BaseNagiosDependency extends BaseObject  implements Persistent
 	} // setExecutionFailureCriteriaUnknown()
 
 	/**
-	 * Sets the value of the [execution_failure_criteria_critical] column. 
+	 * Sets the value of the [execution_failure_criteria_critical] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -858,7 +870,7 @@ abstract class BaseNagiosDependency extends BaseObject  implements Persistent
 	} // setExecutionFailureCriteriaCritical()
 
 	/**
-	 * Sets the value of the [notification_failure_criteria_ok] column. 
+	 * Sets the value of the [notification_failure_criteria_ok] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -886,7 +898,7 @@ abstract class BaseNagiosDependency extends BaseObject  implements Persistent
 	} // setNotificationFailureCriteriaOk()
 
 	/**
-	 * Sets the value of the [notification_failure_criteria_warning] column. 
+	 * Sets the value of the [notification_failure_criteria_warning] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -914,7 +926,7 @@ abstract class BaseNagiosDependency extends BaseObject  implements Persistent
 	} // setNotificationFailureCriteriaWarning()
 
 	/**
-	 * Sets the value of the [notification_failure_criteria_unknown] column. 
+	 * Sets the value of the [notification_failure_criteria_unknown] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -942,7 +954,7 @@ abstract class BaseNagiosDependency extends BaseObject  implements Persistent
 	} // setNotificationFailureCriteriaUnknown()
 
 	/**
-	 * Sets the value of the [notification_failure_criteria_critical] column. 
+	 * Sets the value of the [notification_failure_criteria_critical] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -970,7 +982,7 @@ abstract class BaseNagiosDependency extends BaseObject  implements Persistent
 	} // setNotificationFailureCriteriaCritical()
 
 	/**
-	 * Sets the value of the [notification_failure_criteria_pending] column. 
+	 * Sets the value of the [notification_failure_criteria_pending] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -998,7 +1010,7 @@ abstract class BaseNagiosDependency extends BaseObject  implements Persistent
 	} // setNotificationFailureCriteriaPending()
 
 	/**
-	 * Sets the value of the [notification_failure_criteria_up] column. 
+	 * Sets the value of the [notification_failure_criteria_up] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -1026,7 +1038,7 @@ abstract class BaseNagiosDependency extends BaseObject  implements Persistent
 	} // setNotificationFailureCriteriaUp()
 
 	/**
-	 * Sets the value of the [notification_failure_criteria_down] column. 
+	 * Sets the value of the [notification_failure_criteria_down] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -1054,7 +1066,7 @@ abstract class BaseNagiosDependency extends BaseObject  implements Persistent
 	} // setNotificationFailureCriteriaDown()
 
 	/**
-	 * Sets the value of the [notification_failure_criteria_unreachable] column. 
+	 * Sets the value of the [notification_failure_criteria_unreachable] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -1082,7 +1094,7 @@ abstract class BaseNagiosDependency extends BaseObject  implements Persistent
 	} // setNotificationFailureCriteriaUnreachable()
 
 	/**
-	 * Sets the value of the [inherits_parent] column. 
+	 * Sets the value of the [inherits_parent] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -1310,18 +1322,18 @@ abstract class BaseNagiosDependency extends BaseObject  implements Persistent
 
 		$con->beginTransaction();
 		try {
+			$deleteQuery = NagiosDependencyQuery::create()
+				->filterByPrimaryKey($this->getPrimaryKey());
 			$ret = $this->preDelete($con);
 			if ($ret) {
-				NagiosDependencyQuery::create()
-					->filterByPrimaryKey($this->getPrimaryKey())
-					->delete($con);
+				$deleteQuery->delete($con);
 				$this->postDelete($con);
 				$con->commit();
 				$this->setDeleted(true);
 			} else {
 				$con->commit();
 			}
-		} catch (PropelException $e) {
+		} catch (Exception $e) {
 			$con->rollBack();
 			throw $e;
 		}
@@ -1373,7 +1385,7 @@ abstract class BaseNagiosDependency extends BaseObject  implements Persistent
 			}
 			$con->commit();
 			return $affectedRows;
-		} catch (PropelException $e) {
+		} catch (Exception $e) {
 			$con->rollBack();
 			throw $e;
 		}
@@ -1443,27 +1455,24 @@ abstract class BaseNagiosDependency extends BaseObject  implements Persistent
 				$this->setNagiosTimeperiod($this->aNagiosTimeperiod);
 			}
 
-			if ($this->isNew() ) {
-				$this->modifiedColumns[] = NagiosDependencyPeer::ID;
+			if ($this->isNew() || $this->isModified()) {
+				// persist changes
+				if ($this->isNew()) {
+					$this->doInsert($con);
+				} else {
+					$this->doUpdate($con);
+				}
+				$affectedRows += 1;
+				$this->resetModified();
 			}
 
-			// If this object has been modified, then save it to the database.
-			if ($this->isModified()) {
-				if ($this->isNew()) {
-					$criteria = $this->buildCriteria();
-					if ($criteria->keyContainsValue(NagiosDependencyPeer::ID) ) {
-						throw new PropelException('Cannot insert a value for auto-increment primary key ('.NagiosDependencyPeer::ID.')');
-					}
-
-					$pk = BasePeer::doInsert($criteria, $con);
-					$affectedRows += 1;
-					$this->setId($pk);  //[IMV] update autoincrement primary key
-					$this->setNew(false);
-				} else {
-					$affectedRows += NagiosDependencyPeer::doUpdate($this, $con);
+			if ($this->nagiosDependencyTargetsScheduledForDeletion !== null) {
+				if (!$this->nagiosDependencyTargetsScheduledForDeletion->isEmpty()) {
+					NagiosDependencyTargetQuery::create()
+						->filterByPrimaryKeys($this->nagiosDependencyTargetsScheduledForDeletion->getPrimaryKeys(false))
+						->delete($con);
+					$this->nagiosDependencyTargetsScheduledForDeletion = null;
 				}
-
-				$this->resetModified(); // [HL] After being saved an object is no longer 'modified'
 			}
 
 			if ($this->collNagiosDependencyTargets !== null) {
@@ -1479,6 +1488,218 @@ abstract class BaseNagiosDependency extends BaseObject  implements Persistent
 		}
 		return $affectedRows;
 	} // doSave()
+
+	/**
+	 * Insert the row in the database.
+	 *
+	 * @param      PropelPDO $con
+	 *
+	 * @throws     PropelException
+	 * @see        doSave()
+	 */
+	protected function doInsert(PropelPDO $con)
+	{
+		$modifiedColumns = array();
+		$index = 0;
+
+		$this->modifiedColumns[] = NagiosDependencyPeer::ID;
+		if (null !== $this->id) {
+			throw new PropelException('Cannot insert a value for auto-increment primary key (' . NagiosDependencyPeer::ID . ')');
+		}
+
+		 // check the columns in natural order for more readable SQL queries
+		if ($this->isColumnModified(NagiosDependencyPeer::ID)) {
+			$modifiedColumns[':p' . $index++]  = '`ID`';
+		}
+		if ($this->isColumnModified(NagiosDependencyPeer::HOST_TEMPLATE)) {
+			$modifiedColumns[':p' . $index++]  = '`HOST_TEMPLATE`';
+		}
+		if ($this->isColumnModified(NagiosDependencyPeer::HOST)) {
+			$modifiedColumns[':p' . $index++]  = '`HOST`';
+		}
+		if ($this->isColumnModified(NagiosDependencyPeer::SERVICE_TEMPLATE)) {
+			$modifiedColumns[':p' . $index++]  = '`SERVICE_TEMPLATE`';
+		}
+		if ($this->isColumnModified(NagiosDependencyPeer::SERVICE)) {
+			$modifiedColumns[':p' . $index++]  = '`SERVICE`';
+		}
+		if ($this->isColumnModified(NagiosDependencyPeer::HOSTGROUP)) {
+			$modifiedColumns[':p' . $index++]  = '`HOSTGROUP`';
+		}
+		if ($this->isColumnModified(NagiosDependencyPeer::NAME)) {
+			$modifiedColumns[':p' . $index++]  = '`NAME`';
+		}
+		if ($this->isColumnModified(NagiosDependencyPeer::EXECUTION_FAILURE_CRITERIA_UP)) {
+			$modifiedColumns[':p' . $index++]  = '`EXECUTION_FAILURE_CRITERIA_UP`';
+		}
+		if ($this->isColumnModified(NagiosDependencyPeer::EXECUTION_FAILURE_CRITERIA_DOWN)) {
+			$modifiedColumns[':p' . $index++]  = '`EXECUTION_FAILURE_CRITERIA_DOWN`';
+		}
+		if ($this->isColumnModified(NagiosDependencyPeer::EXECUTION_FAILURE_CRITERIA_UNREACHABLE)) {
+			$modifiedColumns[':p' . $index++]  = '`EXECUTION_FAILURE_CRITERIA_UNREACHABLE`';
+		}
+		if ($this->isColumnModified(NagiosDependencyPeer::EXECUTION_FAILURE_CRITERIA_PENDING)) {
+			$modifiedColumns[':p' . $index++]  = '`EXECUTION_FAILURE_CRITERIA_PENDING`';
+		}
+		if ($this->isColumnModified(NagiosDependencyPeer::EXECUTION_FAILURE_CRITERIA_OK)) {
+			$modifiedColumns[':p' . $index++]  = '`EXECUTION_FAILURE_CRITERIA_OK`';
+		}
+		if ($this->isColumnModified(NagiosDependencyPeer::EXECUTION_FAILURE_CRITERIA_WARNING)) {
+			$modifiedColumns[':p' . $index++]  = '`EXECUTION_FAILURE_CRITERIA_WARNING`';
+		}
+		if ($this->isColumnModified(NagiosDependencyPeer::EXECUTION_FAILURE_CRITERIA_UNKNOWN)) {
+			$modifiedColumns[':p' . $index++]  = '`EXECUTION_FAILURE_CRITERIA_UNKNOWN`';
+		}
+		if ($this->isColumnModified(NagiosDependencyPeer::EXECUTION_FAILURE_CRITERIA_CRITICAL)) {
+			$modifiedColumns[':p' . $index++]  = '`EXECUTION_FAILURE_CRITERIA_CRITICAL`';
+		}
+		if ($this->isColumnModified(NagiosDependencyPeer::NOTIFICATION_FAILURE_CRITERIA_OK)) {
+			$modifiedColumns[':p' . $index++]  = '`NOTIFICATION_FAILURE_CRITERIA_OK`';
+		}
+		if ($this->isColumnModified(NagiosDependencyPeer::NOTIFICATION_FAILURE_CRITERIA_WARNING)) {
+			$modifiedColumns[':p' . $index++]  = '`NOTIFICATION_FAILURE_CRITERIA_WARNING`';
+		}
+		if ($this->isColumnModified(NagiosDependencyPeer::NOTIFICATION_FAILURE_CRITERIA_UNKNOWN)) {
+			$modifiedColumns[':p' . $index++]  = '`NOTIFICATION_FAILURE_CRITERIA_UNKNOWN`';
+		}
+		if ($this->isColumnModified(NagiosDependencyPeer::NOTIFICATION_FAILURE_CRITERIA_CRITICAL)) {
+			$modifiedColumns[':p' . $index++]  = '`NOTIFICATION_FAILURE_CRITERIA_CRITICAL`';
+		}
+		if ($this->isColumnModified(NagiosDependencyPeer::NOTIFICATION_FAILURE_CRITERIA_PENDING)) {
+			$modifiedColumns[':p' . $index++]  = '`NOTIFICATION_FAILURE_CRITERIA_PENDING`';
+		}
+		if ($this->isColumnModified(NagiosDependencyPeer::NOTIFICATION_FAILURE_CRITERIA_UP)) {
+			$modifiedColumns[':p' . $index++]  = '`NOTIFICATION_FAILURE_CRITERIA_UP`';
+		}
+		if ($this->isColumnModified(NagiosDependencyPeer::NOTIFICATION_FAILURE_CRITERIA_DOWN)) {
+			$modifiedColumns[':p' . $index++]  = '`NOTIFICATION_FAILURE_CRITERIA_DOWN`';
+		}
+		if ($this->isColumnModified(NagiosDependencyPeer::NOTIFICATION_FAILURE_CRITERIA_UNREACHABLE)) {
+			$modifiedColumns[':p' . $index++]  = '`NOTIFICATION_FAILURE_CRITERIA_UNREACHABLE`';
+		}
+		if ($this->isColumnModified(NagiosDependencyPeer::INHERITS_PARENT)) {
+			$modifiedColumns[':p' . $index++]  = '`INHERITS_PARENT`';
+		}
+		if ($this->isColumnModified(NagiosDependencyPeer::DEPENDENCY_PERIOD)) {
+			$modifiedColumns[':p' . $index++]  = '`DEPENDENCY_PERIOD`';
+		}
+
+		$sql = sprintf(
+			'INSERT INTO `nagios_dependency` (%s) VALUES (%s)',
+			implode(', ', $modifiedColumns),
+			implode(', ', array_keys($modifiedColumns))
+		);
+
+		try {
+			$stmt = $con->prepare($sql);
+			foreach ($modifiedColumns as $identifier => $columnName) {
+				switch ($columnName) {
+					case '`ID`':
+						$stmt->bindValue($identifier, $this->id, PDO::PARAM_INT);
+						break;
+					case '`HOST_TEMPLATE`':
+						$stmt->bindValue($identifier, $this->host_template, PDO::PARAM_INT);
+						break;
+					case '`HOST`':
+						$stmt->bindValue($identifier, $this->host, PDO::PARAM_INT);
+						break;
+					case '`SERVICE_TEMPLATE`':
+						$stmt->bindValue($identifier, $this->service_template, PDO::PARAM_INT);
+						break;
+					case '`SERVICE`':
+						$stmt->bindValue($identifier, $this->service, PDO::PARAM_INT);
+						break;
+					case '`HOSTGROUP`':
+						$stmt->bindValue($identifier, $this->hostgroup, PDO::PARAM_INT);
+						break;
+					case '`NAME`':
+						$stmt->bindValue($identifier, $this->name, PDO::PARAM_STR);
+						break;
+					case '`EXECUTION_FAILURE_CRITERIA_UP`':
+						$stmt->bindValue($identifier, (int) $this->execution_failure_criteria_up, PDO::PARAM_INT);
+						break;
+					case '`EXECUTION_FAILURE_CRITERIA_DOWN`':
+						$stmt->bindValue($identifier, (int) $this->execution_failure_criteria_down, PDO::PARAM_INT);
+						break;
+					case '`EXECUTION_FAILURE_CRITERIA_UNREACHABLE`':
+						$stmt->bindValue($identifier, (int) $this->execution_failure_criteria_unreachable, PDO::PARAM_INT);
+						break;
+					case '`EXECUTION_FAILURE_CRITERIA_PENDING`':
+						$stmt->bindValue($identifier, (int) $this->execution_failure_criteria_pending, PDO::PARAM_INT);
+						break;
+					case '`EXECUTION_FAILURE_CRITERIA_OK`':
+						$stmt->bindValue($identifier, (int) $this->execution_failure_criteria_ok, PDO::PARAM_INT);
+						break;
+					case '`EXECUTION_FAILURE_CRITERIA_WARNING`':
+						$stmt->bindValue($identifier, (int) $this->execution_failure_criteria_warning, PDO::PARAM_INT);
+						break;
+					case '`EXECUTION_FAILURE_CRITERIA_UNKNOWN`':
+						$stmt->bindValue($identifier, (int) $this->execution_failure_criteria_unknown, PDO::PARAM_INT);
+						break;
+					case '`EXECUTION_FAILURE_CRITERIA_CRITICAL`':
+						$stmt->bindValue($identifier, (int) $this->execution_failure_criteria_critical, PDO::PARAM_INT);
+						break;
+					case '`NOTIFICATION_FAILURE_CRITERIA_OK`':
+						$stmt->bindValue($identifier, (int) $this->notification_failure_criteria_ok, PDO::PARAM_INT);
+						break;
+					case '`NOTIFICATION_FAILURE_CRITERIA_WARNING`':
+						$stmt->bindValue($identifier, (int) $this->notification_failure_criteria_warning, PDO::PARAM_INT);
+						break;
+					case '`NOTIFICATION_FAILURE_CRITERIA_UNKNOWN`':
+						$stmt->bindValue($identifier, (int) $this->notification_failure_criteria_unknown, PDO::PARAM_INT);
+						break;
+					case '`NOTIFICATION_FAILURE_CRITERIA_CRITICAL`':
+						$stmt->bindValue($identifier, (int) $this->notification_failure_criteria_critical, PDO::PARAM_INT);
+						break;
+					case '`NOTIFICATION_FAILURE_CRITERIA_PENDING`':
+						$stmt->bindValue($identifier, (int) $this->notification_failure_criteria_pending, PDO::PARAM_INT);
+						break;
+					case '`NOTIFICATION_FAILURE_CRITERIA_UP`':
+						$stmt->bindValue($identifier, (int) $this->notification_failure_criteria_up, PDO::PARAM_INT);
+						break;
+					case '`NOTIFICATION_FAILURE_CRITERIA_DOWN`':
+						$stmt->bindValue($identifier, (int) $this->notification_failure_criteria_down, PDO::PARAM_INT);
+						break;
+					case '`NOTIFICATION_FAILURE_CRITERIA_UNREACHABLE`':
+						$stmt->bindValue($identifier, (int) $this->notification_failure_criteria_unreachable, PDO::PARAM_INT);
+						break;
+					case '`INHERITS_PARENT`':
+						$stmt->bindValue($identifier, (int) $this->inherits_parent, PDO::PARAM_INT);
+						break;
+					case '`DEPENDENCY_PERIOD`':
+						$stmt->bindValue($identifier, $this->dependency_period, PDO::PARAM_INT);
+						break;
+				}
+			}
+			$stmt->execute();
+		} catch (Exception $e) {
+			Propel::log($e->getMessage(), Propel::LOG_ERR);
+			throw new PropelException(sprintf('Unable to execute INSERT statement [%s]', $sql), $e);
+		}
+
+		try {
+			$pk = $con->lastInsertId();
+		} catch (Exception $e) {
+			throw new PropelException('Unable to get autoincrement id.', $e);
+		}
+		$this->setId($pk);
+
+		$this->setNew(false);
+	}
+
+	/**
+	 * Update the row in the database.
+	 *
+	 * @param      PropelPDO $con
+	 *
+	 * @see        doSave()
+	 */
+	protected function doUpdate(PropelPDO $con)
+	{
+		$selectCriteria = $this->buildPkeyCriteria();
+		$valuesCriteria = $this->buildCriteria();
+		BasePeer::doUpdate($selectCriteria, $valuesCriteria, $con);
+	}
 
 	/**
 	 * Array of ValidationFailed objects.
@@ -2058,10 +2279,12 @@ abstract class BaseNagiosDependency extends BaseObject  implements Persistent
 		$copyObj->setInheritsParent($this->getInheritsParent());
 		$copyObj->setDependencyPeriod($this->getDependencyPeriod());
 
-		if ($deepCopy) {
+		if ($deepCopy && !$this->startCopy) {
 			// important: temporarily setNew(false) because this affects the behavior of
 			// the getter/setter methods for fkey referrer objects.
 			$copyObj->setNew(false);
+			// store object hash to prevent cycle
+			$this->startCopy = true;
 
 			foreach ($this->getNagiosDependencyTargets() as $relObj) {
 				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
@@ -2069,6 +2292,8 @@ abstract class BaseNagiosDependency extends BaseObject  implements Persistent
 				}
 			}
 
+			//unflag object copy
+			$this->startCopy = false;
 		} // if ($deepCopy)
 
 		if ($makeNew) {
@@ -2412,7 +2637,7 @@ abstract class BaseNagiosDependency extends BaseObject  implements Persistent
 
 	/**
 	 * Initializes a collection based on the name of a relation.
-	 * Avoids crafting an 'init[$relationName]s' method name 
+	 * Avoids crafting an 'init[$relationName]s' method name
 	 * that wouldn't work when StandardEnglishPluralizer is used.
 	 *
 	 * @param      string $relationName The name of the relation to initialize
@@ -2494,6 +2719,30 @@ abstract class BaseNagiosDependency extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Sets a collection of NagiosDependencyTarget objects related by a one-to-many relationship
+	 * to the current object.
+	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+	 * and new objects from the given Propel collection.
+	 *
+	 * @param      PropelCollection $nagiosDependencyTargets A Propel collection.
+	 * @param      PropelPDO $con Optional connection object
+	 */
+	public function setNagiosDependencyTargets(PropelCollection $nagiosDependencyTargets, PropelPDO $con = null)
+	{
+		$this->nagiosDependencyTargetsScheduledForDeletion = $this->getNagiosDependencyTargets(new Criteria(), $con)->diff($nagiosDependencyTargets);
+
+		foreach ($nagiosDependencyTargets as $nagiosDependencyTarget) {
+			// Fix issue with collection modified by reference
+			if ($nagiosDependencyTarget->isNew()) {
+				$nagiosDependencyTarget->setNagiosDependency($this);
+			}
+			$this->addNagiosDependencyTarget($nagiosDependencyTarget);
+		}
+
+		$this->collNagiosDependencyTargets = $nagiosDependencyTargets;
+	}
+
+	/**
 	 * Returns the number of related NagiosDependencyTarget objects.
 	 *
 	 * @param      Criteria $criteria
@@ -2526,8 +2775,7 @@ abstract class BaseNagiosDependency extends BaseObject  implements Persistent
 	 * through the NagiosDependencyTarget foreign key attribute.
 	 *
 	 * @param      NagiosDependencyTarget $l NagiosDependencyTarget
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     NagiosDependency The current object (for fluent API support)
 	 */
 	public function addNagiosDependencyTarget(NagiosDependencyTarget $l)
 	{
@@ -2535,9 +2783,19 @@ abstract class BaseNagiosDependency extends BaseObject  implements Persistent
 			$this->initNagiosDependencyTargets();
 		}
 		if (!$this->collNagiosDependencyTargets->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collNagiosDependencyTargets[]= $l;
-			$l->setNagiosDependency($this);
+			$this->doAddNagiosDependencyTarget($l);
 		}
+
+		return $this;
+	}
+
+	/**
+	 * @param	NagiosDependencyTarget $nagiosDependencyTarget The nagiosDependencyTarget object to add.
+	 */
+	protected function doAddNagiosDependencyTarget($nagiosDependencyTarget)
+	{
+		$this->collNagiosDependencyTargets[]= $nagiosDependencyTarget;
+		$nagiosDependencyTarget->setNagiosDependency($this);
 	}
 
 
@@ -2692,25 +2950,6 @@ abstract class BaseNagiosDependency extends BaseObject  implements Persistent
 	public function __toString()
 	{
 		return (string) $this->exportTo(NagiosDependencyPeer::DEFAULT_STRING_FORMAT);
-	}
-
-	/**
-	 * Catches calls to virtual methods
-	 */
-	public function __call($name, $params)
-	{
-		if (preg_match('/get(\w+)/', $name, $matches)) {
-			$virtualColumn = $matches[1];
-			if ($this->hasVirtualColumn($virtualColumn)) {
-				return $this->getVirtualColumn($virtualColumn);
-			}
-			// no lcfirst in php<5.3...
-			$virtualColumn[0] = strtolower($virtualColumn[0]);
-			if ($this->hasVirtualColumn($virtualColumn)) {
-				return $this->getVirtualColumn($virtualColumn);
-			}
-		}
-		return parent::__call($name, $params);
 	}
 
 } // BaseNagiosDependency

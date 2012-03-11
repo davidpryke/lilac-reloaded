@@ -25,6 +25,12 @@ abstract class BaseNagiosHostTemplateAutodiscoveryService extends BaseObject  im
 	protected static $peer;
 
 	/**
+	 * The flag var to prevent infinit loop in deep copy
+	 * @var       boolean
+	 */
+	protected $startCopy = false;
+
+	/**
 	 * The value for the id field.
 	 * @var        int
 	 */
@@ -473,18 +479,18 @@ abstract class BaseNagiosHostTemplateAutodiscoveryService extends BaseObject  im
 
 		$con->beginTransaction();
 		try {
+			$deleteQuery = NagiosHostTemplateAutodiscoveryServiceQuery::create()
+				->filterByPrimaryKey($this->getPrimaryKey());
 			$ret = $this->preDelete($con);
 			if ($ret) {
-				NagiosHostTemplateAutodiscoveryServiceQuery::create()
-					->filterByPrimaryKey($this->getPrimaryKey())
-					->delete($con);
+				$deleteQuery->delete($con);
 				$this->postDelete($con);
 				$con->commit();
 				$this->setDeleted(true);
 			} else {
 				$con->commit();
 			}
-		} catch (PropelException $e) {
+		} catch (Exception $e) {
 			$con->rollBack();
 			throw $e;
 		}
@@ -536,7 +542,7 @@ abstract class BaseNagiosHostTemplateAutodiscoveryService extends BaseObject  im
 			}
 			$con->commit();
 			return $affectedRows;
-		} catch (PropelException $e) {
+		} catch (Exception $e) {
 			$con->rollBack();
 			throw $e;
 		}
@@ -571,27 +577,15 @@ abstract class BaseNagiosHostTemplateAutodiscoveryService extends BaseObject  im
 				$this->setNagiosHostTemplate($this->aNagiosHostTemplate);
 			}
 
-			if ($this->isNew() ) {
-				$this->modifiedColumns[] = NagiosHostTemplateAutodiscoveryServicePeer::ID;
-			}
-
-			// If this object has been modified, then save it to the database.
-			if ($this->isModified()) {
+			if ($this->isNew() || $this->isModified()) {
+				// persist changes
 				if ($this->isNew()) {
-					$criteria = $this->buildCriteria();
-					if ($criteria->keyContainsValue(NagiosHostTemplateAutodiscoveryServicePeer::ID) ) {
-						throw new PropelException('Cannot insert a value for auto-increment primary key ('.NagiosHostTemplateAutodiscoveryServicePeer::ID.')');
-					}
-
-					$pk = BasePeer::doInsert($criteria, $con);
-					$affectedRows += 1;
-					$this->setId($pk);  //[IMV] update autoincrement primary key
-					$this->setNew(false);
+					$this->doInsert($con);
 				} else {
-					$affectedRows += NagiosHostTemplateAutodiscoveryServicePeer::doUpdate($this, $con);
+					$this->doUpdate($con);
 				}
-
-				$this->resetModified(); // [HL] After being saved an object is no longer 'modified'
+				$affectedRows += 1;
+				$this->resetModified();
 			}
 
 			$this->alreadyInSave = false;
@@ -599,6 +593,116 @@ abstract class BaseNagiosHostTemplateAutodiscoveryService extends BaseObject  im
 		}
 		return $affectedRows;
 	} // doSave()
+
+	/**
+	 * Insert the row in the database.
+	 *
+	 * @param      PropelPDO $con
+	 *
+	 * @throws     PropelException
+	 * @see        doSave()
+	 */
+	protected function doInsert(PropelPDO $con)
+	{
+		$modifiedColumns = array();
+		$index = 0;
+
+		$this->modifiedColumns[] = NagiosHostTemplateAutodiscoveryServicePeer::ID;
+		if (null !== $this->id) {
+			throw new PropelException('Cannot insert a value for auto-increment primary key (' . NagiosHostTemplateAutodiscoveryServicePeer::ID . ')');
+		}
+
+		 // check the columns in natural order for more readable SQL queries
+		if ($this->isColumnModified(NagiosHostTemplateAutodiscoveryServicePeer::ID)) {
+			$modifiedColumns[':p' . $index++]  = '`ID`';
+		}
+		if ($this->isColumnModified(NagiosHostTemplateAutodiscoveryServicePeer::HOST_TEMPLATE)) {
+			$modifiedColumns[':p' . $index++]  = '`HOST_TEMPLATE`';
+		}
+		if ($this->isColumnModified(NagiosHostTemplateAutodiscoveryServicePeer::NAME)) {
+			$modifiedColumns[':p' . $index++]  = '`NAME`';
+		}
+		if ($this->isColumnModified(NagiosHostTemplateAutodiscoveryServicePeer::PROTOCOL)) {
+			$modifiedColumns[':p' . $index++]  = '`PROTOCOL`';
+		}
+		if ($this->isColumnModified(NagiosHostTemplateAutodiscoveryServicePeer::PORT)) {
+			$modifiedColumns[':p' . $index++]  = '`PORT`';
+		}
+		if ($this->isColumnModified(NagiosHostTemplateAutodiscoveryServicePeer::PRODUCT)) {
+			$modifiedColumns[':p' . $index++]  = '`PRODUCT`';
+		}
+		if ($this->isColumnModified(NagiosHostTemplateAutodiscoveryServicePeer::VERSION)) {
+			$modifiedColumns[':p' . $index++]  = '`VERSION`';
+		}
+		if ($this->isColumnModified(NagiosHostTemplateAutodiscoveryServicePeer::EXTRA_INFORMATION)) {
+			$modifiedColumns[':p' . $index++]  = '`EXTRA_INFORMATION`';
+		}
+
+		$sql = sprintf(
+			'INSERT INTO `nagios_host_template_autodiscovery_service` (%s) VALUES (%s)',
+			implode(', ', $modifiedColumns),
+			implode(', ', array_keys($modifiedColumns))
+		);
+
+		try {
+			$stmt = $con->prepare($sql);
+			foreach ($modifiedColumns as $identifier => $columnName) {
+				switch ($columnName) {
+					case '`ID`':
+						$stmt->bindValue($identifier, $this->id, PDO::PARAM_INT);
+						break;
+					case '`HOST_TEMPLATE`':
+						$stmt->bindValue($identifier, $this->host_template, PDO::PARAM_INT);
+						break;
+					case '`NAME`':
+						$stmt->bindValue($identifier, $this->name, PDO::PARAM_STR);
+						break;
+					case '`PROTOCOL`':
+						$stmt->bindValue($identifier, $this->protocol, PDO::PARAM_STR);
+						break;
+					case '`PORT`':
+						$stmt->bindValue($identifier, $this->port, PDO::PARAM_STR);
+						break;
+					case '`PRODUCT`':
+						$stmt->bindValue($identifier, $this->product, PDO::PARAM_STR);
+						break;
+					case '`VERSION`':
+						$stmt->bindValue($identifier, $this->version, PDO::PARAM_STR);
+						break;
+					case '`EXTRA_INFORMATION`':
+						$stmt->bindValue($identifier, $this->extra_information, PDO::PARAM_STR);
+						break;
+				}
+			}
+			$stmt->execute();
+		} catch (Exception $e) {
+			Propel::log($e->getMessage(), Propel::LOG_ERR);
+			throw new PropelException(sprintf('Unable to execute INSERT statement [%s]', $sql), $e);
+		}
+
+		try {
+			$pk = $con->lastInsertId();
+		} catch (Exception $e) {
+			throw new PropelException('Unable to get autoincrement id.', $e);
+		}
+		$this->setId($pk);
+
+		$this->setNew(false);
+	}
+
+	/**
+	 * Update the row in the database.
+	 *
+	 * @param      PropelPDO $con
+	 *
+	 * @see        doSave()
+	 */
+	protected function doUpdate(PropelPDO $con)
+	{
+		$selectCriteria = $this->buildPkeyCriteria();
+		$valuesCriteria = $this->buildCriteria();
+		BasePeer::doUpdate($selectCriteria, $valuesCriteria, $con);
+	}
 
 	/**
 	 * Array of ValidationFailed objects.
@@ -951,6 +1055,18 @@ abstract class BaseNagiosHostTemplateAutodiscoveryService extends BaseObject  im
 		$copyObj->setProduct($this->getProduct());
 		$copyObj->setVersion($this->getVersion());
 		$copyObj->setExtraInformation($this->getExtraInformation());
+
+		if ($deepCopy && !$this->startCopy) {
+			// important: temporarily setNew(false) because this affects the behavior of
+			// the getter/setter methods for fkey referrer objects.
+			$copyObj->setNew(false);
+			// store object hash to prevent cycle
+			$this->startCopy = true;
+
+			//unflag object copy
+			$this->startCopy = false;
+		} // if ($deepCopy)
+
 		if ($makeNew) {
 			$copyObj->setNew(true);
 			$copyObj->setId(NULL); // this is a auto-increment column, so set to default value
@@ -1090,25 +1206,6 @@ abstract class BaseNagiosHostTemplateAutodiscoveryService extends BaseObject  im
 	public function __toString()
 	{
 		return (string) $this->exportTo(NagiosHostTemplateAutodiscoveryServicePeer::DEFAULT_STRING_FORMAT);
-	}
-
-	/**
-	 * Catches calls to virtual methods
-	 */
-	public function __call($name, $params)
-	{
-		if (preg_match('/get(\w+)/', $name, $matches)) {
-			$virtualColumn = $matches[1];
-			if ($this->hasVirtualColumn($virtualColumn)) {
-				return $this->getVirtualColumn($virtualColumn);
-			}
-			// no lcfirst in php<5.3...
-			$virtualColumn[0] = strtolower($virtualColumn[0]);
-			if ($this->hasVirtualColumn($virtualColumn)) {
-				return $this->getVirtualColumn($virtualColumn);
-			}
-		}
-		return parent::__call($name, $params);
 	}
 
 } // BaseNagiosHostTemplateAutodiscoveryService

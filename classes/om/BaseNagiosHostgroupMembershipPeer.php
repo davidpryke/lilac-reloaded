@@ -19,12 +19,9 @@ abstract class BaseNagiosHostgroupMembershipPeer {
 	/** the related Propel class for this table */
 	const OM_CLASS = 'NagiosHostgroupMembership';
 
-	/** A class that can be returned by this peer. */
-	const CLASS_DEFAULT = 'NagiosHostgroupMembership';
-
 	/** the related TableMap class for this table */
 	const TM_CLASS = 'NagiosHostgroupMembershipTableMap';
-	
+
 	/** The total number of columns. */
 	const NUM_COLUMNS = 4;
 
@@ -48,7 +45,7 @@ abstract class BaseNagiosHostgroupMembershipPeer {
 
 	/** The default string format for model objects of the related table **/
 	const DEFAULT_STRING_FORMAT = 'YAML';
-	
+
 	/**
 	 * An identiy map to hold any loaded instances of NagiosHostgroupMembership objects.
 	 * This must be public so that other peer classes can access this when hydrating from JOIN
@@ -381,7 +378,7 @@ abstract class BaseNagiosHostgroupMembershipPeer {
 	}
 
 	/**
-	 * Retrieves the primary key from the DB resultset row 
+	 * Retrieves the primary key from the DB resultset row
 	 * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
 	 * a multi-column primary key, an array of the primary key columns will be returned.
 	 *
@@ -406,7 +403,7 @@ abstract class BaseNagiosHostgroupMembershipPeer {
 		$results = array();
 	
 		// set the class once to avoid overhead in the loop
-		$cls = NagiosHostgroupMembershipPeer::getOMClass(false);
+		$cls = NagiosHostgroupMembershipPeer::getOMClass();
 		// populate the object(s)
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$key = NagiosHostgroupMembershipPeer::getPrimaryKeyHashFromRow($row, 0);
@@ -478,9 +475,9 @@ abstract class BaseNagiosHostgroupMembershipPeer {
 		if (!$criteria->hasSelectClause()) {
 			NagiosHostgroupMembershipPeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -528,9 +525,9 @@ abstract class BaseNagiosHostgroupMembershipPeer {
 		if (!$criteria->hasSelectClause()) {
 			NagiosHostgroupMembershipPeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -578,9 +575,9 @@ abstract class BaseNagiosHostgroupMembershipPeer {
 		if (!$criteria->hasSelectClause()) {
 			NagiosHostgroupMembershipPeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -637,7 +634,7 @@ abstract class BaseNagiosHostgroupMembershipPeer {
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 
-				$cls = NagiosHostgroupMembershipPeer::getOMClass(false);
+				$cls = NagiosHostgroupMembershipPeer::getOMClass();
 
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
@@ -649,7 +646,7 @@ abstract class BaseNagiosHostgroupMembershipPeer {
 				$obj2 = NagiosHostPeer::getInstanceFromPool($key2);
 				if (!$obj2) {
 
-					$cls = NagiosHostPeer::getOMClass(false);
+					$cls = NagiosHostPeer::getOMClass();
 
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol);
@@ -703,7 +700,7 @@ abstract class BaseNagiosHostgroupMembershipPeer {
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 
-				$cls = NagiosHostgroupMembershipPeer::getOMClass(false);
+				$cls = NagiosHostgroupMembershipPeer::getOMClass();
 
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
@@ -715,7 +712,7 @@ abstract class BaseNagiosHostgroupMembershipPeer {
 				$obj2 = NagiosHostTemplatePeer::getInstanceFromPool($key2);
 				if (!$obj2) {
 
-					$cls = NagiosHostTemplatePeer::getOMClass(false);
+					$cls = NagiosHostTemplatePeer::getOMClass();
 
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol);
@@ -769,7 +766,7 @@ abstract class BaseNagiosHostgroupMembershipPeer {
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 
-				$cls = NagiosHostgroupMembershipPeer::getOMClass(false);
+				$cls = NagiosHostgroupMembershipPeer::getOMClass();
 
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
@@ -781,7 +778,7 @@ abstract class BaseNagiosHostgroupMembershipPeer {
 				$obj2 = NagiosHostgroupPeer::getInstanceFromPool($key2);
 				if (!$obj2) {
 
-					$cls = NagiosHostgroupPeer::getOMClass(false);
+					$cls = NagiosHostgroupPeer::getOMClass();
 
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol);
@@ -826,9 +823,9 @@ abstract class BaseNagiosHostgroupMembershipPeer {
 		if (!$criteria->hasSelectClause()) {
 			NagiosHostgroupMembershipPeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -900,7 +897,7 @@ abstract class BaseNagiosHostgroupMembershipPeer {
 				// See http://www.propelorm.org/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
-				$cls = NagiosHostgroupMembershipPeer::getOMClass(false);
+				$cls = NagiosHostgroupMembershipPeer::getOMClass();
 
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
@@ -914,7 +911,7 @@ abstract class BaseNagiosHostgroupMembershipPeer {
 				$obj2 = NagiosHostPeer::getInstanceFromPool($key2);
 				if (!$obj2) {
 
-					$cls = NagiosHostPeer::getOMClass(false);
+					$cls = NagiosHostPeer::getOMClass();
 
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol2);
@@ -932,7 +929,7 @@ abstract class BaseNagiosHostgroupMembershipPeer {
 				$obj3 = NagiosHostTemplatePeer::getInstanceFromPool($key3);
 				if (!$obj3) {
 
-					$cls = NagiosHostTemplatePeer::getOMClass(false);
+					$cls = NagiosHostTemplatePeer::getOMClass();
 
 					$obj3 = new $cls();
 					$obj3->hydrate($row, $startcol3);
@@ -950,7 +947,7 @@ abstract class BaseNagiosHostgroupMembershipPeer {
 				$obj4 = NagiosHostgroupPeer::getInstanceFromPool($key4);
 				if (!$obj4) {
 
-					$cls = NagiosHostgroupPeer::getOMClass(false);
+					$cls = NagiosHostgroupPeer::getOMClass();
 
 					$obj4 = new $cls();
 					$obj4->hydrate($row, $startcol4);
@@ -986,7 +983,7 @@ abstract class BaseNagiosHostgroupMembershipPeer {
 		// it will be impossible for the BasePeer::createSelectSql() method to determine which
 		// tables go into the FROM clause.
 		$criteria->setPrimaryTableName(NagiosHostgroupMembershipPeer::TABLE_NAME);
-		
+
 		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
 			$criteria->setDistinct();
 		}
@@ -994,9 +991,9 @@ abstract class BaseNagiosHostgroupMembershipPeer {
 		if (!$criteria->hasSelectClause()) {
 			NagiosHostgroupMembershipPeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY should not affect count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -1038,7 +1035,7 @@ abstract class BaseNagiosHostgroupMembershipPeer {
 		// it will be impossible for the BasePeer::createSelectSql() method to determine which
 		// tables go into the FROM clause.
 		$criteria->setPrimaryTableName(NagiosHostgroupMembershipPeer::TABLE_NAME);
-		
+
 		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
 			$criteria->setDistinct();
 		}
@@ -1046,9 +1043,9 @@ abstract class BaseNagiosHostgroupMembershipPeer {
 		if (!$criteria->hasSelectClause()) {
 			NagiosHostgroupMembershipPeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY should not affect count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -1090,7 +1087,7 @@ abstract class BaseNagiosHostgroupMembershipPeer {
 		// it will be impossible for the BasePeer::createSelectSql() method to determine which
 		// tables go into the FROM clause.
 		$criteria->setPrimaryTableName(NagiosHostgroupMembershipPeer::TABLE_NAME);
-		
+
 		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
 			$criteria->setDistinct();
 		}
@@ -1098,9 +1095,9 @@ abstract class BaseNagiosHostgroupMembershipPeer {
 		if (!$criteria->hasSelectClause()) {
 			NagiosHostgroupMembershipPeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY should not affect count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -1169,7 +1166,7 @@ abstract class BaseNagiosHostgroupMembershipPeer {
 				// See http://www.propelorm.org/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
-				$cls = NagiosHostgroupMembershipPeer::getOMClass(false);
+				$cls = NagiosHostgroupMembershipPeer::getOMClass();
 
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
@@ -1183,7 +1180,7 @@ abstract class BaseNagiosHostgroupMembershipPeer {
 					$obj2 = NagiosHostTemplatePeer::getInstanceFromPool($key2);
 					if (!$obj2) {
 	
-						$cls = NagiosHostTemplatePeer::getOMClass(false);
+						$cls = NagiosHostTemplatePeer::getOMClass();
 
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol2);
@@ -1202,7 +1199,7 @@ abstract class BaseNagiosHostgroupMembershipPeer {
 					$obj3 = NagiosHostgroupPeer::getInstanceFromPool($key3);
 					if (!$obj3) {
 	
-						$cls = NagiosHostgroupPeer::getOMClass(false);
+						$cls = NagiosHostgroupPeer::getOMClass();
 
 					$obj3 = new $cls();
 					$obj3->hydrate($row, $startcol3);
@@ -1266,7 +1263,7 @@ abstract class BaseNagiosHostgroupMembershipPeer {
 				// See http://www.propelorm.org/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
-				$cls = NagiosHostgroupMembershipPeer::getOMClass(false);
+				$cls = NagiosHostgroupMembershipPeer::getOMClass();
 
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
@@ -1280,7 +1277,7 @@ abstract class BaseNagiosHostgroupMembershipPeer {
 					$obj2 = NagiosHostPeer::getInstanceFromPool($key2);
 					if (!$obj2) {
 	
-						$cls = NagiosHostPeer::getOMClass(false);
+						$cls = NagiosHostPeer::getOMClass();
 
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol2);
@@ -1299,7 +1296,7 @@ abstract class BaseNagiosHostgroupMembershipPeer {
 					$obj3 = NagiosHostgroupPeer::getInstanceFromPool($key3);
 					if (!$obj3) {
 	
-						$cls = NagiosHostgroupPeer::getOMClass(false);
+						$cls = NagiosHostgroupPeer::getOMClass();
 
 					$obj3 = new $cls();
 					$obj3->hydrate($row, $startcol3);
@@ -1363,7 +1360,7 @@ abstract class BaseNagiosHostgroupMembershipPeer {
 				// See http://www.propelorm.org/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
-				$cls = NagiosHostgroupMembershipPeer::getOMClass(false);
+				$cls = NagiosHostgroupMembershipPeer::getOMClass();
 
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
@@ -1377,7 +1374,7 @@ abstract class BaseNagiosHostgroupMembershipPeer {
 					$obj2 = NagiosHostPeer::getInstanceFromPool($key2);
 					if (!$obj2) {
 	
-						$cls = NagiosHostPeer::getOMClass(false);
+						$cls = NagiosHostPeer::getOMClass();
 
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol2);
@@ -1396,7 +1393,7 @@ abstract class BaseNagiosHostgroupMembershipPeer {
 					$obj3 = NagiosHostTemplatePeer::getInstanceFromPool($key3);
 					if (!$obj3) {
 	
-						$cls = NagiosHostTemplatePeer::getOMClass(false);
+						$cls = NagiosHostTemplatePeer::getOMClass();
 
 					$obj3 = new $cls();
 					$obj3->hydrate($row, $startcol3);
@@ -1441,17 +1438,12 @@ abstract class BaseNagiosHostgroupMembershipPeer {
 	/**
 	 * The class that the Peer will make instances of.
 	 *
-	 * If $withPrefix is true, the returned path
-	 * uses a dot-path notation which is tranalted into a path
-	 * relative to a location on the PHP include_path.
-	 * (e.g. path.to.MyClass -> 'path/to/MyClass.php')
 	 *
-	 * @param      boolean $withPrefix Whether or not to return the path with the class name
-	 * @return     string path.to.ClassName
+	 * @return     string ClassName
 	 */
-	public static function getOMClass($withPrefix = true)
+	public static function getOMClass()
 	{
-		return $withPrefix ? NagiosHostgroupMembershipPeer::CLASS_DEFAULT : NagiosHostgroupMembershipPeer::OM_CLASS;
+		return NagiosHostgroupMembershipPeer::OM_CLASS;
 	}
 
 	/**

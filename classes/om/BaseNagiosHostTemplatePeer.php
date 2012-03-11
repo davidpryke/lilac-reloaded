@@ -19,12 +19,9 @@ abstract class BaseNagiosHostTemplatePeer {
 	/** the related Propel class for this table */
 	const OM_CLASS = 'NagiosHostTemplate';
 
-	/** A class that can be returned by this peer. */
-	const CLASS_DEFAULT = 'NagiosHostTemplate';
-
 	/** the related TableMap class for this table */
 	const TM_CLASS = 'NagiosHostTemplateTableMap';
-	
+
 	/** The total number of columns. */
 	const NUM_COLUMNS = 54;
 
@@ -198,7 +195,7 @@ abstract class BaseNagiosHostTemplatePeer {
 
 	/** The default string format for model objects of the related table **/
 	const DEFAULT_STRING_FORMAT = 'YAML';
-	
+
 	/**
 	 * An identiy map to hold any loaded instances of NagiosHostTemplate objects.
 	 * This must be public so that other peer classes can access this when hydrating from JOIN
@@ -609,43 +606,43 @@ abstract class BaseNagiosHostTemplatePeer {
 	 */
 	public static function clearRelatedInstancePool()
 	{
-		// Invalidate objects in NagiosHostTemplateAutodiscoveryServicePeer instance pool, 
+		// Invalidate objects in NagiosHostTemplateAutodiscoveryServicePeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		NagiosHostTemplateAutodiscoveryServicePeer::clearInstancePool();
-		// Invalidate objects in NagiosServicePeer instance pool, 
+		// Invalidate objects in NagiosServicePeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		NagiosServicePeer::clearInstancePool();
-		// Invalidate objects in NagiosHostContactMemberPeer instance pool, 
+		// Invalidate objects in NagiosHostContactMemberPeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		NagiosHostContactMemberPeer::clearInstancePool();
-		// Invalidate objects in NagiosDependencyPeer instance pool, 
+		// Invalidate objects in NagiosDependencyPeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		NagiosDependencyPeer::clearInstancePool();
-		// Invalidate objects in NagiosEscalationPeer instance pool, 
+		// Invalidate objects in NagiosEscalationPeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		NagiosEscalationPeer::clearInstancePool();
-		// Invalidate objects in NagiosHostContactgroupPeer instance pool, 
+		// Invalidate objects in NagiosHostContactgroupPeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		NagiosHostContactgroupPeer::clearInstancePool();
-		// Invalidate objects in NagiosHostgroupMembershipPeer instance pool, 
+		// Invalidate objects in NagiosHostgroupMembershipPeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		NagiosHostgroupMembershipPeer::clearInstancePool();
-		// Invalidate objects in NagiosHostCheckCommandParameterPeer instance pool, 
+		// Invalidate objects in NagiosHostCheckCommandParameterPeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		NagiosHostCheckCommandParameterPeer::clearInstancePool();
-		// Invalidate objects in NagiosHostParentPeer instance pool, 
+		// Invalidate objects in NagiosHostParentPeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		NagiosHostParentPeer::clearInstancePool();
-		// Invalidate objects in NagiosHostTemplateInheritancePeer instance pool, 
+		// Invalidate objects in NagiosHostTemplateInheritancePeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		NagiosHostTemplateInheritancePeer::clearInstancePool();
-		// Invalidate objects in NagiosHostTemplateInheritancePeer instance pool, 
+		// Invalidate objects in NagiosHostTemplateInheritancePeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		NagiosHostTemplateInheritancePeer::clearInstancePool();
-		// Invalidate objects in AutodiscoveryDevicePeer instance pool, 
+		// Invalidate objects in AutodiscoveryDevicePeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		AutodiscoveryDevicePeer::clearInstancePool();
-		// Invalidate objects in AutodiscoveryDeviceTemplateMatchPeer instance pool, 
+		// Invalidate objects in AutodiscoveryDeviceTemplateMatchPeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		AutodiscoveryDeviceTemplateMatchPeer::clearInstancePool();
 	}
@@ -670,7 +667,7 @@ abstract class BaseNagiosHostTemplatePeer {
 	}
 
 	/**
-	 * Retrieves the primary key from the DB resultset row 
+	 * Retrieves the primary key from the DB resultset row
 	 * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
 	 * a multi-column primary key, an array of the primary key columns will be returned.
 	 *
@@ -695,7 +692,7 @@ abstract class BaseNagiosHostTemplatePeer {
 		$results = array();
 	
 		// set the class once to avoid overhead in the loop
-		$cls = NagiosHostTemplatePeer::getOMClass(false);
+		$cls = NagiosHostTemplatePeer::getOMClass();
 		// populate the object(s)
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
 			$key = NagiosHostTemplatePeer::getPrimaryKeyHashFromRow($row, 0);
@@ -767,9 +764,9 @@ abstract class BaseNagiosHostTemplatePeer {
 		if (!$criteria->hasSelectClause()) {
 			NagiosHostTemplatePeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -817,9 +814,9 @@ abstract class BaseNagiosHostTemplatePeer {
 		if (!$criteria->hasSelectClause()) {
 			NagiosHostTemplatePeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -867,9 +864,9 @@ abstract class BaseNagiosHostTemplatePeer {
 		if (!$criteria->hasSelectClause()) {
 			NagiosHostTemplatePeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -917,9 +914,9 @@ abstract class BaseNagiosHostTemplatePeer {
 		if (!$criteria->hasSelectClause()) {
 			NagiosHostTemplatePeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -976,7 +973,7 @@ abstract class BaseNagiosHostTemplatePeer {
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 
-				$cls = NagiosHostTemplatePeer::getOMClass(false);
+				$cls = NagiosHostTemplatePeer::getOMClass();
 
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
@@ -988,7 +985,7 @@ abstract class BaseNagiosHostTemplatePeer {
 				$obj2 = NagiosCommandPeer::getInstanceFromPool($key2);
 				if (!$obj2) {
 
-					$cls = NagiosCommandPeer::getOMClass(false);
+					$cls = NagiosCommandPeer::getOMClass();
 
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol);
@@ -1042,7 +1039,7 @@ abstract class BaseNagiosHostTemplatePeer {
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 
-				$cls = NagiosHostTemplatePeer::getOMClass(false);
+				$cls = NagiosHostTemplatePeer::getOMClass();
 
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
@@ -1054,7 +1051,7 @@ abstract class BaseNagiosHostTemplatePeer {
 				$obj2 = NagiosCommandPeer::getInstanceFromPool($key2);
 				if (!$obj2) {
 
-					$cls = NagiosCommandPeer::getOMClass(false);
+					$cls = NagiosCommandPeer::getOMClass();
 
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol);
@@ -1108,7 +1105,7 @@ abstract class BaseNagiosHostTemplatePeer {
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 
-				$cls = NagiosHostTemplatePeer::getOMClass(false);
+				$cls = NagiosHostTemplatePeer::getOMClass();
 
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
@@ -1120,7 +1117,7 @@ abstract class BaseNagiosHostTemplatePeer {
 				$obj2 = NagiosTimeperiodPeer::getInstanceFromPool($key2);
 				if (!$obj2) {
 
-					$cls = NagiosTimeperiodPeer::getOMClass(false);
+					$cls = NagiosTimeperiodPeer::getOMClass();
 
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol);
@@ -1174,7 +1171,7 @@ abstract class BaseNagiosHostTemplatePeer {
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 
-				$cls = NagiosHostTemplatePeer::getOMClass(false);
+				$cls = NagiosHostTemplatePeer::getOMClass();
 
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
@@ -1186,7 +1183,7 @@ abstract class BaseNagiosHostTemplatePeer {
 				$obj2 = NagiosTimeperiodPeer::getInstanceFromPool($key2);
 				if (!$obj2) {
 
-					$cls = NagiosTimeperiodPeer::getOMClass(false);
+					$cls = NagiosTimeperiodPeer::getOMClass();
 
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol);
@@ -1231,9 +1228,9 @@ abstract class BaseNagiosHostTemplatePeer {
 		if (!$criteria->hasSelectClause()) {
 			NagiosHostTemplatePeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -1312,7 +1309,7 @@ abstract class BaseNagiosHostTemplatePeer {
 				// See http://www.propelorm.org/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
-				$cls = NagiosHostTemplatePeer::getOMClass(false);
+				$cls = NagiosHostTemplatePeer::getOMClass();
 
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
@@ -1326,7 +1323,7 @@ abstract class BaseNagiosHostTemplatePeer {
 				$obj2 = NagiosCommandPeer::getInstanceFromPool($key2);
 				if (!$obj2) {
 
-					$cls = NagiosCommandPeer::getOMClass(false);
+					$cls = NagiosCommandPeer::getOMClass();
 
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol2);
@@ -1344,7 +1341,7 @@ abstract class BaseNagiosHostTemplatePeer {
 				$obj3 = NagiosCommandPeer::getInstanceFromPool($key3);
 				if (!$obj3) {
 
-					$cls = NagiosCommandPeer::getOMClass(false);
+					$cls = NagiosCommandPeer::getOMClass();
 
 					$obj3 = new $cls();
 					$obj3->hydrate($row, $startcol3);
@@ -1362,7 +1359,7 @@ abstract class BaseNagiosHostTemplatePeer {
 				$obj4 = NagiosTimeperiodPeer::getInstanceFromPool($key4);
 				if (!$obj4) {
 
-					$cls = NagiosTimeperiodPeer::getOMClass(false);
+					$cls = NagiosTimeperiodPeer::getOMClass();
 
 					$obj4 = new $cls();
 					$obj4->hydrate($row, $startcol4);
@@ -1380,7 +1377,7 @@ abstract class BaseNagiosHostTemplatePeer {
 				$obj5 = NagiosTimeperiodPeer::getInstanceFromPool($key5);
 				if (!$obj5) {
 
-					$cls = NagiosTimeperiodPeer::getOMClass(false);
+					$cls = NagiosTimeperiodPeer::getOMClass();
 
 					$obj5 = new $cls();
 					$obj5->hydrate($row, $startcol5);
@@ -1416,7 +1413,7 @@ abstract class BaseNagiosHostTemplatePeer {
 		// it will be impossible for the BasePeer::createSelectSql() method to determine which
 		// tables go into the FROM clause.
 		$criteria->setPrimaryTableName(NagiosHostTemplatePeer::TABLE_NAME);
-		
+
 		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
 			$criteria->setDistinct();
 		}
@@ -1424,9 +1421,9 @@ abstract class BaseNagiosHostTemplatePeer {
 		if (!$criteria->hasSelectClause()) {
 			NagiosHostTemplatePeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY should not affect count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -1468,7 +1465,7 @@ abstract class BaseNagiosHostTemplatePeer {
 		// it will be impossible for the BasePeer::createSelectSql() method to determine which
 		// tables go into the FROM clause.
 		$criteria->setPrimaryTableName(NagiosHostTemplatePeer::TABLE_NAME);
-		
+
 		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
 			$criteria->setDistinct();
 		}
@@ -1476,9 +1473,9 @@ abstract class BaseNagiosHostTemplatePeer {
 		if (!$criteria->hasSelectClause()) {
 			NagiosHostTemplatePeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY should not affect count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -1520,7 +1517,7 @@ abstract class BaseNagiosHostTemplatePeer {
 		// it will be impossible for the BasePeer::createSelectSql() method to determine which
 		// tables go into the FROM clause.
 		$criteria->setPrimaryTableName(NagiosHostTemplatePeer::TABLE_NAME);
-		
+
 		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
 			$criteria->setDistinct();
 		}
@@ -1528,9 +1525,9 @@ abstract class BaseNagiosHostTemplatePeer {
 		if (!$criteria->hasSelectClause()) {
 			NagiosHostTemplatePeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY should not affect count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -1572,7 +1569,7 @@ abstract class BaseNagiosHostTemplatePeer {
 		// it will be impossible for the BasePeer::createSelectSql() method to determine which
 		// tables go into the FROM clause.
 		$criteria->setPrimaryTableName(NagiosHostTemplatePeer::TABLE_NAME);
-		
+
 		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
 			$criteria->setDistinct();
 		}
@@ -1580,9 +1577,9 @@ abstract class BaseNagiosHostTemplatePeer {
 		if (!$criteria->hasSelectClause()) {
 			NagiosHostTemplatePeer::addSelectColumns($criteria);
 		}
-		
+
 		$criteria->clearOrderByColumns(); // ORDER BY should not affect count
-		
+
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -1651,7 +1648,7 @@ abstract class BaseNagiosHostTemplatePeer {
 				// See http://www.propelorm.org/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
-				$cls = NagiosHostTemplatePeer::getOMClass(false);
+				$cls = NagiosHostTemplatePeer::getOMClass();
 
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
@@ -1665,7 +1662,7 @@ abstract class BaseNagiosHostTemplatePeer {
 					$obj2 = NagiosTimeperiodPeer::getInstanceFromPool($key2);
 					if (!$obj2) {
 	
-						$cls = NagiosTimeperiodPeer::getOMClass(false);
+						$cls = NagiosTimeperiodPeer::getOMClass();
 
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol2);
@@ -1684,7 +1681,7 @@ abstract class BaseNagiosHostTemplatePeer {
 					$obj3 = NagiosTimeperiodPeer::getInstanceFromPool($key3);
 					if (!$obj3) {
 	
-						$cls = NagiosTimeperiodPeer::getOMClass(false);
+						$cls = NagiosTimeperiodPeer::getOMClass();
 
 					$obj3 = new $cls();
 					$obj3->hydrate($row, $startcol3);
@@ -1748,7 +1745,7 @@ abstract class BaseNagiosHostTemplatePeer {
 				// See http://www.propelorm.org/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
-				$cls = NagiosHostTemplatePeer::getOMClass(false);
+				$cls = NagiosHostTemplatePeer::getOMClass();
 
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
@@ -1762,7 +1759,7 @@ abstract class BaseNagiosHostTemplatePeer {
 					$obj2 = NagiosTimeperiodPeer::getInstanceFromPool($key2);
 					if (!$obj2) {
 	
-						$cls = NagiosTimeperiodPeer::getOMClass(false);
+						$cls = NagiosTimeperiodPeer::getOMClass();
 
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol2);
@@ -1781,7 +1778,7 @@ abstract class BaseNagiosHostTemplatePeer {
 					$obj3 = NagiosTimeperiodPeer::getInstanceFromPool($key3);
 					if (!$obj3) {
 	
-						$cls = NagiosTimeperiodPeer::getOMClass(false);
+						$cls = NagiosTimeperiodPeer::getOMClass();
 
 					$obj3 = new $cls();
 					$obj3->hydrate($row, $startcol3);
@@ -1845,7 +1842,7 @@ abstract class BaseNagiosHostTemplatePeer {
 				// See http://www.propelorm.org/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
-				$cls = NagiosHostTemplatePeer::getOMClass(false);
+				$cls = NagiosHostTemplatePeer::getOMClass();
 
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
@@ -1859,7 +1856,7 @@ abstract class BaseNagiosHostTemplatePeer {
 					$obj2 = NagiosCommandPeer::getInstanceFromPool($key2);
 					if (!$obj2) {
 	
-						$cls = NagiosCommandPeer::getOMClass(false);
+						$cls = NagiosCommandPeer::getOMClass();
 
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol2);
@@ -1878,7 +1875,7 @@ abstract class BaseNagiosHostTemplatePeer {
 					$obj3 = NagiosCommandPeer::getInstanceFromPool($key3);
 					if (!$obj3) {
 	
-						$cls = NagiosCommandPeer::getOMClass(false);
+						$cls = NagiosCommandPeer::getOMClass();
 
 					$obj3 = new $cls();
 					$obj3->hydrate($row, $startcol3);
@@ -1942,7 +1939,7 @@ abstract class BaseNagiosHostTemplatePeer {
 				// See http://www.propelorm.org/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
-				$cls = NagiosHostTemplatePeer::getOMClass(false);
+				$cls = NagiosHostTemplatePeer::getOMClass();
 
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
@@ -1956,7 +1953,7 @@ abstract class BaseNagiosHostTemplatePeer {
 					$obj2 = NagiosCommandPeer::getInstanceFromPool($key2);
 					if (!$obj2) {
 	
-						$cls = NagiosCommandPeer::getOMClass(false);
+						$cls = NagiosCommandPeer::getOMClass();
 
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol2);
@@ -1975,7 +1972,7 @@ abstract class BaseNagiosHostTemplatePeer {
 					$obj3 = NagiosCommandPeer::getInstanceFromPool($key3);
 					if (!$obj3) {
 	
-						$cls = NagiosCommandPeer::getOMClass(false);
+						$cls = NagiosCommandPeer::getOMClass();
 
 					$obj3 = new $cls();
 					$obj3->hydrate($row, $startcol3);
@@ -2020,17 +2017,12 @@ abstract class BaseNagiosHostTemplatePeer {
 	/**
 	 * The class that the Peer will make instances of.
 	 *
-	 * If $withPrefix is true, the returned path
-	 * uses a dot-path notation which is tranalted into a path
-	 * relative to a location on the PHP include_path.
-	 * (e.g. path.to.MyClass -> 'path/to/MyClass.php')
 	 *
-	 * @param      boolean $withPrefix Whether or not to return the path with the class name
-	 * @return     string path.to.ClassName
+	 * @return     string ClassName
 	 */
-	public static function getOMClass($withPrefix = true)
+	public static function getOMClass()
 	{
-		return $withPrefix ? NagiosHostTemplatePeer::CLASS_DEFAULT : NagiosHostTemplatePeer::OM_CLASS;
+		return NagiosHostTemplatePeer::OM_CLASS;
 	}
 
 	/**

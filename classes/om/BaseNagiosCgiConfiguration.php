@@ -25,6 +25,12 @@ abstract class BaseNagiosCgiConfiguration extends BaseObject  implements Persist
 	protected static $peer;
 
 	/**
+	 * The flag var to prevent infinit loop in deep copy
+	 * @var       boolean
+	 */
+	protected $startCopy = false;
+
+	/**
 	 * The value for the id field.
 	 * @var        int
 	 */
@@ -563,7 +569,7 @@ abstract class BaseNagiosCgiConfiguration extends BaseObject  implements Persist
 	} // setUrlHtmlPath()
 
 	/**
-	 * Sets the value of the [use_authentication] column. 
+	 * Sets the value of the [use_authentication] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -751,7 +757,7 @@ abstract class BaseNagiosCgiConfiguration extends BaseObject  implements Persist
 	} // setAuthorizedForAllServiceCommands()
 
 	/**
-	 * Sets the value of the [lock_author_names] column. 
+	 * Sets the value of the [lock_author_names] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -999,7 +1005,7 @@ abstract class BaseNagiosCgiConfiguration extends BaseObject  implements Persist
 	} // setPingSyntax()
 
 	/**
-	 * Sets the value of the [escape_html_tags] column. 
+	 * Sets the value of the [escape_html_tags] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -1067,7 +1073,7 @@ abstract class BaseNagiosCgiConfiguration extends BaseObject  implements Persist
 	} // setActionUrlTarget()
 
 	/**
-	 * Sets the value of the [enable_splunk_integration] column. 
+	 * Sets the value of the [enable_splunk_integration] column.
 	 * Non-boolean arguments are converted using the following rules:
 	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
 	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
@@ -1269,18 +1275,18 @@ abstract class BaseNagiosCgiConfiguration extends BaseObject  implements Persist
 
 		$con->beginTransaction();
 		try {
+			$deleteQuery = NagiosCgiConfigurationQuery::create()
+				->filterByPrimaryKey($this->getPrimaryKey());
 			$ret = $this->preDelete($con);
 			if ($ret) {
-				NagiosCgiConfigurationQuery::create()
-					->filterByPrimaryKey($this->getPrimaryKey())
-					->delete($con);
+				$deleteQuery->delete($con);
 				$this->postDelete($con);
 				$con->commit();
 				$this->setDeleted(true);
 			} else {
 				$con->commit();
 			}
-		} catch (PropelException $e) {
+		} catch (Exception $e) {
 			$con->rollBack();
 			throw $e;
 		}
@@ -1332,7 +1338,7 @@ abstract class BaseNagiosCgiConfiguration extends BaseObject  implements Persist
 			}
 			$con->commit();
 			return $affectedRows;
-		} catch (PropelException $e) {
+		} catch (Exception $e) {
 			$con->rollBack();
 			throw $e;
 		}
@@ -1355,27 +1361,15 @@ abstract class BaseNagiosCgiConfiguration extends BaseObject  implements Persist
 		if (!$this->alreadyInSave) {
 			$this->alreadyInSave = true;
 
-			if ($this->isNew() ) {
-				$this->modifiedColumns[] = NagiosCgiConfigurationPeer::ID;
-			}
-
-			// If this object has been modified, then save it to the database.
-			if ($this->isModified()) {
+			if ($this->isNew() || $this->isModified()) {
+				// persist changes
 				if ($this->isNew()) {
-					$criteria = $this->buildCriteria();
-					if ($criteria->keyContainsValue(NagiosCgiConfigurationPeer::ID) ) {
-						throw new PropelException('Cannot insert a value for auto-increment primary key ('.NagiosCgiConfigurationPeer::ID.')');
-					}
-
-					$pk = BasePeer::doInsert($criteria, $con);
-					$affectedRows = 1;
-					$this->setId($pk);  //[IMV] update autoincrement primary key
-					$this->setNew(false);
+					$this->doInsert($con);
 				} else {
-					$affectedRows = NagiosCgiConfigurationPeer::doUpdate($this, $con);
+					$this->doUpdate($con);
 				}
-
-				$this->resetModified(); // [HL] After being saved an object is no longer 'modified'
+				$affectedRows += 1;
+				$this->resetModified();
 			}
 
 			$this->alreadyInSave = false;
@@ -1383,6 +1377,242 @@ abstract class BaseNagiosCgiConfiguration extends BaseObject  implements Persist
 		}
 		return $affectedRows;
 	} // doSave()
+
+	/**
+	 * Insert the row in the database.
+	 *
+	 * @param      PropelPDO $con
+	 *
+	 * @throws     PropelException
+	 * @see        doSave()
+	 */
+	protected function doInsert(PropelPDO $con)
+	{
+		$modifiedColumns = array();
+		$index = 0;
+
+		$this->modifiedColumns[] = NagiosCgiConfigurationPeer::ID;
+		if (null !== $this->id) {
+			throw new PropelException('Cannot insert a value for auto-increment primary key (' . NagiosCgiConfigurationPeer::ID . ')');
+		}
+
+		 // check the columns in natural order for more readable SQL queries
+		if ($this->isColumnModified(NagiosCgiConfigurationPeer::ID)) {
+			$modifiedColumns[':p' . $index++]  = '`ID`';
+		}
+		if ($this->isColumnModified(NagiosCgiConfigurationPeer::PHYSICAL_HTML_PATH)) {
+			$modifiedColumns[':p' . $index++]  = '`PHYSICAL_HTML_PATH`';
+		}
+		if ($this->isColumnModified(NagiosCgiConfigurationPeer::URL_HTML_PATH)) {
+			$modifiedColumns[':p' . $index++]  = '`URL_HTML_PATH`';
+		}
+		if ($this->isColumnModified(NagiosCgiConfigurationPeer::USE_AUTHENTICATION)) {
+			$modifiedColumns[':p' . $index++]  = '`USE_AUTHENTICATION`';
+		}
+		if ($this->isColumnModified(NagiosCgiConfigurationPeer::DEFAULT_USER_NAME)) {
+			$modifiedColumns[':p' . $index++]  = '`DEFAULT_USER_NAME`';
+		}
+		if ($this->isColumnModified(NagiosCgiConfigurationPeer::AUTHORIZED_FOR_SYSTEM_INFORMATION)) {
+			$modifiedColumns[':p' . $index++]  = '`AUTHORIZED_FOR_SYSTEM_INFORMATION`';
+		}
+		if ($this->isColumnModified(NagiosCgiConfigurationPeer::AUTHORIZED_FOR_SYSTEM_COMMANDS)) {
+			$modifiedColumns[':p' . $index++]  = '`AUTHORIZED_FOR_SYSTEM_COMMANDS`';
+		}
+		if ($this->isColumnModified(NagiosCgiConfigurationPeer::AUTHORIZED_FOR_CONFIGURATION_INFORMATION)) {
+			$modifiedColumns[':p' . $index++]  = '`AUTHORIZED_FOR_CONFIGURATION_INFORMATION`';
+		}
+		if ($this->isColumnModified(NagiosCgiConfigurationPeer::AUTHORIZED_FOR_ALL_HOSTS)) {
+			$modifiedColumns[':p' . $index++]  = '`AUTHORIZED_FOR_ALL_HOSTS`';
+		}
+		if ($this->isColumnModified(NagiosCgiConfigurationPeer::AUTHORIZED_FOR_ALL_HOST_COMMANDS)) {
+			$modifiedColumns[':p' . $index++]  = '`AUTHORIZED_FOR_ALL_HOST_COMMANDS`';
+		}
+		if ($this->isColumnModified(NagiosCgiConfigurationPeer::AUTHORIZED_FOR_ALL_SERVICES)) {
+			$modifiedColumns[':p' . $index++]  = '`AUTHORIZED_FOR_ALL_SERVICES`';
+		}
+		if ($this->isColumnModified(NagiosCgiConfigurationPeer::AUTHORIZED_FOR_ALL_SERVICE_COMMANDS)) {
+			$modifiedColumns[':p' . $index++]  = '`AUTHORIZED_FOR_ALL_SERVICE_COMMANDS`';
+		}
+		if ($this->isColumnModified(NagiosCgiConfigurationPeer::LOCK_AUTHOR_NAMES)) {
+			$modifiedColumns[':p' . $index++]  = '`LOCK_AUTHOR_NAMES`';
+		}
+		if ($this->isColumnModified(NagiosCgiConfigurationPeer::STATUSMAP_BACKGROUND_IMAGE)) {
+			$modifiedColumns[':p' . $index++]  = '`STATUSMAP_BACKGROUND_IMAGE`';
+		}
+		if ($this->isColumnModified(NagiosCgiConfigurationPeer::DEFAULT_STATUSMAP_LAYOUT)) {
+			$modifiedColumns[':p' . $index++]  = '`DEFAULT_STATUSMAP_LAYOUT`';
+		}
+		if ($this->isColumnModified(NagiosCgiConfigurationPeer::STATUSWRL_INCLUDE)) {
+			$modifiedColumns[':p' . $index++]  = '`STATUSWRL_INCLUDE`';
+		}
+		if ($this->isColumnModified(NagiosCgiConfigurationPeer::DEFAULT_STATUSWRL_LAYOUT)) {
+			$modifiedColumns[':p' . $index++]  = '`DEFAULT_STATUSWRL_LAYOUT`';
+		}
+		if ($this->isColumnModified(NagiosCgiConfigurationPeer::REFRESH_RATE)) {
+			$modifiedColumns[':p' . $index++]  = '`REFRESH_RATE`';
+		}
+		if ($this->isColumnModified(NagiosCgiConfigurationPeer::HOST_UNREACHABLE_SOUND)) {
+			$modifiedColumns[':p' . $index++]  = '`HOST_UNREACHABLE_SOUND`';
+		}
+		if ($this->isColumnModified(NagiosCgiConfigurationPeer::HOST_DOWN_SOUND)) {
+			$modifiedColumns[':p' . $index++]  = '`HOST_DOWN_SOUND`';
+		}
+		if ($this->isColumnModified(NagiosCgiConfigurationPeer::SERVICE_CRITICAL_SOUND)) {
+			$modifiedColumns[':p' . $index++]  = '`SERVICE_CRITICAL_SOUND`';
+		}
+		if ($this->isColumnModified(NagiosCgiConfigurationPeer::SERVICE_WARNING_SOUND)) {
+			$modifiedColumns[':p' . $index++]  = '`SERVICE_WARNING_SOUND`';
+		}
+		if ($this->isColumnModified(NagiosCgiConfigurationPeer::SERVICE_UNKNOWN_SOUND)) {
+			$modifiedColumns[':p' . $index++]  = '`SERVICE_UNKNOWN_SOUND`';
+		}
+		if ($this->isColumnModified(NagiosCgiConfigurationPeer::PING_SYNTAX)) {
+			$modifiedColumns[':p' . $index++]  = '`PING_SYNTAX`';
+		}
+		if ($this->isColumnModified(NagiosCgiConfigurationPeer::ESCAPE_HTML_TAGS)) {
+			$modifiedColumns[':p' . $index++]  = '`ESCAPE_HTML_TAGS`';
+		}
+		if ($this->isColumnModified(NagiosCgiConfigurationPeer::NOTES_URL_TARGET)) {
+			$modifiedColumns[':p' . $index++]  = '`NOTES_URL_TARGET`';
+		}
+		if ($this->isColumnModified(NagiosCgiConfigurationPeer::ACTION_URL_TARGET)) {
+			$modifiedColumns[':p' . $index++]  = '`ACTION_URL_TARGET`';
+		}
+		if ($this->isColumnModified(NagiosCgiConfigurationPeer::ENABLE_SPLUNK_INTEGRATION)) {
+			$modifiedColumns[':p' . $index++]  = '`ENABLE_SPLUNK_INTEGRATION`';
+		}
+		if ($this->isColumnModified(NagiosCgiConfigurationPeer::SPLUNK_URL)) {
+			$modifiedColumns[':p' . $index++]  = '`SPLUNK_URL`';
+		}
+
+		$sql = sprintf(
+			'INSERT INTO `nagios_cgi_configuration` (%s) VALUES (%s)',
+			implode(', ', $modifiedColumns),
+			implode(', ', array_keys($modifiedColumns))
+		);
+
+		try {
+			$stmt = $con->prepare($sql);
+			foreach ($modifiedColumns as $identifier => $columnName) {
+				switch ($columnName) {
+					case '`ID`':
+						$stmt->bindValue($identifier, $this->id, PDO::PARAM_INT);
+						break;
+					case '`PHYSICAL_HTML_PATH`':
+						$stmt->bindValue($identifier, $this->physical_html_path, PDO::PARAM_STR);
+						break;
+					case '`URL_HTML_PATH`':
+						$stmt->bindValue($identifier, $this->url_html_path, PDO::PARAM_STR);
+						break;
+					case '`USE_AUTHENTICATION`':
+						$stmt->bindValue($identifier, (int) $this->use_authentication, PDO::PARAM_INT);
+						break;
+					case '`DEFAULT_USER_NAME`':
+						$stmt->bindValue($identifier, $this->default_user_name, PDO::PARAM_STR);
+						break;
+					case '`AUTHORIZED_FOR_SYSTEM_INFORMATION`':
+						$stmt->bindValue($identifier, $this->authorized_for_system_information, PDO::PARAM_STR);
+						break;
+					case '`AUTHORIZED_FOR_SYSTEM_COMMANDS`':
+						$stmt->bindValue($identifier, $this->authorized_for_system_commands, PDO::PARAM_STR);
+						break;
+					case '`AUTHORIZED_FOR_CONFIGURATION_INFORMATION`':
+						$stmt->bindValue($identifier, $this->authorized_for_configuration_information, PDO::PARAM_STR);
+						break;
+					case '`AUTHORIZED_FOR_ALL_HOSTS`':
+						$stmt->bindValue($identifier, $this->authorized_for_all_hosts, PDO::PARAM_STR);
+						break;
+					case '`AUTHORIZED_FOR_ALL_HOST_COMMANDS`':
+						$stmt->bindValue($identifier, $this->authorized_for_all_host_commands, PDO::PARAM_STR);
+						break;
+					case '`AUTHORIZED_FOR_ALL_SERVICES`':
+						$stmt->bindValue($identifier, $this->authorized_for_all_services, PDO::PARAM_STR);
+						break;
+					case '`AUTHORIZED_FOR_ALL_SERVICE_COMMANDS`':
+						$stmt->bindValue($identifier, $this->authorized_for_all_service_commands, PDO::PARAM_STR);
+						break;
+					case '`LOCK_AUTHOR_NAMES`':
+						$stmt->bindValue($identifier, (int) $this->lock_author_names, PDO::PARAM_INT);
+						break;
+					case '`STATUSMAP_BACKGROUND_IMAGE`':
+						$stmt->bindValue($identifier, $this->statusmap_background_image, PDO::PARAM_STR);
+						break;
+					case '`DEFAULT_STATUSMAP_LAYOUT`':
+						$stmt->bindValue($identifier, $this->default_statusmap_layout, PDO::PARAM_INT);
+						break;
+					case '`STATUSWRL_INCLUDE`':
+						$stmt->bindValue($identifier, $this->statuswrl_include, PDO::PARAM_STR);
+						break;
+					case '`DEFAULT_STATUSWRL_LAYOUT`':
+						$stmt->bindValue($identifier, $this->default_statuswrl_layout, PDO::PARAM_INT);
+						break;
+					case '`REFRESH_RATE`':
+						$stmt->bindValue($identifier, $this->refresh_rate, PDO::PARAM_INT);
+						break;
+					case '`HOST_UNREACHABLE_SOUND`':
+						$stmt->bindValue($identifier, $this->host_unreachable_sound, PDO::PARAM_STR);
+						break;
+					case '`HOST_DOWN_SOUND`':
+						$stmt->bindValue($identifier, $this->host_down_sound, PDO::PARAM_STR);
+						break;
+					case '`SERVICE_CRITICAL_SOUND`':
+						$stmt->bindValue($identifier, $this->service_critical_sound, PDO::PARAM_STR);
+						break;
+					case '`SERVICE_WARNING_SOUND`':
+						$stmt->bindValue($identifier, $this->service_warning_sound, PDO::PARAM_STR);
+						break;
+					case '`SERVICE_UNKNOWN_SOUND`':
+						$stmt->bindValue($identifier, $this->service_unknown_sound, PDO::PARAM_STR);
+						break;
+					case '`PING_SYNTAX`':
+						$stmt->bindValue($identifier, $this->ping_syntax, PDO::PARAM_STR);
+						break;
+					case '`ESCAPE_HTML_TAGS`':
+						$stmt->bindValue($identifier, (int) $this->escape_html_tags, PDO::PARAM_INT);
+						break;
+					case '`NOTES_URL_TARGET`':
+						$stmt->bindValue($identifier, $this->notes_url_target, PDO::PARAM_STR);
+						break;
+					case '`ACTION_URL_TARGET`':
+						$stmt->bindValue($identifier, $this->action_url_target, PDO::PARAM_STR);
+						break;
+					case '`ENABLE_SPLUNK_INTEGRATION`':
+						$stmt->bindValue($identifier, (int) $this->enable_splunk_integration, PDO::PARAM_INT);
+						break;
+					case '`SPLUNK_URL`':
+						$stmt->bindValue($identifier, $this->splunk_url, PDO::PARAM_STR);
+						break;
+				}
+			}
+			$stmt->execute();
+		} catch (Exception $e) {
+			Propel::log($e->getMessage(), Propel::LOG_ERR);
+			throw new PropelException(sprintf('Unable to execute INSERT statement [%s]', $sql), $e);
+		}
+
+		try {
+			$pk = $con->lastInsertId();
+		} catch (Exception $e) {
+			throw new PropelException('Unable to get autoincrement id.', $e);
+		}
+		$this->setId($pk);
+
+		$this->setNew(false);
+	}
+
+	/**
+	 * Update the row in the database.
+	 *
+	 * @param      PropelPDO $con
+	 *
+	 * @see        doSave()
+	 */
+	protected function doUpdate(PropelPDO $con)
+	{
+		$selectCriteria = $this->buildPkeyCriteria();
+		$valuesCriteria = $this->buildCriteria();
+		BasePeer::doUpdate($selectCriteria, $valuesCriteria, $con);
+	}
 
 	/**
 	 * Array of ValidationFailed objects.
@@ -2037,25 +2267,6 @@ abstract class BaseNagiosCgiConfiguration extends BaseObject  implements Persist
 	public function __toString()
 	{
 		return (string) $this->exportTo(NagiosCgiConfigurationPeer::DEFAULT_STRING_FORMAT);
-	}
-
-	/**
-	 * Catches calls to virtual methods
-	 */
-	public function __call($name, $params)
-	{
-		if (preg_match('/get(\w+)/', $name, $matches)) {
-			$virtualColumn = $matches[1];
-			if ($this->hasVirtualColumn($virtualColumn)) {
-				return $this->getVirtualColumn($virtualColumn);
-			}
-			// no lcfirst in php<5.3...
-			$virtualColumn[0] = strtolower($virtualColumn[0]);
-			if ($this->hasVirtualColumn($virtualColumn)) {
-				return $this->getVirtualColumn($virtualColumn);
-			}
-		}
-		return parent::__call($name, $params);
 	}
 
 } // BaseNagiosCgiConfiguration

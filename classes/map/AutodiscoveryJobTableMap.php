@@ -57,8 +57,8 @@ class AutodiscoveryJobTableMap extends TableMap
 	 */
 	public function buildRelations()
 	{
-		$this->addRelation('AutodiscoveryLogEntry', 'AutodiscoveryLogEntry', RelationMap::ONE_TO_MANY, array('id' => 'job', ), 'CASCADE', null);
-		$this->addRelation('AutodiscoveryDevice', 'AutodiscoveryDevice', RelationMap::ONE_TO_MANY, array('id' => 'job_id', ), 'CASCADE', null);
+		$this->addRelation('AutodiscoveryLogEntry', 'AutodiscoveryLogEntry', RelationMap::ONE_TO_MANY, array('id' => 'job', ), 'CASCADE', null, 'AutodiscoveryLogEntrys');
+		$this->addRelation('AutodiscoveryDevice', 'AutodiscoveryDevice', RelationMap::ONE_TO_MANY, array('id' => 'job_id', ), 'CASCADE', null, 'AutodiscoveryDevices');
 	} // buildRelations()
 
 } // AutodiscoveryJobTableMap
