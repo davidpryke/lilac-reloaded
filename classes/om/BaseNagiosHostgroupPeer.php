@@ -24,7 +24,7 @@ abstract class BaseNagiosHostgroupPeer {
 
 	/** the related TableMap class for this table */
 	const TM_CLASS = 'NagiosHostgroupTableMap';
-
+	
 	/** The total number of columns. */
 	const NUM_COLUMNS = 6;
 
@@ -54,7 +54,7 @@ abstract class BaseNagiosHostgroupPeer {
 
 	/** The default string format for model objects of the related table **/
 	const DEFAULT_STRING_FORMAT = 'YAML';
-
+	
 	/**
 	 * An identiy map to hold any loaded instances of NagiosHostgroup objects.
 	 * This must be public so that other peer classes can access this when hydrating from JOIN
@@ -369,19 +369,19 @@ abstract class BaseNagiosHostgroupPeer {
 	 */
 	public static function clearRelatedInstancePool()
 	{
-		// Invalidate objects in NagiosServicePeer instance pool,
+		// Invalidate objects in NagiosServicePeer instance pool, 
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		NagiosServicePeer::clearInstancePool();
-		// Invalidate objects in NagiosDependencyPeer instance pool,
+		// Invalidate objects in NagiosDependencyPeer instance pool, 
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		NagiosDependencyPeer::clearInstancePool();
-		// Invalidate objects in NagiosDependencyTargetPeer instance pool,
+		// Invalidate objects in NagiosDependencyTargetPeer instance pool, 
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		NagiosDependencyTargetPeer::clearInstancePool();
-		// Invalidate objects in NagiosEscalationPeer instance pool,
+		// Invalidate objects in NagiosEscalationPeer instance pool, 
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		NagiosEscalationPeer::clearInstancePool();
-		// Invalidate objects in NagiosHostgroupMembershipPeer instance pool,
+		// Invalidate objects in NagiosHostgroupMembershipPeer instance pool, 
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		NagiosHostgroupMembershipPeer::clearInstancePool();
 	}
@@ -406,7 +406,7 @@ abstract class BaseNagiosHostgroupPeer {
 	}
 
 	/**
-	 * Retrieves the primary key from the DB resultset row
+	 * Retrieves the primary key from the DB resultset row 
 	 * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
 	 * a multi-column primary key, an array of the primary key columns will be returned.
 	 *

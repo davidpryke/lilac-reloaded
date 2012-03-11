@@ -153,7 +153,7 @@
  */
 abstract class BaseNagiosResourceQuery extends ModelCriteria
 {
-	
+
 	/**
 	 * Initializes internal state of BaseNagiosResourceQuery object.
 	 *
@@ -190,14 +190,11 @@ abstract class BaseNagiosResourceQuery extends ModelCriteria
 	}
 
 	/**
-	 * Find object by primary key.
-	 * Propel uses the instance pool to skip the database if the object exists.
-	 * Go fast if the query is untouched.
-	 *
+	 * Find object by primary key
+	 * Use instance pooling to avoid a database query if the object exists
 	 * <code>
 	 * $obj  = $c->findPk(12, $con);
 	 * </code>
-	 *
 	 * @param     mixed $key Primary key to use for the query
 	 * @param     PropelPDO $con an optional connection object
 	 *
@@ -205,73 +202,17 @@ abstract class BaseNagiosResourceQuery extends ModelCriteria
 	 */
 	public function findPk($key, $con = null)
 	{
-		if ($key === null) {
-			return null;
-		}
-		if ((null !== ($obj = NagiosResourcePeer::getInstanceFromPool((string) $key))) && !$this->formatter) {
+		if ((null !== ($obj = NagiosResourcePeer::getInstanceFromPool((string) $key))) && $this->getFormatter()->isObjectFormatter()) {
 			// the object is alredy in the instance pool
 			return $obj;
-		}
-		if ($con === null) {
-			$con = Propel::getConnection(NagiosResourcePeer::DATABASE_NAME, Propel::CONNECTION_READ);
-		}
-		$this->basePreSelect($con);
-		if ($this->formatter || $this->modelAlias || $this->with || $this->select
-		 || $this->selectColumns || $this->asColumns || $this->selectModifiers
-		 || $this->map || $this->having || $this->joins) {
-			return $this->findPkComplex($key, $con);
 		} else {
-			return $this->findPkSimple($key, $con);
+			// the object has not been requested yet, or the formatter is not an object formatter
+			$criteria = $this->isKeepQuery() ? clone $this : $this;
+			$stmt = $criteria
+				->filterByPrimaryKey($key)
+				->getSelectStatement($con);
+			return $criteria->getFormatter()->init($criteria)->formatOne($stmt);
 		}
-	}
-
-	/**
-	 * Find object by primary key using raw SQL to go fast.
-	 * Bypass doSelect() and the object formatter by using generated code.
-	 *
-	 * @param     mixed $key Primary key to use for the query
-	 * @param     PropelPDO $con A connection object
-	 *
-	 * @return    NagiosResource A model object, or null if the key is not found
-	 */
-	protected function findPkSimple($key, $con)
-	{
-		$sql = 'SELECT `ID`, `USER1`, `USER2`, `USER3`, `USER4`, `USER5`, `USER6`, `USER7`, `USER8`, `USER9`, `USER10`, `USER11`, `USER12`, `USER13`, `USER14`, `USER15`, `USER16`, `USER17`, `USER18`, `USER19`, `USER20`, `USER21`, `USER22`, `USER23`, `USER24`, `USER25`, `USER26`, `USER27`, `USER28`, `USER29`, `USER30`, `USER31`, `USER32` FROM `nagios_resource` WHERE `ID` = :p0';
-		try {
-			$stmt = $con->prepare($sql);
-			$stmt->bindValue(':p0', $key, PDO::PARAM_INT);
-			$stmt->execute();
-		} catch (Exception $e) {
-			Propel::log($e->getMessage(), Propel::LOG_ERR);
-			throw new PropelException(sprintf('Unable to execute SELECT statement [%s]', $sql), $e);
-		}
-		$obj = null;
-		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
-			$obj = new NagiosResource();
-			$obj->hydrate($row);
-			NagiosResourcePeer::addInstanceToPool($obj, (string) $row[0]);
-		}
-		$stmt->closeCursor();
-
-		return $obj;
-	}
-
-	/**
-	 * Find object by primary key.
-	 *
-	 * @param     mixed $key Primary key to use for the query
-	 * @param     PropelPDO $con A connection object
-	 *
-	 * @return    NagiosResource|array|mixed the result, formatted by the current formatter
-	 */
-	protected function findPkComplex($key, $con)
-	{
-		// As the query uses a PK condition, no limit(1) is necessary.
-		$criteria = $this->isKeepQuery() ? clone $this : $this;
-		$stmt = $criteria
-			->filterByPrimaryKey($key)
-			->doSelect($con);
-		return $criteria->getFormatter()->init($criteria)->formatOne($stmt);
 	}
 
 	/**
@@ -286,15 +227,10 @@ abstract class BaseNagiosResourceQuery extends ModelCriteria
 	 */
 	public function findPks($keys, $con = null)
 	{
-		if ($con === null) {
-			$con = Propel::getConnection($this->getDbName(), Propel::CONNECTION_READ);
-		}
-		$this->basePreSelect($con);
 		$criteria = $this->isKeepQuery() ? clone $this : $this;
-		$stmt = $criteria
+		return $this
 			->filterByPrimaryKeys($keys)
-			->doSelect($con);
-		return $criteria->getFormatter()->init($criteria)->format($stmt);
+			->find($con);
 	}
 
 	/**
@@ -323,7 +259,7 @@ abstract class BaseNagiosResourceQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the id column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterById(1234); // WHERE id = 1234
@@ -349,7 +285,7 @@ abstract class BaseNagiosResourceQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the user1 column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByUser1('fooValue');   // WHERE user1 = 'fooValue'
@@ -377,7 +313,7 @@ abstract class BaseNagiosResourceQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the user2 column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByUser2('fooValue');   // WHERE user2 = 'fooValue'
@@ -405,7 +341,7 @@ abstract class BaseNagiosResourceQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the user3 column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByUser3('fooValue');   // WHERE user3 = 'fooValue'
@@ -433,7 +369,7 @@ abstract class BaseNagiosResourceQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the user4 column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByUser4('fooValue');   // WHERE user4 = 'fooValue'
@@ -461,7 +397,7 @@ abstract class BaseNagiosResourceQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the user5 column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByUser5('fooValue');   // WHERE user5 = 'fooValue'
@@ -489,7 +425,7 @@ abstract class BaseNagiosResourceQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the user6 column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByUser6('fooValue');   // WHERE user6 = 'fooValue'
@@ -517,7 +453,7 @@ abstract class BaseNagiosResourceQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the user7 column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByUser7('fooValue');   // WHERE user7 = 'fooValue'
@@ -545,7 +481,7 @@ abstract class BaseNagiosResourceQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the user8 column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByUser8('fooValue');   // WHERE user8 = 'fooValue'
@@ -573,7 +509,7 @@ abstract class BaseNagiosResourceQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the user9 column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByUser9('fooValue');   // WHERE user9 = 'fooValue'
@@ -601,7 +537,7 @@ abstract class BaseNagiosResourceQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the user10 column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByUser10('fooValue');   // WHERE user10 = 'fooValue'
@@ -629,7 +565,7 @@ abstract class BaseNagiosResourceQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the user11 column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByUser11('fooValue');   // WHERE user11 = 'fooValue'
@@ -657,7 +593,7 @@ abstract class BaseNagiosResourceQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the user12 column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByUser12('fooValue');   // WHERE user12 = 'fooValue'
@@ -685,7 +621,7 @@ abstract class BaseNagiosResourceQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the user13 column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByUser13('fooValue');   // WHERE user13 = 'fooValue'
@@ -713,7 +649,7 @@ abstract class BaseNagiosResourceQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the user14 column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByUser14('fooValue');   // WHERE user14 = 'fooValue'
@@ -741,7 +677,7 @@ abstract class BaseNagiosResourceQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the user15 column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByUser15('fooValue');   // WHERE user15 = 'fooValue'
@@ -769,7 +705,7 @@ abstract class BaseNagiosResourceQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the user16 column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByUser16('fooValue');   // WHERE user16 = 'fooValue'
@@ -797,7 +733,7 @@ abstract class BaseNagiosResourceQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the user17 column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByUser17('fooValue');   // WHERE user17 = 'fooValue'
@@ -825,7 +761,7 @@ abstract class BaseNagiosResourceQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the user18 column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByUser18('fooValue');   // WHERE user18 = 'fooValue'
@@ -853,7 +789,7 @@ abstract class BaseNagiosResourceQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the user19 column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByUser19('fooValue');   // WHERE user19 = 'fooValue'
@@ -881,7 +817,7 @@ abstract class BaseNagiosResourceQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the user20 column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByUser20('fooValue');   // WHERE user20 = 'fooValue'
@@ -909,7 +845,7 @@ abstract class BaseNagiosResourceQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the user21 column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByUser21('fooValue');   // WHERE user21 = 'fooValue'
@@ -937,7 +873,7 @@ abstract class BaseNagiosResourceQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the user22 column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByUser22('fooValue');   // WHERE user22 = 'fooValue'
@@ -965,7 +901,7 @@ abstract class BaseNagiosResourceQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the user23 column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByUser23('fooValue');   // WHERE user23 = 'fooValue'
@@ -993,7 +929,7 @@ abstract class BaseNagiosResourceQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the user24 column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByUser24('fooValue');   // WHERE user24 = 'fooValue'
@@ -1021,7 +957,7 @@ abstract class BaseNagiosResourceQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the user25 column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByUser25('fooValue');   // WHERE user25 = 'fooValue'
@@ -1049,7 +985,7 @@ abstract class BaseNagiosResourceQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the user26 column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByUser26('fooValue');   // WHERE user26 = 'fooValue'
@@ -1077,7 +1013,7 @@ abstract class BaseNagiosResourceQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the user27 column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByUser27('fooValue');   // WHERE user27 = 'fooValue'
@@ -1105,7 +1041,7 @@ abstract class BaseNagiosResourceQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the user28 column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByUser28('fooValue');   // WHERE user28 = 'fooValue'
@@ -1133,7 +1069,7 @@ abstract class BaseNagiosResourceQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the user29 column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByUser29('fooValue');   // WHERE user29 = 'fooValue'
@@ -1161,7 +1097,7 @@ abstract class BaseNagiosResourceQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the user30 column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByUser30('fooValue');   // WHERE user30 = 'fooValue'
@@ -1189,7 +1125,7 @@ abstract class BaseNagiosResourceQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the user31 column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByUser31('fooValue');   // WHERE user31 = 'fooValue'
@@ -1217,7 +1153,7 @@ abstract class BaseNagiosResourceQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the user32 column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByUser32('fooValue');   // WHERE user32 = 'fooValue'
@@ -1254,8 +1190,8 @@ abstract class BaseNagiosResourceQuery extends ModelCriteria
 	{
 		if ($nagiosResource) {
 			$this->addUsingAlias(NagiosResourcePeer::ID, $nagiosResource->getId(), Criteria::NOT_EQUAL);
-		}
-
+	  }
+	  
 		return $this;
 	}
 

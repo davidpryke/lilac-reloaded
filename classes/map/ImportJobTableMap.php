@@ -57,7 +57,7 @@ class ImportJobTableMap extends TableMap
 	 */
 	public function buildRelations()
 	{
-		$this->addRelation('ImportLogEntry', 'ImportLogEntry', RelationMap::ONE_TO_MANY, array('id' => 'job', ), 'CASCADE', null, 'ImportLogEntrys');
+		$this->addRelation('ImportLogEntry', 'ImportLogEntry', RelationMap::ONE_TO_MANY, array('id' => 'job', ), 'CASCADE', null);
 	} // buildRelations()
 
 } // ImportJobTableMap

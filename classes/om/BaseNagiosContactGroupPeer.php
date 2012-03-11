@@ -24,7 +24,7 @@ abstract class BaseNagiosContactGroupPeer {
 
 	/** the related TableMap class for this table */
 	const TM_CLASS = 'NagiosContactGroupTableMap';
-
+	
 	/** The total number of columns. */
 	const NUM_COLUMNS = 3;
 
@@ -45,7 +45,7 @@ abstract class BaseNagiosContactGroupPeer {
 
 	/** The default string format for model objects of the related table **/
 	const DEFAULT_STRING_FORMAT = 'YAML';
-
+	
 	/**
 	 * An identiy map to hold any loaded instances of NagiosContactGroup objects.
 	 * This must be public so that other peer classes can access this when hydrating from JOIN
@@ -354,16 +354,16 @@ abstract class BaseNagiosContactGroupPeer {
 	 */
 	public static function clearRelatedInstancePool()
 	{
-		// Invalidate objects in NagiosContactGroupMemberPeer instance pool,
+		// Invalidate objects in NagiosContactGroupMemberPeer instance pool, 
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		NagiosContactGroupMemberPeer::clearInstancePool();
-		// Invalidate objects in NagiosServiceContactGroupMemberPeer instance pool,
+		// Invalidate objects in NagiosServiceContactGroupMemberPeer instance pool, 
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		NagiosServiceContactGroupMemberPeer::clearInstancePool();
-		// Invalidate objects in NagiosEscalationContactgroupPeer instance pool,
+		// Invalidate objects in NagiosEscalationContactgroupPeer instance pool, 
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		NagiosEscalationContactgroupPeer::clearInstancePool();
-		// Invalidate objects in NagiosHostContactgroupPeer instance pool,
+		// Invalidate objects in NagiosHostContactgroupPeer instance pool, 
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		NagiosHostContactgroupPeer::clearInstancePool();
 	}
@@ -388,7 +388,7 @@ abstract class BaseNagiosContactGroupPeer {
 	}
 
 	/**
-	 * Retrieves the primary key from the DB resultset row
+	 * Retrieves the primary key from the DB resultset row 
 	 * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
 	 * a multi-column primary key, an array of the primary key columns will be returned.
 	 *

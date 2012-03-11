@@ -57,7 +57,7 @@
  */
 abstract class BaseAutodiscoveryDeviceServiceQuery extends ModelCriteria
 {
-	
+
 	/**
 	 * Initializes internal state of BaseAutodiscoveryDeviceServiceQuery object.
 	 *
@@ -94,14 +94,11 @@ abstract class BaseAutodiscoveryDeviceServiceQuery extends ModelCriteria
 	}
 
 	/**
-	 * Find object by primary key.
-	 * Propel uses the instance pool to skip the database if the object exists.
-	 * Go fast if the query is untouched.
-	 *
+	 * Find object by primary key
+	 * Use instance pooling to avoid a database query if the object exists
 	 * <code>
 	 * $obj  = $c->findPk(12, $con);
 	 * </code>
-	 *
 	 * @param     mixed $key Primary key to use for the query
 	 * @param     PropelPDO $con an optional connection object
 	 *
@@ -109,73 +106,17 @@ abstract class BaseAutodiscoveryDeviceServiceQuery extends ModelCriteria
 	 */
 	public function findPk($key, $con = null)
 	{
-		if ($key === null) {
-			return null;
-		}
-		if ((null !== ($obj = AutodiscoveryDeviceServicePeer::getInstanceFromPool((string) $key))) && !$this->formatter) {
+		if ((null !== ($obj = AutodiscoveryDeviceServicePeer::getInstanceFromPool((string) $key))) && $this->getFormatter()->isObjectFormatter()) {
 			// the object is alredy in the instance pool
 			return $obj;
-		}
-		if ($con === null) {
-			$con = Propel::getConnection(AutodiscoveryDeviceServicePeer::DATABASE_NAME, Propel::CONNECTION_READ);
-		}
-		$this->basePreSelect($con);
-		if ($this->formatter || $this->modelAlias || $this->with || $this->select
-		 || $this->selectColumns || $this->asColumns || $this->selectModifiers
-		 || $this->map || $this->having || $this->joins) {
-			return $this->findPkComplex($key, $con);
 		} else {
-			return $this->findPkSimple($key, $con);
+			// the object has not been requested yet, or the formatter is not an object formatter
+			$criteria = $this->isKeepQuery() ? clone $this : $this;
+			$stmt = $criteria
+				->filterByPrimaryKey($key)
+				->getSelectStatement($con);
+			return $criteria->getFormatter()->init($criteria)->formatOne($stmt);
 		}
-	}
-
-	/**
-	 * Find object by primary key using raw SQL to go fast.
-	 * Bypass doSelect() and the object formatter by using generated code.
-	 *
-	 * @param     mixed $key Primary key to use for the query
-	 * @param     PropelPDO $con A connection object
-	 *
-	 * @return    AutodiscoveryDeviceService A model object, or null if the key is not found
-	 */
-	protected function findPkSimple($key, $con)
-	{
-		$sql = 'SELECT `ID`, `DEVICE_ID`, `PROTOCOL`, `PORT`, `NAME`, `PRODUCT`, `VERSION`, `EXTRAINFO` FROM `autodiscovery_device_service` WHERE `ID` = :p0';
-		try {
-			$stmt = $con->prepare($sql);
-			$stmt->bindValue(':p0', $key, PDO::PARAM_INT);
-			$stmt->execute();
-		} catch (Exception $e) {
-			Propel::log($e->getMessage(), Propel::LOG_ERR);
-			throw new PropelException(sprintf('Unable to execute SELECT statement [%s]', $sql), $e);
-		}
-		$obj = null;
-		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
-			$obj = new AutodiscoveryDeviceService();
-			$obj->hydrate($row);
-			AutodiscoveryDeviceServicePeer::addInstanceToPool($obj, (string) $row[0]);
-		}
-		$stmt->closeCursor();
-
-		return $obj;
-	}
-
-	/**
-	 * Find object by primary key.
-	 *
-	 * @param     mixed $key Primary key to use for the query
-	 * @param     PropelPDO $con A connection object
-	 *
-	 * @return    AutodiscoveryDeviceService|array|mixed the result, formatted by the current formatter
-	 */
-	protected function findPkComplex($key, $con)
-	{
-		// As the query uses a PK condition, no limit(1) is necessary.
-		$criteria = $this->isKeepQuery() ? clone $this : $this;
-		$stmt = $criteria
-			->filterByPrimaryKey($key)
-			->doSelect($con);
-		return $criteria->getFormatter()->init($criteria)->formatOne($stmt);
 	}
 
 	/**
@@ -190,15 +131,10 @@ abstract class BaseAutodiscoveryDeviceServiceQuery extends ModelCriteria
 	 */
 	public function findPks($keys, $con = null)
 	{
-		if ($con === null) {
-			$con = Propel::getConnection($this->getDbName(), Propel::CONNECTION_READ);
-		}
-		$this->basePreSelect($con);
 		$criteria = $this->isKeepQuery() ? clone $this : $this;
-		$stmt = $criteria
+		return $this
 			->filterByPrimaryKeys($keys)
-			->doSelect($con);
-		return $criteria->getFormatter()->init($criteria)->format($stmt);
+			->find($con);
 	}
 
 	/**
@@ -227,7 +163,7 @@ abstract class BaseAutodiscoveryDeviceServiceQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the id column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterById(1234); // WHERE id = 1234
@@ -253,7 +189,7 @@ abstract class BaseAutodiscoveryDeviceServiceQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the device_id column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByDeviceId(1234); // WHERE device_id = 1234
@@ -295,7 +231,7 @@ abstract class BaseAutodiscoveryDeviceServiceQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the protocol column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByProtocol('fooValue');   // WHERE protocol = 'fooValue'
@@ -323,7 +259,7 @@ abstract class BaseAutodiscoveryDeviceServiceQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the port column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByPort(1234); // WHERE port = 1234
@@ -363,7 +299,7 @@ abstract class BaseAutodiscoveryDeviceServiceQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the name column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByName('fooValue');   // WHERE name = 'fooValue'
@@ -391,7 +327,7 @@ abstract class BaseAutodiscoveryDeviceServiceQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the product column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByProduct('fooValue');   // WHERE product = 'fooValue'
@@ -419,7 +355,7 @@ abstract class BaseAutodiscoveryDeviceServiceQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the version column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByVersion('fooValue');   // WHERE version = 'fooValue'
@@ -447,7 +383,7 @@ abstract class BaseAutodiscoveryDeviceServiceQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the extrainfo column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByExtrainfo('fooValue');   // WHERE extrainfo = 'fooValue'
@@ -499,7 +435,7 @@ abstract class BaseAutodiscoveryDeviceServiceQuery extends ModelCriteria
 
 	/**
 	 * Adds a JOIN clause to the query using the AutodiscoveryDevice relation
-	 *
+	 * 
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
@@ -509,7 +445,7 @@ abstract class BaseAutodiscoveryDeviceServiceQuery extends ModelCriteria
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('AutodiscoveryDevice');
-
+		
 		// create a ModelJoin object for this join
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
@@ -517,7 +453,7 @@ abstract class BaseAutodiscoveryDeviceServiceQuery extends ModelCriteria
 		if ($previousJoin = $this->getPreviousJoin()) {
 			$join->setPreviousJoin($previousJoin);
 		}
-
+		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
@@ -525,7 +461,7 @@ abstract class BaseAutodiscoveryDeviceServiceQuery extends ModelCriteria
 		} else {
 			$this->addJoinObject($join, 'AutodiscoveryDevice');
 		}
-
+		
 		return $this;
 	}
 
@@ -533,7 +469,7 @@ abstract class BaseAutodiscoveryDeviceServiceQuery extends ModelCriteria
 	 * Use the AutodiscoveryDevice relation AutodiscoveryDevice object
 	 *
 	 * @see       useQuery()
-	 *
+	 * 
 	 * @param     string $relationAlias optional alias for the relation,
 	 *                                   to be used as main alias in the secondary query
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
@@ -558,8 +494,8 @@ abstract class BaseAutodiscoveryDeviceServiceQuery extends ModelCriteria
 	{
 		if ($autodiscoveryDeviceService) {
 			$this->addUsingAlias(AutodiscoveryDeviceServicePeer::ID, $autodiscoveryDeviceService->getId(), Criteria::NOT_EQUAL);
-		}
-
+	  }
+	  
 		return $this;
 	}
 

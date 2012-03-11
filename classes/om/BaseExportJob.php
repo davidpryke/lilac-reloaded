@@ -110,12 +110,6 @@ abstract class BaseExportJob extends BaseObject  implements Persistent
 	protected $alreadyInValidation = false;
 
 	/**
-	 * An array of objects scheduled for deletion.
-	 * @var		array
-	 */
-	protected $exportLogEntrysScheduledForDeletion = null;
-
-	/**
 	 * Get the [id] column value.
 	 * 
 	 * @return     int
@@ -674,18 +668,18 @@ abstract class BaseExportJob extends BaseObject  implements Persistent
 
 		$con->beginTransaction();
 		try {
-			$deleteQuery = ExportJobQuery::create()
-				->filterByPrimaryKey($this->getPrimaryKey());
 			$ret = $this->preDelete($con);
 			if ($ret) {
-				$deleteQuery->delete($con);
+				ExportJobQuery::create()
+					->filterByPrimaryKey($this->getPrimaryKey())
+					->delete($con);
 				$this->postDelete($con);
 				$con->commit();
 				$this->setDeleted(true);
 			} else {
 				$con->commit();
 			}
-		} catch (Exception $e) {
+		} catch (PropelException $e) {
 			$con->rollBack();
 			throw $e;
 		}
@@ -737,7 +731,7 @@ abstract class BaseExportJob extends BaseObject  implements Persistent
 			}
 			$con->commit();
 			return $affectedRows;
-		} catch (Exception $e) {
+		} catch (PropelException $e) {
 			$con->rollBack();
 			throw $e;
 		}
@@ -760,24 +754,27 @@ abstract class BaseExportJob extends BaseObject  implements Persistent
 		if (!$this->alreadyInSave) {
 			$this->alreadyInSave = true;
 
-			if ($this->isNew() || $this->isModified()) {
-				// persist changes
-				if ($this->isNew()) {
-					$this->doInsert($con);
-				} else {
-					$this->doUpdate($con);
-				}
-				$affectedRows += 1;
-				$this->resetModified();
+			if ($this->isNew() ) {
+				$this->modifiedColumns[] = ExportJobPeer::ID;
 			}
 
-			if ($this->exportLogEntrysScheduledForDeletion !== null) {
-				if (!$this->exportLogEntrysScheduledForDeletion->isEmpty()) {
-					ExportLogEntryQuery::create()
-						->filterByPrimaryKeys($this->exportLogEntrysScheduledForDeletion->getPrimaryKeys(false))
-						->delete($con);
-					$this->exportLogEntrysScheduledForDeletion = null;
+			// If this object has been modified, then save it to the database.
+			if ($this->isModified()) {
+				if ($this->isNew()) {
+					$criteria = $this->buildCriteria();
+					if ($criteria->keyContainsValue(ExportJobPeer::ID) ) {
+						throw new PropelException('Cannot insert a value for auto-increment primary key ('.ExportJobPeer::ID.')');
+					}
+
+					$pk = BasePeer::doInsert($criteria, $con);
+					$affectedRows = 1;
+					$this->setId($pk);  //[IMV] update autoincrement primary key
+					$this->setNew(false);
+				} else {
+					$affectedRows = ExportJobPeer::doUpdate($this, $con);
 				}
+
+				$this->resetModified(); // [HL] After being saved an object is no longer 'modified'
 			}
 
 			if ($this->collExportLogEntrys !== null) {
@@ -793,134 +790,6 @@ abstract class BaseExportJob extends BaseObject  implements Persistent
 		}
 		return $affectedRows;
 	} // doSave()
-
-	/**
-	 * Insert the row in the database.
-	 *
-	 * @param      PropelPDO $con
-	 *
-	 * @throws     PropelException
-	 * @see        doSave()
-	 */
-	protected function doInsert(PropelPDO $con)
-	{
-		$modifiedColumns = array();
-		$index = 0;
-
-		$this->modifiedColumns[] = ExportJobPeer::ID;
-		if (null !== $this->id) {
-			throw new PropelException('Cannot insert a value for auto-increment primary key (' . ExportJobPeer::ID . ')');
-		}
-
-		 // check the columns in natural order for more readable SQL queries
-		if ($this->isColumnModified(ExportJobPeer::ID)) {
-			$modifiedColumns[':p' . $index++]  = '`ID`';
-		}
-		if ($this->isColumnModified(ExportJobPeer::NAME)) {
-			$modifiedColumns[':p' . $index++]  = '`NAME`';
-		}
-		if ($this->isColumnModified(ExportJobPeer::DESCRIPTION)) {
-			$modifiedColumns[':p' . $index++]  = '`DESCRIPTION`';
-		}
-		if ($this->isColumnModified(ExportJobPeer::CONFIG)) {
-			$modifiedColumns[':p' . $index++]  = '`CONFIG`';
-		}
-		if ($this->isColumnModified(ExportJobPeer::START_TIME)) {
-			$modifiedColumns[':p' . $index++]  = '`START_TIME`';
-		}
-		if ($this->isColumnModified(ExportJobPeer::END_TIME)) {
-			$modifiedColumns[':p' . $index++]  = '`END_TIME`';
-		}
-		if ($this->isColumnModified(ExportJobPeer::STATUS)) {
-			$modifiedColumns[':p' . $index++]  = '`STATUS`';
-		}
-		if ($this->isColumnModified(ExportJobPeer::STATUS_CODE)) {
-			$modifiedColumns[':p' . $index++]  = '`STATUS_CODE`';
-		}
-		if ($this->isColumnModified(ExportJobPeer::STATUS_CHANGE_TIME)) {
-			$modifiedColumns[':p' . $index++]  = '`STATUS_CHANGE_TIME`';
-		}
-		if ($this->isColumnModified(ExportJobPeer::STATS)) {
-			$modifiedColumns[':p' . $index++]  = '`STATS`';
-		}
-		if ($this->isColumnModified(ExportJobPeer::CMD)) {
-			$modifiedColumns[':p' . $index++]  = '`CMD`';
-		}
-
-		$sql = sprintf(
-			'INSERT INTO `export_job` (%s) VALUES (%s)',
-			implode(', ', $modifiedColumns),
-			implode(', ', array_keys($modifiedColumns))
-		);
-
-		try {
-			$stmt = $con->prepare($sql);
-			foreach ($modifiedColumns as $identifier => $columnName) {
-				switch ($columnName) {
-					case '`ID`':
-						$stmt->bindValue($identifier, $this->id, PDO::PARAM_INT);
-						break;
-					case '`NAME`':
-						$stmt->bindValue($identifier, $this->name, PDO::PARAM_STR);
-						break;
-					case '`DESCRIPTION`':
-						$stmt->bindValue($identifier, $this->description, PDO::PARAM_STR);
-						break;
-					case '`CONFIG`':
-						$stmt->bindValue($identifier, $this->config, PDO::PARAM_STR);
-						break;
-					case '`START_TIME`':
-						$stmt->bindValue($identifier, $this->start_time, PDO::PARAM_STR);
-						break;
-					case '`END_TIME`':
-						$stmt->bindValue($identifier, $this->end_time, PDO::PARAM_STR);
-						break;
-					case '`STATUS`':
-						$stmt->bindValue($identifier, $this->status, PDO::PARAM_STR);
-						break;
-					case '`STATUS_CODE`':
-						$stmt->bindValue($identifier, $this->status_code, PDO::PARAM_INT);
-						break;
-					case '`STATUS_CHANGE_TIME`':
-						$stmt->bindValue($identifier, $this->status_change_time, PDO::PARAM_STR);
-						break;
-					case '`STATS`':
-						$stmt->bindValue($identifier, $this->stats, PDO::PARAM_STR);
-						break;
-					case '`CMD`':
-						$stmt->bindValue($identifier, $this->cmd, PDO::PARAM_STR);
-						break;
-				}
-			}
-			$stmt->execute();
-		} catch (Exception $e) {
-			Propel::log($e->getMessage(), Propel::LOG_ERR);
-			throw new PropelException(sprintf('Unable to execute INSERT statement [%s]', $sql), $e);
-		}
-
-		try {
-			$pk = $con->lastInsertId();
-		} catch (Exception $e) {
-			throw new PropelException('Unable to get autoincrement id.', $e);
-		}
-		$this->setId($pk);
-
-		$this->setNew(false);
-	}
-
-	/**
-	 * Update the row in the database.
-	 *
-	 * @param      PropelPDO $con
-	 *
-	 * @see        doSave()
-	 */
-	protected function doUpdate(PropelPDO $con)
-	{
-		$selectCriteria = $this->buildPkeyCriteria();
-		$valuesCriteria = $this->buildCriteria();
-		BasePeer::doUpdate($selectCriteria, $valuesCriteria, $con);
-	}
 
 	/**
 	 * Array of ValidationFailed objects.
@@ -1360,7 +1229,7 @@ abstract class BaseExportJob extends BaseObject  implements Persistent
 
 	/**
 	 * Initializes a collection based on the name of a relation.
-	 * Avoids crafting an 'init[$relationName]s' method name
+	 * Avoids crafting an 'init[$relationName]s' method name 
 	 * that wouldn't work when StandardEnglishPluralizer is used.
 	 *
 	 * @param      string $relationName The name of the relation to initialize
@@ -1442,30 +1311,6 @@ abstract class BaseExportJob extends BaseObject  implements Persistent
 	}
 
 	/**
-	 * Sets a collection of ExportLogEntry objects related by a one-to-many relationship
-	 * to the current object.
-	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
-	 * and new objects from the given Propel collection.
-	 *
-	 * @param      PropelCollection $exportLogEntrys A Propel collection.
-	 * @param      PropelPDO $con Optional connection object
-	 */
-	public function setExportLogEntrys(PropelCollection $exportLogEntrys, PropelPDO $con = null)
-	{
-		$this->exportLogEntrysScheduledForDeletion = $this->getExportLogEntrys(new Criteria(), $con)->diff($exportLogEntrys);
-
-		foreach ($exportLogEntrys as $exportLogEntry) {
-			// Fix issue with collection modified by reference
-			if ($exportLogEntry->isNew()) {
-				$exportLogEntry->setExportJob($this);
-			}
-			$this->addExportLogEntry($exportLogEntry);
-		}
-
-		$this->collExportLogEntrys = $exportLogEntrys;
-	}
-
-	/**
 	 * Returns the number of related ExportLogEntry objects.
 	 *
 	 * @param      Criteria $criteria
@@ -1498,7 +1343,8 @@ abstract class BaseExportJob extends BaseObject  implements Persistent
 	 * through the ExportLogEntry foreign key attribute.
 	 *
 	 * @param      ExportLogEntry $l ExportLogEntry
-	 * @return     ExportJob The current object (for fluent API support)
+	 * @return     void
+	 * @throws     PropelException
 	 */
 	public function addExportLogEntry(ExportLogEntry $l)
 	{
@@ -1506,19 +1352,9 @@ abstract class BaseExportJob extends BaseObject  implements Persistent
 			$this->initExportLogEntrys();
 		}
 		if (!$this->collExportLogEntrys->contains($l)) { // only add it if the **same** object is not already associated
-			$this->doAddExportLogEntry($l);
+			$this->collExportLogEntrys[]= $l;
+			$l->setExportJob($this);
 		}
-
-		return $this;
-	}
-
-	/**
-	 * @param	ExportLogEntry $exportLogEntry The exportLogEntry object to add.
-	 */
-	protected function doAddExportLogEntry($exportLogEntry)
-	{
-		$this->collExportLogEntrys[]= $exportLogEntry;
-		$exportLogEntry->setExportJob($this);
 	}
 
 	/**
@@ -1578,6 +1414,25 @@ abstract class BaseExportJob extends BaseObject  implements Persistent
 	public function __toString()
 	{
 		return (string) $this->exportTo(ExportJobPeer::DEFAULT_STRING_FORMAT);
+	}
+
+	/**
+	 * Catches calls to virtual methods
+	 */
+	public function __call($name, $params)
+	{
+		if (preg_match('/get(\w+)/', $name, $matches)) {
+			$virtualColumn = $matches[1];
+			if ($this->hasVirtualColumn($virtualColumn)) {
+				return $this->getVirtualColumn($virtualColumn);
+			}
+			// no lcfirst in php<5.3...
+			$virtualColumn[0] = strtolower($virtualColumn[0]);
+			if ($this->hasVirtualColumn($virtualColumn)) {
+				return $this->getVirtualColumn($virtualColumn);
+			}
+		}
+		return parent::__call($name, $params);
 	}
 
 } // BaseExportJob

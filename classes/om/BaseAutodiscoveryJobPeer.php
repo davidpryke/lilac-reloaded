@@ -24,7 +24,7 @@ abstract class BaseAutodiscoveryJobPeer {
 
 	/** the related TableMap class for this table */
 	const TM_CLASS = 'AutodiscoveryJobTableMap';
-
+	
 	/** The total number of columns. */
 	const NUM_COLUMNS = 11;
 
@@ -69,7 +69,7 @@ abstract class BaseAutodiscoveryJobPeer {
 
 	/** The default string format for model objects of the related table **/
 	const DEFAULT_STRING_FORMAT = 'YAML';
-
+	
 	/**
 	 * An identiy map to hold any loaded instances of AutodiscoveryJob objects.
 	 * This must be public so that other peer classes can access this when hydrating from JOIN
@@ -394,10 +394,10 @@ abstract class BaseAutodiscoveryJobPeer {
 	 */
 	public static function clearRelatedInstancePool()
 	{
-		// Invalidate objects in AutodiscoveryLogEntryPeer instance pool,
+		// Invalidate objects in AutodiscoveryLogEntryPeer instance pool, 
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		AutodiscoveryLogEntryPeer::clearInstancePool();
-		// Invalidate objects in AutodiscoveryDevicePeer instance pool,
+		// Invalidate objects in AutodiscoveryDevicePeer instance pool, 
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		AutodiscoveryDevicePeer::clearInstancePool();
 	}
@@ -422,7 +422,7 @@ abstract class BaseAutodiscoveryJobPeer {
 	}
 
 	/**
-	 * Retrieves the primary key from the DB resultset row
+	 * Retrieves the primary key from the DB resultset row 
 	 * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
 	 * a multi-column primary key, an array of the primary key columns will be returned.
 	 *

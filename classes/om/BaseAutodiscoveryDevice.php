@@ -130,18 +130,6 @@ abstract class BaseAutodiscoveryDevice extends BaseObject  implements Persistent
 	protected $alreadyInValidation = false;
 
 	/**
-	 * An array of objects scheduled for deletion.
-	 * @var		array
-	 */
-	protected $autodiscoveryDeviceServicesScheduledForDeletion = null;
-
-	/**
-	 * An array of objects scheduled for deletion.
-	 * @var		array
-	 */
-	protected $autodiscoveryDeviceTemplateMatchsScheduledForDeletion = null;
-
-	/**
 	 * Get the [id] column value.
 	 * 
 	 * @return     int
@@ -636,18 +624,18 @@ abstract class BaseAutodiscoveryDevice extends BaseObject  implements Persistent
 
 		$con->beginTransaction();
 		try {
-			$deleteQuery = AutodiscoveryDeviceQuery::create()
-				->filterByPrimaryKey($this->getPrimaryKey());
 			$ret = $this->preDelete($con);
 			if ($ret) {
-				$deleteQuery->delete($con);
+				AutodiscoveryDeviceQuery::create()
+					->filterByPrimaryKey($this->getPrimaryKey())
+					->delete($con);
 				$this->postDelete($con);
 				$con->commit();
 				$this->setDeleted(true);
 			} else {
 				$con->commit();
 			}
-		} catch (Exception $e) {
+		} catch (PropelException $e) {
 			$con->rollBack();
 			throw $e;
 		}
@@ -699,7 +687,7 @@ abstract class BaseAutodiscoveryDevice extends BaseObject  implements Persistent
 			}
 			$con->commit();
 			return $affectedRows;
-		} catch (Exception $e) {
+		} catch (PropelException $e) {
 			$con->rollBack();
 			throw $e;
 		}
@@ -748,24 +736,27 @@ abstract class BaseAutodiscoveryDevice extends BaseObject  implements Persistent
 				$this->setNagiosHost($this->aNagiosHost);
 			}
 
-			if ($this->isNew() || $this->isModified()) {
-				// persist changes
-				if ($this->isNew()) {
-					$this->doInsert($con);
-				} else {
-					$this->doUpdate($con);
-				}
-				$affectedRows += 1;
-				$this->resetModified();
+			if ($this->isNew() ) {
+				$this->modifiedColumns[] = AutodiscoveryDevicePeer::ID;
 			}
 
-			if ($this->autodiscoveryDeviceServicesScheduledForDeletion !== null) {
-				if (!$this->autodiscoveryDeviceServicesScheduledForDeletion->isEmpty()) {
-					AutodiscoveryDeviceServiceQuery::create()
-						->filterByPrimaryKeys($this->autodiscoveryDeviceServicesScheduledForDeletion->getPrimaryKeys(false))
-						->delete($con);
-					$this->autodiscoveryDeviceServicesScheduledForDeletion = null;
+			// If this object has been modified, then save it to the database.
+			if ($this->isModified()) {
+				if ($this->isNew()) {
+					$criteria = $this->buildCriteria();
+					if ($criteria->keyContainsValue(AutodiscoveryDevicePeer::ID) ) {
+						throw new PropelException('Cannot insert a value for auto-increment primary key ('.AutodiscoveryDevicePeer::ID.')');
+					}
+
+					$pk = BasePeer::doInsert($criteria, $con);
+					$affectedRows += 1;
+					$this->setId($pk);  //[IMV] update autoincrement primary key
+					$this->setNew(false);
+				} else {
+					$affectedRows += AutodiscoveryDevicePeer::doUpdate($this, $con);
 				}
+
+				$this->resetModified(); // [HL] After being saved an object is no longer 'modified'
 			}
 
 			if ($this->collAutodiscoveryDeviceServices !== null) {
@@ -773,15 +764,6 @@ abstract class BaseAutodiscoveryDevice extends BaseObject  implements Persistent
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
-				}
-			}
-
-			if ($this->autodiscoveryDeviceTemplateMatchsScheduledForDeletion !== null) {
-				if (!$this->autodiscoveryDeviceTemplateMatchsScheduledForDeletion->isEmpty()) {
-					AutodiscoveryDeviceTemplateMatchQuery::create()
-						->filterByPrimaryKeys($this->autodiscoveryDeviceTemplateMatchsScheduledForDeletion->getPrimaryKeys(false))
-						->delete($con);
-					$this->autodiscoveryDeviceTemplateMatchsScheduledForDeletion = null;
 				}
 			}
 
@@ -798,134 +780,6 @@ abstract class BaseAutodiscoveryDevice extends BaseObject  implements Persistent
 		}
 		return $affectedRows;
 	} // doSave()
-
-	/**
-	 * Insert the row in the database.
-	 *
-	 * @param      PropelPDO $con
-	 *
-	 * @throws     PropelException
-	 * @see        doSave()
-	 */
-	protected function doInsert(PropelPDO $con)
-	{
-		$modifiedColumns = array();
-		$index = 0;
-
-		$this->modifiedColumns[] = AutodiscoveryDevicePeer::ID;
-		if (null !== $this->id) {
-			throw new PropelException('Cannot insert a value for auto-increment primary key (' . AutodiscoveryDevicePeer::ID . ')');
-		}
-
-		 // check the columns in natural order for more readable SQL queries
-		if ($this->isColumnModified(AutodiscoveryDevicePeer::ID)) {
-			$modifiedColumns[':p' . $index++]  = '`ID`';
-		}
-		if ($this->isColumnModified(AutodiscoveryDevicePeer::JOB_ID)) {
-			$modifiedColumns[':p' . $index++]  = '`JOB_ID`';
-		}
-		if ($this->isColumnModified(AutodiscoveryDevicePeer::ADDRESS)) {
-			$modifiedColumns[':p' . $index++]  = '`ADDRESS`';
-		}
-		if ($this->isColumnModified(AutodiscoveryDevicePeer::NAME)) {
-			$modifiedColumns[':p' . $index++]  = '`NAME`';
-		}
-		if ($this->isColumnModified(AutodiscoveryDevicePeer::HOSTNAME)) {
-			$modifiedColumns[':p' . $index++]  = '`HOSTNAME`';
-		}
-		if ($this->isColumnModified(AutodiscoveryDevicePeer::DESCRIPTION)) {
-			$modifiedColumns[':p' . $index++]  = '`DESCRIPTION`';
-		}
-		if ($this->isColumnModified(AutodiscoveryDevicePeer::OSVENDOR)) {
-			$modifiedColumns[':p' . $index++]  = '`OSVENDOR`';
-		}
-		if ($this->isColumnModified(AutodiscoveryDevicePeer::OSFAMILY)) {
-			$modifiedColumns[':p' . $index++]  = '`OSFAMILY`';
-		}
-		if ($this->isColumnModified(AutodiscoveryDevicePeer::OSGEN)) {
-			$modifiedColumns[':p' . $index++]  = '`OSGEN`';
-		}
-		if ($this->isColumnModified(AutodiscoveryDevicePeer::HOST_TEMPLATE)) {
-			$modifiedColumns[':p' . $index++]  = '`HOST_TEMPLATE`';
-		}
-		if ($this->isColumnModified(AutodiscoveryDevicePeer::PROPOSED_PARENT)) {
-			$modifiedColumns[':p' . $index++]  = '`PROPOSED_PARENT`';
-		}
-
-		$sql = sprintf(
-			'INSERT INTO `autodiscovery_device` (%s) VALUES (%s)',
-			implode(', ', $modifiedColumns),
-			implode(', ', array_keys($modifiedColumns))
-		);
-
-		try {
-			$stmt = $con->prepare($sql);
-			foreach ($modifiedColumns as $identifier => $columnName) {
-				switch ($columnName) {
-					case '`ID`':
-						$stmt->bindValue($identifier, $this->id, PDO::PARAM_INT);
-						break;
-					case '`JOB_ID`':
-						$stmt->bindValue($identifier, $this->job_id, PDO::PARAM_INT);
-						break;
-					case '`ADDRESS`':
-						$stmt->bindValue($identifier, $this->address, PDO::PARAM_STR);
-						break;
-					case '`NAME`':
-						$stmt->bindValue($identifier, $this->name, PDO::PARAM_STR);
-						break;
-					case '`HOSTNAME`':
-						$stmt->bindValue($identifier, $this->hostname, PDO::PARAM_STR);
-						break;
-					case '`DESCRIPTION`':
-						$stmt->bindValue($identifier, $this->description, PDO::PARAM_STR);
-						break;
-					case '`OSVENDOR`':
-						$stmt->bindValue($identifier, $this->osvendor, PDO::PARAM_STR);
-						break;
-					case '`OSFAMILY`':
-						$stmt->bindValue($identifier, $this->osfamily, PDO::PARAM_STR);
-						break;
-					case '`OSGEN`':
-						$stmt->bindValue($identifier, $this->osgen, PDO::PARAM_STR);
-						break;
-					case '`HOST_TEMPLATE`':
-						$stmt->bindValue($identifier, $this->host_template, PDO::PARAM_INT);
-						break;
-					case '`PROPOSED_PARENT`':
-						$stmt->bindValue($identifier, $this->proposed_parent, PDO::PARAM_INT);
-						break;
-				}
-			}
-			$stmt->execute();
-		} catch (Exception $e) {
-			Propel::log($e->getMessage(), Propel::LOG_ERR);
-			throw new PropelException(sprintf('Unable to execute INSERT statement [%s]', $sql), $e);
-		}
-
-		try {
-			$pk = $con->lastInsertId();
-		} catch (Exception $e) {
-			throw new PropelException('Unable to get autoincrement id.', $e);
-		}
-		$this->setId($pk);
-
-		$this->setNew(false);
-	}
-
-	/**
-	 * Update the row in the database.
-	 *
-	 * @param      PropelPDO $con
-	 *
-	 * @see        doSave()
-	 */
-	protected function doUpdate(PropelPDO $con)
-	{
-		$selectCriteria = $this->buildPkeyCriteria();
-		$valuesCriteria = $this->buildCriteria();
-		BasePeer::doUpdate($selectCriteria, $valuesCriteria, $con);
-	}
 
 	/**
 	 * Array of ValidationFailed objects.
@@ -1562,7 +1416,7 @@ abstract class BaseAutodiscoveryDevice extends BaseObject  implements Persistent
 
 	/**
 	 * Initializes a collection based on the name of a relation.
-	 * Avoids crafting an 'init[$relationName]s' method name
+	 * Avoids crafting an 'init[$relationName]s' method name 
 	 * that wouldn't work when StandardEnglishPluralizer is used.
 	 *
 	 * @param      string $relationName The name of the relation to initialize
@@ -1647,30 +1501,6 @@ abstract class BaseAutodiscoveryDevice extends BaseObject  implements Persistent
 	}
 
 	/**
-	 * Sets a collection of AutodiscoveryDeviceService objects related by a one-to-many relationship
-	 * to the current object.
-	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
-	 * and new objects from the given Propel collection.
-	 *
-	 * @param      PropelCollection $autodiscoveryDeviceServices A Propel collection.
-	 * @param      PropelPDO $con Optional connection object
-	 */
-	public function setAutodiscoveryDeviceServices(PropelCollection $autodiscoveryDeviceServices, PropelPDO $con = null)
-	{
-		$this->autodiscoveryDeviceServicesScheduledForDeletion = $this->getAutodiscoveryDeviceServices(new Criteria(), $con)->diff($autodiscoveryDeviceServices);
-
-		foreach ($autodiscoveryDeviceServices as $autodiscoveryDeviceService) {
-			// Fix issue with collection modified by reference
-			if ($autodiscoveryDeviceService->isNew()) {
-				$autodiscoveryDeviceService->setAutodiscoveryDevice($this);
-			}
-			$this->addAutodiscoveryDeviceService($autodiscoveryDeviceService);
-		}
-
-		$this->collAutodiscoveryDeviceServices = $autodiscoveryDeviceServices;
-	}
-
-	/**
 	 * Returns the number of related AutodiscoveryDeviceService objects.
 	 *
 	 * @param      Criteria $criteria
@@ -1703,7 +1533,8 @@ abstract class BaseAutodiscoveryDevice extends BaseObject  implements Persistent
 	 * through the AutodiscoveryDeviceService foreign key attribute.
 	 *
 	 * @param      AutodiscoveryDeviceService $l AutodiscoveryDeviceService
-	 * @return     AutodiscoveryDevice The current object (for fluent API support)
+	 * @return     void
+	 * @throws     PropelException
 	 */
 	public function addAutodiscoveryDeviceService(AutodiscoveryDeviceService $l)
 	{
@@ -1711,19 +1542,9 @@ abstract class BaseAutodiscoveryDevice extends BaseObject  implements Persistent
 			$this->initAutodiscoveryDeviceServices();
 		}
 		if (!$this->collAutodiscoveryDeviceServices->contains($l)) { // only add it if the **same** object is not already associated
-			$this->doAddAutodiscoveryDeviceService($l);
+			$this->collAutodiscoveryDeviceServices[]= $l;
+			$l->setAutodiscoveryDevice($this);
 		}
-
-		return $this;
-	}
-
-	/**
-	 * @param	AutodiscoveryDeviceService $autodiscoveryDeviceService The autodiscoveryDeviceService object to add.
-	 */
-	protected function doAddAutodiscoveryDeviceService($autodiscoveryDeviceService)
-	{
-		$this->collAutodiscoveryDeviceServices[]= $autodiscoveryDeviceService;
-		$autodiscoveryDeviceService->setAutodiscoveryDevice($this);
 	}
 
 	/**
@@ -1795,30 +1616,6 @@ abstract class BaseAutodiscoveryDevice extends BaseObject  implements Persistent
 	}
 
 	/**
-	 * Sets a collection of AutodiscoveryDeviceTemplateMatch objects related by a one-to-many relationship
-	 * to the current object.
-	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
-	 * and new objects from the given Propel collection.
-	 *
-	 * @param      PropelCollection $autodiscoveryDeviceTemplateMatchs A Propel collection.
-	 * @param      PropelPDO $con Optional connection object
-	 */
-	public function setAutodiscoveryDeviceTemplateMatchs(PropelCollection $autodiscoveryDeviceTemplateMatchs, PropelPDO $con = null)
-	{
-		$this->autodiscoveryDeviceTemplateMatchsScheduledForDeletion = $this->getAutodiscoveryDeviceTemplateMatchs(new Criteria(), $con)->diff($autodiscoveryDeviceTemplateMatchs);
-
-		foreach ($autodiscoveryDeviceTemplateMatchs as $autodiscoveryDeviceTemplateMatch) {
-			// Fix issue with collection modified by reference
-			if ($autodiscoveryDeviceTemplateMatch->isNew()) {
-				$autodiscoveryDeviceTemplateMatch->setAutodiscoveryDevice($this);
-			}
-			$this->addAutodiscoveryDeviceTemplateMatch($autodiscoveryDeviceTemplateMatch);
-		}
-
-		$this->collAutodiscoveryDeviceTemplateMatchs = $autodiscoveryDeviceTemplateMatchs;
-	}
-
-	/**
 	 * Returns the number of related AutodiscoveryDeviceTemplateMatch objects.
 	 *
 	 * @param      Criteria $criteria
@@ -1851,7 +1648,8 @@ abstract class BaseAutodiscoveryDevice extends BaseObject  implements Persistent
 	 * through the AutodiscoveryDeviceTemplateMatch foreign key attribute.
 	 *
 	 * @param      AutodiscoveryDeviceTemplateMatch $l AutodiscoveryDeviceTemplateMatch
-	 * @return     AutodiscoveryDevice The current object (for fluent API support)
+	 * @return     void
+	 * @throws     PropelException
 	 */
 	public function addAutodiscoveryDeviceTemplateMatch(AutodiscoveryDeviceTemplateMatch $l)
 	{
@@ -1859,19 +1657,9 @@ abstract class BaseAutodiscoveryDevice extends BaseObject  implements Persistent
 			$this->initAutodiscoveryDeviceTemplateMatchs();
 		}
 		if (!$this->collAutodiscoveryDeviceTemplateMatchs->contains($l)) { // only add it if the **same** object is not already associated
-			$this->doAddAutodiscoveryDeviceTemplateMatch($l);
+			$this->collAutodiscoveryDeviceTemplateMatchs[]= $l;
+			$l->setAutodiscoveryDevice($this);
 		}
-
-		return $this;
-	}
-
-	/**
-	 * @param	AutodiscoveryDeviceTemplateMatch $autodiscoveryDeviceTemplateMatch The autodiscoveryDeviceTemplateMatch object to add.
-	 */
-	protected function doAddAutodiscoveryDeviceTemplateMatch($autodiscoveryDeviceTemplateMatch)
-	{
-		$this->collAutodiscoveryDeviceTemplateMatchs[]= $autodiscoveryDeviceTemplateMatch;
-		$autodiscoveryDeviceTemplateMatch->setAutodiscoveryDevice($this);
 	}
 
 
@@ -1968,6 +1756,25 @@ abstract class BaseAutodiscoveryDevice extends BaseObject  implements Persistent
 	public function __toString()
 	{
 		return (string) $this->exportTo(AutodiscoveryDevicePeer::DEFAULT_STRING_FORMAT);
+	}
+
+	/**
+	 * Catches calls to virtual methods
+	 */
+	public function __call($name, $params)
+	{
+		if (preg_match('/get(\w+)/', $name, $matches)) {
+			$virtualColumn = $matches[1];
+			if ($this->hasVirtualColumn($virtualColumn)) {
+				return $this->getVirtualColumn($virtualColumn);
+			}
+			// no lcfirst in php<5.3...
+			$virtualColumn[0] = strtolower($virtualColumn[0]);
+			if ($this->hasVirtualColumn($virtualColumn)) {
+				return $this->getVirtualColumn($virtualColumn);
+			}
+		}
+		return parent::__call($name, $params);
 	}
 
 } // BaseAutodiscoveryDevice

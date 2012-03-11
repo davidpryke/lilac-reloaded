@@ -24,7 +24,7 @@ abstract class BaseNagiosCgiConfigurationPeer {
 
 	/** the related TableMap class for this table */
 	const TM_CLASS = 'NagiosCgiConfigurationTableMap';
-
+	
 	/** The total number of columns. */
 	const NUM_COLUMNS = 29;
 
@@ -123,7 +123,7 @@ abstract class BaseNagiosCgiConfigurationPeer {
 
 	/** The default string format for model objects of the related table **/
 	const DEFAULT_STRING_FORMAT = 'YAML';
-
+	
 	/**
 	 * An identiy map to hold any loaded instances of NagiosCgiConfiguration objects.
 	 * This must be public so that other peer classes can access this when hydrating from JOIN
@@ -506,7 +506,7 @@ abstract class BaseNagiosCgiConfigurationPeer {
 	}
 
 	/**
-	 * Retrieves the primary key from the DB resultset row
+	 * Retrieves the primary key from the DB resultset row 
 	 * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
 	 * a multi-column primary key, an array of the primary key columns will be returned.
 	 *

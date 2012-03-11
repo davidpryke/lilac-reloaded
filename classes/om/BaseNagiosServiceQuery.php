@@ -285,7 +285,7 @@
  */
 abstract class BaseNagiosServiceQuery extends ModelCriteria
 {
-	
+
 	/**
 	 * Initializes internal state of BaseNagiosServiceQuery object.
 	 *
@@ -322,14 +322,11 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 	}
 
 	/**
-	 * Find object by primary key.
-	 * Propel uses the instance pool to skip the database if the object exists.
-	 * Go fast if the query is untouched.
-	 *
+	 * Find object by primary key
+	 * Use instance pooling to avoid a database query if the object exists
 	 * <code>
 	 * $obj  = $c->findPk(12, $con);
 	 * </code>
-	 *
 	 * @param     mixed $key Primary key to use for the query
 	 * @param     PropelPDO $con an optional connection object
 	 *
@@ -337,73 +334,17 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 	 */
 	public function findPk($key, $con = null)
 	{
-		if ($key === null) {
-			return null;
-		}
-		if ((null !== ($obj = NagiosServicePeer::getInstanceFromPool((string) $key))) && !$this->formatter) {
+		if ((null !== ($obj = NagiosServicePeer::getInstanceFromPool((string) $key))) && $this->getFormatter()->isObjectFormatter()) {
 			// the object is alredy in the instance pool
 			return $obj;
-		}
-		if ($con === null) {
-			$con = Propel::getConnection(NagiosServicePeer::DATABASE_NAME, Propel::CONNECTION_READ);
-		}
-		$this->basePreSelect($con);
-		if ($this->formatter || $this->modelAlias || $this->with || $this->select
-		 || $this->selectColumns || $this->asColumns || $this->selectModifiers
-		 || $this->map || $this->having || $this->joins) {
-			return $this->findPkComplex($key, $con);
 		} else {
-			return $this->findPkSimple($key, $con);
+			// the object has not been requested yet, or the formatter is not an object formatter
+			$criteria = $this->isKeepQuery() ? clone $this : $this;
+			$stmt = $criteria
+				->filterByPrimaryKey($key)
+				->getSelectStatement($con);
+			return $criteria->getFormatter()->init($criteria)->formatOne($stmt);
 		}
-	}
-
-	/**
-	 * Find object by primary key using raw SQL to go fast.
-	 * Bypass doSelect() and the object formatter by using generated code.
-	 *
-	 * @param     mixed $key Primary key to use for the query
-	 * @param     PropelPDO $con A connection object
-	 *
-	 * @return    NagiosService A model object, or null if the key is not found
-	 */
-	protected function findPkSimple($key, $con)
-	{
-		$sql = 'SELECT `ID`, `DESCRIPTION`, `DISPLAY_NAME`, `HOST`, `HOST_TEMPLATE`, `HOSTGROUP`, `INITIAL_STATE`, `IS_VOLATILE`, `CHECK_COMMAND`, `MAXIMUM_CHECK_ATTEMPTS`, `NORMAL_CHECK_INTERVAL`, `RETRY_INTERVAL`, `FIRST_NOTIFICATION_DELAY`, `ACTIVE_CHECKS_ENABLED`, `PASSIVE_CHECKS_ENABLED`, `CHECK_PERIOD`, `PARALLELIZE_CHECK`, `OBSESS_OVER_SERVICE`, `CHECK_FRESHNESS`, `FRESHNESS_THRESHOLD`, `EVENT_HANDLER`, `EVENT_HANDLER_ENABLED`, `LOW_FLAP_THRESHOLD`, `HIGH_FLAP_THRESHOLD`, `FLAP_DETECTION_ENABLED`, `FLAP_DETECTION_ON_OK`, `FLAP_DETECTION_ON_WARNING`, `FLAP_DETECTION_ON_CRITICAL`, `FLAP_DETECTION_ON_UNKNOWN`, `PROCESS_PERF_DATA`, `RETAIN_STATUS_INFORMATION`, `RETAIN_NONSTATUS_INFORMATION`, `NOTIFICATION_INTERVAL`, `NOTIFICATION_PERIOD`, `NOTIFICATION_ON_WARNING`, `NOTIFICATION_ON_UNKNOWN`, `NOTIFICATION_ON_CRITICAL`, `NOTIFICATION_ON_RECOVERY`, `NOTIFICATION_ON_FLAPPING`, `NOTIFICATION_ON_SCHEDULED_DOWNTIME`, `NOTIFICATIONS_ENABLED`, `STALKING_ON_OK`, `STALKING_ON_WARNING`, `STALKING_ON_UNKNOWN`, `STALKING_ON_CRITICAL`, `FAILURE_PREDICTION_ENABLED`, `NOTES`, `NOTES_URL`, `ACTION_URL`, `ICON_IMAGE`, `ICON_IMAGE_ALT` FROM `nagios_service` WHERE `ID` = :p0';
-		try {
-			$stmt = $con->prepare($sql);
-			$stmt->bindValue(':p0', $key, PDO::PARAM_INT);
-			$stmt->execute();
-		} catch (Exception $e) {
-			Propel::log($e->getMessage(), Propel::LOG_ERR);
-			throw new PropelException(sprintf('Unable to execute SELECT statement [%s]', $sql), $e);
-		}
-		$obj = null;
-		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
-			$obj = new NagiosService();
-			$obj->hydrate($row);
-			NagiosServicePeer::addInstanceToPool($obj, (string) $row[0]);
-		}
-		$stmt->closeCursor();
-
-		return $obj;
-	}
-
-	/**
-	 * Find object by primary key.
-	 *
-	 * @param     mixed $key Primary key to use for the query
-	 * @param     PropelPDO $con A connection object
-	 *
-	 * @return    NagiosService|array|mixed the result, formatted by the current formatter
-	 */
-	protected function findPkComplex($key, $con)
-	{
-		// As the query uses a PK condition, no limit(1) is necessary.
-		$criteria = $this->isKeepQuery() ? clone $this : $this;
-		$stmt = $criteria
-			->filterByPrimaryKey($key)
-			->doSelect($con);
-		return $criteria->getFormatter()->init($criteria)->formatOne($stmt);
 	}
 
 	/**
@@ -418,15 +359,10 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 	 */
 	public function findPks($keys, $con = null)
 	{
-		if ($con === null) {
-			$con = Propel::getConnection($this->getDbName(), Propel::CONNECTION_READ);
-		}
-		$this->basePreSelect($con);
 		$criteria = $this->isKeepQuery() ? clone $this : $this;
-		$stmt = $criteria
+		return $this
 			->filterByPrimaryKeys($keys)
-			->doSelect($con);
-		return $criteria->getFormatter()->init($criteria)->format($stmt);
+			->find($con);
 	}
 
 	/**
@@ -455,7 +391,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the id column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterById(1234); // WHERE id = 1234
@@ -481,7 +417,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the description column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByDescription('fooValue');   // WHERE description = 'fooValue'
@@ -509,7 +445,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the display_name column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByDisplayName('fooValue');   // WHERE display_name = 'fooValue'
@@ -537,7 +473,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the host column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByHost(1234); // WHERE host = 1234
@@ -579,7 +515,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the host_template column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByHostTemplate(1234); // WHERE host_template = 1234
@@ -621,7 +557,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the hostgroup column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByHostgroup(1234); // WHERE hostgroup = 1234
@@ -663,7 +599,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the initial_state column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByInitialState('fooValue');   // WHERE initial_state = 'fooValue'
@@ -691,7 +627,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the is_volatile column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByIsVolatile(true); // WHERE is_volatile = true
@@ -717,7 +653,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the check_command column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByCheckCommand(1234); // WHERE check_command = 1234
@@ -759,7 +695,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the maximum_check_attempts column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByMaximumCheckAttempts(1234); // WHERE maximum_check_attempts = 1234
@@ -799,7 +735,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the normal_check_interval column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByNormalCheckInterval(1234); // WHERE normal_check_interval = 1234
@@ -839,7 +775,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the retry_interval column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByRetryInterval(1234); // WHERE retry_interval = 1234
@@ -879,7 +815,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the first_notification_delay column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByFirstNotificationDelay(1234); // WHERE first_notification_delay = 1234
@@ -919,7 +855,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the active_checks_enabled column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByActiveChecksEnabled(true); // WHERE active_checks_enabled = true
@@ -945,7 +881,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the passive_checks_enabled column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByPassiveChecksEnabled(true); // WHERE passive_checks_enabled = true
@@ -971,7 +907,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the check_period column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByCheckPeriod(1234); // WHERE check_period = 1234
@@ -1013,7 +949,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the parallelize_check column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByParallelizeCheck(true); // WHERE parallelize_check = true
@@ -1039,7 +975,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the obsess_over_service column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByObsessOverService(true); // WHERE obsess_over_service = true
@@ -1065,7 +1001,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the check_freshness column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByCheckFreshness(true); // WHERE check_freshness = true
@@ -1091,7 +1027,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the freshness_threshold column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByFreshnessThreshold(1234); // WHERE freshness_threshold = 1234
@@ -1131,7 +1067,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the event_handler column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByEventHandler(1234); // WHERE event_handler = 1234
@@ -1173,7 +1109,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the event_handler_enabled column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByEventHandlerEnabled(true); // WHERE event_handler_enabled = true
@@ -1199,7 +1135,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the low_flap_threshold column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByLowFlapThreshold(1234); // WHERE low_flap_threshold = 1234
@@ -1239,7 +1175,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the high_flap_threshold column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByHighFlapThreshold(1234); // WHERE high_flap_threshold = 1234
@@ -1279,7 +1215,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the flap_detection_enabled column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByFlapDetectionEnabled(true); // WHERE flap_detection_enabled = true
@@ -1305,7 +1241,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the flap_detection_on_ok column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByFlapDetectionOnOk(true); // WHERE flap_detection_on_ok = true
@@ -1331,7 +1267,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the flap_detection_on_warning column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByFlapDetectionOnWarning(true); // WHERE flap_detection_on_warning = true
@@ -1357,7 +1293,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the flap_detection_on_critical column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByFlapDetectionOnCritical(true); // WHERE flap_detection_on_critical = true
@@ -1383,7 +1319,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the flap_detection_on_unknown column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByFlapDetectionOnUnknown(true); // WHERE flap_detection_on_unknown = true
@@ -1409,7 +1345,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the process_perf_data column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByProcessPerfData(true); // WHERE process_perf_data = true
@@ -1435,7 +1371,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the retain_status_information column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByRetainStatusInformation(true); // WHERE retain_status_information = true
@@ -1461,7 +1397,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the retain_nonstatus_information column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByRetainNonstatusInformation(true); // WHERE retain_nonstatus_information = true
@@ -1487,7 +1423,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the notification_interval column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByNotificationInterval(1234); // WHERE notification_interval = 1234
@@ -1527,7 +1463,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the notification_period column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByNotificationPeriod(1234); // WHERE notification_period = 1234
@@ -1569,7 +1505,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the notification_on_warning column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByNotificationOnWarning(true); // WHERE notification_on_warning = true
@@ -1595,7 +1531,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the notification_on_unknown column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByNotificationOnUnknown(true); // WHERE notification_on_unknown = true
@@ -1621,7 +1557,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the notification_on_critical column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByNotificationOnCritical(true); // WHERE notification_on_critical = true
@@ -1647,7 +1583,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the notification_on_recovery column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByNotificationOnRecovery(true); // WHERE notification_on_recovery = true
@@ -1673,7 +1609,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the notification_on_flapping column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByNotificationOnFlapping(true); // WHERE notification_on_flapping = true
@@ -1699,7 +1635,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the notification_on_scheduled_downtime column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByNotificationOnScheduledDowntime(true); // WHERE notification_on_scheduled_downtime = true
@@ -1725,7 +1661,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the notifications_enabled column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByNotificationsEnabled(true); // WHERE notifications_enabled = true
@@ -1751,7 +1687,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the stalking_on_ok column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByStalkingOnOk(true); // WHERE stalking_on_ok = true
@@ -1777,7 +1713,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the stalking_on_warning column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByStalkingOnWarning(true); // WHERE stalking_on_warning = true
@@ -1803,7 +1739,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the stalking_on_unknown column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByStalkingOnUnknown(true); // WHERE stalking_on_unknown = true
@@ -1829,7 +1765,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the stalking_on_critical column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByStalkingOnCritical(true); // WHERE stalking_on_critical = true
@@ -1855,7 +1791,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the failure_prediction_enabled column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByFailurePredictionEnabled(true); // WHERE failure_prediction_enabled = true
@@ -1881,7 +1817,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the notes column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByNotes('fooValue');   // WHERE notes = 'fooValue'
@@ -1909,7 +1845,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the notes_url column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByNotesUrl('fooValue');   // WHERE notes_url = 'fooValue'
@@ -1937,7 +1873,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the action_url column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByActionUrl('fooValue');   // WHERE action_url = 'fooValue'
@@ -1965,7 +1901,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the icon_image column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByIconImage('fooValue');   // WHERE icon_image = 'fooValue'
@@ -1993,7 +1929,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the icon_image_alt column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByIconImageAlt('fooValue');   // WHERE icon_image_alt = 'fooValue'
@@ -2045,7 +1981,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 
 	/**
 	 * Adds a JOIN clause to the query using the NagiosHost relation
-	 *
+	 * 
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
@@ -2055,7 +1991,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('NagiosHost');
-
+		
 		// create a ModelJoin object for this join
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
@@ -2063,7 +1999,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 		if ($previousJoin = $this->getPreviousJoin()) {
 			$join->setPreviousJoin($previousJoin);
 		}
-
+		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
@@ -2071,7 +2007,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 		} else {
 			$this->addJoinObject($join, 'NagiosHost');
 		}
-
+		
 		return $this;
 	}
 
@@ -2079,7 +2015,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 	 * Use the NagiosHost relation NagiosHost object
 	 *
 	 * @see       useQuery()
-	 *
+	 * 
 	 * @param     string $relationAlias optional alias for the relation,
 	 *                                   to be used as main alias in the secondary query
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
@@ -2119,7 +2055,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 
 	/**
 	 * Adds a JOIN clause to the query using the NagiosHostTemplate relation
-	 *
+	 * 
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
@@ -2129,7 +2065,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('NagiosHostTemplate');
-
+		
 		// create a ModelJoin object for this join
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
@@ -2137,7 +2073,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 		if ($previousJoin = $this->getPreviousJoin()) {
 			$join->setPreviousJoin($previousJoin);
 		}
-
+		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
@@ -2145,7 +2081,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 		} else {
 			$this->addJoinObject($join, 'NagiosHostTemplate');
 		}
-
+		
 		return $this;
 	}
 
@@ -2153,7 +2089,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 	 * Use the NagiosHostTemplate relation NagiosHostTemplate object
 	 *
 	 * @see       useQuery()
-	 *
+	 * 
 	 * @param     string $relationAlias optional alias for the relation,
 	 *                                   to be used as main alias in the secondary query
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
@@ -2193,7 +2129,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 
 	/**
 	 * Adds a JOIN clause to the query using the NagiosHostgroup relation
-	 *
+	 * 
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
@@ -2203,7 +2139,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('NagiosHostgroup');
-
+		
 		// create a ModelJoin object for this join
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
@@ -2211,7 +2147,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 		if ($previousJoin = $this->getPreviousJoin()) {
 			$join->setPreviousJoin($previousJoin);
 		}
-
+		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
@@ -2219,7 +2155,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 		} else {
 			$this->addJoinObject($join, 'NagiosHostgroup');
 		}
-
+		
 		return $this;
 	}
 
@@ -2227,7 +2163,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 	 * Use the NagiosHostgroup relation NagiosHostgroup object
 	 *
 	 * @see       useQuery()
-	 *
+	 * 
 	 * @param     string $relationAlias optional alias for the relation,
 	 *                                   to be used as main alias in the secondary query
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
@@ -2267,7 +2203,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 
 	/**
 	 * Adds a JOIN clause to the query using the NagiosCommandRelatedByCheckCommand relation
-	 *
+	 * 
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
@@ -2277,7 +2213,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('NagiosCommandRelatedByCheckCommand');
-
+		
 		// create a ModelJoin object for this join
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
@@ -2285,7 +2221,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 		if ($previousJoin = $this->getPreviousJoin()) {
 			$join->setPreviousJoin($previousJoin);
 		}
-
+		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
@@ -2293,7 +2229,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 		} else {
 			$this->addJoinObject($join, 'NagiosCommandRelatedByCheckCommand');
 		}
-
+		
 		return $this;
 	}
 
@@ -2301,7 +2237,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 	 * Use the NagiosCommandRelatedByCheckCommand relation NagiosCommand object
 	 *
 	 * @see       useQuery()
-	 *
+	 * 
 	 * @param     string $relationAlias optional alias for the relation,
 	 *                                   to be used as main alias in the secondary query
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
@@ -2341,7 +2277,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 
 	/**
 	 * Adds a JOIN clause to the query using the NagiosCommandRelatedByEventHandler relation
-	 *
+	 * 
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
@@ -2351,7 +2287,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('NagiosCommandRelatedByEventHandler');
-
+		
 		// create a ModelJoin object for this join
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
@@ -2359,7 +2295,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 		if ($previousJoin = $this->getPreviousJoin()) {
 			$join->setPreviousJoin($previousJoin);
 		}
-
+		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
@@ -2367,7 +2303,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 		} else {
 			$this->addJoinObject($join, 'NagiosCommandRelatedByEventHandler');
 		}
-
+		
 		return $this;
 	}
 
@@ -2375,7 +2311,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 	 * Use the NagiosCommandRelatedByEventHandler relation NagiosCommand object
 	 *
 	 * @see       useQuery()
-	 *
+	 * 
 	 * @param     string $relationAlias optional alias for the relation,
 	 *                                   to be used as main alias in the secondary query
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
@@ -2415,7 +2351,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 
 	/**
 	 * Adds a JOIN clause to the query using the NagiosTimeperiodRelatedByCheckPeriod relation
-	 *
+	 * 
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
@@ -2425,7 +2361,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('NagiosTimeperiodRelatedByCheckPeriod');
-
+		
 		// create a ModelJoin object for this join
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
@@ -2433,7 +2369,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 		if ($previousJoin = $this->getPreviousJoin()) {
 			$join->setPreviousJoin($previousJoin);
 		}
-
+		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
@@ -2441,7 +2377,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 		} else {
 			$this->addJoinObject($join, 'NagiosTimeperiodRelatedByCheckPeriod');
 		}
-
+		
 		return $this;
 	}
 
@@ -2449,7 +2385,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 	 * Use the NagiosTimeperiodRelatedByCheckPeriod relation NagiosTimeperiod object
 	 *
 	 * @see       useQuery()
-	 *
+	 * 
 	 * @param     string $relationAlias optional alias for the relation,
 	 *                                   to be used as main alias in the secondary query
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
@@ -2489,7 +2425,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 
 	/**
 	 * Adds a JOIN clause to the query using the NagiosTimeperiodRelatedByNotificationPeriod relation
-	 *
+	 * 
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
@@ -2499,7 +2435,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('NagiosTimeperiodRelatedByNotificationPeriod');
-
+		
 		// create a ModelJoin object for this join
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
@@ -2507,7 +2443,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 		if ($previousJoin = $this->getPreviousJoin()) {
 			$join->setPreviousJoin($previousJoin);
 		}
-
+		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
@@ -2515,7 +2451,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 		} else {
 			$this->addJoinObject($join, 'NagiosTimeperiodRelatedByNotificationPeriod');
 		}
-
+		
 		return $this;
 	}
 
@@ -2523,7 +2459,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 	 * Use the NagiosTimeperiodRelatedByNotificationPeriod relation NagiosTimeperiod object
 	 *
 	 * @see       useQuery()
-	 *
+	 * 
 	 * @param     string $relationAlias optional alias for the relation,
 	 *                                   to be used as main alias in the secondary query
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
@@ -2553,7 +2489,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 		} elseif ($nagiosServiceCheckCommandParameter instanceof PropelCollection) {
 			return $this
 				->useNagiosServiceCheckCommandParameterQuery()
-				->filterByPrimaryKeys($nagiosServiceCheckCommandParameter->getPrimaryKeys())
+					->filterByPrimaryKeys($nagiosServiceCheckCommandParameter->getPrimaryKeys())
 				->endUse();
 		} else {
 			throw new PropelException('filterByNagiosServiceCheckCommandParameter() only accepts arguments of type NagiosServiceCheckCommandParameter or PropelCollection');
@@ -2562,7 +2498,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 
 	/**
 	 * Adds a JOIN clause to the query using the NagiosServiceCheckCommandParameter relation
-	 *
+	 * 
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
@@ -2572,7 +2508,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('NagiosServiceCheckCommandParameter');
-
+		
 		// create a ModelJoin object for this join
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
@@ -2580,7 +2516,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 		if ($previousJoin = $this->getPreviousJoin()) {
 			$join->setPreviousJoin($previousJoin);
 		}
-
+		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
@@ -2588,7 +2524,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 		} else {
 			$this->addJoinObject($join, 'NagiosServiceCheckCommandParameter');
 		}
-
+		
 		return $this;
 	}
 
@@ -2596,7 +2532,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 	 * Use the NagiosServiceCheckCommandParameter relation NagiosServiceCheckCommandParameter object
 	 *
 	 * @see       useQuery()
-	 *
+	 * 
 	 * @param     string $relationAlias optional alias for the relation,
 	 *                                   to be used as main alias in the secondary query
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
@@ -2626,7 +2562,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 		} elseif ($nagiosServiceGroupMember instanceof PropelCollection) {
 			return $this
 				->useNagiosServiceGroupMemberQuery()
-				->filterByPrimaryKeys($nagiosServiceGroupMember->getPrimaryKeys())
+					->filterByPrimaryKeys($nagiosServiceGroupMember->getPrimaryKeys())
 				->endUse();
 		} else {
 			throw new PropelException('filterByNagiosServiceGroupMember() only accepts arguments of type NagiosServiceGroupMember or PropelCollection');
@@ -2635,7 +2571,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 
 	/**
 	 * Adds a JOIN clause to the query using the NagiosServiceGroupMember relation
-	 *
+	 * 
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
@@ -2645,7 +2581,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('NagiosServiceGroupMember');
-
+		
 		// create a ModelJoin object for this join
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
@@ -2653,7 +2589,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 		if ($previousJoin = $this->getPreviousJoin()) {
 			$join->setPreviousJoin($previousJoin);
 		}
-
+		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
@@ -2661,7 +2597,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 		} else {
 			$this->addJoinObject($join, 'NagiosServiceGroupMember');
 		}
-
+		
 		return $this;
 	}
 
@@ -2669,7 +2605,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 	 * Use the NagiosServiceGroupMember relation NagiosServiceGroupMember object
 	 *
 	 * @see       useQuery()
-	 *
+	 * 
 	 * @param     string $relationAlias optional alias for the relation,
 	 *                                   to be used as main alias in the secondary query
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
@@ -2699,7 +2635,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 		} elseif ($nagiosServiceContactMember instanceof PropelCollection) {
 			return $this
 				->useNagiosServiceContactMemberQuery()
-				->filterByPrimaryKeys($nagiosServiceContactMember->getPrimaryKeys())
+					->filterByPrimaryKeys($nagiosServiceContactMember->getPrimaryKeys())
 				->endUse();
 		} else {
 			throw new PropelException('filterByNagiosServiceContactMember() only accepts arguments of type NagiosServiceContactMember or PropelCollection');
@@ -2708,7 +2644,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 
 	/**
 	 * Adds a JOIN clause to the query using the NagiosServiceContactMember relation
-	 *
+	 * 
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
@@ -2718,7 +2654,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('NagiosServiceContactMember');
-
+		
 		// create a ModelJoin object for this join
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
@@ -2726,7 +2662,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 		if ($previousJoin = $this->getPreviousJoin()) {
 			$join->setPreviousJoin($previousJoin);
 		}
-
+		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
@@ -2734,7 +2670,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 		} else {
 			$this->addJoinObject($join, 'NagiosServiceContactMember');
 		}
-
+		
 		return $this;
 	}
 
@@ -2742,7 +2678,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 	 * Use the NagiosServiceContactMember relation NagiosServiceContactMember object
 	 *
 	 * @see       useQuery()
-	 *
+	 * 
 	 * @param     string $relationAlias optional alias for the relation,
 	 *                                   to be used as main alias in the secondary query
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
@@ -2772,7 +2708,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 		} elseif ($nagiosServiceContactGroupMember instanceof PropelCollection) {
 			return $this
 				->useNagiosServiceContactGroupMemberQuery()
-				->filterByPrimaryKeys($nagiosServiceContactGroupMember->getPrimaryKeys())
+					->filterByPrimaryKeys($nagiosServiceContactGroupMember->getPrimaryKeys())
 				->endUse();
 		} else {
 			throw new PropelException('filterByNagiosServiceContactGroupMember() only accepts arguments of type NagiosServiceContactGroupMember or PropelCollection');
@@ -2781,7 +2717,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 
 	/**
 	 * Adds a JOIN clause to the query using the NagiosServiceContactGroupMember relation
-	 *
+	 * 
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
@@ -2791,7 +2727,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('NagiosServiceContactGroupMember');
-
+		
 		// create a ModelJoin object for this join
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
@@ -2799,7 +2735,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 		if ($previousJoin = $this->getPreviousJoin()) {
 			$join->setPreviousJoin($previousJoin);
 		}
-
+		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
@@ -2807,7 +2743,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 		} else {
 			$this->addJoinObject($join, 'NagiosServiceContactGroupMember');
 		}
-
+		
 		return $this;
 	}
 
@@ -2815,7 +2751,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 	 * Use the NagiosServiceContactGroupMember relation NagiosServiceContactGroupMember object
 	 *
 	 * @see       useQuery()
-	 *
+	 * 
 	 * @param     string $relationAlias optional alias for the relation,
 	 *                                   to be used as main alias in the secondary query
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
@@ -2845,7 +2781,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 		} elseif ($nagiosDependency instanceof PropelCollection) {
 			return $this
 				->useNagiosDependencyQuery()
-				->filterByPrimaryKeys($nagiosDependency->getPrimaryKeys())
+					->filterByPrimaryKeys($nagiosDependency->getPrimaryKeys())
 				->endUse();
 		} else {
 			throw new PropelException('filterByNagiosDependency() only accepts arguments of type NagiosDependency or PropelCollection');
@@ -2854,7 +2790,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 
 	/**
 	 * Adds a JOIN clause to the query using the NagiosDependency relation
-	 *
+	 * 
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
@@ -2864,7 +2800,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('NagiosDependency');
-
+		
 		// create a ModelJoin object for this join
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
@@ -2872,7 +2808,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 		if ($previousJoin = $this->getPreviousJoin()) {
 			$join->setPreviousJoin($previousJoin);
 		}
-
+		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
@@ -2880,7 +2816,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 		} else {
 			$this->addJoinObject($join, 'NagiosDependency');
 		}
-
+		
 		return $this;
 	}
 
@@ -2888,7 +2824,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 	 * Use the NagiosDependency relation NagiosDependency object
 	 *
 	 * @see       useQuery()
-	 *
+	 * 
 	 * @param     string $relationAlias optional alias for the relation,
 	 *                                   to be used as main alias in the secondary query
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
@@ -2918,7 +2854,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 		} elseif ($nagiosDependencyTarget instanceof PropelCollection) {
 			return $this
 				->useNagiosDependencyTargetQuery()
-				->filterByPrimaryKeys($nagiosDependencyTarget->getPrimaryKeys())
+					->filterByPrimaryKeys($nagiosDependencyTarget->getPrimaryKeys())
 				->endUse();
 		} else {
 			throw new PropelException('filterByNagiosDependencyTarget() only accepts arguments of type NagiosDependencyTarget or PropelCollection');
@@ -2927,7 +2863,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 
 	/**
 	 * Adds a JOIN clause to the query using the NagiosDependencyTarget relation
-	 *
+	 * 
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
@@ -2937,7 +2873,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('NagiosDependencyTarget');
-
+		
 		// create a ModelJoin object for this join
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
@@ -2945,7 +2881,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 		if ($previousJoin = $this->getPreviousJoin()) {
 			$join->setPreviousJoin($previousJoin);
 		}
-
+		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
@@ -2953,7 +2889,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 		} else {
 			$this->addJoinObject($join, 'NagiosDependencyTarget');
 		}
-
+		
 		return $this;
 	}
 
@@ -2961,7 +2897,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 	 * Use the NagiosDependencyTarget relation NagiosDependencyTarget object
 	 *
 	 * @see       useQuery()
-	 *
+	 * 
 	 * @param     string $relationAlias optional alias for the relation,
 	 *                                   to be used as main alias in the secondary query
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
@@ -2991,7 +2927,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 		} elseif ($nagiosEscalation instanceof PropelCollection) {
 			return $this
 				->useNagiosEscalationQuery()
-				->filterByPrimaryKeys($nagiosEscalation->getPrimaryKeys())
+					->filterByPrimaryKeys($nagiosEscalation->getPrimaryKeys())
 				->endUse();
 		} else {
 			throw new PropelException('filterByNagiosEscalation() only accepts arguments of type NagiosEscalation or PropelCollection');
@@ -3000,7 +2936,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 
 	/**
 	 * Adds a JOIN clause to the query using the NagiosEscalation relation
-	 *
+	 * 
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
@@ -3010,7 +2946,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('NagiosEscalation');
-
+		
 		// create a ModelJoin object for this join
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
@@ -3018,7 +2954,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 		if ($previousJoin = $this->getPreviousJoin()) {
 			$join->setPreviousJoin($previousJoin);
 		}
-
+		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
@@ -3026,7 +2962,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 		} else {
 			$this->addJoinObject($join, 'NagiosEscalation');
 		}
-
+		
 		return $this;
 	}
 
@@ -3034,7 +2970,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 	 * Use the NagiosEscalation relation NagiosEscalation object
 	 *
 	 * @see       useQuery()
-	 *
+	 * 
 	 * @param     string $relationAlias optional alias for the relation,
 	 *                                   to be used as main alias in the secondary query
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
@@ -3064,7 +3000,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 		} elseif ($nagiosServiceTemplateInheritance instanceof PropelCollection) {
 			return $this
 				->useNagiosServiceTemplateInheritanceQuery()
-				->filterByPrimaryKeys($nagiosServiceTemplateInheritance->getPrimaryKeys())
+					->filterByPrimaryKeys($nagiosServiceTemplateInheritance->getPrimaryKeys())
 				->endUse();
 		} else {
 			throw new PropelException('filterByNagiosServiceTemplateInheritance() only accepts arguments of type NagiosServiceTemplateInheritance or PropelCollection');
@@ -3073,7 +3009,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 
 	/**
 	 * Adds a JOIN clause to the query using the NagiosServiceTemplateInheritance relation
-	 *
+	 * 
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
@@ -3083,7 +3019,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('NagiosServiceTemplateInheritance');
-
+		
 		// create a ModelJoin object for this join
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
@@ -3091,7 +3027,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 		if ($previousJoin = $this->getPreviousJoin()) {
 			$join->setPreviousJoin($previousJoin);
 		}
-
+		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
@@ -3099,7 +3035,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 		} else {
 			$this->addJoinObject($join, 'NagiosServiceTemplateInheritance');
 		}
-
+		
 		return $this;
 	}
 
@@ -3107,7 +3043,7 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 	 * Use the NagiosServiceTemplateInheritance relation NagiosServiceTemplateInheritance object
 	 *
 	 * @see       useQuery()
-	 *
+	 * 
 	 * @param     string $relationAlias optional alias for the relation,
 	 *                                   to be used as main alias in the secondary query
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
@@ -3132,8 +3068,8 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 	{
 		if ($nagiosService) {
 			$this->addUsingAlias(NagiosServicePeer::ID, $nagiosService->getId(), Criteria::NOT_EQUAL);
-		}
-
+	  }
+	  
 		return $this;
 	}
 

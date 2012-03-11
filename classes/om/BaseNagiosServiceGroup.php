@@ -80,12 +80,6 @@ abstract class BaseNagiosServiceGroup extends BaseObject  implements Persistent
 	protected $alreadyInValidation = false;
 
 	/**
-	 * An array of objects scheduled for deletion.
-	 * @var		array
-	 */
-	protected $nagiosServiceGroupMembersScheduledForDeletion = null;
-
-	/**
 	 * Get the [id] column value.
 	 * 
 	 * @return     int
@@ -399,18 +393,18 @@ abstract class BaseNagiosServiceGroup extends BaseObject  implements Persistent
 
 		$con->beginTransaction();
 		try {
-			$deleteQuery = NagiosServiceGroupQuery::create()
-				->filterByPrimaryKey($this->getPrimaryKey());
 			$ret = $this->preDelete($con);
 			if ($ret) {
-				$deleteQuery->delete($con);
+				NagiosServiceGroupQuery::create()
+					->filterByPrimaryKey($this->getPrimaryKey())
+					->delete($con);
 				$this->postDelete($con);
 				$con->commit();
 				$this->setDeleted(true);
 			} else {
 				$con->commit();
 			}
-		} catch (Exception $e) {
+		} catch (PropelException $e) {
 			$con->rollBack();
 			throw $e;
 		}
@@ -462,7 +456,7 @@ abstract class BaseNagiosServiceGroup extends BaseObject  implements Persistent
 			}
 			$con->commit();
 			return $affectedRows;
-		} catch (Exception $e) {
+		} catch (PropelException $e) {
 			$con->rollBack();
 			throw $e;
 		}
@@ -485,24 +479,27 @@ abstract class BaseNagiosServiceGroup extends BaseObject  implements Persistent
 		if (!$this->alreadyInSave) {
 			$this->alreadyInSave = true;
 
-			if ($this->isNew() || $this->isModified()) {
-				// persist changes
-				if ($this->isNew()) {
-					$this->doInsert($con);
-				} else {
-					$this->doUpdate($con);
-				}
-				$affectedRows += 1;
-				$this->resetModified();
+			if ($this->isNew() ) {
+				$this->modifiedColumns[] = NagiosServiceGroupPeer::ID;
 			}
 
-			if ($this->nagiosServiceGroupMembersScheduledForDeletion !== null) {
-				if (!$this->nagiosServiceGroupMembersScheduledForDeletion->isEmpty()) {
-					NagiosServiceGroupMemberQuery::create()
-						->filterByPrimaryKeys($this->nagiosServiceGroupMembersScheduledForDeletion->getPrimaryKeys(false))
-						->delete($con);
-					$this->nagiosServiceGroupMembersScheduledForDeletion = null;
+			// If this object has been modified, then save it to the database.
+			if ($this->isModified()) {
+				if ($this->isNew()) {
+					$criteria = $this->buildCriteria();
+					if ($criteria->keyContainsValue(NagiosServiceGroupPeer::ID) ) {
+						throw new PropelException('Cannot insert a value for auto-increment primary key ('.NagiosServiceGroupPeer::ID.')');
+					}
+
+					$pk = BasePeer::doInsert($criteria, $con);
+					$affectedRows = 1;
+					$this->setId($pk);  //[IMV] update autoincrement primary key
+					$this->setNew(false);
+				} else {
+					$affectedRows = NagiosServiceGroupPeer::doUpdate($this, $con);
 				}
+
+				$this->resetModified(); // [HL] After being saved an object is no longer 'modified'
 			}
 
 			if ($this->collNagiosServiceGroupMembers !== null) {
@@ -518,104 +515,6 @@ abstract class BaseNagiosServiceGroup extends BaseObject  implements Persistent
 		}
 		return $affectedRows;
 	} // doSave()
-
-	/**
-	 * Insert the row in the database.
-	 *
-	 * @param      PropelPDO $con
-	 *
-	 * @throws     PropelException
-	 * @see        doSave()
-	 */
-	protected function doInsert(PropelPDO $con)
-	{
-		$modifiedColumns = array();
-		$index = 0;
-
-		$this->modifiedColumns[] = NagiosServiceGroupPeer::ID;
-		if (null !== $this->id) {
-			throw new PropelException('Cannot insert a value for auto-increment primary key (' . NagiosServiceGroupPeer::ID . ')');
-		}
-
-		 // check the columns in natural order for more readable SQL queries
-		if ($this->isColumnModified(NagiosServiceGroupPeer::ID)) {
-			$modifiedColumns[':p' . $index++]  = '`ID`';
-		}
-		if ($this->isColumnModified(NagiosServiceGroupPeer::NAME)) {
-			$modifiedColumns[':p' . $index++]  = '`NAME`';
-		}
-		if ($this->isColumnModified(NagiosServiceGroupPeer::ALIAS)) {
-			$modifiedColumns[':p' . $index++]  = '`ALIAS`';
-		}
-		if ($this->isColumnModified(NagiosServiceGroupPeer::NOTES)) {
-			$modifiedColumns[':p' . $index++]  = '`NOTES`';
-		}
-		if ($this->isColumnModified(NagiosServiceGroupPeer::NOTES_URL)) {
-			$modifiedColumns[':p' . $index++]  = '`NOTES_URL`';
-		}
-		if ($this->isColumnModified(NagiosServiceGroupPeer::ACTION_URL)) {
-			$modifiedColumns[':p' . $index++]  = '`ACTION_URL`';
-		}
-
-		$sql = sprintf(
-			'INSERT INTO `nagios_service_group` (%s) VALUES (%s)',
-			implode(', ', $modifiedColumns),
-			implode(', ', array_keys($modifiedColumns))
-		);
-
-		try {
-			$stmt = $con->prepare($sql);
-			foreach ($modifiedColumns as $identifier => $columnName) {
-				switch ($columnName) {
-					case '`ID`':
-						$stmt->bindValue($identifier, $this->id, PDO::PARAM_INT);
-						break;
-					case '`NAME`':
-						$stmt->bindValue($identifier, $this->name, PDO::PARAM_STR);
-						break;
-					case '`ALIAS`':
-						$stmt->bindValue($identifier, $this->alias, PDO::PARAM_STR);
-						break;
-					case '`NOTES`':
-						$stmt->bindValue($identifier, $this->notes, PDO::PARAM_STR);
-						break;
-					case '`NOTES_URL`':
-						$stmt->bindValue($identifier, $this->notes_url, PDO::PARAM_STR);
-						break;
-					case '`ACTION_URL`':
-						$stmt->bindValue($identifier, $this->action_url, PDO::PARAM_STR);
-						break;
-				}
-			}
-			$stmt->execute();
-		} catch (Exception $e) {
-			Propel::log($e->getMessage(), Propel::LOG_ERR);
-			throw new PropelException(sprintf('Unable to execute INSERT statement [%s]', $sql), $e);
-		}
-
-		try {
-			$pk = $con->lastInsertId();
-		} catch (Exception $e) {
-			throw new PropelException('Unable to get autoincrement id.', $e);
-		}
-		$this->setId($pk);
-
-		$this->setNew(false);
-	}
-
-	/**
-	 * Update the row in the database.
-	 *
-	 * @param      PropelPDO $con
-	 *
-	 * @see        doSave()
-	 */
-	protected function doUpdate(PropelPDO $con)
-	{
-		$selectCriteria = $this->buildPkeyCriteria();
-		$valuesCriteria = $this->buildCriteria();
-		BasePeer::doUpdate($selectCriteria, $valuesCriteria, $con);
-	}
 
 	/**
 	 * Array of ValidationFailed objects.
@@ -1005,7 +904,7 @@ abstract class BaseNagiosServiceGroup extends BaseObject  implements Persistent
 
 	/**
 	 * Initializes a collection based on the name of a relation.
-	 * Avoids crafting an 'init[$relationName]s' method name
+	 * Avoids crafting an 'init[$relationName]s' method name 
 	 * that wouldn't work when StandardEnglishPluralizer is used.
 	 *
 	 * @param      string $relationName The name of the relation to initialize
@@ -1087,30 +986,6 @@ abstract class BaseNagiosServiceGroup extends BaseObject  implements Persistent
 	}
 
 	/**
-	 * Sets a collection of NagiosServiceGroupMember objects related by a one-to-many relationship
-	 * to the current object.
-	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
-	 * and new objects from the given Propel collection.
-	 *
-	 * @param      PropelCollection $nagiosServiceGroupMembers A Propel collection.
-	 * @param      PropelPDO $con Optional connection object
-	 */
-	public function setNagiosServiceGroupMembers(PropelCollection $nagiosServiceGroupMembers, PropelPDO $con = null)
-	{
-		$this->nagiosServiceGroupMembersScheduledForDeletion = $this->getNagiosServiceGroupMembers(new Criteria(), $con)->diff($nagiosServiceGroupMembers);
-
-		foreach ($nagiosServiceGroupMembers as $nagiosServiceGroupMember) {
-			// Fix issue with collection modified by reference
-			if ($nagiosServiceGroupMember->isNew()) {
-				$nagiosServiceGroupMember->setNagiosServiceGroup($this);
-			}
-			$this->addNagiosServiceGroupMember($nagiosServiceGroupMember);
-		}
-
-		$this->collNagiosServiceGroupMembers = $nagiosServiceGroupMembers;
-	}
-
-	/**
 	 * Returns the number of related NagiosServiceGroupMember objects.
 	 *
 	 * @param      Criteria $criteria
@@ -1143,7 +1018,8 @@ abstract class BaseNagiosServiceGroup extends BaseObject  implements Persistent
 	 * through the NagiosServiceGroupMember foreign key attribute.
 	 *
 	 * @param      NagiosServiceGroupMember $l NagiosServiceGroupMember
-	 * @return     NagiosServiceGroup The current object (for fluent API support)
+	 * @return     void
+	 * @throws     PropelException
 	 */
 	public function addNagiosServiceGroupMember(NagiosServiceGroupMember $l)
 	{
@@ -1151,19 +1027,9 @@ abstract class BaseNagiosServiceGroup extends BaseObject  implements Persistent
 			$this->initNagiosServiceGroupMembers();
 		}
 		if (!$this->collNagiosServiceGroupMembers->contains($l)) { // only add it if the **same** object is not already associated
-			$this->doAddNagiosServiceGroupMember($l);
+			$this->collNagiosServiceGroupMembers[]= $l;
+			$l->setNagiosServiceGroup($this);
 		}
-
-		return $this;
-	}
-
-	/**
-	 * @param	NagiosServiceGroupMember $nagiosServiceGroupMember The nagiosServiceGroupMember object to add.
-	 */
-	protected function doAddNagiosServiceGroupMember($nagiosServiceGroupMember)
-	{
-		$this->collNagiosServiceGroupMembers[]= $nagiosServiceGroupMember;
-		$nagiosServiceGroupMember->setNagiosServiceGroup($this);
 	}
 
 
@@ -1268,6 +1134,25 @@ abstract class BaseNagiosServiceGroup extends BaseObject  implements Persistent
 	public function __toString()
 	{
 		return (string) $this->exportTo(NagiosServiceGroupPeer::DEFAULT_STRING_FORMAT);
+	}
+
+	/**
+	 * Catches calls to virtual methods
+	 */
+	public function __call($name, $params)
+	{
+		if (preg_match('/get(\w+)/', $name, $matches)) {
+			$virtualColumn = $matches[1];
+			if ($this->hasVirtualColumn($virtualColumn)) {
+				return $this->getVirtualColumn($virtualColumn);
+			}
+			// no lcfirst in php<5.3...
+			$virtualColumn[0] = strtolower($virtualColumn[0]);
+			if ($this->hasVirtualColumn($virtualColumn)) {
+				return $this->getVirtualColumn($virtualColumn);
+			}
+		}
+		return parent::__call($name, $params);
 	}
 
 } // BaseNagiosServiceGroup

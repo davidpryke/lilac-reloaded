@@ -388,18 +388,18 @@ abstract class BaseNagiosHostTemplateInheritance extends BaseObject  implements 
 
 		$con->beginTransaction();
 		try {
-			$deleteQuery = NagiosHostTemplateInheritanceQuery::create()
-				->filterByPrimaryKey($this->getPrimaryKey());
 			$ret = $this->preDelete($con);
 			if ($ret) {
-				$deleteQuery->delete($con);
+				NagiosHostTemplateInheritanceQuery::create()
+					->filterByPrimaryKey($this->getPrimaryKey())
+					->delete($con);
 				$this->postDelete($con);
 				$con->commit();
 				$this->setDeleted(true);
 			} else {
 				$con->commit();
 			}
-		} catch (Exception $e) {
+		} catch (PropelException $e) {
 			$con->rollBack();
 			throw $e;
 		}
@@ -451,7 +451,7 @@ abstract class BaseNagiosHostTemplateInheritance extends BaseObject  implements 
 			}
 			$con->commit();
 			return $affectedRows;
-		} catch (Exception $e) {
+		} catch (PropelException $e) {
 			$con->rollBack();
 			throw $e;
 		}
@@ -500,15 +500,27 @@ abstract class BaseNagiosHostTemplateInheritance extends BaseObject  implements 
 				$this->setNagiosHostTemplateRelatedByTargetTemplate($this->aNagiosHostTemplateRelatedByTargetTemplate);
 			}
 
-			if ($this->isNew() || $this->isModified()) {
-				// persist changes
+			if ($this->isNew() ) {
+				$this->modifiedColumns[] = NagiosHostTemplateInheritancePeer::ID;
+			}
+
+			// If this object has been modified, then save it to the database.
+			if ($this->isModified()) {
 				if ($this->isNew()) {
-					$this->doInsert($con);
+					$criteria = $this->buildCriteria();
+					if ($criteria->keyContainsValue(NagiosHostTemplateInheritancePeer::ID) ) {
+						throw new PropelException('Cannot insert a value for auto-increment primary key ('.NagiosHostTemplateInheritancePeer::ID.')');
+					}
+
+					$pk = BasePeer::doInsert($criteria, $con);
+					$affectedRows += 1;
+					$this->setId($pk);  //[IMV] update autoincrement primary key
+					$this->setNew(false);
 				} else {
-					$this->doUpdate($con);
+					$affectedRows += NagiosHostTemplateInheritancePeer::doUpdate($this, $con);
 				}
-				$affectedRows += 1;
-				$this->resetModified();
+
+				$this->resetModified(); // [HL] After being saved an object is no longer 'modified'
 			}
 
 			$this->alreadyInSave = false;
@@ -516,98 +528,6 @@ abstract class BaseNagiosHostTemplateInheritance extends BaseObject  implements 
 		}
 		return $affectedRows;
 	} // doSave()
-
-	/**
-	 * Insert the row in the database.
-	 *
-	 * @param      PropelPDO $con
-	 *
-	 * @throws     PropelException
-	 * @see        doSave()
-	 */
-	protected function doInsert(PropelPDO $con)
-	{
-		$modifiedColumns = array();
-		$index = 0;
-
-		$this->modifiedColumns[] = NagiosHostTemplateInheritancePeer::ID;
-		if (null !== $this->id) {
-			throw new PropelException('Cannot insert a value for auto-increment primary key (' . NagiosHostTemplateInheritancePeer::ID . ')');
-		}
-
-		 // check the columns in natural order for more readable SQL queries
-		if ($this->isColumnModified(NagiosHostTemplateInheritancePeer::ID)) {
-			$modifiedColumns[':p' . $index++]  = '`ID`';
-		}
-		if ($this->isColumnModified(NagiosHostTemplateInheritancePeer::SOURCE_HOST)) {
-			$modifiedColumns[':p' . $index++]  = '`SOURCE_HOST`';
-		}
-		if ($this->isColumnModified(NagiosHostTemplateInheritancePeer::SOURCE_TEMPLATE)) {
-			$modifiedColumns[':p' . $index++]  = '`SOURCE_TEMPLATE`';
-		}
-		if ($this->isColumnModified(NagiosHostTemplateInheritancePeer::TARGET_TEMPLATE)) {
-			$modifiedColumns[':p' . $index++]  = '`TARGET_TEMPLATE`';
-		}
-		if ($this->isColumnModified(NagiosHostTemplateInheritancePeer::ORDER)) {
-			$modifiedColumns[':p' . $index++]  = '`ORDER`';
-		}
-
-		$sql = sprintf(
-			'INSERT INTO `nagios_host_template_inheritance` (%s) VALUES (%s)',
-			implode(', ', $modifiedColumns),
-			implode(', ', array_keys($modifiedColumns))
-		);
-
-		try {
-			$stmt = $con->prepare($sql);
-			foreach ($modifiedColumns as $identifier => $columnName) {
-				switch ($columnName) {
-					case '`ID`':
-						$stmt->bindValue($identifier, $this->id, PDO::PARAM_INT);
-						break;
-					case '`SOURCE_HOST`':
-						$stmt->bindValue($identifier, $this->source_host, PDO::PARAM_INT);
-						break;
-					case '`SOURCE_TEMPLATE`':
-						$stmt->bindValue($identifier, $this->source_template, PDO::PARAM_INT);
-						break;
-					case '`TARGET_TEMPLATE`':
-						$stmt->bindValue($identifier, $this->target_template, PDO::PARAM_INT);
-						break;
-					case '`ORDER`':
-						$stmt->bindValue($identifier, $this->order, PDO::PARAM_INT);
-						break;
-				}
-			}
-			$stmt->execute();
-		} catch (Exception $e) {
-			Propel::log($e->getMessage(), Propel::LOG_ERR);
-			throw new PropelException(sprintf('Unable to execute INSERT statement [%s]', $sql), $e);
-		}
-
-		try {
-			$pk = $con->lastInsertId();
-		} catch (Exception $e) {
-			throw new PropelException('Unable to get autoincrement id.', $e);
-		}
-		$this->setId($pk);
-
-		$this->setNew(false);
-	}
-
-	/**
-	 * Update the row in the database.
-	 *
-	 * @param      PropelPDO $con
-	 *
-	 * @see        doSave()
-	 */
-	protected function doUpdate(PropelPDO $con)
-	{
-		$selectCriteria = $this->buildPkeyCriteria();
-		$valuesCriteria = $this->buildCriteria();
-		BasePeer::doUpdate($selectCriteria, $valuesCriteria, $con);
-	}
 
 	/**
 	 * Array of ValidationFailed objects.
@@ -1184,6 +1104,25 @@ abstract class BaseNagiosHostTemplateInheritance extends BaseObject  implements 
 	public function __toString()
 	{
 		return (string) $this->exportTo(NagiosHostTemplateInheritancePeer::DEFAULT_STRING_FORMAT);
+	}
+
+	/**
+	 * Catches calls to virtual methods
+	 */
+	public function __call($name, $params)
+	{
+		if (preg_match('/get(\w+)/', $name, $matches)) {
+			$virtualColumn = $matches[1];
+			if ($this->hasVirtualColumn($virtualColumn)) {
+				return $this->getVirtualColumn($virtualColumn);
+			}
+			// no lcfirst in php<5.3...
+			$virtualColumn[0] = strtolower($virtualColumn[0]);
+			if ($this->hasVirtualColumn($virtualColumn)) {
+				return $this->getVirtualColumn($virtualColumn);
+			}
+		}
+		return parent::__call($name, $params);
 	}
 
 } // BaseNagiosHostTemplateInheritance

@@ -52,11 +52,11 @@ class NagiosHostgroupTableMap extends TableMap
 	 */
 	public function buildRelations()
 	{
-		$this->addRelation('NagiosService', 'NagiosService', RelationMap::ONE_TO_MANY, array('id' => 'hostgroup', ), 'CASCADE', null, 'NagiosServices');
-		$this->addRelation('NagiosDependency', 'NagiosDependency', RelationMap::ONE_TO_MANY, array('id' => 'hostgroup', ), 'CASCADE', null, 'NagiosDependencys');
-		$this->addRelation('NagiosDependencyTarget', 'NagiosDependencyTarget', RelationMap::ONE_TO_MANY, array('id' => 'target_hostgroup', ), 'CASCADE', null, 'NagiosDependencyTargets');
-		$this->addRelation('NagiosEscalation', 'NagiosEscalation', RelationMap::ONE_TO_MANY, array('id' => 'hostgroup', ), 'CASCADE', null, 'NagiosEscalations');
-		$this->addRelation('NagiosHostgroupMembership', 'NagiosHostgroupMembership', RelationMap::ONE_TO_MANY, array('id' => 'hostgroup', ), 'CASCADE', null, 'NagiosHostgroupMemberships');
+		$this->addRelation('NagiosService', 'NagiosService', RelationMap::ONE_TO_MANY, array('id' => 'hostgroup', ), 'CASCADE', null);
+		$this->addRelation('NagiosDependency', 'NagiosDependency', RelationMap::ONE_TO_MANY, array('id' => 'hostgroup', ), 'CASCADE', null);
+		$this->addRelation('NagiosDependencyTarget', 'NagiosDependencyTarget', RelationMap::ONE_TO_MANY, array('id' => 'target_hostgroup', ), 'CASCADE', null);
+		$this->addRelation('NagiosEscalation', 'NagiosEscalation', RelationMap::ONE_TO_MANY, array('id' => 'hostgroup', ), 'CASCADE', null);
+		$this->addRelation('NagiosHostgroupMembership', 'NagiosHostgroupMembership', RelationMap::ONE_TO_MANY, array('id' => 'hostgroup', ), 'CASCADE', null);
 	} // buildRelations()
 
 } // NagiosHostgroupTableMap

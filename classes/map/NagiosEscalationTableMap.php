@@ -49,13 +49,13 @@ class NagiosEscalationTableMap extends TableMap
 		$this->addColumn('LAST_NOTIFICATION', 'LastNotification', 'INTEGER', false, null, null);
 		$this->addColumn('NOTIFICATION_INTERVAL', 'NotificationInterval', 'INTEGER', false, null, null);
 		$this->addForeignKey('ESCALATION_PERIOD', 'EscalationPeriod', 'INTEGER', 'nagios_timeperiod', 'ID', false, null, null);
-		$this->addColumn('ESCALATION_OPTIONS_UP', 'EscalationOptionsUp', 'BOOLEAN', false, 1, null);
-		$this->addColumn('ESCALATION_OPTIONS_DOWN', 'EscalationOptionsDown', 'BOOLEAN', false, 1, null);
-		$this->addColumn('ESCALATION_OPTIONS_UNREACHABLE', 'EscalationOptionsUnreachable', 'BOOLEAN', false, 1, null);
-		$this->addColumn('ESCALATION_OPTIONS_OK', 'EscalationOptionsOk', 'BOOLEAN', false, 1, null);
-		$this->addColumn('ESCALATION_OPTIONS_WARNING', 'EscalationOptionsWarning', 'BOOLEAN', false, 1, null);
-		$this->addColumn('ESCALATION_OPTIONS_UNKNOWN', 'EscalationOptionsUnknown', 'BOOLEAN', false, 1, null);
-		$this->addColumn('ESCALATION_OPTIONS_CRITICAL', 'EscalationOptionsCritical', 'BOOLEAN', false, 1, null);
+		$this->addColumn('ESCALATION_OPTIONS_UP', 'EscalationOptionsUp', 'BOOLEAN', false, null, null);
+		$this->addColumn('ESCALATION_OPTIONS_DOWN', 'EscalationOptionsDown', 'BOOLEAN', false, null, null);
+		$this->addColumn('ESCALATION_OPTIONS_UNREACHABLE', 'EscalationOptionsUnreachable', 'BOOLEAN', false, null, null);
+		$this->addColumn('ESCALATION_OPTIONS_OK', 'EscalationOptionsOk', 'BOOLEAN', false, null, null);
+		$this->addColumn('ESCALATION_OPTIONS_WARNING', 'EscalationOptionsWarning', 'BOOLEAN', false, null, null);
+		$this->addColumn('ESCALATION_OPTIONS_UNKNOWN', 'EscalationOptionsUnknown', 'BOOLEAN', false, null, null);
+		$this->addColumn('ESCALATION_OPTIONS_CRITICAL', 'EscalationOptionsCritical', 'BOOLEAN', false, null, null);
 		// validators
 	} // initialize()
 
@@ -70,8 +70,8 @@ class NagiosEscalationTableMap extends TableMap
 		$this->addRelation('NagiosService', 'NagiosService', RelationMap::MANY_TO_ONE, array('service' => 'id', ), 'CASCADE', null);
 		$this->addRelation('NagiosHostgroup', 'NagiosHostgroup', RelationMap::MANY_TO_ONE, array('hostgroup' => 'id', ), 'CASCADE', null);
 		$this->addRelation('NagiosTimeperiod', 'NagiosTimeperiod', RelationMap::MANY_TO_ONE, array('escalation_period' => 'id', ), 'SET NULL', null);
-		$this->addRelation('NagiosEscalationContact', 'NagiosEscalationContact', RelationMap::ONE_TO_MANY, array('id' => 'escalation', ), 'CASCADE', null, 'NagiosEscalationContacts');
-		$this->addRelation('NagiosEscalationContactgroup', 'NagiosEscalationContactgroup', RelationMap::ONE_TO_MANY, array('id' => 'escalation', ), 'CASCADE', null, 'NagiosEscalationContactgroups');
+		$this->addRelation('NagiosEscalationContact', 'NagiosEscalationContact', RelationMap::ONE_TO_MANY, array('id' => 'escalation', ), 'CASCADE', null);
+		$this->addRelation('NagiosEscalationContactgroup', 'NagiosEscalationContactgroup', RelationMap::ONE_TO_MANY, array('id' => 'escalation', ), 'CASCADE', null);
 	} // buildRelations()
 
 } // NagiosEscalationTableMap

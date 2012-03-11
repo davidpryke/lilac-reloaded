@@ -115,18 +115,6 @@ abstract class BaseAutodiscoveryJob extends BaseObject  implements Persistent
 	protected $alreadyInValidation = false;
 
 	/**
-	 * An array of objects scheduled for deletion.
-	 * @var		array
-	 */
-	protected $autodiscoveryLogEntrysScheduledForDeletion = null;
-
-	/**
-	 * An array of objects scheduled for deletion.
-	 * @var		array
-	 */
-	protected $autodiscoveryDevicesScheduledForDeletion = null;
-
-	/**
 	 * Get the [id] column value.
 	 * 
 	 * @return     int
@@ -687,18 +675,18 @@ abstract class BaseAutodiscoveryJob extends BaseObject  implements Persistent
 
 		$con->beginTransaction();
 		try {
-			$deleteQuery = AutodiscoveryJobQuery::create()
-				->filterByPrimaryKey($this->getPrimaryKey());
 			$ret = $this->preDelete($con);
 			if ($ret) {
-				$deleteQuery->delete($con);
+				AutodiscoveryJobQuery::create()
+					->filterByPrimaryKey($this->getPrimaryKey())
+					->delete($con);
 				$this->postDelete($con);
 				$con->commit();
 				$this->setDeleted(true);
 			} else {
 				$con->commit();
 			}
-		} catch (Exception $e) {
+		} catch (PropelException $e) {
 			$con->rollBack();
 			throw $e;
 		}
@@ -750,7 +738,7 @@ abstract class BaseAutodiscoveryJob extends BaseObject  implements Persistent
 			}
 			$con->commit();
 			return $affectedRows;
-		} catch (Exception $e) {
+		} catch (PropelException $e) {
 			$con->rollBack();
 			throw $e;
 		}
@@ -773,24 +761,27 @@ abstract class BaseAutodiscoveryJob extends BaseObject  implements Persistent
 		if (!$this->alreadyInSave) {
 			$this->alreadyInSave = true;
 
-			if ($this->isNew() || $this->isModified()) {
-				// persist changes
-				if ($this->isNew()) {
-					$this->doInsert($con);
-				} else {
-					$this->doUpdate($con);
-				}
-				$affectedRows += 1;
-				$this->resetModified();
+			if ($this->isNew() ) {
+				$this->modifiedColumns[] = AutodiscoveryJobPeer::ID;
 			}
 
-			if ($this->autodiscoveryLogEntrysScheduledForDeletion !== null) {
-				if (!$this->autodiscoveryLogEntrysScheduledForDeletion->isEmpty()) {
-					AutodiscoveryLogEntryQuery::create()
-						->filterByPrimaryKeys($this->autodiscoveryLogEntrysScheduledForDeletion->getPrimaryKeys(false))
-						->delete($con);
-					$this->autodiscoveryLogEntrysScheduledForDeletion = null;
+			// If this object has been modified, then save it to the database.
+			if ($this->isModified()) {
+				if ($this->isNew()) {
+					$criteria = $this->buildCriteria();
+					if ($criteria->keyContainsValue(AutodiscoveryJobPeer::ID) ) {
+						throw new PropelException('Cannot insert a value for auto-increment primary key ('.AutodiscoveryJobPeer::ID.')');
+					}
+
+					$pk = BasePeer::doInsert($criteria, $con);
+					$affectedRows = 1;
+					$this->setId($pk);  //[IMV] update autoincrement primary key
+					$this->setNew(false);
+				} else {
+					$affectedRows = AutodiscoveryJobPeer::doUpdate($this, $con);
 				}
+
+				$this->resetModified(); // [HL] After being saved an object is no longer 'modified'
 			}
 
 			if ($this->collAutodiscoveryLogEntrys !== null) {
@@ -798,15 +789,6 @@ abstract class BaseAutodiscoveryJob extends BaseObject  implements Persistent
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
-				}
-			}
-
-			if ($this->autodiscoveryDevicesScheduledForDeletion !== null) {
-				if (!$this->autodiscoveryDevicesScheduledForDeletion->isEmpty()) {
-					AutodiscoveryDeviceQuery::create()
-						->filterByPrimaryKeys($this->autodiscoveryDevicesScheduledForDeletion->getPrimaryKeys(false))
-						->delete($con);
-					$this->autodiscoveryDevicesScheduledForDeletion = null;
 				}
 			}
 
@@ -823,134 +805,6 @@ abstract class BaseAutodiscoveryJob extends BaseObject  implements Persistent
 		}
 		return $affectedRows;
 	} // doSave()
-
-	/**
-	 * Insert the row in the database.
-	 *
-	 * @param      PropelPDO $con
-	 *
-	 * @throws     PropelException
-	 * @see        doSave()
-	 */
-	protected function doInsert(PropelPDO $con)
-	{
-		$modifiedColumns = array();
-		$index = 0;
-
-		$this->modifiedColumns[] = AutodiscoveryJobPeer::ID;
-		if (null !== $this->id) {
-			throw new PropelException('Cannot insert a value for auto-increment primary key (' . AutodiscoveryJobPeer::ID . ')');
-		}
-
-		 // check the columns in natural order for more readable SQL queries
-		if ($this->isColumnModified(AutodiscoveryJobPeer::ID)) {
-			$modifiedColumns[':p' . $index++]  = '`ID`';
-		}
-		if ($this->isColumnModified(AutodiscoveryJobPeer::NAME)) {
-			$modifiedColumns[':p' . $index++]  = '`NAME`';
-		}
-		if ($this->isColumnModified(AutodiscoveryJobPeer::DESCRIPTION)) {
-			$modifiedColumns[':p' . $index++]  = '`DESCRIPTION`';
-		}
-		if ($this->isColumnModified(AutodiscoveryJobPeer::CONFIG)) {
-			$modifiedColumns[':p' . $index++]  = '`CONFIG`';
-		}
-		if ($this->isColumnModified(AutodiscoveryJobPeer::START_TIME)) {
-			$modifiedColumns[':p' . $index++]  = '`START_TIME`';
-		}
-		if ($this->isColumnModified(AutodiscoveryJobPeer::END_TIME)) {
-			$modifiedColumns[':p' . $index++]  = '`END_TIME`';
-		}
-		if ($this->isColumnModified(AutodiscoveryJobPeer::STATUS)) {
-			$modifiedColumns[':p' . $index++]  = '`STATUS`';
-		}
-		if ($this->isColumnModified(AutodiscoveryJobPeer::STATUS_CODE)) {
-			$modifiedColumns[':p' . $index++]  = '`STATUS_CODE`';
-		}
-		if ($this->isColumnModified(AutodiscoveryJobPeer::STATUS_CHANGE_TIME)) {
-			$modifiedColumns[':p' . $index++]  = '`STATUS_CHANGE_TIME`';
-		}
-		if ($this->isColumnModified(AutodiscoveryJobPeer::STATS)) {
-			$modifiedColumns[':p' . $index++]  = '`STATS`';
-		}
-		if ($this->isColumnModified(AutodiscoveryJobPeer::CMD)) {
-			$modifiedColumns[':p' . $index++]  = '`CMD`';
-		}
-
-		$sql = sprintf(
-			'INSERT INTO `autodiscovery_job` (%s) VALUES (%s)',
-			implode(', ', $modifiedColumns),
-			implode(', ', array_keys($modifiedColumns))
-		);
-
-		try {
-			$stmt = $con->prepare($sql);
-			foreach ($modifiedColumns as $identifier => $columnName) {
-				switch ($columnName) {
-					case '`ID`':
-						$stmt->bindValue($identifier, $this->id, PDO::PARAM_INT);
-						break;
-					case '`NAME`':
-						$stmt->bindValue($identifier, $this->name, PDO::PARAM_STR);
-						break;
-					case '`DESCRIPTION`':
-						$stmt->bindValue($identifier, $this->description, PDO::PARAM_STR);
-						break;
-					case '`CONFIG`':
-						$stmt->bindValue($identifier, $this->config, PDO::PARAM_STR);
-						break;
-					case '`START_TIME`':
-						$stmt->bindValue($identifier, $this->start_time, PDO::PARAM_STR);
-						break;
-					case '`END_TIME`':
-						$stmt->bindValue($identifier, $this->end_time, PDO::PARAM_STR);
-						break;
-					case '`STATUS`':
-						$stmt->bindValue($identifier, $this->status, PDO::PARAM_STR);
-						break;
-					case '`STATUS_CODE`':
-						$stmt->bindValue($identifier, $this->status_code, PDO::PARAM_INT);
-						break;
-					case '`STATUS_CHANGE_TIME`':
-						$stmt->bindValue($identifier, $this->status_change_time, PDO::PARAM_STR);
-						break;
-					case '`STATS`':
-						$stmt->bindValue($identifier, $this->stats, PDO::PARAM_STR);
-						break;
-					case '`CMD`':
-						$stmt->bindValue($identifier, $this->cmd, PDO::PARAM_STR);
-						break;
-				}
-			}
-			$stmt->execute();
-		} catch (Exception $e) {
-			Propel::log($e->getMessage(), Propel::LOG_ERR);
-			throw new PropelException(sprintf('Unable to execute INSERT statement [%s]', $sql), $e);
-		}
-
-		try {
-			$pk = $con->lastInsertId();
-		} catch (Exception $e) {
-			throw new PropelException('Unable to get autoincrement id.', $e);
-		}
-		$this->setId($pk);
-
-		$this->setNew(false);
-	}
-
-	/**
-	 * Update the row in the database.
-	 *
-	 * @param      PropelPDO $con
-	 *
-	 * @see        doSave()
-	 */
-	protected function doUpdate(PropelPDO $con)
-	{
-		$selectCriteria = $this->buildPkeyCriteria();
-		$valuesCriteria = $this->buildCriteria();
-		BasePeer::doUpdate($selectCriteria, $valuesCriteria, $con);
-	}
 
 	/**
 	 * Array of ValidationFailed objects.
@@ -1407,7 +1261,7 @@ abstract class BaseAutodiscoveryJob extends BaseObject  implements Persistent
 
 	/**
 	 * Initializes a collection based on the name of a relation.
-	 * Avoids crafting an 'init[$relationName]s' method name
+	 * Avoids crafting an 'init[$relationName]s' method name 
 	 * that wouldn't work when StandardEnglishPluralizer is used.
 	 *
 	 * @param      string $relationName The name of the relation to initialize
@@ -1492,30 +1346,6 @@ abstract class BaseAutodiscoveryJob extends BaseObject  implements Persistent
 	}
 
 	/**
-	 * Sets a collection of AutodiscoveryLogEntry objects related by a one-to-many relationship
-	 * to the current object.
-	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
-	 * and new objects from the given Propel collection.
-	 *
-	 * @param      PropelCollection $autodiscoveryLogEntrys A Propel collection.
-	 * @param      PropelPDO $con Optional connection object
-	 */
-	public function setAutodiscoveryLogEntrys(PropelCollection $autodiscoveryLogEntrys, PropelPDO $con = null)
-	{
-		$this->autodiscoveryLogEntrysScheduledForDeletion = $this->getAutodiscoveryLogEntrys(new Criteria(), $con)->diff($autodiscoveryLogEntrys);
-
-		foreach ($autodiscoveryLogEntrys as $autodiscoveryLogEntry) {
-			// Fix issue with collection modified by reference
-			if ($autodiscoveryLogEntry->isNew()) {
-				$autodiscoveryLogEntry->setAutodiscoveryJob($this);
-			}
-			$this->addAutodiscoveryLogEntry($autodiscoveryLogEntry);
-		}
-
-		$this->collAutodiscoveryLogEntrys = $autodiscoveryLogEntrys;
-	}
-
-	/**
 	 * Returns the number of related AutodiscoveryLogEntry objects.
 	 *
 	 * @param      Criteria $criteria
@@ -1548,7 +1378,8 @@ abstract class BaseAutodiscoveryJob extends BaseObject  implements Persistent
 	 * through the AutodiscoveryLogEntry foreign key attribute.
 	 *
 	 * @param      AutodiscoveryLogEntry $l AutodiscoveryLogEntry
-	 * @return     AutodiscoveryJob The current object (for fluent API support)
+	 * @return     void
+	 * @throws     PropelException
 	 */
 	public function addAutodiscoveryLogEntry(AutodiscoveryLogEntry $l)
 	{
@@ -1556,19 +1387,9 @@ abstract class BaseAutodiscoveryJob extends BaseObject  implements Persistent
 			$this->initAutodiscoveryLogEntrys();
 		}
 		if (!$this->collAutodiscoveryLogEntrys->contains($l)) { // only add it if the **same** object is not already associated
-			$this->doAddAutodiscoveryLogEntry($l);
+			$this->collAutodiscoveryLogEntrys[]= $l;
+			$l->setAutodiscoveryJob($this);
 		}
-
-		return $this;
-	}
-
-	/**
-	 * @param	AutodiscoveryLogEntry $autodiscoveryLogEntry The autodiscoveryLogEntry object to add.
-	 */
-	protected function doAddAutodiscoveryLogEntry($autodiscoveryLogEntry)
-	{
-		$this->collAutodiscoveryLogEntrys[]= $autodiscoveryLogEntry;
-		$autodiscoveryLogEntry->setAutodiscoveryJob($this);
 	}
 
 	/**
@@ -1640,30 +1461,6 @@ abstract class BaseAutodiscoveryJob extends BaseObject  implements Persistent
 	}
 
 	/**
-	 * Sets a collection of AutodiscoveryDevice objects related by a one-to-many relationship
-	 * to the current object.
-	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
-	 * and new objects from the given Propel collection.
-	 *
-	 * @param      PropelCollection $autodiscoveryDevices A Propel collection.
-	 * @param      PropelPDO $con Optional connection object
-	 */
-	public function setAutodiscoveryDevices(PropelCollection $autodiscoveryDevices, PropelPDO $con = null)
-	{
-		$this->autodiscoveryDevicesScheduledForDeletion = $this->getAutodiscoveryDevices(new Criteria(), $con)->diff($autodiscoveryDevices);
-
-		foreach ($autodiscoveryDevices as $autodiscoveryDevice) {
-			// Fix issue with collection modified by reference
-			if ($autodiscoveryDevice->isNew()) {
-				$autodiscoveryDevice->setAutodiscoveryJob($this);
-			}
-			$this->addAutodiscoveryDevice($autodiscoveryDevice);
-		}
-
-		$this->collAutodiscoveryDevices = $autodiscoveryDevices;
-	}
-
-	/**
 	 * Returns the number of related AutodiscoveryDevice objects.
 	 *
 	 * @param      Criteria $criteria
@@ -1696,7 +1493,8 @@ abstract class BaseAutodiscoveryJob extends BaseObject  implements Persistent
 	 * through the AutodiscoveryDevice foreign key attribute.
 	 *
 	 * @param      AutodiscoveryDevice $l AutodiscoveryDevice
-	 * @return     AutodiscoveryJob The current object (for fluent API support)
+	 * @return     void
+	 * @throws     PropelException
 	 */
 	public function addAutodiscoveryDevice(AutodiscoveryDevice $l)
 	{
@@ -1704,19 +1502,9 @@ abstract class BaseAutodiscoveryJob extends BaseObject  implements Persistent
 			$this->initAutodiscoveryDevices();
 		}
 		if (!$this->collAutodiscoveryDevices->contains($l)) { // only add it if the **same** object is not already associated
-			$this->doAddAutodiscoveryDevice($l);
+			$this->collAutodiscoveryDevices[]= $l;
+			$l->setAutodiscoveryJob($this);
 		}
-
-		return $this;
-	}
-
-	/**
-	 * @param	AutodiscoveryDevice $autodiscoveryDevice The autodiscoveryDevice object to add.
-	 */
-	protected function doAddAutodiscoveryDevice($autodiscoveryDevice)
-	{
-		$this->collAutodiscoveryDevices[]= $autodiscoveryDevice;
-		$autodiscoveryDevice->setAutodiscoveryJob($this);
 	}
 
 
@@ -1835,6 +1623,25 @@ abstract class BaseAutodiscoveryJob extends BaseObject  implements Persistent
 	public function __toString()
 	{
 		return (string) $this->exportTo(AutodiscoveryJobPeer::DEFAULT_STRING_FORMAT);
+	}
+
+	/**
+	 * Catches calls to virtual methods
+	 */
+	public function __call($name, $params)
+	{
+		if (preg_match('/get(\w+)/', $name, $matches)) {
+			$virtualColumn = $matches[1];
+			if ($this->hasVirtualColumn($virtualColumn)) {
+				return $this->getVirtualColumn($virtualColumn);
+			}
+			// no lcfirst in php<5.3...
+			$virtualColumn[0] = strtolower($virtualColumn[0]);
+			if ($this->hasVirtualColumn($virtualColumn)) {
+				return $this->getVirtualColumn($virtualColumn);
+			}
+		}
+		return parent::__call($name, $params);
 	}
 
 } // BaseAutodiscoveryJob

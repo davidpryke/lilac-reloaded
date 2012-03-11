@@ -573,7 +573,7 @@
  */
 abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 {
-	
+
 	/**
 	 * Initializes internal state of BaseNagiosMainConfigurationQuery object.
 	 *
@@ -610,14 +610,11 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 	}
 
 	/**
-	 * Find object by primary key.
-	 * Propel uses the instance pool to skip the database if the object exists.
-	 * Go fast if the query is untouched.
-	 *
+	 * Find object by primary key
+	 * Use instance pooling to avoid a database query if the object exists
 	 * <code>
 	 * $obj  = $c->findPk(12, $con);
 	 * </code>
-	 *
 	 * @param     mixed $key Primary key to use for the query
 	 * @param     PropelPDO $con an optional connection object
 	 *
@@ -625,73 +622,17 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 	 */
 	public function findPk($key, $con = null)
 	{
-		if ($key === null) {
-			return null;
-		}
-		if ((null !== ($obj = NagiosMainConfigurationPeer::getInstanceFromPool((string) $key))) && !$this->formatter) {
+		if ((null !== ($obj = NagiosMainConfigurationPeer::getInstanceFromPool((string) $key))) && $this->getFormatter()->isObjectFormatter()) {
 			// the object is alredy in the instance pool
 			return $obj;
-		}
-		if ($con === null) {
-			$con = Propel::getConnection(NagiosMainConfigurationPeer::DATABASE_NAME, Propel::CONNECTION_READ);
-		}
-		$this->basePreSelect($con);
-		if ($this->formatter || $this->modelAlias || $this->with || $this->select
-		 || $this->selectColumns || $this->asColumns || $this->selectModifiers
-		 || $this->map || $this->having || $this->joins) {
-			return $this->findPkComplex($key, $con);
 		} else {
-			return $this->findPkSimple($key, $con);
+			// the object has not been requested yet, or the formatter is not an object formatter
+			$criteria = $this->isKeepQuery() ? clone $this : $this;
+			$stmt = $criteria
+				->filterByPrimaryKey($key)
+				->getSelectStatement($con);
+			return $criteria->getFormatter()->init($criteria)->formatOne($stmt);
 		}
-	}
-
-	/**
-	 * Find object by primary key using raw SQL to go fast.
-	 * Bypass doSelect() and the object formatter by using generated code.
-	 *
-	 * @param     mixed $key Primary key to use for the query
-	 * @param     PropelPDO $con A connection object
-	 *
-	 * @return    NagiosMainConfiguration A model object, or null if the key is not found
-	 */
-	protected function findPkSimple($key, $con)
-	{
-		$sql = 'SELECT `ID`, `CONFIG_DIR`, `LOG_FILE`, `TEMP_FILE`, `STATUS_FILE`, `STATUS_UPDATE_INTERVAL`, `NAGIOS_USER`, `NAGIOS_GROUP`, `ENABLE_NOTIFICATIONS`, `EXECUTE_SERVICE_CHECKS`, `ACCEPT_PASSIVE_SERVICE_CHECKS`, `ENABLE_EVENT_HANDLERS`, `LOG_ROTATION_METHOD`, `LOG_ARCHIVE_PATH`, `CHECK_EXTERNAL_COMMANDS`, `COMMAND_CHECK_INTERVAL`, `COMMAND_FILE`, `LOCK_FILE`, `RETAIN_STATE_INFORMATION`, `STATE_RETENTION_FILE`, `RETENTION_UPDATE_INTERVAL`, `USE_RETAINED_PROGRAM_STATE`, `USE_SYSLOG`, `LOG_NOTIFICATIONS`, `LOG_SERVICE_RETRIES`, `LOG_HOST_RETRIES`, `LOG_EVENT_HANDLERS`, `LOG_INITIAL_STATES`, `LOG_EXTERNAL_COMMANDS`, `LOG_PASSIVE_CHECKS`, `GLOBAL_HOST_EVENT_HANDLER`, `GLOBAL_SERVICE_EVENT_HANDLER`, `EXTERNAL_COMMAND_BUFFER_SLOTS`, `SLEEP_TIME`, `SERVICE_INTERLEAVE_FACTOR`, `MAX_CONCURRENT_CHECKS`, `SERVICE_REAPER_FREQUENCY`, `INTERVAL_LENGTH`, `USE_AGGRESSIVE_HOST_CHECKING`, `ENABLE_FLAP_DETECTION`, `LOW_SERVICE_FLAP_THRESHOLD`, `HIGH_SERVICE_FLAP_THRESHOLD`, `LOW_HOST_FLAP_THRESHOLD`, `HIGH_HOST_FLAP_THRESHOLD`, `SOFT_STATE_DEPENDENCIES`, `SERVICE_CHECK_TIMEOUT`, `HOST_CHECK_TIMEOUT`, `EVENT_HANDLER_TIMEOUT`, `NOTIFICATION_TIMEOUT`, `OCSP_TIMEOUT`, `OHCP_TIMEOUT`, `PERFDATA_TIMEOUT`, `OBSESS_OVER_SERVICES`, `OCSP_COMMAND`, `PROCESS_PERFORMANCE_DATA`, `CHECK_FOR_ORPHANED_SERVICES`, `CHECK_SERVICE_FRESHNESS`, `FRESHNESS_CHECK_INTERVAL`, `DATE_FORMAT`, `ILLEGAL_OBJECT_NAME_CHARS`, `ILLEGAL_MACRO_OUTPUT_CHARS`, `ADMIN_EMAIL`, `ADMIN_PAGER`, `EXECUTE_HOST_CHECKS`, `SERVICE_INTER_CHECK_DELAY_METHOD`, `USE_RETAINED_SCHEDULING_INFO`, `ACCEPT_PASSIVE_HOST_CHECKS`, `MAX_SERVICE_CHECK_SPREAD`, `HOST_INTER_CHECK_DELAY_METHOD`, `MAX_HOST_CHECK_SPREAD`, `AUTO_RESCHEDULE_CHECKS`, `AUTO_RESCHEDULING_INTERVAL`, `AUTO_RESCHEDULING_WINDOW`, `OCHP_TIMEOUT`, `OBSESS_OVER_HOSTS`, `OCHP_COMMAND`, `CHECK_HOST_FRESHNESS`, `HOST_FRESHNESS_CHECK_INTERVAL`, `SERVICE_FRESHNESS_CHECK_INTERVAL`, `USE_REGEXP_MATCHING`, `USE_TRUE_REGEXP_MATCHING`, `EVENT_BROKER_OPTIONS`, `DAEMON_DUMPS_CORE`, `HOST_PERFDATA_COMMAND`, `SERVICE_PERFDATA_COMMAND`, `HOST_PERFDATA_FILE`, `HOST_PERFDATA_FILE_TEMPLATE`, `SERVICE_PERFDATA_FILE`, `SERVICE_PERFDATA_FILE_TEMPLATE`, `HOST_PERFDATA_FILE_MODE`, `SERVICE_PERFDATA_FILE_MODE`, `HOST_PERFDATA_FILE_PROCESSING_COMMAND`, `SERVICE_PERFDATA_FILE_PROCESSING_COMMAND`, `HOST_PERFDATA_FILE_PROCESSING_INTERVAL`, `SERVICE_PERFDATA_FILE_PROCESSING_INTERVAL`, `OBJECT_CACHE_FILE`, `PRECACHED_OBJECT_FILE`, `RETAINED_HOST_ATTRIBUTE_MASK`, `RETAINED_SERVICE_ATTRIBUTE_MASK`, `RETAINED_PROCESS_HOST_ATTRIBUTE_MASK`, `RETAINED_PROCESS_SERVICE_ATTRIBUTE_MASK`, `RETAINED_CONTACT_HOST_ATTRIBUTE_MASK`, `RETAINED_CONTACT_SERVICE_ATTRIBUTE_MASK`, `CHECK_RESULT_REAPER_FREQUENCY`, `MAX_CHECK_RESULT_REAPER_TIME`, `CHECK_RESULT_PATH`, `MAX_CHECK_RESULT_FILE_AGE`, `TRANSLATE_PASSIVE_HOST_CHECKS`, `PASSIVE_HOST_CHECKS_ARE_SOFT`, `ENABLE_PREDICTIVE_HOST_DEPENDENCY_CHECKS`, `ENABLE_PREDICTIVE_SERVICE_DEPENDENCY_CHECKS`, `CACHED_HOST_CHECK_HORIZON`, `CACHED_SERVICE_CHECK_HORIZON`, `USE_LARGE_INSTALLATION_TWEAKS`, `FREE_CHILD_PROCESS_MEMORY`, `CHILD_PROCESSES_FORK_TWICE`, `ENABLE_ENVIRONMENT_MACROS`, `ADDITIONAL_FRESHNESS_LATENCY`, `ENABLE_EMBEDDED_PERL`, `USE_EMBEDDED_PERL_IMPLICITLY`, `P1_FILE`, `USE_TIMEZONE`, `DEBUG_FILE`, `DEBUG_LEVEL`, `DEBUG_VERBOSITY`, `MAX_DEBUG_FILE_SIZE`, `TEMP_PATH`, `CHECK_FOR_UPDATES`, `CHECK_FOR_ORPHANED_HOSTS`, `BARE_UPDATE_CHECK` FROM `nagios_main_configuration` WHERE `ID` = :p0';
-		try {
-			$stmt = $con->prepare($sql);
-			$stmt->bindValue(':p0', $key, PDO::PARAM_INT);
-			$stmt->execute();
-		} catch (Exception $e) {
-			Propel::log($e->getMessage(), Propel::LOG_ERR);
-			throw new PropelException(sprintf('Unable to execute SELECT statement [%s]', $sql), $e);
-		}
-		$obj = null;
-		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
-			$obj = new NagiosMainConfiguration();
-			$obj->hydrate($row);
-			NagiosMainConfigurationPeer::addInstanceToPool($obj, (string) $row[0]);
-		}
-		$stmt->closeCursor();
-
-		return $obj;
-	}
-
-	/**
-	 * Find object by primary key.
-	 *
-	 * @param     mixed $key Primary key to use for the query
-	 * @param     PropelPDO $con A connection object
-	 *
-	 * @return    NagiosMainConfiguration|array|mixed the result, formatted by the current formatter
-	 */
-	protected function findPkComplex($key, $con)
-	{
-		// As the query uses a PK condition, no limit(1) is necessary.
-		$criteria = $this->isKeepQuery() ? clone $this : $this;
-		$stmt = $criteria
-			->filterByPrimaryKey($key)
-			->doSelect($con);
-		return $criteria->getFormatter()->init($criteria)->formatOne($stmt);
 	}
 
 	/**
@@ -706,15 +647,10 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 	 */
 	public function findPks($keys, $con = null)
 	{
-		if ($con === null) {
-			$con = Propel::getConnection($this->getDbName(), Propel::CONNECTION_READ);
-		}
-		$this->basePreSelect($con);
 		$criteria = $this->isKeepQuery() ? clone $this : $this;
-		$stmt = $criteria
+		return $this
 			->filterByPrimaryKeys($keys)
-			->doSelect($con);
-		return $criteria->getFormatter()->init($criteria)->format($stmt);
+			->find($con);
 	}
 
 	/**
@@ -743,7 +679,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the id column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterById(1234); // WHERE id = 1234
@@ -769,7 +705,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the config_dir column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByConfigDir('fooValue');   // WHERE config_dir = 'fooValue'
@@ -797,7 +733,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the log_file column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByLogFile('fooValue');   // WHERE log_file = 'fooValue'
@@ -825,7 +761,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the temp_file column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByTempFile('fooValue');   // WHERE temp_file = 'fooValue'
@@ -853,7 +789,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the status_file column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByStatusFile('fooValue');   // WHERE status_file = 'fooValue'
@@ -881,7 +817,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the status_update_interval column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByStatusUpdateInterval(1234); // WHERE status_update_interval = 1234
@@ -921,7 +857,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the nagios_user column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByNagiosUser('fooValue');   // WHERE nagios_user = 'fooValue'
@@ -949,7 +885,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the nagios_group column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByNagiosGroup('fooValue');   // WHERE nagios_group = 'fooValue'
@@ -977,7 +913,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the enable_notifications column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByEnableNotifications(true); // WHERE enable_notifications = true
@@ -1003,7 +939,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the execute_service_checks column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByExecuteServiceChecks(true); // WHERE execute_service_checks = true
@@ -1029,7 +965,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the accept_passive_service_checks column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByAcceptPassiveServiceChecks(true); // WHERE accept_passive_service_checks = true
@@ -1055,7 +991,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the enable_event_handlers column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByEnableEventHandlers(true); // WHERE enable_event_handlers = true
@@ -1081,7 +1017,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the log_rotation_method column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByLogRotationMethod('fooValue');   // WHERE log_rotation_method = 'fooValue'
@@ -1109,7 +1045,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the log_archive_path column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByLogArchivePath('fooValue');   // WHERE log_archive_path = 'fooValue'
@@ -1137,7 +1073,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the check_external_commands column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByCheckExternalCommands(true); // WHERE check_external_commands = true
@@ -1163,7 +1099,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the command_check_interval column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByCommandCheckInterval('fooValue');   // WHERE command_check_interval = 'fooValue'
@@ -1191,7 +1127,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the command_file column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByCommandFile('fooValue');   // WHERE command_file = 'fooValue'
@@ -1219,7 +1155,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the lock_file column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByLockFile('fooValue');   // WHERE lock_file = 'fooValue'
@@ -1247,7 +1183,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the retain_state_information column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByRetainStateInformation(true); // WHERE retain_state_information = true
@@ -1273,7 +1209,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the state_retention_file column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByStateRetentionFile('fooValue');   // WHERE state_retention_file = 'fooValue'
@@ -1301,7 +1237,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the retention_update_interval column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByRetentionUpdateInterval(1234); // WHERE retention_update_interval = 1234
@@ -1341,7 +1277,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the use_retained_program_state column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByUseRetainedProgramState(true); // WHERE use_retained_program_state = true
@@ -1367,7 +1303,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the use_syslog column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByUseSyslog(true); // WHERE use_syslog = true
@@ -1393,7 +1329,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the log_notifications column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByLogNotifications(true); // WHERE log_notifications = true
@@ -1419,7 +1355,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the log_service_retries column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByLogServiceRetries(true); // WHERE log_service_retries = true
@@ -1445,7 +1381,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the log_host_retries column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByLogHostRetries(true); // WHERE log_host_retries = true
@@ -1471,7 +1407,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the log_event_handlers column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByLogEventHandlers(true); // WHERE log_event_handlers = true
@@ -1497,7 +1433,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the log_initial_states column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByLogInitialStates(true); // WHERE log_initial_states = true
@@ -1523,7 +1459,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the log_external_commands column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByLogExternalCommands(true); // WHERE log_external_commands = true
@@ -1549,7 +1485,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the log_passive_checks column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByLogPassiveChecks(true); // WHERE log_passive_checks = true
@@ -1575,7 +1511,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the global_host_event_handler column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByGlobalHostEventHandler(1234); // WHERE global_host_event_handler = 1234
@@ -1617,7 +1553,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the global_service_event_handler column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByGlobalServiceEventHandler(1234); // WHERE global_service_event_handler = 1234
@@ -1659,7 +1595,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the external_command_buffer_slots column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByExternalCommandBufferSlots(1234); // WHERE external_command_buffer_slots = 1234
@@ -1699,7 +1635,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the sleep_time column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterBySleepTime(1234); // WHERE sleep_time = 1234
@@ -1739,7 +1675,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the service_interleave_factor column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByServiceInterleaveFactor('fooValue');   // WHERE service_interleave_factor = 'fooValue'
@@ -1767,7 +1703,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the max_concurrent_checks column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByMaxConcurrentChecks(1234); // WHERE max_concurrent_checks = 1234
@@ -1807,7 +1743,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the service_reaper_frequency column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByServiceReaperFrequency(1234); // WHERE service_reaper_frequency = 1234
@@ -1847,7 +1783,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the interval_length column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByIntervalLength(1234); // WHERE interval_length = 1234
@@ -1887,7 +1823,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the use_aggressive_host_checking column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByUseAggressiveHostChecking(true); // WHERE use_aggressive_host_checking = true
@@ -1913,7 +1849,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the enable_flap_detection column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByEnableFlapDetection(true); // WHERE enable_flap_detection = true
@@ -1939,7 +1875,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the low_service_flap_threshold column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByLowServiceFlapThreshold(1234); // WHERE low_service_flap_threshold = 1234
@@ -1979,7 +1915,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the high_service_flap_threshold column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByHighServiceFlapThreshold(1234); // WHERE high_service_flap_threshold = 1234
@@ -2019,7 +1955,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the low_host_flap_threshold column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByLowHostFlapThreshold(1234); // WHERE low_host_flap_threshold = 1234
@@ -2059,7 +1995,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the high_host_flap_threshold column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByHighHostFlapThreshold(1234); // WHERE high_host_flap_threshold = 1234
@@ -2099,7 +2035,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the soft_state_dependencies column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterBySoftStateDependencies(true); // WHERE soft_state_dependencies = true
@@ -2125,7 +2061,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the service_check_timeout column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByServiceCheckTimeout(1234); // WHERE service_check_timeout = 1234
@@ -2165,7 +2101,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the host_check_timeout column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByHostCheckTimeout(1234); // WHERE host_check_timeout = 1234
@@ -2205,7 +2141,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the event_handler_timeout column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByEventHandlerTimeout(1234); // WHERE event_handler_timeout = 1234
@@ -2245,7 +2181,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the notification_timeout column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByNotificationTimeout(1234); // WHERE notification_timeout = 1234
@@ -2285,7 +2221,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the ocsp_timeout column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByOcspTimeout(1234); // WHERE ocsp_timeout = 1234
@@ -2325,7 +2261,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the ohcp_timeout column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByOhcpTimeout(1234); // WHERE ohcp_timeout = 1234
@@ -2365,7 +2301,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the perfdata_timeout column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByPerfdataTimeout(1234); // WHERE perfdata_timeout = 1234
@@ -2405,7 +2341,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the obsess_over_services column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByObsessOverServices(true); // WHERE obsess_over_services = true
@@ -2431,7 +2367,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the ocsp_command column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByOcspCommand(1234); // WHERE ocsp_command = 1234
@@ -2473,7 +2409,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the process_performance_data column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByProcessPerformanceData(true); // WHERE process_performance_data = true
@@ -2499,7 +2435,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the check_for_orphaned_services column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByCheckForOrphanedServices(true); // WHERE check_for_orphaned_services = true
@@ -2525,7 +2461,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the check_service_freshness column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByCheckServiceFreshness(true); // WHERE check_service_freshness = true
@@ -2551,7 +2487,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the freshness_check_interval column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByFreshnessCheckInterval(1234); // WHERE freshness_check_interval = 1234
@@ -2591,7 +2527,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the date_format column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByDateFormat('fooValue');   // WHERE date_format = 'fooValue'
@@ -2619,7 +2555,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the illegal_object_name_chars column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByIllegalObjectNameChars('fooValue');   // WHERE illegal_object_name_chars = 'fooValue'
@@ -2647,7 +2583,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the illegal_macro_output_chars column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByIllegalMacroOutputChars('fooValue');   // WHERE illegal_macro_output_chars = 'fooValue'
@@ -2675,7 +2611,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the admin_email column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByAdminEmail('fooValue');   // WHERE admin_email = 'fooValue'
@@ -2703,7 +2639,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the admin_pager column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByAdminPager('fooValue');   // WHERE admin_pager = 'fooValue'
@@ -2731,7 +2667,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the execute_host_checks column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByExecuteHostChecks(true); // WHERE execute_host_checks = true
@@ -2757,7 +2693,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the service_inter_check_delay_method column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByServiceInterCheckDelayMethod('fooValue');   // WHERE service_inter_check_delay_method = 'fooValue'
@@ -2785,7 +2721,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the use_retained_scheduling_info column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByUseRetainedSchedulingInfo(true); // WHERE use_retained_scheduling_info = true
@@ -2811,7 +2747,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the accept_passive_host_checks column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByAcceptPassiveHostChecks(true); // WHERE accept_passive_host_checks = true
@@ -2837,7 +2773,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the max_service_check_spread column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByMaxServiceCheckSpread(1234); // WHERE max_service_check_spread = 1234
@@ -2877,7 +2813,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the host_inter_check_delay_method column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByHostInterCheckDelayMethod('fooValue');   // WHERE host_inter_check_delay_method = 'fooValue'
@@ -2905,7 +2841,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the max_host_check_spread column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByMaxHostCheckSpread(1234); // WHERE max_host_check_spread = 1234
@@ -2945,7 +2881,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the auto_reschedule_checks column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByAutoRescheduleChecks(true); // WHERE auto_reschedule_checks = true
@@ -2971,7 +2907,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the auto_rescheduling_interval column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByAutoReschedulingInterval(1234); // WHERE auto_rescheduling_interval = 1234
@@ -3011,7 +2947,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the auto_rescheduling_window column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByAutoReschedulingWindow(1234); // WHERE auto_rescheduling_window = 1234
@@ -3051,7 +2987,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the ochp_timeout column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByOchpTimeout(1234); // WHERE ochp_timeout = 1234
@@ -3091,7 +3027,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the obsess_over_hosts column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByObsessOverHosts(true); // WHERE obsess_over_hosts = true
@@ -3117,7 +3053,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the ochp_command column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByOchpCommand(1234); // WHERE ochp_command = 1234
@@ -3159,7 +3095,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the check_host_freshness column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByCheckHostFreshness(true); // WHERE check_host_freshness = true
@@ -3185,7 +3121,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the host_freshness_check_interval column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByHostFreshnessCheckInterval(1234); // WHERE host_freshness_check_interval = 1234
@@ -3225,7 +3161,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the service_freshness_check_interval column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByServiceFreshnessCheckInterval(1234); // WHERE service_freshness_check_interval = 1234
@@ -3265,7 +3201,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the use_regexp_matching column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByUseRegexpMatching(true); // WHERE use_regexp_matching = true
@@ -3291,7 +3227,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the use_true_regexp_matching column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByUseTrueRegexpMatching(true); // WHERE use_true_regexp_matching = true
@@ -3317,7 +3253,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the event_broker_options column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByEventBrokerOptions('fooValue');   // WHERE event_broker_options = 'fooValue'
@@ -3345,7 +3281,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the daemon_dumps_core column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByDaemonDumpsCore(true); // WHERE daemon_dumps_core = true
@@ -3371,7 +3307,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the host_perfdata_command column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByHostPerfdataCommand(1234); // WHERE host_perfdata_command = 1234
@@ -3413,7 +3349,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the service_perfdata_command column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByServicePerfdataCommand(1234); // WHERE service_perfdata_command = 1234
@@ -3455,7 +3391,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the host_perfdata_file column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByHostPerfdataFile('fooValue');   // WHERE host_perfdata_file = 'fooValue'
@@ -3483,7 +3419,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the host_perfdata_file_template column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByHostPerfdataFileTemplate('fooValue');   // WHERE host_perfdata_file_template = 'fooValue'
@@ -3511,7 +3447,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the service_perfdata_file column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByServicePerfdataFile('fooValue');   // WHERE service_perfdata_file = 'fooValue'
@@ -3539,7 +3475,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the service_perfdata_file_template column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByServicePerfdataFileTemplate('fooValue');   // WHERE service_perfdata_file_template = 'fooValue'
@@ -3567,7 +3503,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the host_perfdata_file_mode column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByHostPerfdataFileMode('fooValue');   // WHERE host_perfdata_file_mode = 'fooValue'
@@ -3595,7 +3531,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the service_perfdata_file_mode column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByServicePerfdataFileMode('fooValue');   // WHERE service_perfdata_file_mode = 'fooValue'
@@ -3623,7 +3559,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the host_perfdata_file_processing_command column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByHostPerfdataFileProcessingCommand(1234); // WHERE host_perfdata_file_processing_command = 1234
@@ -3665,7 +3601,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the service_perfdata_file_processing_command column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByServicePerfdataFileProcessingCommand(1234); // WHERE service_perfdata_file_processing_command = 1234
@@ -3707,7 +3643,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the host_perfdata_file_processing_interval column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByHostPerfdataFileProcessingInterval(1234); // WHERE host_perfdata_file_processing_interval = 1234
@@ -3747,7 +3683,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the service_perfdata_file_processing_interval column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByServicePerfdataFileProcessingInterval(1234); // WHERE service_perfdata_file_processing_interval = 1234
@@ -3787,7 +3723,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the object_cache_file column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByObjectCacheFile('fooValue');   // WHERE object_cache_file = 'fooValue'
@@ -3815,7 +3751,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the precached_object_file column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByPrecachedObjectFile('fooValue');   // WHERE precached_object_file = 'fooValue'
@@ -3843,7 +3779,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the retained_host_attribute_mask column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByRetainedHostAttributeMask(1234); // WHERE retained_host_attribute_mask = 1234
@@ -3883,7 +3819,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the retained_service_attribute_mask column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByRetainedServiceAttributeMask(1234); // WHERE retained_service_attribute_mask = 1234
@@ -3923,7 +3859,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the retained_process_host_attribute_mask column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByRetainedProcessHostAttributeMask(1234); // WHERE retained_process_host_attribute_mask = 1234
@@ -3963,7 +3899,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the retained_process_service_attribute_mask column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByRetainedProcessServiceAttributeMask(1234); // WHERE retained_process_service_attribute_mask = 1234
@@ -4003,7 +3939,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the retained_contact_host_attribute_mask column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByRetainedContactHostAttributeMask(1234); // WHERE retained_contact_host_attribute_mask = 1234
@@ -4043,7 +3979,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the retained_contact_service_attribute_mask column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByRetainedContactServiceAttributeMask(1234); // WHERE retained_contact_service_attribute_mask = 1234
@@ -4083,7 +4019,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the check_result_reaper_frequency column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByCheckResultReaperFrequency(1234); // WHERE check_result_reaper_frequency = 1234
@@ -4123,7 +4059,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the max_check_result_reaper_time column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByMaxCheckResultReaperTime(1234); // WHERE max_check_result_reaper_time = 1234
@@ -4163,7 +4099,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the check_result_path column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByCheckResultPath('fooValue');   // WHERE check_result_path = 'fooValue'
@@ -4191,7 +4127,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the max_check_result_file_age column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByMaxCheckResultFileAge(1234); // WHERE max_check_result_file_age = 1234
@@ -4231,7 +4167,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the translate_passive_host_checks column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByTranslatePassiveHostChecks(true); // WHERE translate_passive_host_checks = true
@@ -4257,7 +4193,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the passive_host_checks_are_soft column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByPassiveHostChecksAreSoft(true); // WHERE passive_host_checks_are_soft = true
@@ -4283,7 +4219,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the enable_predictive_host_dependency_checks column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByEnablePredictiveHostDependencyChecks(true); // WHERE enable_predictive_host_dependency_checks = true
@@ -4309,7 +4245,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the enable_predictive_service_dependency_checks column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByEnablePredictiveServiceDependencyChecks(true); // WHERE enable_predictive_service_dependency_checks = true
@@ -4335,7 +4271,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the cached_host_check_horizon column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByCachedHostCheckHorizon(1234); // WHERE cached_host_check_horizon = 1234
@@ -4375,7 +4311,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the cached_service_check_horizon column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByCachedServiceCheckHorizon(1234); // WHERE cached_service_check_horizon = 1234
@@ -4415,7 +4351,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the use_large_installation_tweaks column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByUseLargeInstallationTweaks(true); // WHERE use_large_installation_tweaks = true
@@ -4441,7 +4377,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the free_child_process_memory column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByFreeChildProcessMemory(true); // WHERE free_child_process_memory = true
@@ -4467,7 +4403,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the child_processes_fork_twice column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByChildProcessesForkTwice(true); // WHERE child_processes_fork_twice = true
@@ -4493,7 +4429,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the enable_environment_macros column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByEnableEnvironmentMacros(true); // WHERE enable_environment_macros = true
@@ -4519,7 +4455,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the additional_freshness_latency column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByAdditionalFreshnessLatency(1234); // WHERE additional_freshness_latency = 1234
@@ -4559,7 +4495,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the enable_embedded_perl column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByEnableEmbeddedPerl(true); // WHERE enable_embedded_perl = true
@@ -4585,7 +4521,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the use_embedded_perl_implicitly column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByUseEmbeddedPerlImplicitly(true); // WHERE use_embedded_perl_implicitly = true
@@ -4611,7 +4547,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the p1_file column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByP1File('fooValue');   // WHERE p1_file = 'fooValue'
@@ -4639,7 +4575,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the use_timezone column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByUseTimezone('fooValue');   // WHERE use_timezone = 'fooValue'
@@ -4667,7 +4603,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the debug_file column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByDebugFile('fooValue');   // WHERE debug_file = 'fooValue'
@@ -4695,7 +4631,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the debug_level column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByDebugLevel(1234); // WHERE debug_level = 1234
@@ -4735,7 +4671,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the debug_verbosity column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByDebugVerbosity(1234); // WHERE debug_verbosity = 1234
@@ -4775,7 +4711,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the max_debug_file_size column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByMaxDebugFileSize(1234); // WHERE max_debug_file_size = 1234
@@ -4815,7 +4751,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the temp_path column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByTempPath('fooValue');   // WHERE temp_path = 'fooValue'
@@ -4843,7 +4779,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the check_for_updates column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByCheckForUpdates(true); // WHERE check_for_updates = true
@@ -4869,7 +4805,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the check_for_orphaned_hosts column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByCheckForOrphanedHosts(true); // WHERE check_for_orphaned_hosts = true
@@ -4895,7 +4831,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Filter the query on the bare_update_check column
-	 *
+	 * 
 	 * Example usage:
 	 * <code>
 	 * $query->filterByBareUpdateCheck(true); // WHERE bare_update_check = true
@@ -4945,7 +4881,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Adds a JOIN clause to the query using the NagiosCommandRelatedByOcspCommand relation
-	 *
+	 * 
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
@@ -4955,7 +4891,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('NagiosCommandRelatedByOcspCommand');
-
+		
 		// create a ModelJoin object for this join
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
@@ -4963,7 +4899,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 		if ($previousJoin = $this->getPreviousJoin()) {
 			$join->setPreviousJoin($previousJoin);
 		}
-
+		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
@@ -4971,7 +4907,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 		} else {
 			$this->addJoinObject($join, 'NagiosCommandRelatedByOcspCommand');
 		}
-
+		
 		return $this;
 	}
 
@@ -4979,7 +4915,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 	 * Use the NagiosCommandRelatedByOcspCommand relation NagiosCommand object
 	 *
 	 * @see       useQuery()
-	 *
+	 * 
 	 * @param     string $relationAlias optional alias for the relation,
 	 *                                   to be used as main alias in the secondary query
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
@@ -5019,7 +4955,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Adds a JOIN clause to the query using the NagiosCommandRelatedByOchpCommand relation
-	 *
+	 * 
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
@@ -5029,7 +4965,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('NagiosCommandRelatedByOchpCommand');
-
+		
 		// create a ModelJoin object for this join
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
@@ -5037,7 +4973,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 		if ($previousJoin = $this->getPreviousJoin()) {
 			$join->setPreviousJoin($previousJoin);
 		}
-
+		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
@@ -5045,7 +4981,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 		} else {
 			$this->addJoinObject($join, 'NagiosCommandRelatedByOchpCommand');
 		}
-
+		
 		return $this;
 	}
 
@@ -5053,7 +4989,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 	 * Use the NagiosCommandRelatedByOchpCommand relation NagiosCommand object
 	 *
 	 * @see       useQuery()
-	 *
+	 * 
 	 * @param     string $relationAlias optional alias for the relation,
 	 *                                   to be used as main alias in the secondary query
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
@@ -5093,7 +5029,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Adds a JOIN clause to the query using the NagiosCommandRelatedByHostPerfdataCommand relation
-	 *
+	 * 
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
@@ -5103,7 +5039,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('NagiosCommandRelatedByHostPerfdataCommand');
-
+		
 		// create a ModelJoin object for this join
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
@@ -5111,7 +5047,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 		if ($previousJoin = $this->getPreviousJoin()) {
 			$join->setPreviousJoin($previousJoin);
 		}
-
+		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
@@ -5119,7 +5055,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 		} else {
 			$this->addJoinObject($join, 'NagiosCommandRelatedByHostPerfdataCommand');
 		}
-
+		
 		return $this;
 	}
 
@@ -5127,7 +5063,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 	 * Use the NagiosCommandRelatedByHostPerfdataCommand relation NagiosCommand object
 	 *
 	 * @see       useQuery()
-	 *
+	 * 
 	 * @param     string $relationAlias optional alias for the relation,
 	 *                                   to be used as main alias in the secondary query
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
@@ -5167,7 +5103,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Adds a JOIN clause to the query using the NagiosCommandRelatedByServicePerfdataCommand relation
-	 *
+	 * 
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
@@ -5177,7 +5113,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('NagiosCommandRelatedByServicePerfdataCommand');
-
+		
 		// create a ModelJoin object for this join
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
@@ -5185,7 +5121,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 		if ($previousJoin = $this->getPreviousJoin()) {
 			$join->setPreviousJoin($previousJoin);
 		}
-
+		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
@@ -5193,7 +5129,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 		} else {
 			$this->addJoinObject($join, 'NagiosCommandRelatedByServicePerfdataCommand');
 		}
-
+		
 		return $this;
 	}
 
@@ -5201,7 +5137,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 	 * Use the NagiosCommandRelatedByServicePerfdataCommand relation NagiosCommand object
 	 *
 	 * @see       useQuery()
-	 *
+	 * 
 	 * @param     string $relationAlias optional alias for the relation,
 	 *                                   to be used as main alias in the secondary query
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
@@ -5241,7 +5177,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Adds a JOIN clause to the query using the NagiosCommandRelatedByHostPerfdataFileProcessingCommand relation
-	 *
+	 * 
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
@@ -5251,7 +5187,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('NagiosCommandRelatedByHostPerfdataFileProcessingCommand');
-
+		
 		// create a ModelJoin object for this join
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
@@ -5259,7 +5195,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 		if ($previousJoin = $this->getPreviousJoin()) {
 			$join->setPreviousJoin($previousJoin);
 		}
-
+		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
@@ -5267,7 +5203,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 		} else {
 			$this->addJoinObject($join, 'NagiosCommandRelatedByHostPerfdataFileProcessingCommand');
 		}
-
+		
 		return $this;
 	}
 
@@ -5275,7 +5211,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 	 * Use the NagiosCommandRelatedByHostPerfdataFileProcessingCommand relation NagiosCommand object
 	 *
 	 * @see       useQuery()
-	 *
+	 * 
 	 * @param     string $relationAlias optional alias for the relation,
 	 *                                   to be used as main alias in the secondary query
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
@@ -5315,7 +5251,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Adds a JOIN clause to the query using the NagiosCommandRelatedByServicePerfdataFileProcessingCommand relation
-	 *
+	 * 
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
@@ -5325,7 +5261,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('NagiosCommandRelatedByServicePerfdataFileProcessingCommand');
-
+		
 		// create a ModelJoin object for this join
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
@@ -5333,7 +5269,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 		if ($previousJoin = $this->getPreviousJoin()) {
 			$join->setPreviousJoin($previousJoin);
 		}
-
+		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
@@ -5341,7 +5277,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 		} else {
 			$this->addJoinObject($join, 'NagiosCommandRelatedByServicePerfdataFileProcessingCommand');
 		}
-
+		
 		return $this;
 	}
 
@@ -5349,7 +5285,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 	 * Use the NagiosCommandRelatedByServicePerfdataFileProcessingCommand relation NagiosCommand object
 	 *
 	 * @see       useQuery()
-	 *
+	 * 
 	 * @param     string $relationAlias optional alias for the relation,
 	 *                                   to be used as main alias in the secondary query
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
@@ -5389,7 +5325,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Adds a JOIN clause to the query using the NagiosCommandRelatedByGlobalServiceEventHandler relation
-	 *
+	 * 
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
@@ -5399,7 +5335,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('NagiosCommandRelatedByGlobalServiceEventHandler');
-
+		
 		// create a ModelJoin object for this join
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
@@ -5407,7 +5343,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 		if ($previousJoin = $this->getPreviousJoin()) {
 			$join->setPreviousJoin($previousJoin);
 		}
-
+		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
@@ -5415,7 +5351,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 		} else {
 			$this->addJoinObject($join, 'NagiosCommandRelatedByGlobalServiceEventHandler');
 		}
-
+		
 		return $this;
 	}
 
@@ -5423,7 +5359,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 	 * Use the NagiosCommandRelatedByGlobalServiceEventHandler relation NagiosCommand object
 	 *
 	 * @see       useQuery()
-	 *
+	 * 
 	 * @param     string $relationAlias optional alias for the relation,
 	 *                                   to be used as main alias in the secondary query
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
@@ -5463,7 +5399,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 
 	/**
 	 * Adds a JOIN clause to the query using the NagiosCommandRelatedByGlobalHostEventHandler relation
-	 *
+	 * 
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
@@ -5473,7 +5409,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('NagiosCommandRelatedByGlobalHostEventHandler');
-
+		
 		// create a ModelJoin object for this join
 		$join = new ModelJoin();
 		$join->setJoinType($joinType);
@@ -5481,7 +5417,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 		if ($previousJoin = $this->getPreviousJoin()) {
 			$join->setPreviousJoin($previousJoin);
 		}
-
+		
 		// add the ModelJoin to the current object
 		if($relationAlias) {
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
@@ -5489,7 +5425,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 		} else {
 			$this->addJoinObject($join, 'NagiosCommandRelatedByGlobalHostEventHandler');
 		}
-
+		
 		return $this;
 	}
 
@@ -5497,7 +5433,7 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 	 * Use the NagiosCommandRelatedByGlobalHostEventHandler relation NagiosCommand object
 	 *
 	 * @see       useQuery()
-	 *
+	 * 
 	 * @param     string $relationAlias optional alias for the relation,
 	 *                                   to be used as main alias in the secondary query
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
@@ -5522,8 +5458,8 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 	{
 		if ($nagiosMainConfiguration) {
 			$this->addUsingAlias(NagiosMainConfigurationPeer::ID, $nagiosMainConfiguration->getId(), Criteria::NOT_EQUAL);
-		}
-
+	  }
+	  
 		return $this;
 	}
 

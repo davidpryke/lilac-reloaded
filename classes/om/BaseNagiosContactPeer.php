@@ -24,7 +24,7 @@ abstract class BaseNagiosContactPeer {
 
 	/** the related TableMap class for this table */
 	const TM_CLASS = 'NagiosContactTableMap';
-
+	
 	/** The total number of columns. */
 	const NUM_COLUMNS = 22;
 
@@ -102,7 +102,7 @@ abstract class BaseNagiosContactPeer {
 
 	/** The default string format for model objects of the related table **/
 	const DEFAULT_STRING_FORMAT = 'YAML';
-
+	
 	/**
 	 * An identiy map to hold any loaded instances of NagiosContact objects.
 	 * This must be public so that other peer classes can access this when hydrating from JOIN
@@ -449,22 +449,22 @@ abstract class BaseNagiosContactPeer {
 	 */
 	public static function clearRelatedInstancePool()
 	{
-		// Invalidate objects in NagiosContactAddressPeer instance pool,
+		// Invalidate objects in NagiosContactAddressPeer instance pool, 
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		NagiosContactAddressPeer::clearInstancePool();
-		// Invalidate objects in NagiosContactGroupMemberPeer instance pool,
+		// Invalidate objects in NagiosContactGroupMemberPeer instance pool, 
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		NagiosContactGroupMemberPeer::clearInstancePool();
-		// Invalidate objects in NagiosContactNotificationCommandPeer instance pool,
+		// Invalidate objects in NagiosContactNotificationCommandPeer instance pool, 
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		NagiosContactNotificationCommandPeer::clearInstancePool();
-		// Invalidate objects in NagiosHostContactMemberPeer instance pool,
+		// Invalidate objects in NagiosHostContactMemberPeer instance pool, 
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		NagiosHostContactMemberPeer::clearInstancePool();
-		// Invalidate objects in NagiosServiceContactMemberPeer instance pool,
+		// Invalidate objects in NagiosServiceContactMemberPeer instance pool, 
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		NagiosServiceContactMemberPeer::clearInstancePool();
-		// Invalidate objects in NagiosEscalationContactPeer instance pool,
+		// Invalidate objects in NagiosEscalationContactPeer instance pool, 
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		NagiosEscalationContactPeer::clearInstancePool();
 	}
@@ -489,7 +489,7 @@ abstract class BaseNagiosContactPeer {
 	}
 
 	/**
-	 * Retrieves the primary key from the DB resultset row
+	 * Retrieves the primary key from the DB resultset row 
 	 * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
 	 * a multi-column primary key, an array of the primary key columns will be returned.
 	 *
@@ -586,9 +586,9 @@ abstract class BaseNagiosContactPeer {
 		if (!$criteria->hasSelectClause()) {
 			NagiosContactPeer::addSelectColumns($criteria);
 		}
-
+		
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-
+		
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -636,9 +636,9 @@ abstract class BaseNagiosContactPeer {
 		if (!$criteria->hasSelectClause()) {
 			NagiosContactPeer::addSelectColumns($criteria);
 		}
-
+		
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-
+		
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -818,9 +818,9 @@ abstract class BaseNagiosContactPeer {
 		if (!$criteria->hasSelectClause()) {
 			NagiosContactPeer::addSelectColumns($criteria);
 		}
-
+		
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-
+		
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -953,7 +953,7 @@ abstract class BaseNagiosContactPeer {
 		// it will be impossible for the BasePeer::createSelectSql() method to determine which
 		// tables go into the FROM clause.
 		$criteria->setPrimaryTableName(NagiosContactPeer::TABLE_NAME);
-
+		
 		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
 			$criteria->setDistinct();
 		}
@@ -961,9 +961,9 @@ abstract class BaseNagiosContactPeer {
 		if (!$criteria->hasSelectClause()) {
 			NagiosContactPeer::addSelectColumns($criteria);
 		}
-
+		
 		$criteria->clearOrderByColumns(); // ORDER BY should not affect count
-
+		
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -1001,7 +1001,7 @@ abstract class BaseNagiosContactPeer {
 		// it will be impossible for the BasePeer::createSelectSql() method to determine which
 		// tables go into the FROM clause.
 		$criteria->setPrimaryTableName(NagiosContactPeer::TABLE_NAME);
-
+		
 		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
 			$criteria->setDistinct();
 		}
@@ -1009,9 +1009,9 @@ abstract class BaseNagiosContactPeer {
 		if (!$criteria->hasSelectClause()) {
 			NagiosContactPeer::addSelectColumns($criteria);
 		}
-
+		
 		$criteria->clearOrderByColumns(); // ORDER BY should not affect count
-
+		
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 

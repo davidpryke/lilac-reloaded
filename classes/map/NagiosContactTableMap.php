@@ -43,23 +43,23 @@ class NagiosContactTableMap extends TableMap
 		$this->addColumn('ALIAS', 'Alias', 'VARCHAR', true, 255, null);
 		$this->addColumn('EMAIL', 'Email', 'VARCHAR', false, 255, null);
 		$this->addColumn('PAGER', 'Pager', 'VARCHAR', false, 255, null);
-		$this->addColumn('HOST_NOTIFICATIONS_ENABLED', 'HostNotificationsEnabled', 'BOOLEAN', true, 1, null);
-		$this->addColumn('SERVICE_NOTIFICATIONS_ENABLED', 'ServiceNotificationsEnabled', 'BOOLEAN', true, 1, null);
+		$this->addColumn('HOST_NOTIFICATIONS_ENABLED', 'HostNotificationsEnabled', 'BOOLEAN', true, null, null);
+		$this->addColumn('SERVICE_NOTIFICATIONS_ENABLED', 'ServiceNotificationsEnabled', 'BOOLEAN', true, null, null);
 		$this->addForeignKey('HOST_NOTIFICATION_PERIOD', 'HostNotificationPeriod', 'INTEGER', 'nagios_timeperiod', 'ID', false, null, null);
 		$this->addForeignKey('SERVICE_NOTIFICATION_PERIOD', 'ServiceNotificationPeriod', 'INTEGER', 'nagios_timeperiod', 'ID', false, null, null);
-		$this->addColumn('HOST_NOTIFICATION_ON_DOWN', 'HostNotificationOnDown', 'BOOLEAN', true, 1, null);
-		$this->addColumn('HOST_NOTIFICATION_ON_UNREACHABLE', 'HostNotificationOnUnreachable', 'BOOLEAN', true, 1, null);
-		$this->addColumn('HOST_NOTIFICATION_ON_RECOVERY', 'HostNotificationOnRecovery', 'BOOLEAN', true, 1, null);
-		$this->addColumn('HOST_NOTIFICATION_ON_FLAPPING', 'HostNotificationOnFlapping', 'BOOLEAN', true, 1, null);
-		$this->addColumn('HOST_NOTIFICATION_ON_SCHEDULED_DOWNTIME', 'HostNotificationOnScheduledDowntime', 'BOOLEAN', true, 1, null);
-		$this->addColumn('SERVICE_NOTIFICATION_ON_WARNING', 'ServiceNotificationOnWarning', 'BOOLEAN', true, 1, null);
-		$this->addColumn('SERVICE_NOTIFICATION_ON_UNKNOWN', 'ServiceNotificationOnUnknown', 'BOOLEAN', true, 1, null);
-		$this->addColumn('SERVICE_NOTIFICATION_ON_CRITICAL', 'ServiceNotificationOnCritical', 'BOOLEAN', true, 1, null);
-		$this->addColumn('SERVICE_NOTIFICATION_ON_RECOVERY', 'ServiceNotificationOnRecovery', 'BOOLEAN', true, 1, null);
-		$this->addColumn('SERVICE_NOTIFICATION_ON_FLAPPING', 'ServiceNotificationOnFlapping', 'BOOLEAN', true, 1, null);
-		$this->addColumn('CAN_SUBMIT_COMMANDS', 'CanSubmitCommands', 'BOOLEAN', true, 1, null);
-		$this->addColumn('RETAIN_STATUS_INFORMATION', 'RetainStatusInformation', 'BOOLEAN', true, 1, null);
-		$this->addColumn('RETAIN_NONSTATUS_INFORMATION', 'RetainNonstatusInformation', 'BOOLEAN', true, 1, null);
+		$this->addColumn('HOST_NOTIFICATION_ON_DOWN', 'HostNotificationOnDown', 'BOOLEAN', true, null, null);
+		$this->addColumn('HOST_NOTIFICATION_ON_UNREACHABLE', 'HostNotificationOnUnreachable', 'BOOLEAN', true, null, null);
+		$this->addColumn('HOST_NOTIFICATION_ON_RECOVERY', 'HostNotificationOnRecovery', 'BOOLEAN', true, null, null);
+		$this->addColumn('HOST_NOTIFICATION_ON_FLAPPING', 'HostNotificationOnFlapping', 'BOOLEAN', true, null, null);
+		$this->addColumn('HOST_NOTIFICATION_ON_SCHEDULED_DOWNTIME', 'HostNotificationOnScheduledDowntime', 'BOOLEAN', true, null, null);
+		$this->addColumn('SERVICE_NOTIFICATION_ON_WARNING', 'ServiceNotificationOnWarning', 'BOOLEAN', true, null, null);
+		$this->addColumn('SERVICE_NOTIFICATION_ON_UNKNOWN', 'ServiceNotificationOnUnknown', 'BOOLEAN', true, null, null);
+		$this->addColumn('SERVICE_NOTIFICATION_ON_CRITICAL', 'ServiceNotificationOnCritical', 'BOOLEAN', true, null, null);
+		$this->addColumn('SERVICE_NOTIFICATION_ON_RECOVERY', 'ServiceNotificationOnRecovery', 'BOOLEAN', true, null, null);
+		$this->addColumn('SERVICE_NOTIFICATION_ON_FLAPPING', 'ServiceNotificationOnFlapping', 'BOOLEAN', true, null, null);
+		$this->addColumn('CAN_SUBMIT_COMMANDS', 'CanSubmitCommands', 'BOOLEAN', true, null, null);
+		$this->addColumn('RETAIN_STATUS_INFORMATION', 'RetainStatusInformation', 'BOOLEAN', true, null, null);
+		$this->addColumn('RETAIN_NONSTATUS_INFORMATION', 'RetainNonstatusInformation', 'BOOLEAN', true, null, null);
 		// validators
 	} // initialize()
 
@@ -70,12 +70,12 @@ class NagiosContactTableMap extends TableMap
 	{
 		$this->addRelation('NagiosTimeperiodRelatedByHostNotificationPeriod', 'NagiosTimeperiod', RelationMap::MANY_TO_ONE, array('host_notification_period' => 'id', ), 'SET NULL', null);
 		$this->addRelation('NagiosTimeperiodRelatedByServiceNotificationPeriod', 'NagiosTimeperiod', RelationMap::MANY_TO_ONE, array('service_notification_period' => 'id', ), 'SET NULL', null);
-		$this->addRelation('NagiosContactAddress', 'NagiosContactAddress', RelationMap::ONE_TO_MANY, array('id' => 'contact', ), 'CASCADE', null, 'NagiosContactAddresss');
-		$this->addRelation('NagiosContactGroupMember', 'NagiosContactGroupMember', RelationMap::ONE_TO_MANY, array('id' => 'contact', ), 'CASCADE', null, 'NagiosContactGroupMembers');
-		$this->addRelation('NagiosContactNotificationCommand', 'NagiosContactNotificationCommand', RelationMap::ONE_TO_MANY, array('id' => 'contact_id', ), 'CASCADE', null, 'NagiosContactNotificationCommands');
-		$this->addRelation('NagiosHostContactMember', 'NagiosHostContactMember', RelationMap::ONE_TO_MANY, array('id' => 'contact', ), 'CASCADE', null, 'NagiosHostContactMembers');
-		$this->addRelation('NagiosServiceContactMember', 'NagiosServiceContactMember', RelationMap::ONE_TO_MANY, array('id' => 'contact', ), 'CASCADE', null, 'NagiosServiceContactMembers');
-		$this->addRelation('NagiosEscalationContact', 'NagiosEscalationContact', RelationMap::ONE_TO_MANY, array('id' => 'contact', ), 'CASCADE', null, 'NagiosEscalationContacts');
+		$this->addRelation('NagiosContactAddress', 'NagiosContactAddress', RelationMap::ONE_TO_MANY, array('id' => 'contact', ), 'CASCADE', null);
+		$this->addRelation('NagiosContactGroupMember', 'NagiosContactGroupMember', RelationMap::ONE_TO_MANY, array('id' => 'contact', ), 'CASCADE', null);
+		$this->addRelation('NagiosContactNotificationCommand', 'NagiosContactNotificationCommand', RelationMap::ONE_TO_MANY, array('id' => 'contact_id', ), 'CASCADE', null);
+		$this->addRelation('NagiosHostContactMember', 'NagiosHostContactMember', RelationMap::ONE_TO_MANY, array('id' => 'contact', ), 'CASCADE', null);
+		$this->addRelation('NagiosServiceContactMember', 'NagiosServiceContactMember', RelationMap::ONE_TO_MANY, array('id' => 'contact', ), 'CASCADE', null);
+		$this->addRelation('NagiosEscalationContact', 'NagiosEscalationContact', RelationMap::ONE_TO_MANY, array('id' => 'contact', ), 'CASCADE', null);
 	} // buildRelations()
 
 } // NagiosContactTableMap

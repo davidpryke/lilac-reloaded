@@ -24,7 +24,7 @@ abstract class BaseNagiosCommandPeer {
 
 	/** the related TableMap class for this table */
 	const TM_CLASS = 'NagiosCommandTableMap';
-
+	
 	/** The total number of columns. */
 	const NUM_COLUMNS = 4;
 
@@ -48,7 +48,7 @@ abstract class BaseNagiosCommandPeer {
 
 	/** The default string format for model objects of the related table **/
 	const DEFAULT_STRING_FORMAT = 'YAML';
-
+	
 	/**
 	 * An identiy map to hold any loaded instances of NagiosCommand objects.
 	 * This must be public so that other peer classes can access this when hydrating from JOIN
@@ -359,55 +359,55 @@ abstract class BaseNagiosCommandPeer {
 	 */
 	public static function clearRelatedInstancePool()
 	{
-		// Invalidate objects in NagiosContactNotificationCommandPeer instance pool,
+		// Invalidate objects in NagiosContactNotificationCommandPeer instance pool, 
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		NagiosContactNotificationCommandPeer::clearInstancePool();
-		// Invalidate objects in NagiosHostTemplatePeer instance pool,
+		// Invalidate objects in NagiosHostTemplatePeer instance pool, 
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		NagiosHostTemplatePeer::clearInstancePool();
-		// Invalidate objects in NagiosHostTemplatePeer instance pool,
+		// Invalidate objects in NagiosHostTemplatePeer instance pool, 
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		NagiosHostTemplatePeer::clearInstancePool();
-		// Invalidate objects in NagiosHostPeer instance pool,
+		// Invalidate objects in NagiosHostPeer instance pool, 
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		NagiosHostPeer::clearInstancePool();
-		// Invalidate objects in NagiosHostPeer instance pool,
+		// Invalidate objects in NagiosHostPeer instance pool, 
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		NagiosHostPeer::clearInstancePool();
-		// Invalidate objects in NagiosServiceTemplatePeer instance pool,
+		// Invalidate objects in NagiosServiceTemplatePeer instance pool, 
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		NagiosServiceTemplatePeer::clearInstancePool();
-		// Invalidate objects in NagiosServiceTemplatePeer instance pool,
+		// Invalidate objects in NagiosServiceTemplatePeer instance pool, 
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		NagiosServiceTemplatePeer::clearInstancePool();
-		// Invalidate objects in NagiosServicePeer instance pool,
+		// Invalidate objects in NagiosServicePeer instance pool, 
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		NagiosServicePeer::clearInstancePool();
-		// Invalidate objects in NagiosServicePeer instance pool,
+		// Invalidate objects in NagiosServicePeer instance pool, 
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		NagiosServicePeer::clearInstancePool();
-		// Invalidate objects in NagiosMainConfigurationPeer instance pool,
+		// Invalidate objects in NagiosMainConfigurationPeer instance pool, 
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		NagiosMainConfigurationPeer::clearInstancePool();
-		// Invalidate objects in NagiosMainConfigurationPeer instance pool,
+		// Invalidate objects in NagiosMainConfigurationPeer instance pool, 
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		NagiosMainConfigurationPeer::clearInstancePool();
-		// Invalidate objects in NagiosMainConfigurationPeer instance pool,
+		// Invalidate objects in NagiosMainConfigurationPeer instance pool, 
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		NagiosMainConfigurationPeer::clearInstancePool();
-		// Invalidate objects in NagiosMainConfigurationPeer instance pool,
+		// Invalidate objects in NagiosMainConfigurationPeer instance pool, 
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		NagiosMainConfigurationPeer::clearInstancePool();
-		// Invalidate objects in NagiosMainConfigurationPeer instance pool,
+		// Invalidate objects in NagiosMainConfigurationPeer instance pool, 
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		NagiosMainConfigurationPeer::clearInstancePool();
-		// Invalidate objects in NagiosMainConfigurationPeer instance pool,
+		// Invalidate objects in NagiosMainConfigurationPeer instance pool, 
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		NagiosMainConfigurationPeer::clearInstancePool();
-		// Invalidate objects in NagiosMainConfigurationPeer instance pool,
+		// Invalidate objects in NagiosMainConfigurationPeer instance pool, 
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		NagiosMainConfigurationPeer::clearInstancePool();
-		// Invalidate objects in NagiosMainConfigurationPeer instance pool,
+		// Invalidate objects in NagiosMainConfigurationPeer instance pool, 
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		NagiosMainConfigurationPeer::clearInstancePool();
 	}
@@ -432,7 +432,7 @@ abstract class BaseNagiosCommandPeer {
 	}
 
 	/**
-	 * Retrieves the primary key from the DB resultset row
+	 * Retrieves the primary key from the DB resultset row 
 	 * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
 	 * a multi-column primary key, an array of the primary key columns will be returned.
 	 *

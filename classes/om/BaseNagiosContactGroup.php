@@ -77,30 +77,6 @@ abstract class BaseNagiosContactGroup extends BaseObject  implements Persistent
 	protected $alreadyInValidation = false;
 
 	/**
-	 * An array of objects scheduled for deletion.
-	 * @var		array
-	 */
-	protected $nagiosContactGroupMembersScheduledForDeletion = null;
-
-	/**
-	 * An array of objects scheduled for deletion.
-	 * @var		array
-	 */
-	protected $nagiosServiceContactGroupMembersScheduledForDeletion = null;
-
-	/**
-	 * An array of objects scheduled for deletion.
-	 * @var		array
-	 */
-	protected $nagiosEscalationContactgroupsScheduledForDeletion = null;
-
-	/**
-	 * An array of objects scheduled for deletion.
-	 * @var		array
-	 */
-	protected $nagiosHostContactgroupsScheduledForDeletion = null;
-
-	/**
 	 * Get the [id] column value.
 	 * 
 	 * @return     int
@@ -327,18 +303,18 @@ abstract class BaseNagiosContactGroup extends BaseObject  implements Persistent
 
 		$con->beginTransaction();
 		try {
-			$deleteQuery = NagiosContactGroupQuery::create()
-				->filterByPrimaryKey($this->getPrimaryKey());
 			$ret = $this->preDelete($con);
 			if ($ret) {
-				$deleteQuery->delete($con);
+				NagiosContactGroupQuery::create()
+					->filterByPrimaryKey($this->getPrimaryKey())
+					->delete($con);
 				$this->postDelete($con);
 				$con->commit();
 				$this->setDeleted(true);
 			} else {
 				$con->commit();
 			}
-		} catch (Exception $e) {
+		} catch (PropelException $e) {
 			$con->rollBack();
 			throw $e;
 		}
@@ -390,7 +366,7 @@ abstract class BaseNagiosContactGroup extends BaseObject  implements Persistent
 			}
 			$con->commit();
 			return $affectedRows;
-		} catch (Exception $e) {
+		} catch (PropelException $e) {
 			$con->rollBack();
 			throw $e;
 		}
@@ -413,24 +389,27 @@ abstract class BaseNagiosContactGroup extends BaseObject  implements Persistent
 		if (!$this->alreadyInSave) {
 			$this->alreadyInSave = true;
 
-			if ($this->isNew() || $this->isModified()) {
-				// persist changes
-				if ($this->isNew()) {
-					$this->doInsert($con);
-				} else {
-					$this->doUpdate($con);
-				}
-				$affectedRows += 1;
-				$this->resetModified();
+			if ($this->isNew() ) {
+				$this->modifiedColumns[] = NagiosContactGroupPeer::ID;
 			}
 
-			if ($this->nagiosContactGroupMembersScheduledForDeletion !== null) {
-				if (!$this->nagiosContactGroupMembersScheduledForDeletion->isEmpty()) {
-					NagiosContactGroupMemberQuery::create()
-						->filterByPrimaryKeys($this->nagiosContactGroupMembersScheduledForDeletion->getPrimaryKeys(false))
-						->delete($con);
-					$this->nagiosContactGroupMembersScheduledForDeletion = null;
+			// If this object has been modified, then save it to the database.
+			if ($this->isModified()) {
+				if ($this->isNew()) {
+					$criteria = $this->buildCriteria();
+					if ($criteria->keyContainsValue(NagiosContactGroupPeer::ID) ) {
+						throw new PropelException('Cannot insert a value for auto-increment primary key ('.NagiosContactGroupPeer::ID.')');
+					}
+
+					$pk = BasePeer::doInsert($criteria, $con);
+					$affectedRows = 1;
+					$this->setId($pk);  //[IMV] update autoincrement primary key
+					$this->setNew(false);
+				} else {
+					$affectedRows = NagiosContactGroupPeer::doUpdate($this, $con);
 				}
+
+				$this->resetModified(); // [HL] After being saved an object is no longer 'modified'
 			}
 
 			if ($this->collNagiosContactGroupMembers !== null) {
@@ -438,15 +417,6 @@ abstract class BaseNagiosContactGroup extends BaseObject  implements Persistent
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
-				}
-			}
-
-			if ($this->nagiosServiceContactGroupMembersScheduledForDeletion !== null) {
-				if (!$this->nagiosServiceContactGroupMembersScheduledForDeletion->isEmpty()) {
-					NagiosServiceContactGroupMemberQuery::create()
-						->filterByPrimaryKeys($this->nagiosServiceContactGroupMembersScheduledForDeletion->getPrimaryKeys(false))
-						->delete($con);
-					$this->nagiosServiceContactGroupMembersScheduledForDeletion = null;
 				}
 			}
 
@@ -458,29 +428,11 @@ abstract class BaseNagiosContactGroup extends BaseObject  implements Persistent
 				}
 			}
 
-			if ($this->nagiosEscalationContactgroupsScheduledForDeletion !== null) {
-				if (!$this->nagiosEscalationContactgroupsScheduledForDeletion->isEmpty()) {
-					NagiosEscalationContactgroupQuery::create()
-						->filterByPrimaryKeys($this->nagiosEscalationContactgroupsScheduledForDeletion->getPrimaryKeys(false))
-						->delete($con);
-					$this->nagiosEscalationContactgroupsScheduledForDeletion = null;
-				}
-			}
-
 			if ($this->collNagiosEscalationContactgroups !== null) {
 				foreach ($this->collNagiosEscalationContactgroups as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
-				}
-			}
-
-			if ($this->nagiosHostContactgroupsScheduledForDeletion !== null) {
-				if (!$this->nagiosHostContactgroupsScheduledForDeletion->isEmpty()) {
-					NagiosHostContactgroupQuery::create()
-						->filterByPrimaryKeys($this->nagiosHostContactgroupsScheduledForDeletion->getPrimaryKeys(false))
-						->delete($con);
-					$this->nagiosHostContactgroupsScheduledForDeletion = null;
 				}
 			}
 
@@ -497,86 +449,6 @@ abstract class BaseNagiosContactGroup extends BaseObject  implements Persistent
 		}
 		return $affectedRows;
 	} // doSave()
-
-	/**
-	 * Insert the row in the database.
-	 *
-	 * @param      PropelPDO $con
-	 *
-	 * @throws     PropelException
-	 * @see        doSave()
-	 */
-	protected function doInsert(PropelPDO $con)
-	{
-		$modifiedColumns = array();
-		$index = 0;
-
-		$this->modifiedColumns[] = NagiosContactGroupPeer::ID;
-		if (null !== $this->id) {
-			throw new PropelException('Cannot insert a value for auto-increment primary key (' . NagiosContactGroupPeer::ID . ')');
-		}
-
-		 // check the columns in natural order for more readable SQL queries
-		if ($this->isColumnModified(NagiosContactGroupPeer::ID)) {
-			$modifiedColumns[':p' . $index++]  = '`ID`';
-		}
-		if ($this->isColumnModified(NagiosContactGroupPeer::NAME)) {
-			$modifiedColumns[':p' . $index++]  = '`NAME`';
-		}
-		if ($this->isColumnModified(NagiosContactGroupPeer::ALIAS)) {
-			$modifiedColumns[':p' . $index++]  = '`ALIAS`';
-		}
-
-		$sql = sprintf(
-			'INSERT INTO `nagios_contact_group` (%s) VALUES (%s)',
-			implode(', ', $modifiedColumns),
-			implode(', ', array_keys($modifiedColumns))
-		);
-
-		try {
-			$stmt = $con->prepare($sql);
-			foreach ($modifiedColumns as $identifier => $columnName) {
-				switch ($columnName) {
-					case '`ID`':
-						$stmt->bindValue($identifier, $this->id, PDO::PARAM_INT);
-						break;
-					case '`NAME`':
-						$stmt->bindValue($identifier, $this->name, PDO::PARAM_STR);
-						break;
-					case '`ALIAS`':
-						$stmt->bindValue($identifier, $this->alias, PDO::PARAM_STR);
-						break;
-				}
-			}
-			$stmt->execute();
-		} catch (Exception $e) {
-			Propel::log($e->getMessage(), Propel::LOG_ERR);
-			throw new PropelException(sprintf('Unable to execute INSERT statement [%s]', $sql), $e);
-		}
-
-		try {
-			$pk = $con->lastInsertId();
-		} catch (Exception $e) {
-			throw new PropelException('Unable to get autoincrement id.', $e);
-		}
-		$this->setId($pk);
-
-		$this->setNew(false);
-	}
-
-	/**
-	 * Update the row in the database.
-	 *
-	 * @param      PropelPDO $con
-	 *
-	 * @see        doSave()
-	 */
-	protected function doUpdate(PropelPDO $con)
-	{
-		$selectCriteria = $this->buildPkeyCriteria();
-		$valuesCriteria = $this->buildCriteria();
-		BasePeer::doUpdate($selectCriteria, $valuesCriteria, $con);
-	}
 
 	/**
 	 * Array of ValidationFailed objects.
@@ -987,7 +859,7 @@ abstract class BaseNagiosContactGroup extends BaseObject  implements Persistent
 
 	/**
 	 * Initializes a collection based on the name of a relation.
-	 * Avoids crafting an 'init[$relationName]s' method name
+	 * Avoids crafting an 'init[$relationName]s' method name 
 	 * that wouldn't work when StandardEnglishPluralizer is used.
 	 *
 	 * @param      string $relationName The name of the relation to initialize
@@ -1078,30 +950,6 @@ abstract class BaseNagiosContactGroup extends BaseObject  implements Persistent
 	}
 
 	/**
-	 * Sets a collection of NagiosContactGroupMember objects related by a one-to-many relationship
-	 * to the current object.
-	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
-	 * and new objects from the given Propel collection.
-	 *
-	 * @param      PropelCollection $nagiosContactGroupMembers A Propel collection.
-	 * @param      PropelPDO $con Optional connection object
-	 */
-	public function setNagiosContactGroupMembers(PropelCollection $nagiosContactGroupMembers, PropelPDO $con = null)
-	{
-		$this->nagiosContactGroupMembersScheduledForDeletion = $this->getNagiosContactGroupMembers(new Criteria(), $con)->diff($nagiosContactGroupMembers);
-
-		foreach ($nagiosContactGroupMembers as $nagiosContactGroupMember) {
-			// Fix issue with collection modified by reference
-			if ($nagiosContactGroupMember->isNew()) {
-				$nagiosContactGroupMember->setNagiosContactGroup($this);
-			}
-			$this->addNagiosContactGroupMember($nagiosContactGroupMember);
-		}
-
-		$this->collNagiosContactGroupMembers = $nagiosContactGroupMembers;
-	}
-
-	/**
 	 * Returns the number of related NagiosContactGroupMember objects.
 	 *
 	 * @param      Criteria $criteria
@@ -1134,7 +982,8 @@ abstract class BaseNagiosContactGroup extends BaseObject  implements Persistent
 	 * through the NagiosContactGroupMember foreign key attribute.
 	 *
 	 * @param      NagiosContactGroupMember $l NagiosContactGroupMember
-	 * @return     NagiosContactGroup The current object (for fluent API support)
+	 * @return     void
+	 * @throws     PropelException
 	 */
 	public function addNagiosContactGroupMember(NagiosContactGroupMember $l)
 	{
@@ -1142,19 +991,9 @@ abstract class BaseNagiosContactGroup extends BaseObject  implements Persistent
 			$this->initNagiosContactGroupMembers();
 		}
 		if (!$this->collNagiosContactGroupMembers->contains($l)) { // only add it if the **same** object is not already associated
-			$this->doAddNagiosContactGroupMember($l);
+			$this->collNagiosContactGroupMembers[]= $l;
+			$l->setNagiosContactGroup($this);
 		}
-
-		return $this;
-	}
-
-	/**
-	 * @param	NagiosContactGroupMember $nagiosContactGroupMember The nagiosContactGroupMember object to add.
-	 */
-	protected function doAddNagiosContactGroupMember($nagiosContactGroupMember)
-	{
-		$this->collNagiosContactGroupMembers[]= $nagiosContactGroupMember;
-		$nagiosContactGroupMember->setNagiosContactGroup($this);
 	}
 
 
@@ -1251,30 +1090,6 @@ abstract class BaseNagiosContactGroup extends BaseObject  implements Persistent
 	}
 
 	/**
-	 * Sets a collection of NagiosServiceContactGroupMember objects related by a one-to-many relationship
-	 * to the current object.
-	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
-	 * and new objects from the given Propel collection.
-	 *
-	 * @param      PropelCollection $nagiosServiceContactGroupMembers A Propel collection.
-	 * @param      PropelPDO $con Optional connection object
-	 */
-	public function setNagiosServiceContactGroupMembers(PropelCollection $nagiosServiceContactGroupMembers, PropelPDO $con = null)
-	{
-		$this->nagiosServiceContactGroupMembersScheduledForDeletion = $this->getNagiosServiceContactGroupMembers(new Criteria(), $con)->diff($nagiosServiceContactGroupMembers);
-
-		foreach ($nagiosServiceContactGroupMembers as $nagiosServiceContactGroupMember) {
-			// Fix issue with collection modified by reference
-			if ($nagiosServiceContactGroupMember->isNew()) {
-				$nagiosServiceContactGroupMember->setNagiosContactGroup($this);
-			}
-			$this->addNagiosServiceContactGroupMember($nagiosServiceContactGroupMember);
-		}
-
-		$this->collNagiosServiceContactGroupMembers = $nagiosServiceContactGroupMembers;
-	}
-
-	/**
 	 * Returns the number of related NagiosServiceContactGroupMember objects.
 	 *
 	 * @param      Criteria $criteria
@@ -1307,7 +1122,8 @@ abstract class BaseNagiosContactGroup extends BaseObject  implements Persistent
 	 * through the NagiosServiceContactGroupMember foreign key attribute.
 	 *
 	 * @param      NagiosServiceContactGroupMember $l NagiosServiceContactGroupMember
-	 * @return     NagiosContactGroup The current object (for fluent API support)
+	 * @return     void
+	 * @throws     PropelException
 	 */
 	public function addNagiosServiceContactGroupMember(NagiosServiceContactGroupMember $l)
 	{
@@ -1315,19 +1131,9 @@ abstract class BaseNagiosContactGroup extends BaseObject  implements Persistent
 			$this->initNagiosServiceContactGroupMembers();
 		}
 		if (!$this->collNagiosServiceContactGroupMembers->contains($l)) { // only add it if the **same** object is not already associated
-			$this->doAddNagiosServiceContactGroupMember($l);
+			$this->collNagiosServiceContactGroupMembers[]= $l;
+			$l->setNagiosContactGroup($this);
 		}
-
-		return $this;
-	}
-
-	/**
-	 * @param	NagiosServiceContactGroupMember $nagiosServiceContactGroupMember The nagiosServiceContactGroupMember object to add.
-	 */
-	protected function doAddNagiosServiceContactGroupMember($nagiosServiceContactGroupMember)
-	{
-		$this->collNagiosServiceContactGroupMembers[]= $nagiosServiceContactGroupMember;
-		$nagiosServiceContactGroupMember->setNagiosContactGroup($this);
 	}
 
 
@@ -1449,30 +1255,6 @@ abstract class BaseNagiosContactGroup extends BaseObject  implements Persistent
 	}
 
 	/**
-	 * Sets a collection of NagiosEscalationContactgroup objects related by a one-to-many relationship
-	 * to the current object.
-	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
-	 * and new objects from the given Propel collection.
-	 *
-	 * @param      PropelCollection $nagiosEscalationContactgroups A Propel collection.
-	 * @param      PropelPDO $con Optional connection object
-	 */
-	public function setNagiosEscalationContactgroups(PropelCollection $nagiosEscalationContactgroups, PropelPDO $con = null)
-	{
-		$this->nagiosEscalationContactgroupsScheduledForDeletion = $this->getNagiosEscalationContactgroups(new Criteria(), $con)->diff($nagiosEscalationContactgroups);
-
-		foreach ($nagiosEscalationContactgroups as $nagiosEscalationContactgroup) {
-			// Fix issue with collection modified by reference
-			if ($nagiosEscalationContactgroup->isNew()) {
-				$nagiosEscalationContactgroup->setNagiosContactGroup($this);
-			}
-			$this->addNagiosEscalationContactgroup($nagiosEscalationContactgroup);
-		}
-
-		$this->collNagiosEscalationContactgroups = $nagiosEscalationContactgroups;
-	}
-
-	/**
 	 * Returns the number of related NagiosEscalationContactgroup objects.
 	 *
 	 * @param      Criteria $criteria
@@ -1505,7 +1287,8 @@ abstract class BaseNagiosContactGroup extends BaseObject  implements Persistent
 	 * through the NagiosEscalationContactgroup foreign key attribute.
 	 *
 	 * @param      NagiosEscalationContactgroup $l NagiosEscalationContactgroup
-	 * @return     NagiosContactGroup The current object (for fluent API support)
+	 * @return     void
+	 * @throws     PropelException
 	 */
 	public function addNagiosEscalationContactgroup(NagiosEscalationContactgroup $l)
 	{
@@ -1513,19 +1296,9 @@ abstract class BaseNagiosContactGroup extends BaseObject  implements Persistent
 			$this->initNagiosEscalationContactgroups();
 		}
 		if (!$this->collNagiosEscalationContactgroups->contains($l)) { // only add it if the **same** object is not already associated
-			$this->doAddNagiosEscalationContactgroup($l);
+			$this->collNagiosEscalationContactgroups[]= $l;
+			$l->setNagiosContactGroup($this);
 		}
-
-		return $this;
-	}
-
-	/**
-	 * @param	NagiosEscalationContactgroup $nagiosEscalationContactgroup The nagiosEscalationContactgroup object to add.
-	 */
-	protected function doAddNagiosEscalationContactgroup($nagiosEscalationContactgroup)
-	{
-		$this->collNagiosEscalationContactgroups[]= $nagiosEscalationContactgroup;
-		$nagiosEscalationContactgroup->setNagiosContactGroup($this);
 	}
 
 
@@ -1622,30 +1395,6 @@ abstract class BaseNagiosContactGroup extends BaseObject  implements Persistent
 	}
 
 	/**
-	 * Sets a collection of NagiosHostContactgroup objects related by a one-to-many relationship
-	 * to the current object.
-	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
-	 * and new objects from the given Propel collection.
-	 *
-	 * @param      PropelCollection $nagiosHostContactgroups A Propel collection.
-	 * @param      PropelPDO $con Optional connection object
-	 */
-	public function setNagiosHostContactgroups(PropelCollection $nagiosHostContactgroups, PropelPDO $con = null)
-	{
-		$this->nagiosHostContactgroupsScheduledForDeletion = $this->getNagiosHostContactgroups(new Criteria(), $con)->diff($nagiosHostContactgroups);
-
-		foreach ($nagiosHostContactgroups as $nagiosHostContactgroup) {
-			// Fix issue with collection modified by reference
-			if ($nagiosHostContactgroup->isNew()) {
-				$nagiosHostContactgroup->setNagiosContactGroup($this);
-			}
-			$this->addNagiosHostContactgroup($nagiosHostContactgroup);
-		}
-
-		$this->collNagiosHostContactgroups = $nagiosHostContactgroups;
-	}
-
-	/**
 	 * Returns the number of related NagiosHostContactgroup objects.
 	 *
 	 * @param      Criteria $criteria
@@ -1678,7 +1427,8 @@ abstract class BaseNagiosContactGroup extends BaseObject  implements Persistent
 	 * through the NagiosHostContactgroup foreign key attribute.
 	 *
 	 * @param      NagiosHostContactgroup $l NagiosHostContactgroup
-	 * @return     NagiosContactGroup The current object (for fluent API support)
+	 * @return     void
+	 * @throws     PropelException
 	 */
 	public function addNagiosHostContactgroup(NagiosHostContactgroup $l)
 	{
@@ -1686,19 +1436,9 @@ abstract class BaseNagiosContactGroup extends BaseObject  implements Persistent
 			$this->initNagiosHostContactgroups();
 		}
 		if (!$this->collNagiosHostContactgroups->contains($l)) { // only add it if the **same** object is not already associated
-			$this->doAddNagiosHostContactgroup($l);
+			$this->collNagiosHostContactgroups[]= $l;
+			$l->setNagiosContactGroup($this);
 		}
-
-		return $this;
-	}
-
-	/**
-	 * @param	NagiosHostContactgroup $nagiosHostContactgroup The nagiosHostContactgroup object to add.
-	 */
-	protected function doAddNagiosHostContactgroup($nagiosHostContactgroup)
-	{
-		$this->collNagiosHostContactgroups[]= $nagiosHostContactgroup;
-		$nagiosHostContactgroup->setNagiosContactGroup($this);
 	}
 
 
@@ -1827,6 +1567,25 @@ abstract class BaseNagiosContactGroup extends BaseObject  implements Persistent
 	public function __toString()
 	{
 		return (string) $this->exportTo(NagiosContactGroupPeer::DEFAULT_STRING_FORMAT);
+	}
+
+	/**
+	 * Catches calls to virtual methods
+	 */
+	public function __call($name, $params)
+	{
+		if (preg_match('/get(\w+)/', $name, $matches)) {
+			$virtualColumn = $matches[1];
+			if ($this->hasVirtualColumn($virtualColumn)) {
+				return $this->getVirtualColumn($virtualColumn);
+			}
+			// no lcfirst in php<5.3...
+			$virtualColumn[0] = strtolower($virtualColumn[0]);
+			if ($this->hasVirtualColumn($virtualColumn)) {
+				return $this->getVirtualColumn($virtualColumn);
+			}
+		}
+		return parent::__call($name, $params);
 	}
 
 } // BaseNagiosContactGroup

@@ -50,23 +50,23 @@ class NagiosCommandTableMap extends TableMap
 	 */
 	public function buildRelations()
 	{
-		$this->addRelation('NagiosContactNotificationCommand', 'NagiosContactNotificationCommand', RelationMap::ONE_TO_MANY, array('id' => 'command', ), 'CASCADE', null, 'NagiosContactNotificationCommands');
-		$this->addRelation('NagiosHostTemplateRelatedByCheckCommand', 'NagiosHostTemplate', RelationMap::ONE_TO_MANY, array('id' => 'check_command', ), 'SET NULL', null, 'NagiosHostTemplatesRelatedByCheckCommand');
-		$this->addRelation('NagiosHostTemplateRelatedByEventHandler', 'NagiosHostTemplate', RelationMap::ONE_TO_MANY, array('id' => 'event_handler', ), 'SET NULL', null, 'NagiosHostTemplatesRelatedByEventHandler');
-		$this->addRelation('NagiosHostRelatedByCheckCommand', 'NagiosHost', RelationMap::ONE_TO_MANY, array('id' => 'check_command', ), 'SET NULL', null, 'NagiosHostsRelatedByCheckCommand');
-		$this->addRelation('NagiosHostRelatedByEventHandler', 'NagiosHost', RelationMap::ONE_TO_MANY, array('id' => 'event_handler', ), 'SET NULL', null, 'NagiosHostsRelatedByEventHandler');
-		$this->addRelation('NagiosServiceTemplateRelatedByCheckCommand', 'NagiosServiceTemplate', RelationMap::ONE_TO_MANY, array('id' => 'check_command', ), 'SET NULL', null, 'NagiosServiceTemplatesRelatedByCheckCommand');
-		$this->addRelation('NagiosServiceTemplateRelatedByEventHandler', 'NagiosServiceTemplate', RelationMap::ONE_TO_MANY, array('id' => 'event_handler', ), 'SET NULL', null, 'NagiosServiceTemplatesRelatedByEventHandler');
-		$this->addRelation('NagiosServiceRelatedByCheckCommand', 'NagiosService', RelationMap::ONE_TO_MANY, array('id' => 'check_command', ), 'SET NULL', null, 'NagiosServicesRelatedByCheckCommand');
-		$this->addRelation('NagiosServiceRelatedByEventHandler', 'NagiosService', RelationMap::ONE_TO_MANY, array('id' => 'event_handler', ), 'SET NULL', null, 'NagiosServicesRelatedByEventHandler');
-		$this->addRelation('NagiosMainConfigurationRelatedByOcspCommand', 'NagiosMainConfiguration', RelationMap::ONE_TO_MANY, array('id' => 'ocsp_command', ), 'CASCADE', null, 'NagiosMainConfigurationsRelatedByOcspCommand');
-		$this->addRelation('NagiosMainConfigurationRelatedByOchpCommand', 'NagiosMainConfiguration', RelationMap::ONE_TO_MANY, array('id' => 'ochp_command', ), 'CASCADE', null, 'NagiosMainConfigurationsRelatedByOchpCommand');
-		$this->addRelation('NagiosMainConfigurationRelatedByHostPerfdataCommand', 'NagiosMainConfiguration', RelationMap::ONE_TO_MANY, array('id' => 'host_perfdata_command', ), 'CASCADE', null, 'NagiosMainConfigurationsRelatedByHostPerfdataCommand');
-		$this->addRelation('NagiosMainConfigurationRelatedByServicePerfdataCommand', 'NagiosMainConfiguration', RelationMap::ONE_TO_MANY, array('id' => 'service_perfdata_command', ), 'CASCADE', null, 'NagiosMainConfigurationsRelatedByServicePerfdataCommand');
-		$this->addRelation('NagiosMainConfigurationRelatedByHostPerfdataFileProcessingCommand', 'NagiosMainConfiguration', RelationMap::ONE_TO_MANY, array('id' => 'host_perfdata_file_processing_command', ), 'CASCADE', null, 'NagiosMainConfigurationsRelatedByHostPerfdataFileProcessingCommand');
-		$this->addRelation('NagiosMainConfigurationRelatedByServicePerfdataFileProcessingCommand', 'NagiosMainConfiguration', RelationMap::ONE_TO_MANY, array('id' => 'service_perfdata_file_processing_command', ), 'CASCADE', null, 'NagiosMainConfigurationsRelatedByServicePerfdataFileProcessingCommand');
-		$this->addRelation('NagiosMainConfigurationRelatedByGlobalServiceEventHandler', 'NagiosMainConfiguration', RelationMap::ONE_TO_MANY, array('id' => 'global_service_event_handler', ), 'CASCADE', null, 'NagiosMainConfigurationsRelatedByGlobalServiceEventHandler');
-		$this->addRelation('NagiosMainConfigurationRelatedByGlobalHostEventHandler', 'NagiosMainConfiguration', RelationMap::ONE_TO_MANY, array('id' => 'global_host_event_handler', ), 'CASCADE', null, 'NagiosMainConfigurationsRelatedByGlobalHostEventHandler');
+		$this->addRelation('NagiosContactNotificationCommand', 'NagiosContactNotificationCommand', RelationMap::ONE_TO_MANY, array('id' => 'command', ), 'CASCADE', null);
+		$this->addRelation('NagiosHostTemplateRelatedByCheckCommand', 'NagiosHostTemplate', RelationMap::ONE_TO_MANY, array('id' => 'check_command', ), 'SET NULL', null);
+		$this->addRelation('NagiosHostTemplateRelatedByEventHandler', 'NagiosHostTemplate', RelationMap::ONE_TO_MANY, array('id' => 'event_handler', ), 'SET NULL', null);
+		$this->addRelation('NagiosHostRelatedByCheckCommand', 'NagiosHost', RelationMap::ONE_TO_MANY, array('id' => 'check_command', ), 'SET NULL', null);
+		$this->addRelation('NagiosHostRelatedByEventHandler', 'NagiosHost', RelationMap::ONE_TO_MANY, array('id' => 'event_handler', ), 'SET NULL', null);
+		$this->addRelation('NagiosServiceTemplateRelatedByCheckCommand', 'NagiosServiceTemplate', RelationMap::ONE_TO_MANY, array('id' => 'check_command', ), 'SET NULL', null);
+		$this->addRelation('NagiosServiceTemplateRelatedByEventHandler', 'NagiosServiceTemplate', RelationMap::ONE_TO_MANY, array('id' => 'event_handler', ), 'SET NULL', null);
+		$this->addRelation('NagiosServiceRelatedByCheckCommand', 'NagiosService', RelationMap::ONE_TO_MANY, array('id' => 'check_command', ), 'SET NULL', null);
+		$this->addRelation('NagiosServiceRelatedByEventHandler', 'NagiosService', RelationMap::ONE_TO_MANY, array('id' => 'event_handler', ), 'SET NULL', null);
+		$this->addRelation('NagiosMainConfigurationRelatedByOcspCommand', 'NagiosMainConfiguration', RelationMap::ONE_TO_MANY, array('id' => 'ocsp_command', ), 'CASCADE', null);
+		$this->addRelation('NagiosMainConfigurationRelatedByOchpCommand', 'NagiosMainConfiguration', RelationMap::ONE_TO_MANY, array('id' => 'ochp_command', ), 'CASCADE', null);
+		$this->addRelation('NagiosMainConfigurationRelatedByHostPerfdataCommand', 'NagiosMainConfiguration', RelationMap::ONE_TO_MANY, array('id' => 'host_perfdata_command', ), 'CASCADE', null);
+		$this->addRelation('NagiosMainConfigurationRelatedByServicePerfdataCommand', 'NagiosMainConfiguration', RelationMap::ONE_TO_MANY, array('id' => 'service_perfdata_command', ), 'CASCADE', null);
+		$this->addRelation('NagiosMainConfigurationRelatedByHostPerfdataFileProcessingCommand', 'NagiosMainConfiguration', RelationMap::ONE_TO_MANY, array('id' => 'host_perfdata_file_processing_command', ), 'CASCADE', null);
+		$this->addRelation('NagiosMainConfigurationRelatedByServicePerfdataFileProcessingCommand', 'NagiosMainConfiguration', RelationMap::ONE_TO_MANY, array('id' => 'service_perfdata_file_processing_command', ), 'CASCADE', null);
+		$this->addRelation('NagiosMainConfigurationRelatedByGlobalServiceEventHandler', 'NagiosMainConfiguration', RelationMap::ONE_TO_MANY, array('id' => 'global_service_event_handler', ), 'CASCADE', null);
+		$this->addRelation('NagiosMainConfigurationRelatedByGlobalHostEventHandler', 'NagiosMainConfiguration', RelationMap::ONE_TO_MANY, array('id' => 'global_host_event_handler', ), 'CASCADE', null);
 	} // buildRelations()
 
 } // NagiosCommandTableMap

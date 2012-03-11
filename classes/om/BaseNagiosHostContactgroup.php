@@ -351,18 +351,18 @@ abstract class BaseNagiosHostContactgroup extends BaseObject  implements Persist
 
 		$con->beginTransaction();
 		try {
-			$deleteQuery = NagiosHostContactgroupQuery::create()
-				->filterByPrimaryKey($this->getPrimaryKey());
 			$ret = $this->preDelete($con);
 			if ($ret) {
-				$deleteQuery->delete($con);
+				NagiosHostContactgroupQuery::create()
+					->filterByPrimaryKey($this->getPrimaryKey())
+					->delete($con);
 				$this->postDelete($con);
 				$con->commit();
 				$this->setDeleted(true);
 			} else {
 				$con->commit();
 			}
-		} catch (Exception $e) {
+		} catch (PropelException $e) {
 			$con->rollBack();
 			throw $e;
 		}
@@ -414,7 +414,7 @@ abstract class BaseNagiosHostContactgroup extends BaseObject  implements Persist
 			}
 			$con->commit();
 			return $affectedRows;
-		} catch (Exception $e) {
+		} catch (PropelException $e) {
 			$con->rollBack();
 			throw $e;
 		}
@@ -463,15 +463,27 @@ abstract class BaseNagiosHostContactgroup extends BaseObject  implements Persist
 				$this->setNagiosContactGroup($this->aNagiosContactGroup);
 			}
 
-			if ($this->isNew() || $this->isModified()) {
-				// persist changes
+			if ($this->isNew() ) {
+				$this->modifiedColumns[] = NagiosHostContactgroupPeer::ID;
+			}
+
+			// If this object has been modified, then save it to the database.
+			if ($this->isModified()) {
 				if ($this->isNew()) {
-					$this->doInsert($con);
+					$criteria = $this->buildCriteria();
+					if ($criteria->keyContainsValue(NagiosHostContactgroupPeer::ID) ) {
+						throw new PropelException('Cannot insert a value for auto-increment primary key ('.NagiosHostContactgroupPeer::ID.')');
+					}
+
+					$pk = BasePeer::doInsert($criteria, $con);
+					$affectedRows += 1;
+					$this->setId($pk);  //[IMV] update autoincrement primary key
+					$this->setNew(false);
 				} else {
-					$this->doUpdate($con);
+					$affectedRows += NagiosHostContactgroupPeer::doUpdate($this, $con);
 				}
-				$affectedRows += 1;
-				$this->resetModified();
+
+				$this->resetModified(); // [HL] After being saved an object is no longer 'modified'
 			}
 
 			$this->alreadyInSave = false;
@@ -479,92 +491,6 @@ abstract class BaseNagiosHostContactgroup extends BaseObject  implements Persist
 		}
 		return $affectedRows;
 	} // doSave()
-
-	/**
-	 * Insert the row in the database.
-	 *
-	 * @param      PropelPDO $con
-	 *
-	 * @throws     PropelException
-	 * @see        doSave()
-	 */
-	protected function doInsert(PropelPDO $con)
-	{
-		$modifiedColumns = array();
-		$index = 0;
-
-		$this->modifiedColumns[] = NagiosHostContactgroupPeer::ID;
-		if (null !== $this->id) {
-			throw new PropelException('Cannot insert a value for auto-increment primary key (' . NagiosHostContactgroupPeer::ID . ')');
-		}
-
-		 // check the columns in natural order for more readable SQL queries
-		if ($this->isColumnModified(NagiosHostContactgroupPeer::ID)) {
-			$modifiedColumns[':p' . $index++]  = '`ID`';
-		}
-		if ($this->isColumnModified(NagiosHostContactgroupPeer::HOST)) {
-			$modifiedColumns[':p' . $index++]  = '`HOST`';
-		}
-		if ($this->isColumnModified(NagiosHostContactgroupPeer::HOST_TEMPLATE)) {
-			$modifiedColumns[':p' . $index++]  = '`HOST_TEMPLATE`';
-		}
-		if ($this->isColumnModified(NagiosHostContactgroupPeer::CONTACTGROUP)) {
-			$modifiedColumns[':p' . $index++]  = '`CONTACTGROUP`';
-		}
-
-		$sql = sprintf(
-			'INSERT INTO `nagios_host_contactgroup` (%s) VALUES (%s)',
-			implode(', ', $modifiedColumns),
-			implode(', ', array_keys($modifiedColumns))
-		);
-
-		try {
-			$stmt = $con->prepare($sql);
-			foreach ($modifiedColumns as $identifier => $columnName) {
-				switch ($columnName) {
-					case '`ID`':
-						$stmt->bindValue($identifier, $this->id, PDO::PARAM_INT);
-						break;
-					case '`HOST`':
-						$stmt->bindValue($identifier, $this->host, PDO::PARAM_INT);
-						break;
-					case '`HOST_TEMPLATE`':
-						$stmt->bindValue($identifier, $this->host_template, PDO::PARAM_INT);
-						break;
-					case '`CONTACTGROUP`':
-						$stmt->bindValue($identifier, $this->contactgroup, PDO::PARAM_INT);
-						break;
-				}
-			}
-			$stmt->execute();
-		} catch (Exception $e) {
-			Propel::log($e->getMessage(), Propel::LOG_ERR);
-			throw new PropelException(sprintf('Unable to execute INSERT statement [%s]', $sql), $e);
-		}
-
-		try {
-			$pk = $con->lastInsertId();
-		} catch (Exception $e) {
-			throw new PropelException('Unable to get autoincrement id.', $e);
-		}
-		$this->setId($pk);
-
-		$this->setNew(false);
-	}
-
-	/**
-	 * Update the row in the database.
-	 *
-	 * @param      PropelPDO $con
-	 *
-	 * @see        doSave()
-	 */
-	protected function doUpdate(PropelPDO $con)
-	{
-		$selectCriteria = $this->buildPkeyCriteria();
-		$valuesCriteria = $this->buildCriteria();
-		BasePeer::doUpdate($selectCriteria, $valuesCriteria, $con);
-	}
 
 	/**
 	 * Array of ValidationFailed objects.
@@ -1130,6 +1056,25 @@ abstract class BaseNagiosHostContactgroup extends BaseObject  implements Persist
 	public function __toString()
 	{
 		return (string) $this->exportTo(NagiosHostContactgroupPeer::DEFAULT_STRING_FORMAT);
+	}
+
+	/**
+	 * Catches calls to virtual methods
+	 */
+	public function __call($name, $params)
+	{
+		if (preg_match('/get(\w+)/', $name, $matches)) {
+			$virtualColumn = $matches[1];
+			if ($this->hasVirtualColumn($virtualColumn)) {
+				return $this->getVirtualColumn($virtualColumn);
+			}
+			// no lcfirst in php<5.3...
+			$virtualColumn[0] = strtolower($virtualColumn[0]);
+			if ($this->hasVirtualColumn($virtualColumn)) {
+				return $this->getVirtualColumn($virtualColumn);
+			}
+		}
+		return parent::__call($name, $params);
 	}
 
 } // BaseNagiosHostContactgroup

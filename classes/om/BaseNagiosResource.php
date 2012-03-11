@@ -1385,18 +1385,18 @@ abstract class BaseNagiosResource extends BaseObject  implements Persistent
 
 		$con->beginTransaction();
 		try {
-			$deleteQuery = NagiosResourceQuery::create()
-				->filterByPrimaryKey($this->getPrimaryKey());
 			$ret = $this->preDelete($con);
 			if ($ret) {
-				$deleteQuery->delete($con);
+				NagiosResourceQuery::create()
+					->filterByPrimaryKey($this->getPrimaryKey())
+					->delete($con);
 				$this->postDelete($con);
 				$con->commit();
 				$this->setDeleted(true);
 			} else {
 				$con->commit();
 			}
-		} catch (Exception $e) {
+		} catch (PropelException $e) {
 			$con->rollBack();
 			throw $e;
 		}
@@ -1448,7 +1448,7 @@ abstract class BaseNagiosResource extends BaseObject  implements Persistent
 			}
 			$con->commit();
 			return $affectedRows;
-		} catch (Exception $e) {
+		} catch (PropelException $e) {
 			$con->rollBack();
 			throw $e;
 		}
@@ -1471,15 +1471,27 @@ abstract class BaseNagiosResource extends BaseObject  implements Persistent
 		if (!$this->alreadyInSave) {
 			$this->alreadyInSave = true;
 
-			if ($this->isNew() || $this->isModified()) {
-				// persist changes
+			if ($this->isNew() ) {
+				$this->modifiedColumns[] = NagiosResourcePeer::ID;
+			}
+
+			// If this object has been modified, then save it to the database.
+			if ($this->isModified()) {
 				if ($this->isNew()) {
-					$this->doInsert($con);
+					$criteria = $this->buildCriteria();
+					if ($criteria->keyContainsValue(NagiosResourcePeer::ID) ) {
+						throw new PropelException('Cannot insert a value for auto-increment primary key ('.NagiosResourcePeer::ID.')');
+					}
+
+					$pk = BasePeer::doInsert($criteria, $con);
+					$affectedRows = 1;
+					$this->setId($pk);  //[IMV] update autoincrement primary key
+					$this->setNew(false);
 				} else {
-					$this->doUpdate($con);
+					$affectedRows = NagiosResourcePeer::doUpdate($this, $con);
 				}
-				$affectedRows += 1;
-				$this->resetModified();
+
+				$this->resetModified(); // [HL] After being saved an object is no longer 'modified'
 			}
 
 			$this->alreadyInSave = false;
@@ -1487,266 +1499,6 @@ abstract class BaseNagiosResource extends BaseObject  implements Persistent
 		}
 		return $affectedRows;
 	} // doSave()
-
-	/**
-	 * Insert the row in the database.
-	 *
-	 * @param      PropelPDO $con
-	 *
-	 * @throws     PropelException
-	 * @see        doSave()
-	 */
-	protected function doInsert(PropelPDO $con)
-	{
-		$modifiedColumns = array();
-		$index = 0;
-
-		$this->modifiedColumns[] = NagiosResourcePeer::ID;
-		if (null !== $this->id) {
-			throw new PropelException('Cannot insert a value for auto-increment primary key (' . NagiosResourcePeer::ID . ')');
-		}
-
-		 // check the columns in natural order for more readable SQL queries
-		if ($this->isColumnModified(NagiosResourcePeer::ID)) {
-			$modifiedColumns[':p' . $index++]  = '`ID`';
-		}
-		if ($this->isColumnModified(NagiosResourcePeer::USER1)) {
-			$modifiedColumns[':p' . $index++]  = '`USER1`';
-		}
-		if ($this->isColumnModified(NagiosResourcePeer::USER2)) {
-			$modifiedColumns[':p' . $index++]  = '`USER2`';
-		}
-		if ($this->isColumnModified(NagiosResourcePeer::USER3)) {
-			$modifiedColumns[':p' . $index++]  = '`USER3`';
-		}
-		if ($this->isColumnModified(NagiosResourcePeer::USER4)) {
-			$modifiedColumns[':p' . $index++]  = '`USER4`';
-		}
-		if ($this->isColumnModified(NagiosResourcePeer::USER5)) {
-			$modifiedColumns[':p' . $index++]  = '`USER5`';
-		}
-		if ($this->isColumnModified(NagiosResourcePeer::USER6)) {
-			$modifiedColumns[':p' . $index++]  = '`USER6`';
-		}
-		if ($this->isColumnModified(NagiosResourcePeer::USER7)) {
-			$modifiedColumns[':p' . $index++]  = '`USER7`';
-		}
-		if ($this->isColumnModified(NagiosResourcePeer::USER8)) {
-			$modifiedColumns[':p' . $index++]  = '`USER8`';
-		}
-		if ($this->isColumnModified(NagiosResourcePeer::USER9)) {
-			$modifiedColumns[':p' . $index++]  = '`USER9`';
-		}
-		if ($this->isColumnModified(NagiosResourcePeer::USER10)) {
-			$modifiedColumns[':p' . $index++]  = '`USER10`';
-		}
-		if ($this->isColumnModified(NagiosResourcePeer::USER11)) {
-			$modifiedColumns[':p' . $index++]  = '`USER11`';
-		}
-		if ($this->isColumnModified(NagiosResourcePeer::USER12)) {
-			$modifiedColumns[':p' . $index++]  = '`USER12`';
-		}
-		if ($this->isColumnModified(NagiosResourcePeer::USER13)) {
-			$modifiedColumns[':p' . $index++]  = '`USER13`';
-		}
-		if ($this->isColumnModified(NagiosResourcePeer::USER14)) {
-			$modifiedColumns[':p' . $index++]  = '`USER14`';
-		}
-		if ($this->isColumnModified(NagiosResourcePeer::USER15)) {
-			$modifiedColumns[':p' . $index++]  = '`USER15`';
-		}
-		if ($this->isColumnModified(NagiosResourcePeer::USER16)) {
-			$modifiedColumns[':p' . $index++]  = '`USER16`';
-		}
-		if ($this->isColumnModified(NagiosResourcePeer::USER17)) {
-			$modifiedColumns[':p' . $index++]  = '`USER17`';
-		}
-		if ($this->isColumnModified(NagiosResourcePeer::USER18)) {
-			$modifiedColumns[':p' . $index++]  = '`USER18`';
-		}
-		if ($this->isColumnModified(NagiosResourcePeer::USER19)) {
-			$modifiedColumns[':p' . $index++]  = '`USER19`';
-		}
-		if ($this->isColumnModified(NagiosResourcePeer::USER20)) {
-			$modifiedColumns[':p' . $index++]  = '`USER20`';
-		}
-		if ($this->isColumnModified(NagiosResourcePeer::USER21)) {
-			$modifiedColumns[':p' . $index++]  = '`USER21`';
-		}
-		if ($this->isColumnModified(NagiosResourcePeer::USER22)) {
-			$modifiedColumns[':p' . $index++]  = '`USER22`';
-		}
-		if ($this->isColumnModified(NagiosResourcePeer::USER23)) {
-			$modifiedColumns[':p' . $index++]  = '`USER23`';
-		}
-		if ($this->isColumnModified(NagiosResourcePeer::USER24)) {
-			$modifiedColumns[':p' . $index++]  = '`USER24`';
-		}
-		if ($this->isColumnModified(NagiosResourcePeer::USER25)) {
-			$modifiedColumns[':p' . $index++]  = '`USER25`';
-		}
-		if ($this->isColumnModified(NagiosResourcePeer::USER26)) {
-			$modifiedColumns[':p' . $index++]  = '`USER26`';
-		}
-		if ($this->isColumnModified(NagiosResourcePeer::USER27)) {
-			$modifiedColumns[':p' . $index++]  = '`USER27`';
-		}
-		if ($this->isColumnModified(NagiosResourcePeer::USER28)) {
-			$modifiedColumns[':p' . $index++]  = '`USER28`';
-		}
-		if ($this->isColumnModified(NagiosResourcePeer::USER29)) {
-			$modifiedColumns[':p' . $index++]  = '`USER29`';
-		}
-		if ($this->isColumnModified(NagiosResourcePeer::USER30)) {
-			$modifiedColumns[':p' . $index++]  = '`USER30`';
-		}
-		if ($this->isColumnModified(NagiosResourcePeer::USER31)) {
-			$modifiedColumns[':p' . $index++]  = '`USER31`';
-		}
-		if ($this->isColumnModified(NagiosResourcePeer::USER32)) {
-			$modifiedColumns[':p' . $index++]  = '`USER32`';
-		}
-
-		$sql = sprintf(
-			'INSERT INTO `nagios_resource` (%s) VALUES (%s)',
-			implode(', ', $modifiedColumns),
-			implode(', ', array_keys($modifiedColumns))
-		);
-
-		try {
-			$stmt = $con->prepare($sql);
-			foreach ($modifiedColumns as $identifier => $columnName) {
-				switch ($columnName) {
-					case '`ID`':
-						$stmt->bindValue($identifier, $this->id, PDO::PARAM_INT);
-						break;
-					case '`USER1`':
-						$stmt->bindValue($identifier, $this->user1, PDO::PARAM_STR);
-						break;
-					case '`USER2`':
-						$stmt->bindValue($identifier, $this->user2, PDO::PARAM_STR);
-						break;
-					case '`USER3`':
-						$stmt->bindValue($identifier, $this->user3, PDO::PARAM_STR);
-						break;
-					case '`USER4`':
-						$stmt->bindValue($identifier, $this->user4, PDO::PARAM_STR);
-						break;
-					case '`USER5`':
-						$stmt->bindValue($identifier, $this->user5, PDO::PARAM_STR);
-						break;
-					case '`USER6`':
-						$stmt->bindValue($identifier, $this->user6, PDO::PARAM_STR);
-						break;
-					case '`USER7`':
-						$stmt->bindValue($identifier, $this->user7, PDO::PARAM_STR);
-						break;
-					case '`USER8`':
-						$stmt->bindValue($identifier, $this->user8, PDO::PARAM_STR);
-						break;
-					case '`USER9`':
-						$stmt->bindValue($identifier, $this->user9, PDO::PARAM_STR);
-						break;
-					case '`USER10`':
-						$stmt->bindValue($identifier, $this->user10, PDO::PARAM_STR);
-						break;
-					case '`USER11`':
-						$stmt->bindValue($identifier, $this->user11, PDO::PARAM_STR);
-						break;
-					case '`USER12`':
-						$stmt->bindValue($identifier, $this->user12, PDO::PARAM_STR);
-						break;
-					case '`USER13`':
-						$stmt->bindValue($identifier, $this->user13, PDO::PARAM_STR);
-						break;
-					case '`USER14`':
-						$stmt->bindValue($identifier, $this->user14, PDO::PARAM_STR);
-						break;
-					case '`USER15`':
-						$stmt->bindValue($identifier, $this->user15, PDO::PARAM_STR);
-						break;
-					case '`USER16`':
-						$stmt->bindValue($identifier, $this->user16, PDO::PARAM_STR);
-						break;
-					case '`USER17`':
-						$stmt->bindValue($identifier, $this->user17, PDO::PARAM_STR);
-						break;
-					case '`USER18`':
-						$stmt->bindValue($identifier, $this->user18, PDO::PARAM_STR);
-						break;
-					case '`USER19`':
-						$stmt->bindValue($identifier, $this->user19, PDO::PARAM_STR);
-						break;
-					case '`USER20`':
-						$stmt->bindValue($identifier, $this->user20, PDO::PARAM_STR);
-						break;
-					case '`USER21`':
-						$stmt->bindValue($identifier, $this->user21, PDO::PARAM_STR);
-						break;
-					case '`USER22`':
-						$stmt->bindValue($identifier, $this->user22, PDO::PARAM_STR);
-						break;
-					case '`USER23`':
-						$stmt->bindValue($identifier, $this->user23, PDO::PARAM_STR);
-						break;
-					case '`USER24`':
-						$stmt->bindValue($identifier, $this->user24, PDO::PARAM_STR);
-						break;
-					case '`USER25`':
-						$stmt->bindValue($identifier, $this->user25, PDO::PARAM_STR);
-						break;
-					case '`USER26`':
-						$stmt->bindValue($identifier, $this->user26, PDO::PARAM_STR);
-						break;
-					case '`USER27`':
-						$stmt->bindValue($identifier, $this->user27, PDO::PARAM_STR);
-						break;
-					case '`USER28`':
-						$stmt->bindValue($identifier, $this->user28, PDO::PARAM_STR);
-						break;
-					case '`USER29`':
-						$stmt->bindValue($identifier, $this->user29, PDO::PARAM_STR);
-						break;
-					case '`USER30`':
-						$stmt->bindValue($identifier, $this->user30, PDO::PARAM_STR);
-						break;
-					case '`USER31`':
-						$stmt->bindValue($identifier, $this->user31, PDO::PARAM_STR);
-						break;
-					case '`USER32`':
-						$stmt->bindValue($identifier, $this->user32, PDO::PARAM_STR);
-						break;
-				}
-			}
-			$stmt->execute();
-		} catch (Exception $e) {
-			Propel::log($e->getMessage(), Propel::LOG_ERR);
-			throw new PropelException(sprintf('Unable to execute INSERT statement [%s]', $sql), $e);
-		}
-
-		try {
-			$pk = $con->lastInsertId();
-		} catch (Exception $e) {
-			throw new PropelException('Unable to get autoincrement id.', $e);
-		}
-		$this->setId($pk);
-
-		$this->setNew(false);
-	}
-
-	/**
-	 * Update the row in the database.
-	 *
-	 * @param      PropelPDO $con
-	 *
-	 * @see        doSave()
-	 */
-	protected function doUpdate(PropelPDO $con)
-	{
-		$selectCriteria = $this->buildPkeyCriteria();
-		$valuesCriteria = $this->buildCriteria();
-		BasePeer::doUpdate($selectCriteria, $valuesCriteria, $con);
-	}
 
 	/**
 	 * Array of ValidationFailed objects.
@@ -2445,6 +2197,25 @@ abstract class BaseNagiosResource extends BaseObject  implements Persistent
 	public function __toString()
 	{
 		return (string) $this->exportTo(NagiosResourcePeer::DEFAULT_STRING_FORMAT);
+	}
+
+	/**
+	 * Catches calls to virtual methods
+	 */
+	public function __call($name, $params)
+	{
+		if (preg_match('/get(\w+)/', $name, $matches)) {
+			$virtualColumn = $matches[1];
+			if ($this->hasVirtualColumn($virtualColumn)) {
+				return $this->getVirtualColumn($virtualColumn);
+			}
+			// no lcfirst in php<5.3...
+			$virtualColumn[0] = strtolower($virtualColumn[0]);
+			if ($this->hasVirtualColumn($virtualColumn)) {
+				return $this->getVirtualColumn($virtualColumn);
+			}
+		}
+		return parent::__call($name, $params);
 	}
 
 } // BaseNagiosResource

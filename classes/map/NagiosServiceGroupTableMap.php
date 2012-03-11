@@ -52,7 +52,7 @@ class NagiosServiceGroupTableMap extends TableMap
 	 */
 	public function buildRelations()
 	{
-		$this->addRelation('NagiosServiceGroupMember', 'NagiosServiceGroupMember', RelationMap::ONE_TO_MANY, array('id' => 'service_group', ), 'CASCADE', null, 'NagiosServiceGroupMembers');
+		$this->addRelation('NagiosServiceGroupMember', 'NagiosServiceGroupMember', RelationMap::ONE_TO_MANY, array('id' => 'service_group', ), 'CASCADE', null);
 	} // buildRelations()
 
 } // NagiosServiceGroupTableMap

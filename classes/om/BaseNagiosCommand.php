@@ -148,108 +148,6 @@ abstract class BaseNagiosCommand extends BaseObject  implements Persistent
 	protected $alreadyInValidation = false;
 
 	/**
-	 * An array of objects scheduled for deletion.
-	 * @var		array
-	 */
-	protected $nagiosContactNotificationCommandsScheduledForDeletion = null;
-
-	/**
-	 * An array of objects scheduled for deletion.
-	 * @var		array
-	 */
-	protected $nagiosHostTemplatesRelatedByCheckCommandScheduledForDeletion = null;
-
-	/**
-	 * An array of objects scheduled for deletion.
-	 * @var		array
-	 */
-	protected $nagiosHostTemplatesRelatedByEventHandlerScheduledForDeletion = null;
-
-	/**
-	 * An array of objects scheduled for deletion.
-	 * @var		array
-	 */
-	protected $nagiosHostsRelatedByCheckCommandScheduledForDeletion = null;
-
-	/**
-	 * An array of objects scheduled for deletion.
-	 * @var		array
-	 */
-	protected $nagiosHostsRelatedByEventHandlerScheduledForDeletion = null;
-
-	/**
-	 * An array of objects scheduled for deletion.
-	 * @var		array
-	 */
-	protected $nagiosServiceTemplatesRelatedByCheckCommandScheduledForDeletion = null;
-
-	/**
-	 * An array of objects scheduled for deletion.
-	 * @var		array
-	 */
-	protected $nagiosServiceTemplatesRelatedByEventHandlerScheduledForDeletion = null;
-
-	/**
-	 * An array of objects scheduled for deletion.
-	 * @var		array
-	 */
-	protected $nagiosServicesRelatedByCheckCommandScheduledForDeletion = null;
-
-	/**
-	 * An array of objects scheduled for deletion.
-	 * @var		array
-	 */
-	protected $nagiosServicesRelatedByEventHandlerScheduledForDeletion = null;
-
-	/**
-	 * An array of objects scheduled for deletion.
-	 * @var		array
-	 */
-	protected $nagiosMainConfigurationsRelatedByOcspCommandScheduledForDeletion = null;
-
-	/**
-	 * An array of objects scheduled for deletion.
-	 * @var		array
-	 */
-	protected $nagiosMainConfigurationsRelatedByOchpCommandScheduledForDeletion = null;
-
-	/**
-	 * An array of objects scheduled for deletion.
-	 * @var		array
-	 */
-	protected $nagiosMainConfigurationsRelatedByHostPerfdataCommandScheduledForDeletion = null;
-
-	/**
-	 * An array of objects scheduled for deletion.
-	 * @var		array
-	 */
-	protected $nagiosMainConfigurationsRelatedByServicePerfdataCommandScheduledForDeletion = null;
-
-	/**
-	 * An array of objects scheduled for deletion.
-	 * @var		array
-	 */
-	protected $nagiosMainConfigurationsRelatedByHostPerfdataFileProcessingCommandScheduledForDeletion = null;
-
-	/**
-	 * An array of objects scheduled for deletion.
-	 * @var		array
-	 */
-	protected $nagiosMainConfigurationsRelatedByServicePerfdataFileProcessingCommandScheduledForDeletion = null;
-
-	/**
-	 * An array of objects scheduled for deletion.
-	 * @var		array
-	 */
-	protected $nagiosMainConfigurationsRelatedByGlobalServiceEventHandlerScheduledForDeletion = null;
-
-	/**
-	 * An array of objects scheduled for deletion.
-	 * @var		array
-	 */
-	protected $nagiosMainConfigurationsRelatedByGlobalHostEventHandlerScheduledForDeletion = null;
-
-	/**
 	 * Get the [id] column value.
 	 * 
 	 * @return     int
@@ -533,18 +431,18 @@ abstract class BaseNagiosCommand extends BaseObject  implements Persistent
 
 		$con->beginTransaction();
 		try {
-			$deleteQuery = NagiosCommandQuery::create()
-				->filterByPrimaryKey($this->getPrimaryKey());
 			$ret = $this->preDelete($con);
 			if ($ret) {
-				$deleteQuery->delete($con);
+				NagiosCommandQuery::create()
+					->filterByPrimaryKey($this->getPrimaryKey())
+					->delete($con);
 				$this->postDelete($con);
 				$con->commit();
 				$this->setDeleted(true);
 			} else {
 				$con->commit();
 			}
-		} catch (Exception $e) {
+		} catch (PropelException $e) {
 			$con->rollBack();
 			throw $e;
 		}
@@ -596,7 +494,7 @@ abstract class BaseNagiosCommand extends BaseObject  implements Persistent
 			}
 			$con->commit();
 			return $affectedRows;
-		} catch (Exception $e) {
+		} catch (PropelException $e) {
 			$con->rollBack();
 			throw $e;
 		}
@@ -619,24 +517,27 @@ abstract class BaseNagiosCommand extends BaseObject  implements Persistent
 		if (!$this->alreadyInSave) {
 			$this->alreadyInSave = true;
 
-			if ($this->isNew() || $this->isModified()) {
-				// persist changes
-				if ($this->isNew()) {
-					$this->doInsert($con);
-				} else {
-					$this->doUpdate($con);
-				}
-				$affectedRows += 1;
-				$this->resetModified();
+			if ($this->isNew() ) {
+				$this->modifiedColumns[] = NagiosCommandPeer::ID;
 			}
 
-			if ($this->nagiosContactNotificationCommandsScheduledForDeletion !== null) {
-				if (!$this->nagiosContactNotificationCommandsScheduledForDeletion->isEmpty()) {
-					NagiosContactNotificationCommandQuery::create()
-						->filterByPrimaryKeys($this->nagiosContactNotificationCommandsScheduledForDeletion->getPrimaryKeys(false))
-						->delete($con);
-					$this->nagiosContactNotificationCommandsScheduledForDeletion = null;
+			// If this object has been modified, then save it to the database.
+			if ($this->isModified()) {
+				if ($this->isNew()) {
+					$criteria = $this->buildCriteria();
+					if ($criteria->keyContainsValue(NagiosCommandPeer::ID) ) {
+						throw new PropelException('Cannot insert a value for auto-increment primary key ('.NagiosCommandPeer::ID.')');
+					}
+
+					$pk = BasePeer::doInsert($criteria, $con);
+					$affectedRows = 1;
+					$this->setId($pk);  //[IMV] update autoincrement primary key
+					$this->setNew(false);
+				} else {
+					$affectedRows = NagiosCommandPeer::doUpdate($this, $con);
 				}
+
+				$this->resetModified(); // [HL] After being saved an object is no longer 'modified'
 			}
 
 			if ($this->collNagiosContactNotificationCommands !== null) {
@@ -644,15 +545,6 @@ abstract class BaseNagiosCommand extends BaseObject  implements Persistent
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
-				}
-			}
-
-			if ($this->nagiosHostTemplatesRelatedByCheckCommandScheduledForDeletion !== null) {
-				if (!$this->nagiosHostTemplatesRelatedByCheckCommandScheduledForDeletion->isEmpty()) {
-					NagiosHostTemplateQuery::create()
-						->filterByPrimaryKeys($this->nagiosHostTemplatesRelatedByCheckCommandScheduledForDeletion->getPrimaryKeys(false))
-						->delete($con);
-					$this->nagiosHostTemplatesRelatedByCheckCommandScheduledForDeletion = null;
 				}
 			}
 
@@ -664,29 +556,11 @@ abstract class BaseNagiosCommand extends BaseObject  implements Persistent
 				}
 			}
 
-			if ($this->nagiosHostTemplatesRelatedByEventHandlerScheduledForDeletion !== null) {
-				if (!$this->nagiosHostTemplatesRelatedByEventHandlerScheduledForDeletion->isEmpty()) {
-					NagiosHostTemplateQuery::create()
-						->filterByPrimaryKeys($this->nagiosHostTemplatesRelatedByEventHandlerScheduledForDeletion->getPrimaryKeys(false))
-						->delete($con);
-					$this->nagiosHostTemplatesRelatedByEventHandlerScheduledForDeletion = null;
-				}
-			}
-
 			if ($this->collNagiosHostTemplatesRelatedByEventHandler !== null) {
 				foreach ($this->collNagiosHostTemplatesRelatedByEventHandler as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
-				}
-			}
-
-			if ($this->nagiosHostsRelatedByCheckCommandScheduledForDeletion !== null) {
-				if (!$this->nagiosHostsRelatedByCheckCommandScheduledForDeletion->isEmpty()) {
-					NagiosHostQuery::create()
-						->filterByPrimaryKeys($this->nagiosHostsRelatedByCheckCommandScheduledForDeletion->getPrimaryKeys(false))
-						->delete($con);
-					$this->nagiosHostsRelatedByCheckCommandScheduledForDeletion = null;
 				}
 			}
 
@@ -698,29 +572,11 @@ abstract class BaseNagiosCommand extends BaseObject  implements Persistent
 				}
 			}
 
-			if ($this->nagiosHostsRelatedByEventHandlerScheduledForDeletion !== null) {
-				if (!$this->nagiosHostsRelatedByEventHandlerScheduledForDeletion->isEmpty()) {
-					NagiosHostQuery::create()
-						->filterByPrimaryKeys($this->nagiosHostsRelatedByEventHandlerScheduledForDeletion->getPrimaryKeys(false))
-						->delete($con);
-					$this->nagiosHostsRelatedByEventHandlerScheduledForDeletion = null;
-				}
-			}
-
 			if ($this->collNagiosHostsRelatedByEventHandler !== null) {
 				foreach ($this->collNagiosHostsRelatedByEventHandler as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
-				}
-			}
-
-			if ($this->nagiosServiceTemplatesRelatedByCheckCommandScheduledForDeletion !== null) {
-				if (!$this->nagiosServiceTemplatesRelatedByCheckCommandScheduledForDeletion->isEmpty()) {
-					NagiosServiceTemplateQuery::create()
-						->filterByPrimaryKeys($this->nagiosServiceTemplatesRelatedByCheckCommandScheduledForDeletion->getPrimaryKeys(false))
-						->delete($con);
-					$this->nagiosServiceTemplatesRelatedByCheckCommandScheduledForDeletion = null;
 				}
 			}
 
@@ -732,29 +588,11 @@ abstract class BaseNagiosCommand extends BaseObject  implements Persistent
 				}
 			}
 
-			if ($this->nagiosServiceTemplatesRelatedByEventHandlerScheduledForDeletion !== null) {
-				if (!$this->nagiosServiceTemplatesRelatedByEventHandlerScheduledForDeletion->isEmpty()) {
-					NagiosServiceTemplateQuery::create()
-						->filterByPrimaryKeys($this->nagiosServiceTemplatesRelatedByEventHandlerScheduledForDeletion->getPrimaryKeys(false))
-						->delete($con);
-					$this->nagiosServiceTemplatesRelatedByEventHandlerScheduledForDeletion = null;
-				}
-			}
-
 			if ($this->collNagiosServiceTemplatesRelatedByEventHandler !== null) {
 				foreach ($this->collNagiosServiceTemplatesRelatedByEventHandler as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
-				}
-			}
-
-			if ($this->nagiosServicesRelatedByCheckCommandScheduledForDeletion !== null) {
-				if (!$this->nagiosServicesRelatedByCheckCommandScheduledForDeletion->isEmpty()) {
-					NagiosServiceQuery::create()
-						->filterByPrimaryKeys($this->nagiosServicesRelatedByCheckCommandScheduledForDeletion->getPrimaryKeys(false))
-						->delete($con);
-					$this->nagiosServicesRelatedByCheckCommandScheduledForDeletion = null;
 				}
 			}
 
@@ -766,29 +604,11 @@ abstract class BaseNagiosCommand extends BaseObject  implements Persistent
 				}
 			}
 
-			if ($this->nagiosServicesRelatedByEventHandlerScheduledForDeletion !== null) {
-				if (!$this->nagiosServicesRelatedByEventHandlerScheduledForDeletion->isEmpty()) {
-					NagiosServiceQuery::create()
-						->filterByPrimaryKeys($this->nagiosServicesRelatedByEventHandlerScheduledForDeletion->getPrimaryKeys(false))
-						->delete($con);
-					$this->nagiosServicesRelatedByEventHandlerScheduledForDeletion = null;
-				}
-			}
-
 			if ($this->collNagiosServicesRelatedByEventHandler !== null) {
 				foreach ($this->collNagiosServicesRelatedByEventHandler as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
-				}
-			}
-
-			if ($this->nagiosMainConfigurationsRelatedByOcspCommandScheduledForDeletion !== null) {
-				if (!$this->nagiosMainConfigurationsRelatedByOcspCommandScheduledForDeletion->isEmpty()) {
-					NagiosMainConfigurationQuery::create()
-						->filterByPrimaryKeys($this->nagiosMainConfigurationsRelatedByOcspCommandScheduledForDeletion->getPrimaryKeys(false))
-						->delete($con);
-					$this->nagiosMainConfigurationsRelatedByOcspCommandScheduledForDeletion = null;
 				}
 			}
 
@@ -800,29 +620,11 @@ abstract class BaseNagiosCommand extends BaseObject  implements Persistent
 				}
 			}
 
-			if ($this->nagiosMainConfigurationsRelatedByOchpCommandScheduledForDeletion !== null) {
-				if (!$this->nagiosMainConfigurationsRelatedByOchpCommandScheduledForDeletion->isEmpty()) {
-					NagiosMainConfigurationQuery::create()
-						->filterByPrimaryKeys($this->nagiosMainConfigurationsRelatedByOchpCommandScheduledForDeletion->getPrimaryKeys(false))
-						->delete($con);
-					$this->nagiosMainConfigurationsRelatedByOchpCommandScheduledForDeletion = null;
-				}
-			}
-
 			if ($this->collNagiosMainConfigurationsRelatedByOchpCommand !== null) {
 				foreach ($this->collNagiosMainConfigurationsRelatedByOchpCommand as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
-				}
-			}
-
-			if ($this->nagiosMainConfigurationsRelatedByHostPerfdataCommandScheduledForDeletion !== null) {
-				if (!$this->nagiosMainConfigurationsRelatedByHostPerfdataCommandScheduledForDeletion->isEmpty()) {
-					NagiosMainConfigurationQuery::create()
-						->filterByPrimaryKeys($this->nagiosMainConfigurationsRelatedByHostPerfdataCommandScheduledForDeletion->getPrimaryKeys(false))
-						->delete($con);
-					$this->nagiosMainConfigurationsRelatedByHostPerfdataCommandScheduledForDeletion = null;
 				}
 			}
 
@@ -834,29 +636,11 @@ abstract class BaseNagiosCommand extends BaseObject  implements Persistent
 				}
 			}
 
-			if ($this->nagiosMainConfigurationsRelatedByServicePerfdataCommandScheduledForDeletion !== null) {
-				if (!$this->nagiosMainConfigurationsRelatedByServicePerfdataCommandScheduledForDeletion->isEmpty()) {
-					NagiosMainConfigurationQuery::create()
-						->filterByPrimaryKeys($this->nagiosMainConfigurationsRelatedByServicePerfdataCommandScheduledForDeletion->getPrimaryKeys(false))
-						->delete($con);
-					$this->nagiosMainConfigurationsRelatedByServicePerfdataCommandScheduledForDeletion = null;
-				}
-			}
-
 			if ($this->collNagiosMainConfigurationsRelatedByServicePerfdataCommand !== null) {
 				foreach ($this->collNagiosMainConfigurationsRelatedByServicePerfdataCommand as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
-				}
-			}
-
-			if ($this->nagiosMainConfigurationsRelatedByHostPerfdataFileProcessingCommandScheduledForDeletion !== null) {
-				if (!$this->nagiosMainConfigurationsRelatedByHostPerfdataFileProcessingCommandScheduledForDeletion->isEmpty()) {
-					NagiosMainConfigurationQuery::create()
-						->filterByPrimaryKeys($this->nagiosMainConfigurationsRelatedByHostPerfdataFileProcessingCommandScheduledForDeletion->getPrimaryKeys(false))
-						->delete($con);
-					$this->nagiosMainConfigurationsRelatedByHostPerfdataFileProcessingCommandScheduledForDeletion = null;
 				}
 			}
 
@@ -868,15 +652,6 @@ abstract class BaseNagiosCommand extends BaseObject  implements Persistent
 				}
 			}
 
-			if ($this->nagiosMainConfigurationsRelatedByServicePerfdataFileProcessingCommandScheduledForDeletion !== null) {
-				if (!$this->nagiosMainConfigurationsRelatedByServicePerfdataFileProcessingCommandScheduledForDeletion->isEmpty()) {
-					NagiosMainConfigurationQuery::create()
-						->filterByPrimaryKeys($this->nagiosMainConfigurationsRelatedByServicePerfdataFileProcessingCommandScheduledForDeletion->getPrimaryKeys(false))
-						->delete($con);
-					$this->nagiosMainConfigurationsRelatedByServicePerfdataFileProcessingCommandScheduledForDeletion = null;
-				}
-			}
-
 			if ($this->collNagiosMainConfigurationsRelatedByServicePerfdataFileProcessingCommand !== null) {
 				foreach ($this->collNagiosMainConfigurationsRelatedByServicePerfdataFileProcessingCommand as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
@@ -885,29 +660,11 @@ abstract class BaseNagiosCommand extends BaseObject  implements Persistent
 				}
 			}
 
-			if ($this->nagiosMainConfigurationsRelatedByGlobalServiceEventHandlerScheduledForDeletion !== null) {
-				if (!$this->nagiosMainConfigurationsRelatedByGlobalServiceEventHandlerScheduledForDeletion->isEmpty()) {
-					NagiosMainConfigurationQuery::create()
-						->filterByPrimaryKeys($this->nagiosMainConfigurationsRelatedByGlobalServiceEventHandlerScheduledForDeletion->getPrimaryKeys(false))
-						->delete($con);
-					$this->nagiosMainConfigurationsRelatedByGlobalServiceEventHandlerScheduledForDeletion = null;
-				}
-			}
-
 			if ($this->collNagiosMainConfigurationsRelatedByGlobalServiceEventHandler !== null) {
 				foreach ($this->collNagiosMainConfigurationsRelatedByGlobalServiceEventHandler as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
-				}
-			}
-
-			if ($this->nagiosMainConfigurationsRelatedByGlobalHostEventHandlerScheduledForDeletion !== null) {
-				if (!$this->nagiosMainConfigurationsRelatedByGlobalHostEventHandlerScheduledForDeletion->isEmpty()) {
-					NagiosMainConfigurationQuery::create()
-						->filterByPrimaryKeys($this->nagiosMainConfigurationsRelatedByGlobalHostEventHandlerScheduledForDeletion->getPrimaryKeys(false))
-						->delete($con);
-					$this->nagiosMainConfigurationsRelatedByGlobalHostEventHandlerScheduledForDeletion = null;
 				}
 			}
 
@@ -924,92 +681,6 @@ abstract class BaseNagiosCommand extends BaseObject  implements Persistent
 		}
 		return $affectedRows;
 	} // doSave()
-
-	/**
-	 * Insert the row in the database.
-	 *
-	 * @param      PropelPDO $con
-	 *
-	 * @throws     PropelException
-	 * @see        doSave()
-	 */
-	protected function doInsert(PropelPDO $con)
-	{
-		$modifiedColumns = array();
-		$index = 0;
-
-		$this->modifiedColumns[] = NagiosCommandPeer::ID;
-		if (null !== $this->id) {
-			throw new PropelException('Cannot insert a value for auto-increment primary key (' . NagiosCommandPeer::ID . ')');
-		}
-
-		 // check the columns in natural order for more readable SQL queries
-		if ($this->isColumnModified(NagiosCommandPeer::ID)) {
-			$modifiedColumns[':p' . $index++]  = '`ID`';
-		}
-		if ($this->isColumnModified(NagiosCommandPeer::NAME)) {
-			$modifiedColumns[':p' . $index++]  = '`NAME`';
-		}
-		if ($this->isColumnModified(NagiosCommandPeer::LINE)) {
-			$modifiedColumns[':p' . $index++]  = '`LINE`';
-		}
-		if ($this->isColumnModified(NagiosCommandPeer::DESCRIPTION)) {
-			$modifiedColumns[':p' . $index++]  = '`DESCRIPTION`';
-		}
-
-		$sql = sprintf(
-			'INSERT INTO `nagios_command` (%s) VALUES (%s)',
-			implode(', ', $modifiedColumns),
-			implode(', ', array_keys($modifiedColumns))
-		);
-
-		try {
-			$stmt = $con->prepare($sql);
-			foreach ($modifiedColumns as $identifier => $columnName) {
-				switch ($columnName) {
-					case '`ID`':
-						$stmt->bindValue($identifier, $this->id, PDO::PARAM_INT);
-						break;
-					case '`NAME`':
-						$stmt->bindValue($identifier, $this->name, PDO::PARAM_STR);
-						break;
-					case '`LINE`':
-						$stmt->bindValue($identifier, $this->line, PDO::PARAM_STR);
-						break;
-					case '`DESCRIPTION`':
-						$stmt->bindValue($identifier, $this->description, PDO::PARAM_STR);
-						break;
-				}
-			}
-			$stmt->execute();
-		} catch (Exception $e) {
-			Propel::log($e->getMessage(), Propel::LOG_ERR);
-			throw new PropelException(sprintf('Unable to execute INSERT statement [%s]', $sql), $e);
-		}
-
-		try {
-			$pk = $con->lastInsertId();
-		} catch (Exception $e) {
-			throw new PropelException('Unable to get autoincrement id.', $e);
-		}
-		$this->setId($pk);
-
-		$this->setNew(false);
-	}
-
-	/**
-	 * Update the row in the database.
-	 *
-	 * @param      PropelPDO $con
-	 *
-	 * @see        doSave()
-	 */
-	protected function doUpdate(PropelPDO $con)
-	{
-		$selectCriteria = $this->buildPkeyCriteria();
-		$valuesCriteria = $this->buildCriteria();
-		BasePeer::doUpdate($selectCriteria, $valuesCriteria, $con);
-	}
 
 	/**
 	 * Array of ValidationFailed objects.
@@ -1651,7 +1322,7 @@ abstract class BaseNagiosCommand extends BaseObject  implements Persistent
 
 	/**
 	 * Initializes a collection based on the name of a relation.
-	 * Avoids crafting an 'init[$relationName]s' method name
+	 * Avoids crafting an 'init[$relationName]s' method name 
 	 * that wouldn't work when StandardEnglishPluralizer is used.
 	 *
 	 * @param      string $relationName The name of the relation to initialize
@@ -1781,30 +1452,6 @@ abstract class BaseNagiosCommand extends BaseObject  implements Persistent
 	}
 
 	/**
-	 * Sets a collection of NagiosContactNotificationCommand objects related by a one-to-many relationship
-	 * to the current object.
-	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
-	 * and new objects from the given Propel collection.
-	 *
-	 * @param      PropelCollection $nagiosContactNotificationCommands A Propel collection.
-	 * @param      PropelPDO $con Optional connection object
-	 */
-	public function setNagiosContactNotificationCommands(PropelCollection $nagiosContactNotificationCommands, PropelPDO $con = null)
-	{
-		$this->nagiosContactNotificationCommandsScheduledForDeletion = $this->getNagiosContactNotificationCommands(new Criteria(), $con)->diff($nagiosContactNotificationCommands);
-
-		foreach ($nagiosContactNotificationCommands as $nagiosContactNotificationCommand) {
-			// Fix issue with collection modified by reference
-			if ($nagiosContactNotificationCommand->isNew()) {
-				$nagiosContactNotificationCommand->setNagiosCommand($this);
-			}
-			$this->addNagiosContactNotificationCommand($nagiosContactNotificationCommand);
-		}
-
-		$this->collNagiosContactNotificationCommands = $nagiosContactNotificationCommands;
-	}
-
-	/**
 	 * Returns the number of related NagiosContactNotificationCommand objects.
 	 *
 	 * @param      Criteria $criteria
@@ -1837,7 +1484,8 @@ abstract class BaseNagiosCommand extends BaseObject  implements Persistent
 	 * through the NagiosContactNotificationCommand foreign key attribute.
 	 *
 	 * @param      NagiosContactNotificationCommand $l NagiosContactNotificationCommand
-	 * @return     NagiosCommand The current object (for fluent API support)
+	 * @return     void
+	 * @throws     PropelException
 	 */
 	public function addNagiosContactNotificationCommand(NagiosContactNotificationCommand $l)
 	{
@@ -1845,19 +1493,9 @@ abstract class BaseNagiosCommand extends BaseObject  implements Persistent
 			$this->initNagiosContactNotificationCommands();
 		}
 		if (!$this->collNagiosContactNotificationCommands->contains($l)) { // only add it if the **same** object is not already associated
-			$this->doAddNagiosContactNotificationCommand($l);
+			$this->collNagiosContactNotificationCommands[]= $l;
+			$l->setNagiosCommand($this);
 		}
-
-		return $this;
-	}
-
-	/**
-	 * @param	NagiosContactNotificationCommand $nagiosContactNotificationCommand The nagiosContactNotificationCommand object to add.
-	 */
-	protected function doAddNagiosContactNotificationCommand($nagiosContactNotificationCommand)
-	{
-		$this->collNagiosContactNotificationCommands[]= $nagiosContactNotificationCommand;
-		$nagiosContactNotificationCommand->setNagiosCommand($this);
 	}
 
 
@@ -1954,30 +1592,6 @@ abstract class BaseNagiosCommand extends BaseObject  implements Persistent
 	}
 
 	/**
-	 * Sets a collection of NagiosHostTemplateRelatedByCheckCommand objects related by a one-to-many relationship
-	 * to the current object.
-	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
-	 * and new objects from the given Propel collection.
-	 *
-	 * @param      PropelCollection $nagiosHostTemplatesRelatedByCheckCommand A Propel collection.
-	 * @param      PropelPDO $con Optional connection object
-	 */
-	public function setNagiosHostTemplatesRelatedByCheckCommand(PropelCollection $nagiosHostTemplatesRelatedByCheckCommand, PropelPDO $con = null)
-	{
-		$this->nagiosHostTemplatesRelatedByCheckCommandScheduledForDeletion = $this->getNagiosHostTemplatesRelatedByCheckCommand(new Criteria(), $con)->diff($nagiosHostTemplatesRelatedByCheckCommand);
-
-		foreach ($nagiosHostTemplatesRelatedByCheckCommand as $nagiosHostTemplateRelatedByCheckCommand) {
-			// Fix issue with collection modified by reference
-			if ($nagiosHostTemplateRelatedByCheckCommand->isNew()) {
-				$nagiosHostTemplateRelatedByCheckCommand->setNagiosCommandRelatedByCheckCommand($this);
-			}
-			$this->addNagiosHostTemplateRelatedByCheckCommand($nagiosHostTemplateRelatedByCheckCommand);
-		}
-
-		$this->collNagiosHostTemplatesRelatedByCheckCommand = $nagiosHostTemplatesRelatedByCheckCommand;
-	}
-
-	/**
 	 * Returns the number of related NagiosHostTemplate objects.
 	 *
 	 * @param      Criteria $criteria
@@ -2010,7 +1624,8 @@ abstract class BaseNagiosCommand extends BaseObject  implements Persistent
 	 * through the NagiosHostTemplate foreign key attribute.
 	 *
 	 * @param      NagiosHostTemplate $l NagiosHostTemplate
-	 * @return     NagiosCommand The current object (for fluent API support)
+	 * @return     void
+	 * @throws     PropelException
 	 */
 	public function addNagiosHostTemplateRelatedByCheckCommand(NagiosHostTemplate $l)
 	{
@@ -2018,19 +1633,9 @@ abstract class BaseNagiosCommand extends BaseObject  implements Persistent
 			$this->initNagiosHostTemplatesRelatedByCheckCommand();
 		}
 		if (!$this->collNagiosHostTemplatesRelatedByCheckCommand->contains($l)) { // only add it if the **same** object is not already associated
-			$this->doAddNagiosHostTemplateRelatedByCheckCommand($l);
+			$this->collNagiosHostTemplatesRelatedByCheckCommand[]= $l;
+			$l->setNagiosCommandRelatedByCheckCommand($this);
 		}
-
-		return $this;
-	}
-
-	/**
-	 * @param	NagiosHostTemplateRelatedByCheckCommand $nagiosHostTemplateRelatedByCheckCommand The nagiosHostTemplateRelatedByCheckCommand object to add.
-	 */
-	protected function doAddNagiosHostTemplateRelatedByCheckCommand($nagiosHostTemplateRelatedByCheckCommand)
-	{
-		$this->collNagiosHostTemplatesRelatedByCheckCommand[]= $nagiosHostTemplateRelatedByCheckCommand;
-		$nagiosHostTemplateRelatedByCheckCommand->setNagiosCommandRelatedByCheckCommand($this);
 	}
 
 
@@ -2152,30 +1757,6 @@ abstract class BaseNagiosCommand extends BaseObject  implements Persistent
 	}
 
 	/**
-	 * Sets a collection of NagiosHostTemplateRelatedByEventHandler objects related by a one-to-many relationship
-	 * to the current object.
-	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
-	 * and new objects from the given Propel collection.
-	 *
-	 * @param      PropelCollection $nagiosHostTemplatesRelatedByEventHandler A Propel collection.
-	 * @param      PropelPDO $con Optional connection object
-	 */
-	public function setNagiosHostTemplatesRelatedByEventHandler(PropelCollection $nagiosHostTemplatesRelatedByEventHandler, PropelPDO $con = null)
-	{
-		$this->nagiosHostTemplatesRelatedByEventHandlerScheduledForDeletion = $this->getNagiosHostTemplatesRelatedByEventHandler(new Criteria(), $con)->diff($nagiosHostTemplatesRelatedByEventHandler);
-
-		foreach ($nagiosHostTemplatesRelatedByEventHandler as $nagiosHostTemplateRelatedByEventHandler) {
-			// Fix issue with collection modified by reference
-			if ($nagiosHostTemplateRelatedByEventHandler->isNew()) {
-				$nagiosHostTemplateRelatedByEventHandler->setNagiosCommandRelatedByEventHandler($this);
-			}
-			$this->addNagiosHostTemplateRelatedByEventHandler($nagiosHostTemplateRelatedByEventHandler);
-		}
-
-		$this->collNagiosHostTemplatesRelatedByEventHandler = $nagiosHostTemplatesRelatedByEventHandler;
-	}
-
-	/**
 	 * Returns the number of related NagiosHostTemplate objects.
 	 *
 	 * @param      Criteria $criteria
@@ -2208,7 +1789,8 @@ abstract class BaseNagiosCommand extends BaseObject  implements Persistent
 	 * through the NagiosHostTemplate foreign key attribute.
 	 *
 	 * @param      NagiosHostTemplate $l NagiosHostTemplate
-	 * @return     NagiosCommand The current object (for fluent API support)
+	 * @return     void
+	 * @throws     PropelException
 	 */
 	public function addNagiosHostTemplateRelatedByEventHandler(NagiosHostTemplate $l)
 	{
@@ -2216,19 +1798,9 @@ abstract class BaseNagiosCommand extends BaseObject  implements Persistent
 			$this->initNagiosHostTemplatesRelatedByEventHandler();
 		}
 		if (!$this->collNagiosHostTemplatesRelatedByEventHandler->contains($l)) { // only add it if the **same** object is not already associated
-			$this->doAddNagiosHostTemplateRelatedByEventHandler($l);
+			$this->collNagiosHostTemplatesRelatedByEventHandler[]= $l;
+			$l->setNagiosCommandRelatedByEventHandler($this);
 		}
-
-		return $this;
-	}
-
-	/**
-	 * @param	NagiosHostTemplateRelatedByEventHandler $nagiosHostTemplateRelatedByEventHandler The nagiosHostTemplateRelatedByEventHandler object to add.
-	 */
-	protected function doAddNagiosHostTemplateRelatedByEventHandler($nagiosHostTemplateRelatedByEventHandler)
-	{
-		$this->collNagiosHostTemplatesRelatedByEventHandler[]= $nagiosHostTemplateRelatedByEventHandler;
-		$nagiosHostTemplateRelatedByEventHandler->setNagiosCommandRelatedByEventHandler($this);
 	}
 
 
@@ -2350,30 +1922,6 @@ abstract class BaseNagiosCommand extends BaseObject  implements Persistent
 	}
 
 	/**
-	 * Sets a collection of NagiosHostRelatedByCheckCommand objects related by a one-to-many relationship
-	 * to the current object.
-	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
-	 * and new objects from the given Propel collection.
-	 *
-	 * @param      PropelCollection $nagiosHostsRelatedByCheckCommand A Propel collection.
-	 * @param      PropelPDO $con Optional connection object
-	 */
-	public function setNagiosHostsRelatedByCheckCommand(PropelCollection $nagiosHostsRelatedByCheckCommand, PropelPDO $con = null)
-	{
-		$this->nagiosHostsRelatedByCheckCommandScheduledForDeletion = $this->getNagiosHostsRelatedByCheckCommand(new Criteria(), $con)->diff($nagiosHostsRelatedByCheckCommand);
-
-		foreach ($nagiosHostsRelatedByCheckCommand as $nagiosHostRelatedByCheckCommand) {
-			// Fix issue with collection modified by reference
-			if ($nagiosHostRelatedByCheckCommand->isNew()) {
-				$nagiosHostRelatedByCheckCommand->setNagiosCommandRelatedByCheckCommand($this);
-			}
-			$this->addNagiosHostRelatedByCheckCommand($nagiosHostRelatedByCheckCommand);
-		}
-
-		$this->collNagiosHostsRelatedByCheckCommand = $nagiosHostsRelatedByCheckCommand;
-	}
-
-	/**
 	 * Returns the number of related NagiosHost objects.
 	 *
 	 * @param      Criteria $criteria
@@ -2406,7 +1954,8 @@ abstract class BaseNagiosCommand extends BaseObject  implements Persistent
 	 * through the NagiosHost foreign key attribute.
 	 *
 	 * @param      NagiosHost $l NagiosHost
-	 * @return     NagiosCommand The current object (for fluent API support)
+	 * @return     void
+	 * @throws     PropelException
 	 */
 	public function addNagiosHostRelatedByCheckCommand(NagiosHost $l)
 	{
@@ -2414,19 +1963,9 @@ abstract class BaseNagiosCommand extends BaseObject  implements Persistent
 			$this->initNagiosHostsRelatedByCheckCommand();
 		}
 		if (!$this->collNagiosHostsRelatedByCheckCommand->contains($l)) { // only add it if the **same** object is not already associated
-			$this->doAddNagiosHostRelatedByCheckCommand($l);
+			$this->collNagiosHostsRelatedByCheckCommand[]= $l;
+			$l->setNagiosCommandRelatedByCheckCommand($this);
 		}
-
-		return $this;
-	}
-
-	/**
-	 * @param	NagiosHostRelatedByCheckCommand $nagiosHostRelatedByCheckCommand The nagiosHostRelatedByCheckCommand object to add.
-	 */
-	protected function doAddNagiosHostRelatedByCheckCommand($nagiosHostRelatedByCheckCommand)
-	{
-		$this->collNagiosHostsRelatedByCheckCommand[]= $nagiosHostRelatedByCheckCommand;
-		$nagiosHostRelatedByCheckCommand->setNagiosCommandRelatedByCheckCommand($this);
 	}
 
 
@@ -2548,30 +2087,6 @@ abstract class BaseNagiosCommand extends BaseObject  implements Persistent
 	}
 
 	/**
-	 * Sets a collection of NagiosHostRelatedByEventHandler objects related by a one-to-many relationship
-	 * to the current object.
-	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
-	 * and new objects from the given Propel collection.
-	 *
-	 * @param      PropelCollection $nagiosHostsRelatedByEventHandler A Propel collection.
-	 * @param      PropelPDO $con Optional connection object
-	 */
-	public function setNagiosHostsRelatedByEventHandler(PropelCollection $nagiosHostsRelatedByEventHandler, PropelPDO $con = null)
-	{
-		$this->nagiosHostsRelatedByEventHandlerScheduledForDeletion = $this->getNagiosHostsRelatedByEventHandler(new Criteria(), $con)->diff($nagiosHostsRelatedByEventHandler);
-
-		foreach ($nagiosHostsRelatedByEventHandler as $nagiosHostRelatedByEventHandler) {
-			// Fix issue with collection modified by reference
-			if ($nagiosHostRelatedByEventHandler->isNew()) {
-				$nagiosHostRelatedByEventHandler->setNagiosCommandRelatedByEventHandler($this);
-			}
-			$this->addNagiosHostRelatedByEventHandler($nagiosHostRelatedByEventHandler);
-		}
-
-		$this->collNagiosHostsRelatedByEventHandler = $nagiosHostsRelatedByEventHandler;
-	}
-
-	/**
 	 * Returns the number of related NagiosHost objects.
 	 *
 	 * @param      Criteria $criteria
@@ -2604,7 +2119,8 @@ abstract class BaseNagiosCommand extends BaseObject  implements Persistent
 	 * through the NagiosHost foreign key attribute.
 	 *
 	 * @param      NagiosHost $l NagiosHost
-	 * @return     NagiosCommand The current object (for fluent API support)
+	 * @return     void
+	 * @throws     PropelException
 	 */
 	public function addNagiosHostRelatedByEventHandler(NagiosHost $l)
 	{
@@ -2612,19 +2128,9 @@ abstract class BaseNagiosCommand extends BaseObject  implements Persistent
 			$this->initNagiosHostsRelatedByEventHandler();
 		}
 		if (!$this->collNagiosHostsRelatedByEventHandler->contains($l)) { // only add it if the **same** object is not already associated
-			$this->doAddNagiosHostRelatedByEventHandler($l);
+			$this->collNagiosHostsRelatedByEventHandler[]= $l;
+			$l->setNagiosCommandRelatedByEventHandler($this);
 		}
-
-		return $this;
-	}
-
-	/**
-	 * @param	NagiosHostRelatedByEventHandler $nagiosHostRelatedByEventHandler The nagiosHostRelatedByEventHandler object to add.
-	 */
-	protected function doAddNagiosHostRelatedByEventHandler($nagiosHostRelatedByEventHandler)
-	{
-		$this->collNagiosHostsRelatedByEventHandler[]= $nagiosHostRelatedByEventHandler;
-		$nagiosHostRelatedByEventHandler->setNagiosCommandRelatedByEventHandler($this);
 	}
 
 
@@ -2746,30 +2252,6 @@ abstract class BaseNagiosCommand extends BaseObject  implements Persistent
 	}
 
 	/**
-	 * Sets a collection of NagiosServiceTemplateRelatedByCheckCommand objects related by a one-to-many relationship
-	 * to the current object.
-	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
-	 * and new objects from the given Propel collection.
-	 *
-	 * @param      PropelCollection $nagiosServiceTemplatesRelatedByCheckCommand A Propel collection.
-	 * @param      PropelPDO $con Optional connection object
-	 */
-	public function setNagiosServiceTemplatesRelatedByCheckCommand(PropelCollection $nagiosServiceTemplatesRelatedByCheckCommand, PropelPDO $con = null)
-	{
-		$this->nagiosServiceTemplatesRelatedByCheckCommandScheduledForDeletion = $this->getNagiosServiceTemplatesRelatedByCheckCommand(new Criteria(), $con)->diff($nagiosServiceTemplatesRelatedByCheckCommand);
-
-		foreach ($nagiosServiceTemplatesRelatedByCheckCommand as $nagiosServiceTemplateRelatedByCheckCommand) {
-			// Fix issue with collection modified by reference
-			if ($nagiosServiceTemplateRelatedByCheckCommand->isNew()) {
-				$nagiosServiceTemplateRelatedByCheckCommand->setNagiosCommandRelatedByCheckCommand($this);
-			}
-			$this->addNagiosServiceTemplateRelatedByCheckCommand($nagiosServiceTemplateRelatedByCheckCommand);
-		}
-
-		$this->collNagiosServiceTemplatesRelatedByCheckCommand = $nagiosServiceTemplatesRelatedByCheckCommand;
-	}
-
-	/**
 	 * Returns the number of related NagiosServiceTemplate objects.
 	 *
 	 * @param      Criteria $criteria
@@ -2802,7 +2284,8 @@ abstract class BaseNagiosCommand extends BaseObject  implements Persistent
 	 * through the NagiosServiceTemplate foreign key attribute.
 	 *
 	 * @param      NagiosServiceTemplate $l NagiosServiceTemplate
-	 * @return     NagiosCommand The current object (for fluent API support)
+	 * @return     void
+	 * @throws     PropelException
 	 */
 	public function addNagiosServiceTemplateRelatedByCheckCommand(NagiosServiceTemplate $l)
 	{
@@ -2810,19 +2293,9 @@ abstract class BaseNagiosCommand extends BaseObject  implements Persistent
 			$this->initNagiosServiceTemplatesRelatedByCheckCommand();
 		}
 		if (!$this->collNagiosServiceTemplatesRelatedByCheckCommand->contains($l)) { // only add it if the **same** object is not already associated
-			$this->doAddNagiosServiceTemplateRelatedByCheckCommand($l);
+			$this->collNagiosServiceTemplatesRelatedByCheckCommand[]= $l;
+			$l->setNagiosCommandRelatedByCheckCommand($this);
 		}
-
-		return $this;
-	}
-
-	/**
-	 * @param	NagiosServiceTemplateRelatedByCheckCommand $nagiosServiceTemplateRelatedByCheckCommand The nagiosServiceTemplateRelatedByCheckCommand object to add.
-	 */
-	protected function doAddNagiosServiceTemplateRelatedByCheckCommand($nagiosServiceTemplateRelatedByCheckCommand)
-	{
-		$this->collNagiosServiceTemplatesRelatedByCheckCommand[]= $nagiosServiceTemplateRelatedByCheckCommand;
-		$nagiosServiceTemplateRelatedByCheckCommand->setNagiosCommandRelatedByCheckCommand($this);
 	}
 
 
@@ -2944,30 +2417,6 @@ abstract class BaseNagiosCommand extends BaseObject  implements Persistent
 	}
 
 	/**
-	 * Sets a collection of NagiosServiceTemplateRelatedByEventHandler objects related by a one-to-many relationship
-	 * to the current object.
-	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
-	 * and new objects from the given Propel collection.
-	 *
-	 * @param      PropelCollection $nagiosServiceTemplatesRelatedByEventHandler A Propel collection.
-	 * @param      PropelPDO $con Optional connection object
-	 */
-	public function setNagiosServiceTemplatesRelatedByEventHandler(PropelCollection $nagiosServiceTemplatesRelatedByEventHandler, PropelPDO $con = null)
-	{
-		$this->nagiosServiceTemplatesRelatedByEventHandlerScheduledForDeletion = $this->getNagiosServiceTemplatesRelatedByEventHandler(new Criteria(), $con)->diff($nagiosServiceTemplatesRelatedByEventHandler);
-
-		foreach ($nagiosServiceTemplatesRelatedByEventHandler as $nagiosServiceTemplateRelatedByEventHandler) {
-			// Fix issue with collection modified by reference
-			if ($nagiosServiceTemplateRelatedByEventHandler->isNew()) {
-				$nagiosServiceTemplateRelatedByEventHandler->setNagiosCommandRelatedByEventHandler($this);
-			}
-			$this->addNagiosServiceTemplateRelatedByEventHandler($nagiosServiceTemplateRelatedByEventHandler);
-		}
-
-		$this->collNagiosServiceTemplatesRelatedByEventHandler = $nagiosServiceTemplatesRelatedByEventHandler;
-	}
-
-	/**
 	 * Returns the number of related NagiosServiceTemplate objects.
 	 *
 	 * @param      Criteria $criteria
@@ -3000,7 +2449,8 @@ abstract class BaseNagiosCommand extends BaseObject  implements Persistent
 	 * through the NagiosServiceTemplate foreign key attribute.
 	 *
 	 * @param      NagiosServiceTemplate $l NagiosServiceTemplate
-	 * @return     NagiosCommand The current object (for fluent API support)
+	 * @return     void
+	 * @throws     PropelException
 	 */
 	public function addNagiosServiceTemplateRelatedByEventHandler(NagiosServiceTemplate $l)
 	{
@@ -3008,19 +2458,9 @@ abstract class BaseNagiosCommand extends BaseObject  implements Persistent
 			$this->initNagiosServiceTemplatesRelatedByEventHandler();
 		}
 		if (!$this->collNagiosServiceTemplatesRelatedByEventHandler->contains($l)) { // only add it if the **same** object is not already associated
-			$this->doAddNagiosServiceTemplateRelatedByEventHandler($l);
+			$this->collNagiosServiceTemplatesRelatedByEventHandler[]= $l;
+			$l->setNagiosCommandRelatedByEventHandler($this);
 		}
-
-		return $this;
-	}
-
-	/**
-	 * @param	NagiosServiceTemplateRelatedByEventHandler $nagiosServiceTemplateRelatedByEventHandler The nagiosServiceTemplateRelatedByEventHandler object to add.
-	 */
-	protected function doAddNagiosServiceTemplateRelatedByEventHandler($nagiosServiceTemplateRelatedByEventHandler)
-	{
-		$this->collNagiosServiceTemplatesRelatedByEventHandler[]= $nagiosServiceTemplateRelatedByEventHandler;
-		$nagiosServiceTemplateRelatedByEventHandler->setNagiosCommandRelatedByEventHandler($this);
 	}
 
 
@@ -3142,30 +2582,6 @@ abstract class BaseNagiosCommand extends BaseObject  implements Persistent
 	}
 
 	/**
-	 * Sets a collection of NagiosServiceRelatedByCheckCommand objects related by a one-to-many relationship
-	 * to the current object.
-	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
-	 * and new objects from the given Propel collection.
-	 *
-	 * @param      PropelCollection $nagiosServicesRelatedByCheckCommand A Propel collection.
-	 * @param      PropelPDO $con Optional connection object
-	 */
-	public function setNagiosServicesRelatedByCheckCommand(PropelCollection $nagiosServicesRelatedByCheckCommand, PropelPDO $con = null)
-	{
-		$this->nagiosServicesRelatedByCheckCommandScheduledForDeletion = $this->getNagiosServicesRelatedByCheckCommand(new Criteria(), $con)->diff($nagiosServicesRelatedByCheckCommand);
-
-		foreach ($nagiosServicesRelatedByCheckCommand as $nagiosServiceRelatedByCheckCommand) {
-			// Fix issue with collection modified by reference
-			if ($nagiosServiceRelatedByCheckCommand->isNew()) {
-				$nagiosServiceRelatedByCheckCommand->setNagiosCommandRelatedByCheckCommand($this);
-			}
-			$this->addNagiosServiceRelatedByCheckCommand($nagiosServiceRelatedByCheckCommand);
-		}
-
-		$this->collNagiosServicesRelatedByCheckCommand = $nagiosServicesRelatedByCheckCommand;
-	}
-
-	/**
 	 * Returns the number of related NagiosService objects.
 	 *
 	 * @param      Criteria $criteria
@@ -3198,7 +2614,8 @@ abstract class BaseNagiosCommand extends BaseObject  implements Persistent
 	 * through the NagiosService foreign key attribute.
 	 *
 	 * @param      NagiosService $l NagiosService
-	 * @return     NagiosCommand The current object (for fluent API support)
+	 * @return     void
+	 * @throws     PropelException
 	 */
 	public function addNagiosServiceRelatedByCheckCommand(NagiosService $l)
 	{
@@ -3206,19 +2623,9 @@ abstract class BaseNagiosCommand extends BaseObject  implements Persistent
 			$this->initNagiosServicesRelatedByCheckCommand();
 		}
 		if (!$this->collNagiosServicesRelatedByCheckCommand->contains($l)) { // only add it if the **same** object is not already associated
-			$this->doAddNagiosServiceRelatedByCheckCommand($l);
+			$this->collNagiosServicesRelatedByCheckCommand[]= $l;
+			$l->setNagiosCommandRelatedByCheckCommand($this);
 		}
-
-		return $this;
-	}
-
-	/**
-	 * @param	NagiosServiceRelatedByCheckCommand $nagiosServiceRelatedByCheckCommand The nagiosServiceRelatedByCheckCommand object to add.
-	 */
-	protected function doAddNagiosServiceRelatedByCheckCommand($nagiosServiceRelatedByCheckCommand)
-	{
-		$this->collNagiosServicesRelatedByCheckCommand[]= $nagiosServiceRelatedByCheckCommand;
-		$nagiosServiceRelatedByCheckCommand->setNagiosCommandRelatedByCheckCommand($this);
 	}
 
 
@@ -3415,30 +2822,6 @@ abstract class BaseNagiosCommand extends BaseObject  implements Persistent
 	}
 
 	/**
-	 * Sets a collection of NagiosServiceRelatedByEventHandler objects related by a one-to-many relationship
-	 * to the current object.
-	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
-	 * and new objects from the given Propel collection.
-	 *
-	 * @param      PropelCollection $nagiosServicesRelatedByEventHandler A Propel collection.
-	 * @param      PropelPDO $con Optional connection object
-	 */
-	public function setNagiosServicesRelatedByEventHandler(PropelCollection $nagiosServicesRelatedByEventHandler, PropelPDO $con = null)
-	{
-		$this->nagiosServicesRelatedByEventHandlerScheduledForDeletion = $this->getNagiosServicesRelatedByEventHandler(new Criteria(), $con)->diff($nagiosServicesRelatedByEventHandler);
-
-		foreach ($nagiosServicesRelatedByEventHandler as $nagiosServiceRelatedByEventHandler) {
-			// Fix issue with collection modified by reference
-			if ($nagiosServiceRelatedByEventHandler->isNew()) {
-				$nagiosServiceRelatedByEventHandler->setNagiosCommandRelatedByEventHandler($this);
-			}
-			$this->addNagiosServiceRelatedByEventHandler($nagiosServiceRelatedByEventHandler);
-		}
-
-		$this->collNagiosServicesRelatedByEventHandler = $nagiosServicesRelatedByEventHandler;
-	}
-
-	/**
 	 * Returns the number of related NagiosService objects.
 	 *
 	 * @param      Criteria $criteria
@@ -3471,7 +2854,8 @@ abstract class BaseNagiosCommand extends BaseObject  implements Persistent
 	 * through the NagiosService foreign key attribute.
 	 *
 	 * @param      NagiosService $l NagiosService
-	 * @return     NagiosCommand The current object (for fluent API support)
+	 * @return     void
+	 * @throws     PropelException
 	 */
 	public function addNagiosServiceRelatedByEventHandler(NagiosService $l)
 	{
@@ -3479,19 +2863,9 @@ abstract class BaseNagiosCommand extends BaseObject  implements Persistent
 			$this->initNagiosServicesRelatedByEventHandler();
 		}
 		if (!$this->collNagiosServicesRelatedByEventHandler->contains($l)) { // only add it if the **same** object is not already associated
-			$this->doAddNagiosServiceRelatedByEventHandler($l);
+			$this->collNagiosServicesRelatedByEventHandler[]= $l;
+			$l->setNagiosCommandRelatedByEventHandler($this);
 		}
-
-		return $this;
-	}
-
-	/**
-	 * @param	NagiosServiceRelatedByEventHandler $nagiosServiceRelatedByEventHandler The nagiosServiceRelatedByEventHandler object to add.
-	 */
-	protected function doAddNagiosServiceRelatedByEventHandler($nagiosServiceRelatedByEventHandler)
-	{
-		$this->collNagiosServicesRelatedByEventHandler[]= $nagiosServiceRelatedByEventHandler;
-		$nagiosServiceRelatedByEventHandler->setNagiosCommandRelatedByEventHandler($this);
 	}
 
 
@@ -3688,30 +3062,6 @@ abstract class BaseNagiosCommand extends BaseObject  implements Persistent
 	}
 
 	/**
-	 * Sets a collection of NagiosMainConfigurationRelatedByOcspCommand objects related by a one-to-many relationship
-	 * to the current object.
-	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
-	 * and new objects from the given Propel collection.
-	 *
-	 * @param      PropelCollection $nagiosMainConfigurationsRelatedByOcspCommand A Propel collection.
-	 * @param      PropelPDO $con Optional connection object
-	 */
-	public function setNagiosMainConfigurationsRelatedByOcspCommand(PropelCollection $nagiosMainConfigurationsRelatedByOcspCommand, PropelPDO $con = null)
-	{
-		$this->nagiosMainConfigurationsRelatedByOcspCommandScheduledForDeletion = $this->getNagiosMainConfigurationsRelatedByOcspCommand(new Criteria(), $con)->diff($nagiosMainConfigurationsRelatedByOcspCommand);
-
-		foreach ($nagiosMainConfigurationsRelatedByOcspCommand as $nagiosMainConfigurationRelatedByOcspCommand) {
-			// Fix issue with collection modified by reference
-			if ($nagiosMainConfigurationRelatedByOcspCommand->isNew()) {
-				$nagiosMainConfigurationRelatedByOcspCommand->setNagiosCommandRelatedByOcspCommand($this);
-			}
-			$this->addNagiosMainConfigurationRelatedByOcspCommand($nagiosMainConfigurationRelatedByOcspCommand);
-		}
-
-		$this->collNagiosMainConfigurationsRelatedByOcspCommand = $nagiosMainConfigurationsRelatedByOcspCommand;
-	}
-
-	/**
 	 * Returns the number of related NagiosMainConfiguration objects.
 	 *
 	 * @param      Criteria $criteria
@@ -3744,7 +3094,8 @@ abstract class BaseNagiosCommand extends BaseObject  implements Persistent
 	 * through the NagiosMainConfiguration foreign key attribute.
 	 *
 	 * @param      NagiosMainConfiguration $l NagiosMainConfiguration
-	 * @return     NagiosCommand The current object (for fluent API support)
+	 * @return     void
+	 * @throws     PropelException
 	 */
 	public function addNagiosMainConfigurationRelatedByOcspCommand(NagiosMainConfiguration $l)
 	{
@@ -3752,19 +3103,9 @@ abstract class BaseNagiosCommand extends BaseObject  implements Persistent
 			$this->initNagiosMainConfigurationsRelatedByOcspCommand();
 		}
 		if (!$this->collNagiosMainConfigurationsRelatedByOcspCommand->contains($l)) { // only add it if the **same** object is not already associated
-			$this->doAddNagiosMainConfigurationRelatedByOcspCommand($l);
+			$this->collNagiosMainConfigurationsRelatedByOcspCommand[]= $l;
+			$l->setNagiosCommandRelatedByOcspCommand($this);
 		}
-
-		return $this;
-	}
-
-	/**
-	 * @param	NagiosMainConfigurationRelatedByOcspCommand $nagiosMainConfigurationRelatedByOcspCommand The nagiosMainConfigurationRelatedByOcspCommand object to add.
-	 */
-	protected function doAddNagiosMainConfigurationRelatedByOcspCommand($nagiosMainConfigurationRelatedByOcspCommand)
-	{
-		$this->collNagiosMainConfigurationsRelatedByOcspCommand[]= $nagiosMainConfigurationRelatedByOcspCommand;
-		$nagiosMainConfigurationRelatedByOcspCommand->setNagiosCommandRelatedByOcspCommand($this);
 	}
 
 	/**
@@ -3836,30 +3177,6 @@ abstract class BaseNagiosCommand extends BaseObject  implements Persistent
 	}
 
 	/**
-	 * Sets a collection of NagiosMainConfigurationRelatedByOchpCommand objects related by a one-to-many relationship
-	 * to the current object.
-	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
-	 * and new objects from the given Propel collection.
-	 *
-	 * @param      PropelCollection $nagiosMainConfigurationsRelatedByOchpCommand A Propel collection.
-	 * @param      PropelPDO $con Optional connection object
-	 */
-	public function setNagiosMainConfigurationsRelatedByOchpCommand(PropelCollection $nagiosMainConfigurationsRelatedByOchpCommand, PropelPDO $con = null)
-	{
-		$this->nagiosMainConfigurationsRelatedByOchpCommandScheduledForDeletion = $this->getNagiosMainConfigurationsRelatedByOchpCommand(new Criteria(), $con)->diff($nagiosMainConfigurationsRelatedByOchpCommand);
-
-		foreach ($nagiosMainConfigurationsRelatedByOchpCommand as $nagiosMainConfigurationRelatedByOchpCommand) {
-			// Fix issue with collection modified by reference
-			if ($nagiosMainConfigurationRelatedByOchpCommand->isNew()) {
-				$nagiosMainConfigurationRelatedByOchpCommand->setNagiosCommandRelatedByOchpCommand($this);
-			}
-			$this->addNagiosMainConfigurationRelatedByOchpCommand($nagiosMainConfigurationRelatedByOchpCommand);
-		}
-
-		$this->collNagiosMainConfigurationsRelatedByOchpCommand = $nagiosMainConfigurationsRelatedByOchpCommand;
-	}
-
-	/**
 	 * Returns the number of related NagiosMainConfiguration objects.
 	 *
 	 * @param      Criteria $criteria
@@ -3892,7 +3209,8 @@ abstract class BaseNagiosCommand extends BaseObject  implements Persistent
 	 * through the NagiosMainConfiguration foreign key attribute.
 	 *
 	 * @param      NagiosMainConfiguration $l NagiosMainConfiguration
-	 * @return     NagiosCommand The current object (for fluent API support)
+	 * @return     void
+	 * @throws     PropelException
 	 */
 	public function addNagiosMainConfigurationRelatedByOchpCommand(NagiosMainConfiguration $l)
 	{
@@ -3900,19 +3218,9 @@ abstract class BaseNagiosCommand extends BaseObject  implements Persistent
 			$this->initNagiosMainConfigurationsRelatedByOchpCommand();
 		}
 		if (!$this->collNagiosMainConfigurationsRelatedByOchpCommand->contains($l)) { // only add it if the **same** object is not already associated
-			$this->doAddNagiosMainConfigurationRelatedByOchpCommand($l);
+			$this->collNagiosMainConfigurationsRelatedByOchpCommand[]= $l;
+			$l->setNagiosCommandRelatedByOchpCommand($this);
 		}
-
-		return $this;
-	}
-
-	/**
-	 * @param	NagiosMainConfigurationRelatedByOchpCommand $nagiosMainConfigurationRelatedByOchpCommand The nagiosMainConfigurationRelatedByOchpCommand object to add.
-	 */
-	protected function doAddNagiosMainConfigurationRelatedByOchpCommand($nagiosMainConfigurationRelatedByOchpCommand)
-	{
-		$this->collNagiosMainConfigurationsRelatedByOchpCommand[]= $nagiosMainConfigurationRelatedByOchpCommand;
-		$nagiosMainConfigurationRelatedByOchpCommand->setNagiosCommandRelatedByOchpCommand($this);
 	}
 
 	/**
@@ -3984,30 +3292,6 @@ abstract class BaseNagiosCommand extends BaseObject  implements Persistent
 	}
 
 	/**
-	 * Sets a collection of NagiosMainConfigurationRelatedByHostPerfdataCommand objects related by a one-to-many relationship
-	 * to the current object.
-	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
-	 * and new objects from the given Propel collection.
-	 *
-	 * @param      PropelCollection $nagiosMainConfigurationsRelatedByHostPerfdataCommand A Propel collection.
-	 * @param      PropelPDO $con Optional connection object
-	 */
-	public function setNagiosMainConfigurationsRelatedByHostPerfdataCommand(PropelCollection $nagiosMainConfigurationsRelatedByHostPerfdataCommand, PropelPDO $con = null)
-	{
-		$this->nagiosMainConfigurationsRelatedByHostPerfdataCommandScheduledForDeletion = $this->getNagiosMainConfigurationsRelatedByHostPerfdataCommand(new Criteria(), $con)->diff($nagiosMainConfigurationsRelatedByHostPerfdataCommand);
-
-		foreach ($nagiosMainConfigurationsRelatedByHostPerfdataCommand as $nagiosMainConfigurationRelatedByHostPerfdataCommand) {
-			// Fix issue with collection modified by reference
-			if ($nagiosMainConfigurationRelatedByHostPerfdataCommand->isNew()) {
-				$nagiosMainConfigurationRelatedByHostPerfdataCommand->setNagiosCommandRelatedByHostPerfdataCommand($this);
-			}
-			$this->addNagiosMainConfigurationRelatedByHostPerfdataCommand($nagiosMainConfigurationRelatedByHostPerfdataCommand);
-		}
-
-		$this->collNagiosMainConfigurationsRelatedByHostPerfdataCommand = $nagiosMainConfigurationsRelatedByHostPerfdataCommand;
-	}
-
-	/**
 	 * Returns the number of related NagiosMainConfiguration objects.
 	 *
 	 * @param      Criteria $criteria
@@ -4040,7 +3324,8 @@ abstract class BaseNagiosCommand extends BaseObject  implements Persistent
 	 * through the NagiosMainConfiguration foreign key attribute.
 	 *
 	 * @param      NagiosMainConfiguration $l NagiosMainConfiguration
-	 * @return     NagiosCommand The current object (for fluent API support)
+	 * @return     void
+	 * @throws     PropelException
 	 */
 	public function addNagiosMainConfigurationRelatedByHostPerfdataCommand(NagiosMainConfiguration $l)
 	{
@@ -4048,19 +3333,9 @@ abstract class BaseNagiosCommand extends BaseObject  implements Persistent
 			$this->initNagiosMainConfigurationsRelatedByHostPerfdataCommand();
 		}
 		if (!$this->collNagiosMainConfigurationsRelatedByHostPerfdataCommand->contains($l)) { // only add it if the **same** object is not already associated
-			$this->doAddNagiosMainConfigurationRelatedByHostPerfdataCommand($l);
+			$this->collNagiosMainConfigurationsRelatedByHostPerfdataCommand[]= $l;
+			$l->setNagiosCommandRelatedByHostPerfdataCommand($this);
 		}
-
-		return $this;
-	}
-
-	/**
-	 * @param	NagiosMainConfigurationRelatedByHostPerfdataCommand $nagiosMainConfigurationRelatedByHostPerfdataCommand The nagiosMainConfigurationRelatedByHostPerfdataCommand object to add.
-	 */
-	protected function doAddNagiosMainConfigurationRelatedByHostPerfdataCommand($nagiosMainConfigurationRelatedByHostPerfdataCommand)
-	{
-		$this->collNagiosMainConfigurationsRelatedByHostPerfdataCommand[]= $nagiosMainConfigurationRelatedByHostPerfdataCommand;
-		$nagiosMainConfigurationRelatedByHostPerfdataCommand->setNagiosCommandRelatedByHostPerfdataCommand($this);
 	}
 
 	/**
@@ -4132,30 +3407,6 @@ abstract class BaseNagiosCommand extends BaseObject  implements Persistent
 	}
 
 	/**
-	 * Sets a collection of NagiosMainConfigurationRelatedByServicePerfdataCommand objects related by a one-to-many relationship
-	 * to the current object.
-	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
-	 * and new objects from the given Propel collection.
-	 *
-	 * @param      PropelCollection $nagiosMainConfigurationsRelatedByServicePerfdataCommand A Propel collection.
-	 * @param      PropelPDO $con Optional connection object
-	 */
-	public function setNagiosMainConfigurationsRelatedByServicePerfdataCommand(PropelCollection $nagiosMainConfigurationsRelatedByServicePerfdataCommand, PropelPDO $con = null)
-	{
-		$this->nagiosMainConfigurationsRelatedByServicePerfdataCommandScheduledForDeletion = $this->getNagiosMainConfigurationsRelatedByServicePerfdataCommand(new Criteria(), $con)->diff($nagiosMainConfigurationsRelatedByServicePerfdataCommand);
-
-		foreach ($nagiosMainConfigurationsRelatedByServicePerfdataCommand as $nagiosMainConfigurationRelatedByServicePerfdataCommand) {
-			// Fix issue with collection modified by reference
-			if ($nagiosMainConfigurationRelatedByServicePerfdataCommand->isNew()) {
-				$nagiosMainConfigurationRelatedByServicePerfdataCommand->setNagiosCommandRelatedByServicePerfdataCommand($this);
-			}
-			$this->addNagiosMainConfigurationRelatedByServicePerfdataCommand($nagiosMainConfigurationRelatedByServicePerfdataCommand);
-		}
-
-		$this->collNagiosMainConfigurationsRelatedByServicePerfdataCommand = $nagiosMainConfigurationsRelatedByServicePerfdataCommand;
-	}
-
-	/**
 	 * Returns the number of related NagiosMainConfiguration objects.
 	 *
 	 * @param      Criteria $criteria
@@ -4188,7 +3439,8 @@ abstract class BaseNagiosCommand extends BaseObject  implements Persistent
 	 * through the NagiosMainConfiguration foreign key attribute.
 	 *
 	 * @param      NagiosMainConfiguration $l NagiosMainConfiguration
-	 * @return     NagiosCommand The current object (for fluent API support)
+	 * @return     void
+	 * @throws     PropelException
 	 */
 	public function addNagiosMainConfigurationRelatedByServicePerfdataCommand(NagiosMainConfiguration $l)
 	{
@@ -4196,19 +3448,9 @@ abstract class BaseNagiosCommand extends BaseObject  implements Persistent
 			$this->initNagiosMainConfigurationsRelatedByServicePerfdataCommand();
 		}
 		if (!$this->collNagiosMainConfigurationsRelatedByServicePerfdataCommand->contains($l)) { // only add it if the **same** object is not already associated
-			$this->doAddNagiosMainConfigurationRelatedByServicePerfdataCommand($l);
+			$this->collNagiosMainConfigurationsRelatedByServicePerfdataCommand[]= $l;
+			$l->setNagiosCommandRelatedByServicePerfdataCommand($this);
 		}
-
-		return $this;
-	}
-
-	/**
-	 * @param	NagiosMainConfigurationRelatedByServicePerfdataCommand $nagiosMainConfigurationRelatedByServicePerfdataCommand The nagiosMainConfigurationRelatedByServicePerfdataCommand object to add.
-	 */
-	protected function doAddNagiosMainConfigurationRelatedByServicePerfdataCommand($nagiosMainConfigurationRelatedByServicePerfdataCommand)
-	{
-		$this->collNagiosMainConfigurationsRelatedByServicePerfdataCommand[]= $nagiosMainConfigurationRelatedByServicePerfdataCommand;
-		$nagiosMainConfigurationRelatedByServicePerfdataCommand->setNagiosCommandRelatedByServicePerfdataCommand($this);
 	}
 
 	/**
@@ -4280,30 +3522,6 @@ abstract class BaseNagiosCommand extends BaseObject  implements Persistent
 	}
 
 	/**
-	 * Sets a collection of NagiosMainConfigurationRelatedByHostPerfdataFileProcessingCommand objects related by a one-to-many relationship
-	 * to the current object.
-	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
-	 * and new objects from the given Propel collection.
-	 *
-	 * @param      PropelCollection $nagiosMainConfigurationsRelatedByHostPerfdataFileProcessingCommand A Propel collection.
-	 * @param      PropelPDO $con Optional connection object
-	 */
-	public function setNagiosMainConfigurationsRelatedByHostPerfdataFileProcessingCommand(PropelCollection $nagiosMainConfigurationsRelatedByHostPerfdataFileProcessingCommand, PropelPDO $con = null)
-	{
-		$this->nagiosMainConfigurationsRelatedByHostPerfdataFileProcessingCommandScheduledForDeletion = $this->getNagiosMainConfigurationsRelatedByHostPerfdataFileProcessingCommand(new Criteria(), $con)->diff($nagiosMainConfigurationsRelatedByHostPerfdataFileProcessingCommand);
-
-		foreach ($nagiosMainConfigurationsRelatedByHostPerfdataFileProcessingCommand as $nagiosMainConfigurationRelatedByHostPerfdataFileProcessingCommand) {
-			// Fix issue with collection modified by reference
-			if ($nagiosMainConfigurationRelatedByHostPerfdataFileProcessingCommand->isNew()) {
-				$nagiosMainConfigurationRelatedByHostPerfdataFileProcessingCommand->setNagiosCommandRelatedByHostPerfdataFileProcessingCommand($this);
-			}
-			$this->addNagiosMainConfigurationRelatedByHostPerfdataFileProcessingCommand($nagiosMainConfigurationRelatedByHostPerfdataFileProcessingCommand);
-		}
-
-		$this->collNagiosMainConfigurationsRelatedByHostPerfdataFileProcessingCommand = $nagiosMainConfigurationsRelatedByHostPerfdataFileProcessingCommand;
-	}
-
-	/**
 	 * Returns the number of related NagiosMainConfiguration objects.
 	 *
 	 * @param      Criteria $criteria
@@ -4336,7 +3554,8 @@ abstract class BaseNagiosCommand extends BaseObject  implements Persistent
 	 * through the NagiosMainConfiguration foreign key attribute.
 	 *
 	 * @param      NagiosMainConfiguration $l NagiosMainConfiguration
-	 * @return     NagiosCommand The current object (for fluent API support)
+	 * @return     void
+	 * @throws     PropelException
 	 */
 	public function addNagiosMainConfigurationRelatedByHostPerfdataFileProcessingCommand(NagiosMainConfiguration $l)
 	{
@@ -4344,19 +3563,9 @@ abstract class BaseNagiosCommand extends BaseObject  implements Persistent
 			$this->initNagiosMainConfigurationsRelatedByHostPerfdataFileProcessingCommand();
 		}
 		if (!$this->collNagiosMainConfigurationsRelatedByHostPerfdataFileProcessingCommand->contains($l)) { // only add it if the **same** object is not already associated
-			$this->doAddNagiosMainConfigurationRelatedByHostPerfdataFileProcessingCommand($l);
+			$this->collNagiosMainConfigurationsRelatedByHostPerfdataFileProcessingCommand[]= $l;
+			$l->setNagiosCommandRelatedByHostPerfdataFileProcessingCommand($this);
 		}
-
-		return $this;
-	}
-
-	/**
-	 * @param	NagiosMainConfigurationRelatedByHostPerfdataFileProcessingCommand $nagiosMainConfigurationRelatedByHostPerfdataFileProcessingCommand The nagiosMainConfigurationRelatedByHostPerfdataFileProcessingCommand object to add.
-	 */
-	protected function doAddNagiosMainConfigurationRelatedByHostPerfdataFileProcessingCommand($nagiosMainConfigurationRelatedByHostPerfdataFileProcessingCommand)
-	{
-		$this->collNagiosMainConfigurationsRelatedByHostPerfdataFileProcessingCommand[]= $nagiosMainConfigurationRelatedByHostPerfdataFileProcessingCommand;
-		$nagiosMainConfigurationRelatedByHostPerfdataFileProcessingCommand->setNagiosCommandRelatedByHostPerfdataFileProcessingCommand($this);
 	}
 
 	/**
@@ -4428,30 +3637,6 @@ abstract class BaseNagiosCommand extends BaseObject  implements Persistent
 	}
 
 	/**
-	 * Sets a collection of NagiosMainConfigurationRelatedByServicePerfdataFileProcessingCommand objects related by a one-to-many relationship
-	 * to the current object.
-	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
-	 * and new objects from the given Propel collection.
-	 *
-	 * @param      PropelCollection $nagiosMainConfigurationsRelatedByServicePerfdataFileProcessingCommand A Propel collection.
-	 * @param      PropelPDO $con Optional connection object
-	 */
-	public function setNagiosMainConfigurationsRelatedByServicePerfdataFileProcessingCommand(PropelCollection $nagiosMainConfigurationsRelatedByServicePerfdataFileProcessingCommand, PropelPDO $con = null)
-	{
-		$this->nagiosMainConfigurationsRelatedByServicePerfdataFileProcessingCommandScheduledForDeletion = $this->getNagiosMainConfigurationsRelatedByServicePerfdataFileProcessingCommand(new Criteria(), $con)->diff($nagiosMainConfigurationsRelatedByServicePerfdataFileProcessingCommand);
-
-		foreach ($nagiosMainConfigurationsRelatedByServicePerfdataFileProcessingCommand as $nagiosMainConfigurationRelatedByServicePerfdataFileProcessingCommand) {
-			// Fix issue with collection modified by reference
-			if ($nagiosMainConfigurationRelatedByServicePerfdataFileProcessingCommand->isNew()) {
-				$nagiosMainConfigurationRelatedByServicePerfdataFileProcessingCommand->setNagiosCommandRelatedByServicePerfdataFileProcessingCommand($this);
-			}
-			$this->addNagiosMainConfigurationRelatedByServicePerfdataFileProcessingCommand($nagiosMainConfigurationRelatedByServicePerfdataFileProcessingCommand);
-		}
-
-		$this->collNagiosMainConfigurationsRelatedByServicePerfdataFileProcessingCommand = $nagiosMainConfigurationsRelatedByServicePerfdataFileProcessingCommand;
-	}
-
-	/**
 	 * Returns the number of related NagiosMainConfiguration objects.
 	 *
 	 * @param      Criteria $criteria
@@ -4484,7 +3669,8 @@ abstract class BaseNagiosCommand extends BaseObject  implements Persistent
 	 * through the NagiosMainConfiguration foreign key attribute.
 	 *
 	 * @param      NagiosMainConfiguration $l NagiosMainConfiguration
-	 * @return     NagiosCommand The current object (for fluent API support)
+	 * @return     void
+	 * @throws     PropelException
 	 */
 	public function addNagiosMainConfigurationRelatedByServicePerfdataFileProcessingCommand(NagiosMainConfiguration $l)
 	{
@@ -4492,19 +3678,9 @@ abstract class BaseNagiosCommand extends BaseObject  implements Persistent
 			$this->initNagiosMainConfigurationsRelatedByServicePerfdataFileProcessingCommand();
 		}
 		if (!$this->collNagiosMainConfigurationsRelatedByServicePerfdataFileProcessingCommand->contains($l)) { // only add it if the **same** object is not already associated
-			$this->doAddNagiosMainConfigurationRelatedByServicePerfdataFileProcessingCommand($l);
+			$this->collNagiosMainConfigurationsRelatedByServicePerfdataFileProcessingCommand[]= $l;
+			$l->setNagiosCommandRelatedByServicePerfdataFileProcessingCommand($this);
 		}
-
-		return $this;
-	}
-
-	/**
-	 * @param	NagiosMainConfigurationRelatedByServicePerfdataFileProcessingCommand $nagiosMainConfigurationRelatedByServicePerfdataFileProcessingCommand The nagiosMainConfigurationRelatedByServicePerfdataFileProcessingCommand object to add.
-	 */
-	protected function doAddNagiosMainConfigurationRelatedByServicePerfdataFileProcessingCommand($nagiosMainConfigurationRelatedByServicePerfdataFileProcessingCommand)
-	{
-		$this->collNagiosMainConfigurationsRelatedByServicePerfdataFileProcessingCommand[]= $nagiosMainConfigurationRelatedByServicePerfdataFileProcessingCommand;
-		$nagiosMainConfigurationRelatedByServicePerfdataFileProcessingCommand->setNagiosCommandRelatedByServicePerfdataFileProcessingCommand($this);
 	}
 
 	/**
@@ -4576,30 +3752,6 @@ abstract class BaseNagiosCommand extends BaseObject  implements Persistent
 	}
 
 	/**
-	 * Sets a collection of NagiosMainConfigurationRelatedByGlobalServiceEventHandler objects related by a one-to-many relationship
-	 * to the current object.
-	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
-	 * and new objects from the given Propel collection.
-	 *
-	 * @param      PropelCollection $nagiosMainConfigurationsRelatedByGlobalServiceEventHandler A Propel collection.
-	 * @param      PropelPDO $con Optional connection object
-	 */
-	public function setNagiosMainConfigurationsRelatedByGlobalServiceEventHandler(PropelCollection $nagiosMainConfigurationsRelatedByGlobalServiceEventHandler, PropelPDO $con = null)
-	{
-		$this->nagiosMainConfigurationsRelatedByGlobalServiceEventHandlerScheduledForDeletion = $this->getNagiosMainConfigurationsRelatedByGlobalServiceEventHandler(new Criteria(), $con)->diff($nagiosMainConfigurationsRelatedByGlobalServiceEventHandler);
-
-		foreach ($nagiosMainConfigurationsRelatedByGlobalServiceEventHandler as $nagiosMainConfigurationRelatedByGlobalServiceEventHandler) {
-			// Fix issue with collection modified by reference
-			if ($nagiosMainConfigurationRelatedByGlobalServiceEventHandler->isNew()) {
-				$nagiosMainConfigurationRelatedByGlobalServiceEventHandler->setNagiosCommandRelatedByGlobalServiceEventHandler($this);
-			}
-			$this->addNagiosMainConfigurationRelatedByGlobalServiceEventHandler($nagiosMainConfigurationRelatedByGlobalServiceEventHandler);
-		}
-
-		$this->collNagiosMainConfigurationsRelatedByGlobalServiceEventHandler = $nagiosMainConfigurationsRelatedByGlobalServiceEventHandler;
-	}
-
-	/**
 	 * Returns the number of related NagiosMainConfiguration objects.
 	 *
 	 * @param      Criteria $criteria
@@ -4632,7 +3784,8 @@ abstract class BaseNagiosCommand extends BaseObject  implements Persistent
 	 * through the NagiosMainConfiguration foreign key attribute.
 	 *
 	 * @param      NagiosMainConfiguration $l NagiosMainConfiguration
-	 * @return     NagiosCommand The current object (for fluent API support)
+	 * @return     void
+	 * @throws     PropelException
 	 */
 	public function addNagiosMainConfigurationRelatedByGlobalServiceEventHandler(NagiosMainConfiguration $l)
 	{
@@ -4640,19 +3793,9 @@ abstract class BaseNagiosCommand extends BaseObject  implements Persistent
 			$this->initNagiosMainConfigurationsRelatedByGlobalServiceEventHandler();
 		}
 		if (!$this->collNagiosMainConfigurationsRelatedByGlobalServiceEventHandler->contains($l)) { // only add it if the **same** object is not already associated
-			$this->doAddNagiosMainConfigurationRelatedByGlobalServiceEventHandler($l);
+			$this->collNagiosMainConfigurationsRelatedByGlobalServiceEventHandler[]= $l;
+			$l->setNagiosCommandRelatedByGlobalServiceEventHandler($this);
 		}
-
-		return $this;
-	}
-
-	/**
-	 * @param	NagiosMainConfigurationRelatedByGlobalServiceEventHandler $nagiosMainConfigurationRelatedByGlobalServiceEventHandler The nagiosMainConfigurationRelatedByGlobalServiceEventHandler object to add.
-	 */
-	protected function doAddNagiosMainConfigurationRelatedByGlobalServiceEventHandler($nagiosMainConfigurationRelatedByGlobalServiceEventHandler)
-	{
-		$this->collNagiosMainConfigurationsRelatedByGlobalServiceEventHandler[]= $nagiosMainConfigurationRelatedByGlobalServiceEventHandler;
-		$nagiosMainConfigurationRelatedByGlobalServiceEventHandler->setNagiosCommandRelatedByGlobalServiceEventHandler($this);
 	}
 
 	/**
@@ -4724,30 +3867,6 @@ abstract class BaseNagiosCommand extends BaseObject  implements Persistent
 	}
 
 	/**
-	 * Sets a collection of NagiosMainConfigurationRelatedByGlobalHostEventHandler objects related by a one-to-many relationship
-	 * to the current object.
-	 * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
-	 * and new objects from the given Propel collection.
-	 *
-	 * @param      PropelCollection $nagiosMainConfigurationsRelatedByGlobalHostEventHandler A Propel collection.
-	 * @param      PropelPDO $con Optional connection object
-	 */
-	public function setNagiosMainConfigurationsRelatedByGlobalHostEventHandler(PropelCollection $nagiosMainConfigurationsRelatedByGlobalHostEventHandler, PropelPDO $con = null)
-	{
-		$this->nagiosMainConfigurationsRelatedByGlobalHostEventHandlerScheduledForDeletion = $this->getNagiosMainConfigurationsRelatedByGlobalHostEventHandler(new Criteria(), $con)->diff($nagiosMainConfigurationsRelatedByGlobalHostEventHandler);
-
-		foreach ($nagiosMainConfigurationsRelatedByGlobalHostEventHandler as $nagiosMainConfigurationRelatedByGlobalHostEventHandler) {
-			// Fix issue with collection modified by reference
-			if ($nagiosMainConfigurationRelatedByGlobalHostEventHandler->isNew()) {
-				$nagiosMainConfigurationRelatedByGlobalHostEventHandler->setNagiosCommandRelatedByGlobalHostEventHandler($this);
-			}
-			$this->addNagiosMainConfigurationRelatedByGlobalHostEventHandler($nagiosMainConfigurationRelatedByGlobalHostEventHandler);
-		}
-
-		$this->collNagiosMainConfigurationsRelatedByGlobalHostEventHandler = $nagiosMainConfigurationsRelatedByGlobalHostEventHandler;
-	}
-
-	/**
 	 * Returns the number of related NagiosMainConfiguration objects.
 	 *
 	 * @param      Criteria $criteria
@@ -4780,7 +3899,8 @@ abstract class BaseNagiosCommand extends BaseObject  implements Persistent
 	 * through the NagiosMainConfiguration foreign key attribute.
 	 *
 	 * @param      NagiosMainConfiguration $l NagiosMainConfiguration
-	 * @return     NagiosCommand The current object (for fluent API support)
+	 * @return     void
+	 * @throws     PropelException
 	 */
 	public function addNagiosMainConfigurationRelatedByGlobalHostEventHandler(NagiosMainConfiguration $l)
 	{
@@ -4788,19 +3908,9 @@ abstract class BaseNagiosCommand extends BaseObject  implements Persistent
 			$this->initNagiosMainConfigurationsRelatedByGlobalHostEventHandler();
 		}
 		if (!$this->collNagiosMainConfigurationsRelatedByGlobalHostEventHandler->contains($l)) { // only add it if the **same** object is not already associated
-			$this->doAddNagiosMainConfigurationRelatedByGlobalHostEventHandler($l);
+			$this->collNagiosMainConfigurationsRelatedByGlobalHostEventHandler[]= $l;
+			$l->setNagiosCommandRelatedByGlobalHostEventHandler($this);
 		}
-
-		return $this;
-	}
-
-	/**
-	 * @param	NagiosMainConfigurationRelatedByGlobalHostEventHandler $nagiosMainConfigurationRelatedByGlobalHostEventHandler The nagiosMainConfigurationRelatedByGlobalHostEventHandler object to add.
-	 */
-	protected function doAddNagiosMainConfigurationRelatedByGlobalHostEventHandler($nagiosMainConfigurationRelatedByGlobalHostEventHandler)
-	{
-		$this->collNagiosMainConfigurationsRelatedByGlobalHostEventHandler[]= $nagiosMainConfigurationRelatedByGlobalHostEventHandler;
-		$nagiosMainConfigurationRelatedByGlobalHostEventHandler->setNagiosCommandRelatedByGlobalHostEventHandler($this);
 	}
 
 	/**
@@ -4997,6 +4107,25 @@ abstract class BaseNagiosCommand extends BaseObject  implements Persistent
 	public function __toString()
 	{
 		return (string) $this->exportTo(NagiosCommandPeer::DEFAULT_STRING_FORMAT);
+	}
+
+	/**
+	 * Catches calls to virtual methods
+	 */
+	public function __call($name, $params)
+	{
+		if (preg_match('/get(\w+)/', $name, $matches)) {
+			$virtualColumn = $matches[1];
+			if ($this->hasVirtualColumn($virtualColumn)) {
+				return $this->getVirtualColumn($virtualColumn);
+			}
+			// no lcfirst in php<5.3...
+			$virtualColumn[0] = strtolower($virtualColumn[0]);
+			if ($this->hasVirtualColumn($virtualColumn)) {
+				return $this->getVirtualColumn($virtualColumn);
+			}
+		}
+		return parent::__call($name, $params);
 	}
 
 } // BaseNagiosCommand

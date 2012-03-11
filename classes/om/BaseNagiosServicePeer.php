@@ -24,7 +24,7 @@ abstract class BaseNagiosServicePeer {
 
 	/** the related TableMap class for this table */
 	const TM_CLASS = 'NagiosServiceTableMap';
-
+	
 	/** The total number of columns. */
 	const NUM_COLUMNS = 51;
 
@@ -189,7 +189,7 @@ abstract class BaseNagiosServicePeer {
 
 	/** The default string format for model objects of the related table **/
 	const DEFAULT_STRING_FORMAT = 'YAML';
-
+	
 	/**
 	 * An identiy map to hold any loaded instances of NagiosService objects.
 	 * This must be public so that other peer classes can access this when hydrating from JOIN
@@ -594,28 +594,28 @@ abstract class BaseNagiosServicePeer {
 	 */
 	public static function clearRelatedInstancePool()
 	{
-		// Invalidate objects in NagiosServiceCheckCommandParameterPeer instance pool,
+		// Invalidate objects in NagiosServiceCheckCommandParameterPeer instance pool, 
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		NagiosServiceCheckCommandParameterPeer::clearInstancePool();
-		// Invalidate objects in NagiosServiceGroupMemberPeer instance pool,
+		// Invalidate objects in NagiosServiceGroupMemberPeer instance pool, 
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		NagiosServiceGroupMemberPeer::clearInstancePool();
-		// Invalidate objects in NagiosServiceContactMemberPeer instance pool,
+		// Invalidate objects in NagiosServiceContactMemberPeer instance pool, 
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		NagiosServiceContactMemberPeer::clearInstancePool();
-		// Invalidate objects in NagiosServiceContactGroupMemberPeer instance pool,
+		// Invalidate objects in NagiosServiceContactGroupMemberPeer instance pool, 
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		NagiosServiceContactGroupMemberPeer::clearInstancePool();
-		// Invalidate objects in NagiosDependencyPeer instance pool,
+		// Invalidate objects in NagiosDependencyPeer instance pool, 
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		NagiosDependencyPeer::clearInstancePool();
-		// Invalidate objects in NagiosDependencyTargetPeer instance pool,
+		// Invalidate objects in NagiosDependencyTargetPeer instance pool, 
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		NagiosDependencyTargetPeer::clearInstancePool();
-		// Invalidate objects in NagiosEscalationPeer instance pool,
+		// Invalidate objects in NagiosEscalationPeer instance pool, 
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		NagiosEscalationPeer::clearInstancePool();
-		// Invalidate objects in NagiosServiceTemplateInheritancePeer instance pool,
+		// Invalidate objects in NagiosServiceTemplateInheritancePeer instance pool, 
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		NagiosServiceTemplateInheritancePeer::clearInstancePool();
 	}
@@ -640,7 +640,7 @@ abstract class BaseNagiosServicePeer {
 	}
 
 	/**
-	 * Retrieves the primary key from the DB resultset row
+	 * Retrieves the primary key from the DB resultset row 
 	 * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
 	 * a multi-column primary key, an array of the primary key columns will be returned.
 	 *
@@ -737,9 +737,9 @@ abstract class BaseNagiosServicePeer {
 		if (!$criteria->hasSelectClause()) {
 			NagiosServicePeer::addSelectColumns($criteria);
 		}
-
+		
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-
+		
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -787,9 +787,9 @@ abstract class BaseNagiosServicePeer {
 		if (!$criteria->hasSelectClause()) {
 			NagiosServicePeer::addSelectColumns($criteria);
 		}
-
+		
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-
+		
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -837,9 +837,9 @@ abstract class BaseNagiosServicePeer {
 		if (!$criteria->hasSelectClause()) {
 			NagiosServicePeer::addSelectColumns($criteria);
 		}
-
+		
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-
+		
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -887,9 +887,9 @@ abstract class BaseNagiosServicePeer {
 		if (!$criteria->hasSelectClause()) {
 			NagiosServicePeer::addSelectColumns($criteria);
 		}
-
+		
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-
+		
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -937,9 +937,9 @@ abstract class BaseNagiosServicePeer {
 		if (!$criteria->hasSelectClause()) {
 			NagiosServicePeer::addSelectColumns($criteria);
 		}
-
+		
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-
+		
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -987,9 +987,9 @@ abstract class BaseNagiosServicePeer {
 		if (!$criteria->hasSelectClause()) {
 			NagiosServicePeer::addSelectColumns($criteria);
 		}
-
+		
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-
+		
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -1037,9 +1037,9 @@ abstract class BaseNagiosServicePeer {
 		if (!$criteria->hasSelectClause()) {
 			NagiosServicePeer::addSelectColumns($criteria);
 		}
-
+		
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-
+		
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -1549,9 +1549,9 @@ abstract class BaseNagiosServicePeer {
 		if (!$criteria->hasSelectClause()) {
 			NagiosServicePeer::addSelectColumns($criteria);
 		}
-
+		
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-
+		
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -1809,7 +1809,7 @@ abstract class BaseNagiosServicePeer {
 		// it will be impossible for the BasePeer::createSelectSql() method to determine which
 		// tables go into the FROM clause.
 		$criteria->setPrimaryTableName(NagiosServicePeer::TABLE_NAME);
-
+		
 		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
 			$criteria->setDistinct();
 		}
@@ -1817,9 +1817,9 @@ abstract class BaseNagiosServicePeer {
 		if (!$criteria->hasSelectClause()) {
 			NagiosServicePeer::addSelectColumns($criteria);
 		}
-
+		
 		$criteria->clearOrderByColumns(); // ORDER BY should not affect count
-
+		
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -1869,7 +1869,7 @@ abstract class BaseNagiosServicePeer {
 		// it will be impossible for the BasePeer::createSelectSql() method to determine which
 		// tables go into the FROM clause.
 		$criteria->setPrimaryTableName(NagiosServicePeer::TABLE_NAME);
-
+		
 		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
 			$criteria->setDistinct();
 		}
@@ -1877,9 +1877,9 @@ abstract class BaseNagiosServicePeer {
 		if (!$criteria->hasSelectClause()) {
 			NagiosServicePeer::addSelectColumns($criteria);
 		}
-
+		
 		$criteria->clearOrderByColumns(); // ORDER BY should not affect count
-
+		
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -1929,7 +1929,7 @@ abstract class BaseNagiosServicePeer {
 		// it will be impossible for the BasePeer::createSelectSql() method to determine which
 		// tables go into the FROM clause.
 		$criteria->setPrimaryTableName(NagiosServicePeer::TABLE_NAME);
-
+		
 		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
 			$criteria->setDistinct();
 		}
@@ -1937,9 +1937,9 @@ abstract class BaseNagiosServicePeer {
 		if (!$criteria->hasSelectClause()) {
 			NagiosServicePeer::addSelectColumns($criteria);
 		}
-
+		
 		$criteria->clearOrderByColumns(); // ORDER BY should not affect count
-
+		
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -1989,7 +1989,7 @@ abstract class BaseNagiosServicePeer {
 		// it will be impossible for the BasePeer::createSelectSql() method to determine which
 		// tables go into the FROM clause.
 		$criteria->setPrimaryTableName(NagiosServicePeer::TABLE_NAME);
-
+		
 		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
 			$criteria->setDistinct();
 		}
@@ -1997,9 +1997,9 @@ abstract class BaseNagiosServicePeer {
 		if (!$criteria->hasSelectClause()) {
 			NagiosServicePeer::addSelectColumns($criteria);
 		}
-
+		
 		$criteria->clearOrderByColumns(); // ORDER BY should not affect count
-
+		
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -2047,7 +2047,7 @@ abstract class BaseNagiosServicePeer {
 		// it will be impossible for the BasePeer::createSelectSql() method to determine which
 		// tables go into the FROM clause.
 		$criteria->setPrimaryTableName(NagiosServicePeer::TABLE_NAME);
-
+		
 		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
 			$criteria->setDistinct();
 		}
@@ -2055,9 +2055,9 @@ abstract class BaseNagiosServicePeer {
 		if (!$criteria->hasSelectClause()) {
 			NagiosServicePeer::addSelectColumns($criteria);
 		}
-
+		
 		$criteria->clearOrderByColumns(); // ORDER BY should not affect count
-
+		
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -2105,7 +2105,7 @@ abstract class BaseNagiosServicePeer {
 		// it will be impossible for the BasePeer::createSelectSql() method to determine which
 		// tables go into the FROM clause.
 		$criteria->setPrimaryTableName(NagiosServicePeer::TABLE_NAME);
-
+		
 		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
 			$criteria->setDistinct();
 		}
@@ -2113,9 +2113,9 @@ abstract class BaseNagiosServicePeer {
 		if (!$criteria->hasSelectClause()) {
 			NagiosServicePeer::addSelectColumns($criteria);
 		}
-
+		
 		$criteria->clearOrderByColumns(); // ORDER BY should not affect count
-
+		
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
@@ -2163,7 +2163,7 @@ abstract class BaseNagiosServicePeer {
 		// it will be impossible for the BasePeer::createSelectSql() method to determine which
 		// tables go into the FROM clause.
 		$criteria->setPrimaryTableName(NagiosServicePeer::TABLE_NAME);
-
+		
 		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
 			$criteria->setDistinct();
 		}
@@ -2171,9 +2171,9 @@ abstract class BaseNagiosServicePeer {
 		if (!$criteria->hasSelectClause()) {
 			NagiosServicePeer::addSelectColumns($criteria);
 		}
-
+		
 		$criteria->clearOrderByColumns(); // ORDER BY should not affect count
-
+		
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
 
