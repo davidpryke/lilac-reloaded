@@ -6,6 +6,7 @@ class NagiosHostImporter extends NagiosImporter {
 
 	private $regexValidators = array('host_name' => '',
 			'alias' => '',
+			'description' => '',
 			'display_name' => '',
 			'address' => '',
 			'parents' => '',
@@ -411,8 +412,8 @@ class NagiosHostImporter extends NagiosImporter {
 					}
 				}
 				else {
-					if($isTemplate && $key == "value")
-						$key = "description";
+					//if($isTemplate && $key == "value")
+					//	$key = "description";
 					call_user_func(array($obj, $this->fieldMethods[$key]), $value);
 				}
 
