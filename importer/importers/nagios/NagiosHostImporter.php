@@ -107,10 +107,10 @@ class NagiosHostImporter extends NagiosImporter {
 
 		$values = $segment->getValues();
 		if(isset($values['name'])) {
-			$job->addLogEntry("This Importer is for a Host Template: " . $values['name'][0]['value']);
+			$job->addNotice("This Importer is for a Host Template: " . $values['name'][0]['value']);
 		}
 		else if(isset($values['host_name'])) {
-			$job->addLogEntry("This Importer is for a Host: " . $values['host_name'][0]['value']);
+			$job->addNotice("This Importer is for a Host: " . $values['host_name'][0]['value']);
 		}
 		foreach($values as $key => $entry) {
 			foreach($entry as $lineValue) {
