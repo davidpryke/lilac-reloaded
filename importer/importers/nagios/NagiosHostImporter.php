@@ -404,6 +404,10 @@ class NagiosHostImporter extends NagiosImporter {
 					}
 					continue;
 				}
+				
+				if($isTemplate && $key == "value")
+					$key = "description";
+				
 				// Okay, let's check that the method DOES exist
 				if(!method_exists($obj, $this->fieldMethods[$key])) {
 					$job->addError("Method " . $this->fieldMethods[$key] . " does not exist for variable: " . $key . " on line " . $lineNum . " in file " . $fileName);
@@ -412,8 +416,6 @@ class NagiosHostImporter extends NagiosImporter {
 					}
 				}
 				else {
-					//if($isTemplate && $key == "value")
-					//	$key = "description";
 					call_user_func(array($obj, $this->fieldMethods[$key]), $value);
 				}
 
