@@ -429,7 +429,12 @@ class NagiosImportEngine extends ImportEngine {
 				continue;
 			}
 			if (preg_match('/^\s*([^=]+)\s*=\s*([^#;]+)/', $line, $regs)) {
-				$values = explode(',', $regs[2]);
+				if ( "check_command" != trim($regs[1]) ) {
+					$values = explode(',', $regs[2]);
+				} else {
+					$values = array($regs[2]);
+				}
+
 				foreach($values as $val) {
 					if(trim($val) != '') {
 						$segment->add($counter, trim($regs[1]), trim($val), $line);
