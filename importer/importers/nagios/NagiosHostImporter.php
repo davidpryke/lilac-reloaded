@@ -405,7 +405,7 @@ class NagiosHostImporter extends NagiosImporter {
 					continue;
 				}
 				
-				if($isTemplate && $key == "value")
+				if($isTemplate && $key == "alias")
 					$key = "description";
 				
 				// Okay, let's check that the method DOES exist
