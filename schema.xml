@@ -3,9 +3,8 @@
 <database name="lilac" defaultIdMethod="native">
 
     <table name="lilac_configuration" description="Lilac Configuration">
-        <column name="id" type="integer" primaryKey="true" autoIncrement="true"
-         required="true" />
-        <column name="version" type="varchar" size="255" />
+        <column name="key" type="varchar" size="255" primaryKey="true" />
+        <column name="value" type="varchar" size="255" />
     </table>
 
 	<table name="import_job" description="Import Job Information">

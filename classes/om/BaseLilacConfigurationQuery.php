@@ -6,11 +6,11 @@
  *
  * Lilac Configuration
  *
- * @method     LilacConfigurationQuery orderById($order = Criteria::ASC) Order by the id column
- * @method     LilacConfigurationQuery orderByVersion($order = Criteria::ASC) Order by the version column
+ * @method     LilacConfigurationQuery orderByKey($order = Criteria::ASC) Order by the key column
+ * @method     LilacConfigurationQuery orderByValue($order = Criteria::ASC) Order by the value column
  *
- * @method     LilacConfigurationQuery groupById() Group by the id column
- * @method     LilacConfigurationQuery groupByVersion() Group by the version column
+ * @method     LilacConfigurationQuery groupByKey() Group by the key column
+ * @method     LilacConfigurationQuery groupByValue() Group by the value column
  *
  * @method     LilacConfigurationQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     LilacConfigurationQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
@@ -19,11 +19,11 @@
  * @method     LilacConfiguration findOne(PropelPDO $con = null) Return the first LilacConfiguration matching the query
  * @method     LilacConfiguration findOneOrCreate(PropelPDO $con = null) Return the first LilacConfiguration matching the query, or a new LilacConfiguration object populated from the query conditions when no match is found
  *
- * @method     LilacConfiguration findOneById(int $id) Return the first LilacConfiguration filtered by the id column
- * @method     LilacConfiguration findOneByVersion(string $version) Return the first LilacConfiguration filtered by the version column
+ * @method     LilacConfiguration findOneByKey(string $key) Return the first LilacConfiguration filtered by the key column
+ * @method     LilacConfiguration findOneByValue(string $value) Return the first LilacConfiguration filtered by the value column
  *
- * @method     array findById(int $id) Return LilacConfiguration objects filtered by the id column
- * @method     array findByVersion(string $version) Return LilacConfiguration objects filtered by the version column
+ * @method     array findByKey(string $key) Return LilacConfiguration objects filtered by the key column
+ * @method     array findByValue(string $value) Return LilacConfiguration objects filtered by the value column
  *
  * @package    propel.generator..om
  */
@@ -118,7 +118,7 @@ abstract class BaseLilacConfigurationQuery extends ModelCriteria
 	 */
 	public function filterByPrimaryKey($key)
 	{
-		return $this->addUsingAlias(LilacConfigurationPeer::ID, $key, Criteria::EQUAL);
+		return $this->addUsingAlias(LilacConfigurationPeer::KEY, $key, Criteria::EQUAL);
 	}
 
 	/**
@@ -130,61 +130,63 @@ abstract class BaseLilacConfigurationQuery extends ModelCriteria
 	 */
 	public function filterByPrimaryKeys($keys)
 	{
-		return $this->addUsingAlias(LilacConfigurationPeer::ID, $keys, Criteria::IN);
+		return $this->addUsingAlias(LilacConfigurationPeer::KEY, $keys, Criteria::IN);
 	}
 
 	/**
-	 * Filter the query on the id column
+	 * Filter the query on the key column
 	 * 
 	 * Example usage:
 	 * <code>
-	 * $query->filterById(1234); // WHERE id = 1234
-	 * $query->filterById(array(12, 34)); // WHERE id IN (12, 34)
-	 * $query->filterById(array('min' => 12)); // WHERE id > 12
+	 * $query->filterByKey('fooValue');   // WHERE key = 'fooValue'
+	 * $query->filterByKey('%fooValue%'); // WHERE key LIKE '%fooValue%'
 	 * </code>
 	 *
-	 * @param     mixed $id The value to use as filter.
-	 *              Use scalar values for equality.
-	 *              Use array values for in_array() equivalent.
-	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
-	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-	 *
-	 * @return    LilacConfigurationQuery The current query, for fluid interface
-	 */
-	public function filterById($id = null, $comparison = null)
-	{
-		if (is_array($id) && null === $comparison) {
-			$comparison = Criteria::IN;
-		}
-		return $this->addUsingAlias(LilacConfigurationPeer::ID, $id, $comparison);
-	}
-
-	/**
-	 * Filter the query on the version column
-	 * 
-	 * Example usage:
-	 * <code>
-	 * $query->filterByVersion('fooValue');   // WHERE version = 'fooValue'
-	 * $query->filterByVersion('%fooValue%'); // WHERE version LIKE '%fooValue%'
-	 * </code>
-	 *
-	 * @param     string $version The value to use as filter.
+	 * @param     string $key The value to use as filter.
 	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    LilacConfigurationQuery The current query, for fluid interface
 	 */
-	public function filterByVersion($version = null, $comparison = null)
+	public function filterByKey($key = null, $comparison = null)
 	{
 		if (null === $comparison) {
-			if (is_array($version)) {
+			if (is_array($key)) {
 				$comparison = Criteria::IN;
-			} elseif (preg_match('/[\%\*]/', $version)) {
-				$version = str_replace('*', '%', $version);
+			} elseif (preg_match('/[\%\*]/', $key)) {
+				$key = str_replace('*', '%', $key);
 				$comparison = Criteria::LIKE;
 			}
 		}
-		return $this->addUsingAlias(LilacConfigurationPeer::VERSION, $version, $comparison);
+		return $this->addUsingAlias(LilacConfigurationPeer::KEY, $key, $comparison);
+	}
+
+	/**
+	 * Filter the query on the value column
+	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByValue('fooValue');   // WHERE value = 'fooValue'
+	 * $query->filterByValue('%fooValue%'); // WHERE value LIKE '%fooValue%'
+	 * </code>
+	 *
+	 * @param     string $value The value to use as filter.
+	 *              Accepts wildcards (* and % trigger a LIKE)
+	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 *
+	 * @return    LilacConfigurationQuery The current query, for fluid interface
+	 */
+	public function filterByValue($value = null, $comparison = null)
+	{
+		if (null === $comparison) {
+			if (is_array($value)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $value)) {
+				$value = str_replace('*', '%', $value);
+				$comparison = Criteria::LIKE;
+			}
+		}
+		return $this->addUsingAlias(LilacConfigurationPeer::VALUE, $value, $comparison);
 	}
 
 	/**
@@ -197,7 +199,7 @@ abstract class BaseLilacConfigurationQuery extends ModelCriteria
 	public function prune($lilacConfiguration = null)
 	{
 		if ($lilacConfiguration) {
-			$this->addUsingAlias(LilacConfigurationPeer::ID, $lilacConfiguration->getId(), Criteria::NOT_EQUAL);
+			$this->addUsingAlias(LilacConfigurationPeer::KEY, $lilacConfiguration->getKey(), Criteria::NOT_EQUAL);
 	  }
 	  
 		return $this;

@@ -34,11 +34,11 @@ abstract class BaseLilacConfigurationPeer {
 	/** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
 	const NUM_HYDRATE_COLUMNS = 2;
 
-	/** the column name for the ID field */
-	const ID = 'lilac_configuration.ID';
+	/** the column name for the KEY field */
+	const KEY = 'lilac_configuration.KEY';
 
-	/** the column name for the VERSION field */
-	const VERSION = 'lilac_configuration.VERSION';
+	/** the column name for the VALUE field */
+	const VALUE = 'lilac_configuration.VALUE';
 
 	/** The default string format for model objects of the related table **/
 	const DEFAULT_STRING_FORMAT = 'YAML';
@@ -59,11 +59,11 @@ abstract class BaseLilacConfigurationPeer {
 	 * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
 	 */
 	protected static $fieldNames = array (
-		BasePeer::TYPE_PHPNAME => array ('Id', 'Version', ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'version', ),
-		BasePeer::TYPE_COLNAME => array (self::ID, self::VERSION, ),
-		BasePeer::TYPE_RAW_COLNAME => array ('ID', 'VERSION', ),
-		BasePeer::TYPE_FIELDNAME => array ('id', 'version', ),
+		BasePeer::TYPE_PHPNAME => array ('Key', 'Value', ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('key', 'value', ),
+		BasePeer::TYPE_COLNAME => array (self::KEY, self::VALUE, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('KEY', 'VALUE', ),
+		BasePeer::TYPE_FIELDNAME => array ('key', 'value', ),
 		BasePeer::TYPE_NUM => array (0, 1, )
 	);
 
@@ -74,11 +74,11 @@ abstract class BaseLilacConfigurationPeer {
 	 * e.g. self::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
 	 */
 	protected static $fieldKeys = array (
-		BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'Version' => 1, ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'version' => 1, ),
-		BasePeer::TYPE_COLNAME => array (self::ID => 0, self::VERSION => 1, ),
-		BasePeer::TYPE_RAW_COLNAME => array ('ID' => 0, 'VERSION' => 1, ),
-		BasePeer::TYPE_FIELDNAME => array ('id' => 0, 'version' => 1, ),
+		BasePeer::TYPE_PHPNAME => array ('Key' => 0, 'Value' => 1, ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('key' => 0, 'value' => 1, ),
+		BasePeer::TYPE_COLNAME => array (self::KEY => 0, self::VALUE => 1, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('KEY' => 0, 'VALUE' => 1, ),
+		BasePeer::TYPE_FIELDNAME => array ('key' => 0, 'value' => 1, ),
 		BasePeer::TYPE_NUM => array (0, 1, )
 	);
 
@@ -151,11 +151,11 @@ abstract class BaseLilacConfigurationPeer {
 	public static function addSelectColumns(Criteria $criteria, $alias = null)
 	{
 		if (null === $alias) {
-			$criteria->addSelectColumn(LilacConfigurationPeer::ID);
-			$criteria->addSelectColumn(LilacConfigurationPeer::VERSION);
+			$criteria->addSelectColumn(LilacConfigurationPeer::KEY);
+			$criteria->addSelectColumn(LilacConfigurationPeer::VALUE);
 		} else {
-			$criteria->addSelectColumn($alias . '.ID');
-			$criteria->addSelectColumn($alias . '.VERSION');
+			$criteria->addSelectColumn($alias . '.KEY');
+			$criteria->addSelectColumn($alias . '.VALUE');
 		}
 	}
 
@@ -280,7 +280,7 @@ abstract class BaseLilacConfigurationPeer {
 	{
 		if (Propel::isInstancePoolingEnabled()) {
 			if ($key === null) {
-				$key = (string) $obj->getId();
+				$key = (string) $obj->getKey();
 			} // if key === null
 			self::$instances[$key] = $obj;
 		}
@@ -300,7 +300,7 @@ abstract class BaseLilacConfigurationPeer {
 	{
 		if (Propel::isInstancePoolingEnabled() && $value !== null) {
 			if (is_object($value) && $value instanceof LilacConfiguration) {
-				$key = (string) $value->getId();
+				$key = (string) $value->getKey();
 			} elseif (is_scalar($value)) {
 				// assume we've been passed a primary key
 				$key = (string) $value;
@@ -381,7 +381,7 @@ abstract class BaseLilacConfigurationPeer {
 	 */
 	public static function getPrimaryKeyFromRow($row, $startcol = 0)
 	{
-		return (int) $row[$startcol];
+		return (string) $row[$startcol];
 	}
 	
 	/**
@@ -502,10 +502,6 @@ abstract class BaseLilacConfigurationPeer {
 			$criteria = $values->buildCriteria(); // build Criteria from LilacConfiguration object
 		}
 
-		if ($criteria->containsKey(LilacConfigurationPeer::ID) && $criteria->keyContainsValue(LilacConfigurationPeer::ID) ) {
-			throw new PropelException('Cannot insert a value for auto-increment primary key ('.LilacConfigurationPeer::ID.')');
-		}
-
 
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
@@ -544,10 +540,10 @@ abstract class BaseLilacConfigurationPeer {
 		if ($values instanceof Criteria) {
 			$criteria = clone $values; // rename for clarity
 
-			$comparison = $criteria->getComparison(LilacConfigurationPeer::ID);
-			$value = $criteria->remove(LilacConfigurationPeer::ID);
+			$comparison = $criteria->getComparison(LilacConfigurationPeer::KEY);
+			$value = $criteria->remove(LilacConfigurationPeer::KEY);
 			if ($value) {
-				$selectCriteria->add(LilacConfigurationPeer::ID, $value, $comparison);
+				$selectCriteria->add(LilacConfigurationPeer::KEY, $value, $comparison);
 			} else {
 				$selectCriteria->setPrimaryTableName(LilacConfigurationPeer::TABLE_NAME);
 			}
@@ -624,7 +620,7 @@ abstract class BaseLilacConfigurationPeer {
 			$criteria = $values->buildPkeyCriteria();
 		} else { // it's a primary key, or an array of pks
 			$criteria = new Criteria(self::DATABASE_NAME);
-			$criteria->add(LilacConfigurationPeer::ID, (array) $values, Criteria::IN);
+			$criteria->add(LilacConfigurationPeer::KEY, (array) $values, Criteria::IN);
 			// invalidate the cache for this object(s)
 			foreach ((array) $values as $singleval) {
 				LilacConfigurationPeer::removeInstanceFromPool($singleval);
@@ -691,7 +687,7 @@ abstract class BaseLilacConfigurationPeer {
 	/**
 	 * Retrieve a single object by pkey.
 	 *
-	 * @param      int $pk the primary key.
+	 * @param      string $pk the primary key.
 	 * @param      PropelPDO $con the connection to use
 	 * @return     LilacConfiguration
 	 */
@@ -707,7 +703,7 @@ abstract class BaseLilacConfigurationPeer {
 		}
 
 		$criteria = new Criteria(LilacConfigurationPeer::DATABASE_NAME);
-		$criteria->add(LilacConfigurationPeer::ID, $pk);
+		$criteria->add(LilacConfigurationPeer::KEY, $pk);
 
 		$v = LilacConfigurationPeer::doSelect($criteria, $con);
 
@@ -733,7 +729,7 @@ abstract class BaseLilacConfigurationPeer {
 			$objs = array();
 		} else {
 			$criteria = new Criteria(LilacConfigurationPeer::DATABASE_NAME);
-			$criteria->add(LilacConfigurationPeer::ID, $pks, Criteria::IN);
+			$criteria->add(LilacConfigurationPeer::KEY, $pks, Criteria::IN);
 			$objs = LilacConfigurationPeer::doSelect($criteria, $con);
 		}
 		return $objs;

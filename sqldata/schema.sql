@@ -11,9 +11,9 @@ DROP TABLE IF EXISTS `lilac_configuration`;
 
 CREATE TABLE `lilac_configuration`
 (
-	`id` INTEGER NOT NULL AUTO_INCREMENT,
-	`version` VARCHAR(255),
-	PRIMARY KEY (`id`)
+	`key` VARCHAR(255) NOT NULL,
+	`value` VARCHAR(255),
+	PRIMARY KEY (`key`)
 ) ENGINE=MyISAM COMMENT='Lilac Configuration';
 
 -- ---------------------------------------------------------------------

@@ -223,7 +223,9 @@ if($stage == 2) {
 				if($ret == false) {
 					$error = "Failed to write to includes/lilac-conf.php.  Check that the web user can write to the includes directory and try again.";
 				}
-				$success = "Completed Database Setup.";
+				
+				if(!$error)
+					$success = "Completed Database Setup.";
 			}
 		}
 	}

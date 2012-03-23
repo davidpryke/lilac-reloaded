@@ -36,10 +36,10 @@ class LilacConfigurationTableMap extends TableMap
 		$this->setPhpName('LilacConfiguration');
 		$this->setClassname('LilacConfiguration');
 		$this->setPackage('');
-		$this->setUseIdGenerator(true);
+		$this->setUseIdGenerator(false);
 		// columns
-		$this->addPrimaryKey('ID', 'Id', 'INTEGER', true, null, null);
-		$this->addColumn('VERSION', 'Version', 'VARCHAR', false, 255, null);
+		$this->addPrimaryKey('KEY', 'Key', 'VARCHAR', true, 255, null);
+		$this->addColumn('VALUE', 'Value', 'VARCHAR', false, 255, null);
 		// validators
 	} // initialize()
 
