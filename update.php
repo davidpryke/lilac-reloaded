@@ -26,7 +26,7 @@ if($config_exists !== true)
 
 $cUpdate = new lilacUpdate();
 
-if($stage == 1) {
+if($stage == 1 && $_POST['update'] == "execute") {
 	$error = false;
 
 	if(!$error) {
@@ -62,22 +62,8 @@ if($stage == 1) {
 <div class="checks">
 
 	<?php
-	if($config_exists == false) {
-		?>
-	<div class="error">
-		<p>
-			The lilac-reloaded installer requires that the configuration file
-			at <em><?php echo dirname(__FILE__) . "/includes/lilac-conf.php";?> </em> is available.<br />
-			Please check if your installation is in a sane state.
-		</p>
-	</div>
-	<?php
-	}
-	?>
-
-	<?php
 	// PHP VERSION CHECK
-	if(version_compare(PHP_VERSION, '5.2.0', '<') || !class_exists("DateTime")) {
+	if($cUpdate->getCurrentDBVersion() <= 0) {
 		$fail = true;
 	}
 	else {
@@ -85,53 +71,34 @@ if($stage == 1) {
 	}
 	?>
 	<div class="<?php if($fail) echo "failure"; else echo "success";?>">
-		PHP Version 5.2 or Better</div>
+		Database Build-Version: <?php echo $cUpdate->getCurrentDBVersion();?></div>
 	<?php
 	if($fail) {
 		?>
 	<div class="error">
-		PHP Version 5.2 or greater is required for Lilac. Download the latest
-		at <a href="http://www.php.net">The PHP Group's Website</a> or check
-		with your operating system distribution. (Version 5.2 also provides
-		the class DateTime, which is also required).
-	</div>
-	<?php
-	}
-	if($fail) $fatalErrors = true;
-	?>
-	<?php
-	$fail = get_magic_quotes_gpc();
-	?>
-	<div class="<?php if($fail) echo "failure"; else echo "success";?>">
-		Magic Quotes GPC Set to Disabled</div>
-	<?php
-	if($fail) {
-		?>
-	<div class="error">
-		Magic Quotes GPC is set to enabled in your PHP configuration. Lilac
-		will not work with Magic Quotes GPC set to enabled. Please disable it
-		in your PHP configuration. Refer to <a
-			href="http://www.php.net/manual/en/security.magicquotes.disabling.php">Disabling
-			Magic Quotes</a> for more information.
+		Your database seems to have a deprecated structure, all updates are required.
 	</div>
 	<?php
 	}
 	?>
+	<div class="success">
+		Application Build-Version: <?php echo $cUpdate->getCurrentAPPVersion();?>
+	</div>
 </div>
 <?php
 if($fatalErrors) {
 	?>
 <div class="error">
 	You must resolve the issues above before continuing the installation. <a
-		href="install.php">Refresh The Page</a> to perform the checks again.
+		href="update.php">Refresh The Page</a> to perform the checks again.
 </div>
 <?php
 }
 else {
 	?>
-<form action="install.php" method="post">
-	<input type="hidden" name="stage" value="2" /> <input class="submit"
-		type="submit" value="Continue To Configuration..." />
+<form action="update.php" method="post">
+	<input type="hidden" name="update" value="execute" /> 
+	<input class="submit" type="submit" value="Update installation..." />
 </form>
 <?php
 }
