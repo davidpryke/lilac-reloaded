@@ -62,7 +62,6 @@ if($stage == 1) {
 <div class="checks">
 
 	<?php
-	// PHP VERSION CHECK
 	if($cUpdate->getCurrentDBVersion() <= 0) {
 		$fail = true;
 	}
@@ -76,7 +75,7 @@ if($stage == 1) {
 	if($fail) {
 		?>
 	<div class="error">
-		Your database seems to have a deprecated structure, all updates are required.
+		Your database seems to have a very old structure, updates are required.
 	</div>
 	<?php
 	}
@@ -84,6 +83,30 @@ if($stage == 1) {
 	<div class="success">
 		Application Build-Version: <?php echo $cUpdate->getCurrentAPPVersion();?>
 	</div>
+	<?php
+	if($cUpdate->getCurrentDBVersion() != $cUpdate->getCurrentAPPVersion()) {
+		$fail = true;
+	}
+	else {
+		$fail = false;
+	}
+	?>
+	<div class="<?php if($fail) echo "failure"; else echo "success";?>">
+		Update required: <?php if($fail) echo "yes"; else echo "no";?></div>
+	<?php
+	if($fail) {
+		?>
+	<div class="notice">
+		<p>It is required to update your lilac-reloaded installation to work properly.</p>
+		<p>Following updates will be applied for your installation:</p>
+		<p>
+		   - ...
+		</p> 
+		<p>Click the button "Update installation" to beginn update process. Please backup your data first if you feel unwell at this point.</p>
+	</div>
+	<?php
+	}
+	?>
 </div>
 <?php
 if($fatalErrors) {
