@@ -76,7 +76,9 @@ class NagiosServiceTemplate extends BaseNagiosServiceTemplate {
 		}
 		if(!$self) {
 			$parameters = $this->getNagiosServiceCheckCommandParameters();
-			array_merge($parameterList, $parameters);
+			foreach($parameters as $parameter) {
+				$parameterList[] = $parameter;
+			}
 		}
 		return $parameterList;
 	}
