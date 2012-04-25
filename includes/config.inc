@@ -27,8 +27,9 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 require_once(dirname(__FILE__) . "/init.inc.php");	// This should be moved into other files.
 
 
-$sys_config['logos_path'] = 'logos/';		// legacy
-$path_config['image_root'] = 'images/';		// legacy	
+/* Needs to be rewritten, just temporary */
+$sys_config['logos_path'] = '/usr/share/nagios/htdocs/images/logos/';		// legacy
+$path_config['image_root'] = '/usr/share/nagios/htdocs/images/';		// legacy	
 
 if ( ! defined( "PATH_SEPARATOR" ) ) {
   if ( strpos( $_ENV[ "OS" ], "Win" ) !== false )
