@@ -71,7 +71,9 @@ class NagiosServiceTemplate extends BaseNagiosServiceTemplate {
 			// This template has inherited templates, let's bring their values in
 			foreach($inheritanceTemplates as $serviceTemplate) {
 				$parameters = $serviceTemplate->getInheritedCommandParameters(false);
-				$parameterList = array_merge($parameterList, $parameters);
+				foreach($parameters as $parameter) {
+					$parameterList[] = $parameter;
+				}
 			}
 		}
 		if(!$self) {
