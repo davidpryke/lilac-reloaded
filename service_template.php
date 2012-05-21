@@ -675,7 +675,7 @@ if(isset($_POST['request'])) {
 			$tempContact = NagiosContactPeer::retrieveByPk($_POST['service_manage']['contact_add']['contact_id']);
 			if($tempContact) {
 				$membership = new NagiosServiceContactMember();
-				$membership->setService($_GET['id']);
+				$membership->setTemplate($_GET['id']);
 				$membership->setNagiosContact($tempContact);
 				$membership->save();
 				$success = "New Service Template Contact Link added.";				
