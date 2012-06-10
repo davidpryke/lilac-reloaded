@@ -188,7 +188,6 @@ class NagiosEscalationExporter extends NagiosExporter {
 				}
 				
 				$c = new Criteria();
-				$c->add(NagiosEscalationPeer::HOST, $host->getId());
 				$c->add(NagiosEscalationPeer::SERVICE, $service->getId());
 				$serviceEscalations = NagiosEscalationPeer::doSelect($c);
 				foreach($serviceEscalations as $escalation) {
