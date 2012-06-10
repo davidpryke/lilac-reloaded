@@ -1109,6 +1109,8 @@ print_header("Main Configuration File Editor", "main");
 		double_pane_form_window_start();
 		form_select_element_with_enabler($command_list, "command_id", "command_name", "main_config", "global_host_event_handler", "Global Host Event Handler", $lilac->element_desc("global_host_event_handler", "nagios_main_desc"), $mainValues, null);
 		form_select_element_with_enabler($command_list, "command_id", "command_name", "main_config", "global_service_event_handler", "Global Service Event Handler", $lilac->element_desc("global_service_event_handler", "nagios_main_desc"), $mainValues, null);
+		form_select_element_with_enabler($enable_list, "values", "text", "main_config", "check_for_updates", "Check For Updates", $lilac->element_desc("check_for_updates", "nagios_main_desc"), $mainValues, null);
+		form_select_element_with_enabler($enable_list, "values", "text", "main_config", "bare_update_check", "Bare Update Check", $lilac->element_desc("bare_update_check", "nagios_main_desc"), $mainValues, null);
 		double_pane_form_window_finish();
 		?>
 		<div class="formbox">
