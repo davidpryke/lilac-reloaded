@@ -179,6 +179,12 @@ if(isset($_POST['request'])) {
 		else {
 			$mainConfig->setCachedServiceCheckHorizon(null);
 		}
+		if(isset($_POST['main_config']['check_for_orphaned_hosts'])) {
+			$mainConfig->setCheckForOrphanedHosts($_POST['main_config']['check_for_orphaned_hosts']);
+		}
+		else {
+			$mainConfig->setCheckForOrphanedHosts(null);
+		}
 		$mainConfig->save();
 		$success = "Modified Main Status Configuration";
 
@@ -403,6 +409,18 @@ if(isset($_POST['request'])) {
 		}
 		else {
 			$mainConfig->setGlobalServiceEventHandler(null);
+		}
+		if(isset($_POST['main_config']['check_for_updates'])) {
+			$mainConfig->setCheckForUpdates($_POST['main_config']['check_for_updates']);
+		}
+		else {
+			$mainConfig->setCheckForUpdates(null);
+		}
+		if(isset($_POST['main_config']['bare_update_check'])) {
+			$mainConfig->setBareUpdateCheck($_POST['main_config']['bare_update_check']);
+		}
+		else {
+			$mainConfig->setBareUpdateCheck(null);
 		}
 		$mainConfig->save();
 		$success = "Modified Main Global Configuration";
@@ -982,6 +1000,7 @@ print_header("Main Configuration File Editor", "main");
 		<?php
 		double_pane_form_window_start();
 		form_text_element_with_enabler(2, 4, "main_config", "status_update_interval", "Aggregated Status Update Interval", $lilac->element_desc("status_update_interval", "nagios_main_desc"), $mainValues, null);
+		form_select_element_with_enabler($enable_list, "values", "text", "main_config", "check_for_orphaned_hosts", "Check For Orphaned Hosts", $lilac->element_desc("check_for_orphaned_hosts", "nagios_main_desc"), $mainValues, null);
 		form_select_element_with_enabler($enable_list, "values", "text", "main_config", "translate_passive_host_checks", "Translate Passive Host Checks", $lilac->element_desc("translate_passive_host_checks", "nagios_main_desc"), $mainValues, null);
 		form_select_element_with_enabler($enable_list, "values", "text", "main_config", "passive_host_checks_are_soft", "Passive Host Checks Are Soft", $lilac->element_desc("passive_host_checks_are_soft", "nagios_main_desc"), $mainValues, null);
 		form_select_element_with_enabler($enable_list, "values", "text", "main_config", "soft_state_dependencies", "Soft State Dependencies", $lilac->element_desc("soft_state_dependencies", "nagios_main_desc"), $mainValues, null);
@@ -1114,7 +1133,7 @@ print_header("Main Configuration File Editor", "main");
 		double_pane_form_window_finish();
 		?>
 		<div class="formbox">
-		<input type="submit" value="Update Global Handlers Configuration" />
+		<input type="submit" value="Update Global Configuration" />
 		</div>
 		</form>
 		<?php
