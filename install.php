@@ -204,6 +204,25 @@ if($stage == 2) {
 				}
 			}
 			
+			
+			
+			// Insert some basic SQL stuff
+			if(!$error) {
+				if(!mysql_select_db($mysqlDatabase, $dbConn)) {
+					$error = "Failed to use " . $mysqlDatabase . " database.  Check your User credentials.  Error was: <em>" . mysql_error($dbConn) . "</em>";
+				}
+				else {
+					// Insert Build number information
+					mysql_query("INSERT INTO `lilac_configuration` (`key` , `value`) VALUES ('db_build', '" . LILAC_VERSION_BUILD . "');", $dbConn);
+					
+					exec("mysql -h " . $mysqlHostname . " -u " . $mysqlUsername . " -p" . $mysqlPassword . " " . $mysqlDatabase . " < " . dirname(__FILE__) . "/sqldata/lilac-base.sql", $output, $retVal);
+					if($retVal != 0) {
+						$error = "Failed to import Nagios Base.  Error was: <br />" . str_replace("\n", "<br />", $output[count($output)]);
+					}
+				}
+			}
+			
+			
 			// Create PDO connection to perform upgrades
 			try {
 				$dbConn = new PDO("mysql:host=" . $mysqlHostname . ";dbname=" . $mysqlDatabase, $mysqlUsername, $mysqlPassword);

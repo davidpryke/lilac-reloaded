@@ -94,7 +94,7 @@ class NagiosService extends BaseNagiosService {
 		}
 		if(!$self) {
 			$parameters = $this->getNagiosServiceCheckCommandParameters();
-			array_merge($parameterList, $parameters);
+			$parameterList = array_merge($parameterList, $parameters);
 		}
 		return $parameterList;
 	}
