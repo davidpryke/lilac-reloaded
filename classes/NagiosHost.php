@@ -116,7 +116,9 @@ class NagiosHost extends BaseNagiosHost {
 			// This template has inherited templates, let's bring their values in
 			foreach($inheritanceTemplates as $hostTemplate) {
 				$escalations = $hostTemplate->getInheritedEscalations(false);
-				$escalationsList = array_merge($escalationsList, $escalations);
+				foreach($escalations as $escalation) { 
+					$escalationsList[] = $escalation; 
+				}
 			}
 		}
 		
@@ -125,7 +127,9 @@ class NagiosHost extends BaseNagiosHost {
 			// This template has inherited templates, let's bring their values in
 			foreach($inheritanceTemplates as $hostgroup) {
 				$escalations = $hostgroup->getNagiosEscalations();
-				$escalationsList = array_merge($escalationsList, $escalations);
+				foreach($escalations as $escalation) { 
+					$escalationsList[] = $escalation; 
+				}
 		 }
 		}
 
@@ -133,7 +137,9 @@ class NagiosHost extends BaseNagiosHost {
 		foreach($hostgroupMemberships as $membership) {
 			$hostgroup = $membership->getNagiosHostGroup();
 			$escalations = $hostgroup->getNagiosEscalations();
-			$escalationsList = array_merge($escalationsList, $escalations);
+			foreach($escalations as $escalation) { 
+				$escalationsList[] = $escalation; 
+			}
 		}
 		
 		if(!$self) {
