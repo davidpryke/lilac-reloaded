@@ -180,14 +180,26 @@ class NagiosImportEngine extends ImportEngine {
 		// Search for configs
 		foreach($posLoc as $dir)
 		{
-			// If file nagios.cfg exists there also must exist the other files
+			
 			if(file_exists($dir . "nagios.cfg"))
 			{
 				$cfgFound["nagios"] = $dir . "nagios.cfg";
 				$cfgFound["cgi"] = $dir . "cgi.cfg";
 				$cfgFound["resource"] = $dir . "resource.cfg";
-
-				return $cfgFound;
+			}
+		}
+		
+		foreach($posLoc as $dir)
+		{
+				
+			if(file_exists($dir . "cgi.cfg"))
+			{
+				$cfgFound["cgi"] = $dir . "cgi.cfg";
+			}
+				
+			if(file_exists($dir . "resource.cfg"))
+			{
+				$cfgFound["resource"] = $dir . "resource.cfg";
 			}
 		}
 
