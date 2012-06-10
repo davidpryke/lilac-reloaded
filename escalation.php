@@ -349,8 +349,14 @@ print_header("Escalation Editor for " . $title);
 					else if($escalation->getService()) {
 						if($escalation->getNagiosService()->getNagiosHost() !== null)
 							print("Service:</b> " . $escalation->getNagiosService()->getDescription() . " On " . $escalation->getNagiosService()->getNagiosHost()->getName());
-						else 
-							print("Service:</b> " . $escalation->getNagiosService()->getDescription() . " On Host Template " . $escalation->getNagiosService()->getNagiosHostTemplate()->getName());
+						else if ( null !== $escalation->getNagiosService()->getNagiosHostTemplate() )
+						 	print("Service:</b> " . $escalation->getNagiosService()->getDescription() . " On Host Template ". $escalation->getNagiosService()->getNagiosHostTemplate()->getName() );
+						else if ( null !== $escalation->getNagiosService()->getHostgroup() ) {
+						 	$c = new Criteria();
+						 	$c->add(NagiosHostgroupPeer::ID, $escalation->getNagiosService()->getHostgroup() );
+						 	$hostgroup = NagiosHostgroupPeer::doSelectOne($c);
+						 	print("Service:</b> " . $escalation->getNagiosService()->getDescription() . " On HostGroup ". $hostgroup->getName() );
+						}					
 					}
 					else if($escalation->getServiceTemplate()) {
 						print("Service Template:</b> " . $escalation->getNagiosServiceTemplate()->getName());

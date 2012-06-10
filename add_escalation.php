@@ -108,7 +108,15 @@ if(isset($_POST['request']) && $_POST['request'] == 'add_escalation') {
 }
 
 if($type == "service") {
-	$textTitle = $tempSource->getNagiosHost()->getName() . " : " . $tempSource->getDescription();
+	if($tempSource->getNagiosHost() !== null)
+	{
+		$textTitle = $tempSource->getNagiosHost()->getName() . " : " . $tempSource->getDescription();
+	}
+	else if($tempSource->getNagiosHostGroup() !== null)
+	{
+		$textTitle = $tempSource->getNagiosHostGroup()->getName() . " : " . $tempSource->getDescription();
+	}
+	
 }
 else {
 	$textTitle = $tempSource->getName();
