@@ -1941,9 +1941,15 @@ print_header("Host Template Editor");
 											<tr class="altRow2">
 											<?php
 										}
+										
+										if ( null!=$escalation->getNagiosHostTemplate()) {
+											$data="<i>(host tpl)</i> ". $escalation->getNagiosHostTemplate()->getName();
+										}else{
+											$data="<i>(hostgroup)</i> ".$escalation->getNagiosHostgroup()->getName();
+										}
 										?>
 										<td height="20" width="80" nowrap="nowrap" class="altLeft">&nbsp;</td>
-										<td height="20" class="altRight"><b><a href="escalation.php?id=<?php echo $escalation->getId();?>"><?php echo $escalation->getDescription();?></a> - Inherited From <?php echo $escalation->getNagiosHostTemplate()->getName();?></b></td>
+										<td height="20" class="altRight"><b><a href="escalation.php?id=<?php echo $escalation->getId();?>"><?php echo $escalation->getDescription();?></a> - Inherited From <?php echo $data;?></b></td>
 										</tr>
 										<?php
 										$counter++;
