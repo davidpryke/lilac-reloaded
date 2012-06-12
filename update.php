@@ -152,11 +152,12 @@ else if($stage == 99) {
 <div class="checks">
 
 	<div class="error">
-		<p>
-			The lilac-reloaded updater requires that the configuration file at <em><?php echo dirname(__FILE__) . "/includes/lilac-conf.php";?>
-			</em> is present.<br> Please check if your installation is in a sane
-			situation.
-		</p>
+		<p>The Lilac updater requires that the current configuration file at <em><?php echo dirname(__FILE__) . "/includes/lilac-conf.php";?></em> is writeable. It is 
+	   recommended that you change the permissions of the file so the web user can write to it. Following steps are possible:</p>
+        <p>
+           - Temporary set the file permission of file <em><?php echo dirname(__FILE__) . "/includes/lilac-conf.php";?></em> to 777. After installation set back to defaults.<br />
+           - Temporary set the owner permission of file <em><?php echo dirname(__FILE__) . "/includes/lilac-conf.php";?></em> to the webserveruser. After installation set back to defaults.<br />
+        </p>
 	</div>
 </div>
 <?php 
