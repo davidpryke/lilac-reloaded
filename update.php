@@ -46,7 +46,7 @@ print_uheader("lilac-reloaded updater");
 if($stage == 1) {
 	$fatalErrors = false;
 	// Dependency checking
-	print_window_uheader"Update check");
+	print_window_uheader("Update check");
 	?>
 
 <div class="checks">
@@ -138,7 +138,7 @@ print_window_ufooter();
 }
 else if($stage == 1 && $success) {
 	// OMGZ!
-	print_window_uheader"Update Complete");
+	print_window_uheader("Update Complete");
 	?>
 <b>Congratulations!</b>
 <p style="margin: 15px;">Your lilac-reloaded update is now complete.</p>
@@ -152,7 +152,7 @@ print_window_ufooter();
 else if($stage == 99) {
 
 	// Dependency checking
-	print_window_uheader"Update check failed");
+	print_window_uheader("Update check failed");
 	?>
 
 <div class="checks">
@@ -175,7 +175,7 @@ print_ufooter();
 
 // Install utility functions
 
-function print_window_uheader$title = null, $type = "top") {
+function print_window_uheader($title = null, $type = "top") {
 	?>
 <div class="roundedcorner_lilac_box">
 	<div class="roundedcorner_lilac_top">
