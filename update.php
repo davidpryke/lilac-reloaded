@@ -36,7 +36,11 @@ if($stage == 1 && $_POST['update'] == "execute") {
 		}
 		else 
 		{
+			$objUpdate = &$cUpdate->getUpdateObject();
+			$error = $objUpdate->executeUpdate();
 			
+			if(empty($error))
+				$success = true;
 		}
 	}
 }
@@ -65,7 +69,7 @@ if($stage == 1) {
 	if($fail) {
 		?>
 	<div class="error">
-		Your database seems to have a very old structure, updates are required.
+		Your database seems to have a old structure, updates are required.
 	</div>
 	<?php
 	}
@@ -87,7 +91,7 @@ if($stage == 1) {
 	if($fail) {
 		?>
 	<div class="notice">
-		<p>It is required to update your lilac-reloaded installation to work properly.</p>
+		<p>It is required to update your lilac-reloaded installation to build-version <?php echo $cUpdate->getNextUpdateStep(); ?> to work properly.</p>
 		<p>Following updates will be applied for your installation:</p>
 		<p>
 		<?php 
@@ -118,8 +122,7 @@ if($stage == 1) {
 if($fatalErrors) {
 	?>
 <div class="error">
-	You must resolve the issues above before continuing the installation. <a
-		href="update.php">Refresh The Page</a> to perform the checks again.
+	You must resolve the issues above before continuing the installation. <a href="update.php">Refresh The Page</a> to perform the checks again.
 </div>
 <?php
 }
@@ -127,7 +130,7 @@ else {
 	?>
 <form action="update.php" method="post">
 	<input type="hidden" name="update" value="execute" /> 
-	<input class="submit" type="submit" value="Update installation..." />
+	<input <?php if(!$fail) echo "disabled "; ?> class="submit" type="submit" value="Update installation..." />
 </form>
 <?php
 }
@@ -137,14 +140,27 @@ print_window_ufooter();
 <?php
 }
 else if($stage == 1 && $success) {
-	// OMGZ!
+	
 	print_window_uheader("Update Complete");
 	?>
 <b>Congratulations!</b>
 <p style="margin: 15px;">Your lilac-reloaded update is now complete.</p>
 
 <p>
-	<a href="index.php">Launch lilac-reloaded now again.</a>
+	<a href="index.php">Launch lilac-reloaded homepage.</a>
+</p>
+<?php
+print_window_ufooter();
+}
+else if($stage == 1 && $error) {
+
+	print_window_uheader("Update failed");
+	?>
+<b>Something went wrong!</b>
+<p style="margin: 15px;">Your lilac-reloaded update was not finished successfully. Error was: <b><?php echo $error;?></b></p>
+
+<p>
+	<a href="update.php">Launch lilac-reloaded homepage.</a>
 </p>
 <?php
 print_window_ufooter();

@@ -45,6 +45,8 @@ class lilacUpdate
 			return 0;
 
 		$lilacDbVersion = LilacConfigurationQuery::create()->findPk("db_build");
+		if(empty($lilacDbVersion))
+			return 0;
 
 		return $lilacDbVersion->getValue();
 	}

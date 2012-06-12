@@ -48,7 +48,27 @@ class updateLilac extends updateBase
 	
 	public function executeUpdate()
 	{
+		$this->updateLilacConf();
+		$this->updateLilacDB();
+		
 		return;
+	}
+	
+	private function updateLilacConf()
+	{
+		$propel = Propel::getConfiguration(PropelConfiguration::TYPE_ARRAY_FLAT);
+		
+		$conf = file_get_contents(dirname(__FILE__) . "../../includes/lilac-conf.php.dist");
+		$conf = str_replace("%%DSN%%", "mysql:host=" . $mysqlHostname . ";dbname=" . $mysqlDatabase, $conf);
+		$conf = str_replace("%%USERNAME%%", $mysqlUsername, $conf);
+		$conf = str_replace("%%PASSWORD%%", $mysqlPassword, $conf);
+		$conf = str_replace("%%TIMEZONE%%", "date_default_timezone_set('" . date_default_timezone_get() . "');", $conf);
+		$ret = file_put_contents(dirname(__FILE__) . "../../includes/lilac-conf.php", $conf);
+	}
+	
+	private function updateLilacDB()
+	{
+		
 	}
 } 
 
