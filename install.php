@@ -72,6 +72,7 @@ if($stage == 2) {
 		$mysqlPassword = '';
 		$mysqlDatabase = 'lilac';
 		$mysqlPopulate = true;
+		$mysqlKeepDatabase = false;
 		$mysqlCreateUserDatabase = false;
 	}
 	else {
@@ -82,6 +83,7 @@ if($stage == 2) {
 		$mysqlPassword = trim($_POST['mysqlPassword']);
 		$mysqlDatabase = trim($_POST['mysqlDatabase']);
 		$mysqlPopulate = (isset($_POST['mysqlPopulate'])) ? trim($_POST['mysqlPopulate']) : false;
+		$mysqlKeepDatabase = (isset($_POST['mysqlKeepDatabase'])) ? trim($_POST['mysqlKeepDatabase']) : false;
 		$timezone = trim($_POST['timezone']);
 		
 		if(isset($_POST['mysqlCreateUserDatabase'])) {
@@ -184,11 +186,12 @@ if($stage == 2) {
 				}
 			}
 			else if(!$error) {
+				$dbConn = @mysql_connect($mysqlHostname, $mysqlUsername, $mysqlPassword);
 				// Select db.
 				if(!mysql_select_db($mysqlDatabase, $dbConn)) {
 					$error = "Failed to use " . $mysqlDatabase . " database.  Check your User credentials.  Error was: <em>" . mysql_error($dbConn) . "</em>";
 				}
-				else {
+				else if(!$mysqlKeepDatabase) {
 					// Load the data
 					exec("mysql -h " . $mysqlHostname . " -u " . $mysqlUsername . " -p" . $mysqlPassword . " " . $mysqlDatabase . " < " . dirname(__FILE__) . "/sqldata/schema.sql", $output, $retVal);
 					if($retVal != 0) {
@@ -736,7 +739,8 @@ else if($stage == 2 && empty($success)) {
 		</p>
 	</fieldset>
 		<p>
-		<input type="checkbox" <?php if($mysqlPopulate) echo "checked=\"checked\"" ;?> name="mysqlPopulate" id="populatedb"><label for="populatedb">Populate Database With Sample Data (Uncheck if you want to keep existing data or upgrading) <strong>Warning:</strong> This will remove any existing data!  You should back-up any existing data.</label>
+		<input type="checkbox" <?php if($mysqlPopulate) echo "checked=\"checked\"" ;?> name="mysqlPopulate" id="populatedb"><label for="populatedb">Populate Database With Sample Data (Uncheck if you want to keep existing data or upgrading) <strong>Warning:</strong> This will remove any existing data!  You should back-up any existing data.</label><br>
+		<input type="checkbox" <?php if($mysqlKeepDatabase) echo "checked=\"checked\"" ;?> name="mysqlKeepDatabase" id="keepdb"><label for="keepdb">Check if you want to keep your current database schema and data</label>
 		</p>
         <p>
             <select id="timezone" name="timezone" style="margin-left: 20px; margin-right: 10px;">
