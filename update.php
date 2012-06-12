@@ -5,7 +5,7 @@
 require_once('includes/update.php');
 
 $config_exists = false;
-if(false === ($fp = @fopen(dirname(__FILE__) . "/includes/lilac-conf.php", "w+"))) {
+if(false === ($fp = @fopen(dirname(__FILE__) . "/includes/lilac-conf.php", "r+"))) {
 	$config_exists = false;
 }
 else {
