@@ -41,12 +41,12 @@ if($stage == 1 && $_POST['update'] == "execute") {
 	}
 }
 
-print_header("lilac-reloaded updater");
+print_uheader("lilac-reloaded updater");
 
 if($stage == 1) {
 	$fatalErrors = false;
 	// Dependency checking
-	print_window_header("Update check");
+	print_window_uheader"Update check");
 	?>
 
 <div class="checks">
@@ -131,14 +131,14 @@ else {
 </form>
 <?php
 }
-print_window_footer();
+print_window_ufooter();
 
 ?>
 <?php
 }
 else if($stage == 1 && $success) {
 	// OMGZ!
-	print_window_header("Update Complete");
+	print_window_uheader"Update Complete");
 	?>
 <b>Congratulations!</b>
 <p style="margin: 15px;">Your lilac-reloaded update is now complete.</p>
@@ -147,12 +147,12 @@ else if($stage == 1 && $success) {
 	<a href="index.php">Launch lilac-reloaded now again.</a>
 </p>
 <?php
-print_window_footer();
+print_window_ufooter();
 }
 else if($stage == 99) {
 
 	// Dependency checking
-	print_window_header("Update check failed");
+	print_window_uheader"Update check failed");
 	?>
 
 <div class="checks">
@@ -170,12 +170,12 @@ else if($stage == 99) {
 }
 
 
-print_footer();
+print_ufooter();
 
 
 // Install utility functions
 
-function print_window_header($title = null, $type = "top") {
+function print_window_uheader$title = null, $type = "top") {
 	?>
 <div class="roundedcorner_lilac_box">
 	<div class="roundedcorner_lilac_top">
@@ -202,7 +202,7 @@ function print_window_header($title = null, $type = "top") {
 				<?php
 }
 
-function print_window_footer() {
+function print_window_ufooter() {
 	?>
 			</div>
 			<div class="roundedcorner_inner_bottom">
@@ -220,7 +220,7 @@ function print_window_footer() {
 
 
 // Used if frames not used
-function print_header($title = null) {
+function print_uheader($title = null) {
 	global $success;
 	global $error;
 	global $warning;
@@ -336,7 +336,7 @@ function print_header($title = null) {
 
 }
 
-function print_footer() {
+function print_ufooter() {
 	global $output_config;
 	?>
 	</div>

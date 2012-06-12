@@ -25,7 +25,7 @@ Description:
 The class definition for the lilacUpdate class
 */
 
-require_once('init.inc.php');
+require_once('config.inc');
 
 class lilacUpdate
 {
