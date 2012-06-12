@@ -30,23 +30,13 @@ if($stage == 1 && $_POST['update'] == "execute") {
 	$error = false;
 
 	if(!$error) {
-		// Select db.
+		// Check if database is available
 		if(!mysql_select_db($mysqlDatabase, $dbConn)) {
 			$error = "Failed to use " . $mysqlDatabase . " database.  Check your User credentials.  Error was: <em>" . mysql_error($dbConn) . "</em>";
 		}
-		else {
-			// Load the data
-			exec("mysql -h " . $mysqlHostname . " -u " . $mysqlUsername . " -p" . $mysqlPassword . " " . $mysqlDatabase . " < " . dirname(__FILE__) . "/sqldata/schema.sql", $output, $retVal);
-			if($retVal != 0) {
-				$error = "Failed to import database schema. Make sure the mysql binary is in the search path for the web user.";
-			}
-			else {
-				// Import labels
-				exec("mysql -h " . $mysqlHostname . " -u " . $mysqlUsername . " -p" . $mysqlPassword . " " . $mysqlDatabase . " < " . dirname(__FILE__) . "/sqldata/lilac-nagios-en-label.sql", $output, $retVal);
-				if($retVal != 0) {
-					$error = "Failed to import Nagios labels.  Error was: <br />" . str_replace("\n", "<br />", $output[count($output)]);
-				}
-			}
+		else 
+		{
+			
 		}
 	}
 }
@@ -100,7 +90,23 @@ if($stage == 1) {
 		<p>It is required to update your lilac-reloaded installation to work properly.</p>
 		<p>Following updates will be applied for your installation:</p>
 		<p>
-		   - ...
+		<?php 
+		$updateToVersion = $cUpdate->getNextUpdateStep();
+		if($updateToVersion != -1)
+		{
+			$objUpdate = &$cUpdate->getUpdateObject();
+			$arrUpdates = $objUpdate->getUpdates();
+			
+			foreach($arrUpdates as $updateInfo)
+			{
+				printf("- %s", $updateInfo);	
+			}
+		}
+		else
+		{
+			echo "- Update not available, no update found"	
+		}
+		?>
 		</p> 
 		<p>Click the button "Update installation" to beginn update process. Please backup your data first if you feel unwell at this point.</p>
 	</div>
