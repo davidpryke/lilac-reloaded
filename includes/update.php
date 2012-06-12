@@ -60,20 +60,20 @@ class lilacUpdate
 		
 		foreach($this->updateSteps as $step)
 		{
-			if(int($currentVersion) < int($step))
+			if(intval($currentVersion) < intval($step))
 				return $step;
 		}
 			
 		return -1;
 	}
 	
-	private function &getUpdateObject()
+	public function &getUpdateObject()
 	{
 		$updateVersion = $this->getNextUpdateStep();
 		if($updateVersion == -1)
 			return -1;
 		
-		require_once($updateScriptsDir . $updateVersion . ".php");
+		require_once($this->updateScriptsDir . $updateVersion . ".php");
 		
 		$obj = new updateLilac();
 		return $obj;
@@ -81,7 +81,8 @@ class lilacUpdate
 	
 	private function parseAvailableSteps()
 	{
-		while(false !== ($entry = readdir($this->updateScriptsDir))) 
+		$handle = opendir($this->updateScriptsDir);
+		while(false !== ($entry = readdir($handle))) 
 		{
 			$matches = array();
 			if(preg_match("/^([0-9]{2,9}).php$/", $entry, $matches)) 

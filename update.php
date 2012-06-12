@@ -99,7 +99,7 @@ if($stage == 1) {
 			
 			foreach($arrUpdates as $updateInfo)
 			{
-				printf("- %s", $updateInfo);	
+				printf("- %s<br>", $updateInfo);	
 			}
 		}
 		else

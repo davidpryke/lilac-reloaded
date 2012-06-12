@@ -25,7 +25,7 @@ Description:
 The class definition for the updateBase class and iupdateBase interface
 */
 
-require_once('init.inc.php');
+require_once(dirname(__FILE__) . '/../../includes/init.inc.php');
 
 interface iupdateBase
 {
