@@ -104,7 +104,7 @@ if($stage == 1) {
 		}
 		else
 		{
-			echo "- Update not available, no update found"	
+			echo "- Update not available, no update found";
 		}
 		?>
 		</p> 

@@ -29,12 +29,14 @@ require_once('init.inc.php');
 
 class lilacUpdate
 {
-	private $updateScriptsDir = dirname(__FILE__) . "/../library/update/"
+	private $updateScriptsDir;
 	private $updateSteps = array();
 	
 	public function __construct()
 	{
-		parseAvailableSteps();
+		$this->updateScriptsDir = dirname(__FILE__) . "/../library/update/";
+		
+		$this->parseAvailableSteps();
 	}
 
 	public function getCurrentDBVersion()
@@ -54,9 +56,9 @@ class lilacUpdate
 	
 	public function getNextUpdateStep()
 	{
-		$currentVersion = getCurrentDBVersion();
+		$currentVersion = $this->getCurrentDBVersion();
 		
-		foreach($updateSteps as $step)
+		foreach($this->updateSteps as $step)
 		{
 			if(int($currentVersion) < int($step))
 				return $step;
@@ -67,7 +69,7 @@ class lilacUpdate
 	
 	private function &getUpdateObject()
 	{
-		$updateVersion = getNextUpdateStep();
+		$updateVersion = $this->getNextUpdateStep();
 		if($updateVersion == -1)
 			return -1;
 		
@@ -79,16 +81,16 @@ class lilacUpdate
 	
 	private function parseAvailableSteps()
 	{
-		while(false !== ($entry = readdir($updateScriptsDir))) 
+		while(false !== ($entry = readdir($this->updateScriptsDir))) 
 		{
 			$matches = array();
 			if(preg_match("/^([0-9]{2,9}).php$/", $entry, $matches)) 
 			{
-				$updateSteps[] = $matches[1];
+				$this->updateSteps[] = $matches[1];
 	        }
 		}
 		
-		sort($updateSteps, SORT_NUMERIC);
+		sort($this->updateSteps, SORT_NUMERIC);
 	}
 }
 
