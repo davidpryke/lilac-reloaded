@@ -49,4 +49,13 @@ include_once(LILAC_FS_ROOT . 'classes/Module.php');
 include_once(LILAC_FS_ROOT . 'classes/LilacCoreModule.php');
 
 include_once(LILAC_FS_ROOT . 'includes/update.php');
+
+/* Update check */
+if(basename($_SERVER['PHP_SELF']) != "update.php") {
+	$cUpdate = new lilacUpdate();
+	if($cUpdate->getCurrentDBVersion() != $cUpdate->getCurrentAPPVersion()) {
+		header("Location: update.php");
+		die();
+	}
+}
 ?>
