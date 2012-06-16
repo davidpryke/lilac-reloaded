@@ -36,6 +36,13 @@ interface iupdateBase
 
 class updateBase implements iupdateBase
 {
+	protected $rootdir;
+	
+	public function __construct()
+	{
+		$this->rootdir = dirname(__FILE__) . "/../..";
+	}
+	
 	public function getInfo()
 	{
 		return "updateBase-class for lilac-reloaded";

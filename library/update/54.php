@@ -31,6 +31,11 @@ class updateLilac extends updateBase
 {
 	private $ut_version = 54;
 	
+	public function __construct()
+	{
+		parent::__construct();
+	}
+	
 	public function getInfo()
 	{
 		return "updateLilac-class for updating lilac-reloaded to version " . $ut_version;
@@ -48,15 +53,15 @@ class updateLilac extends updateBase
 	
 	public function executeUpdate()
 	{
-		$this->updateLilacConf();
-		$this->updateLilacDB();
+		$result = $this->updateLilacConf();
+		$result = $this->updateLilacDB();
 		
 		return;
 	}
 	
 	private function updateLilacConf()
 	{
-		$propel = Propel::getConfiguration(PropelConfiguration::TYPE_ARRAY_FLAT);
+		$propelConfig = include($this->rootdir . "/includes/lilac-conf.php");
 		
 		$conf = file_get_contents(dirname(__FILE__) . "../../includes/lilac-conf.php.dist");
 		$conf = str_replace("%%DSN%%", "mysql:host=" . $mysqlHostname . ";dbname=" . $mysqlDatabase, $conf);
