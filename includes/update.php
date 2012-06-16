@@ -25,8 +25,6 @@ Description:
 The class definition for the lilacUpdate class
 */
 
-require_once('config.inc');
-
 class lilacUpdate
 {
 	private $updateScriptsDir;

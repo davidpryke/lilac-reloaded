@@ -2,7 +2,7 @@
 /**
  * Lilac Installer Script
  */
-require_once('includes/update.php');
+require_once('includes/config.inc');
 
 $config_exists = false;
 if(false === ($fp = @fopen(dirname(__FILE__) . "/includes/lilac-conf.php", "r+"))) {

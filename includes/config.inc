@@ -47,4 +47,6 @@ include_once(LILAC_FS_ROOT . 'includes/output.php');
 include_once(LILAC_FS_ROOT . 'includes/lilac.inc');
 include_once(LILAC_FS_ROOT . 'classes/Module.php');
 include_once(LILAC_FS_ROOT . 'classes/LilacCoreModule.php');
+
+include_once(LILAC_FS_ROOT . 'includes/update.php');
 ?>

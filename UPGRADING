@@ -1,1 +1,4 @@
-Lilac is intended to be installed from scratch.
+From version 2.0.1 on its possible to upgrade a lilac-reloaded installation.
+
+Just copy over all new files in lilac-reloaded (except includes/lilac-conf.php) and run update.php in your browser.
+Follow the steps and you have a shiny new updated lilac-reloaded.

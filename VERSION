@@ -1,6 +1,11 @@
 Version history:
 ------------------------------------
 
+lilac-reloaded 2.0.1:
+- its is now possible to upgrade from previous installations, please see UPGRADING for details
+- added new options that are present in new nagios installations
+- many, many fixes (see gitt for details)
+
 lilac-reloaded 2.0-dev:
 - updated propel framework to 1.6.1
 - updated Pear::Log to 1.12.6
