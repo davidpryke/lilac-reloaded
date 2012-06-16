@@ -30,18 +30,12 @@ if($stage == 1 && $_POST['update'] == "execute") {
 	$error = false;
 
 	if(!$error) {
-		// Check if database is available
-		if(!mysql_select_db($mysqlDatabase, $dbConn)) {
-			$error = "Failed to use " . $mysqlDatabase . " database.  Check your User credentials.  Error was: <em>" . mysql_error($dbConn) . "</em>";
-		}
-		else 
-		{
+
 			$objUpdate = &$cUpdate->getUpdateObject();
 			$error = $objUpdate->executeUpdate();
 			
 			if(empty($error))
 				$success = true;
-		}
 	}
 }
 
