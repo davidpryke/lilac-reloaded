@@ -3,6 +3,7 @@ Version history:
 
 lilac-reloaded 2.0.1:
 - its is now possible to upgrade from previous installations, please see UPGRADING for details
+- automatic update check
 - added new options that are present in new nagios installations
 - many, many fixes (see gitt for details)
 
