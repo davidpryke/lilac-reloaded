@@ -83,7 +83,7 @@ class updateLilac extends updateBase
 		$conf = str_replace("%%USERNAME%%", $username, $conf);
 		$conf = str_replace("%%PASSWORD%%", $password, $conf);
 		$conf = str_replace("%%TIMEZONE%%", "date_default_timezone_set('" . date_default_timezone_get() . "');", $conf);
-		$ret = file_put_contents(dirname(__FILE__) . "../../includes/lilac-conf.php", $conf);
+		$ret = file_put_contents($this->rootdir . "/includes/lilac-conf.php", $conf);
 		
 		if($ret === false)
 			return "Configuration file lilac-conf.php could not be written, please check file permissions.";

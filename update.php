@@ -35,13 +35,26 @@ if($stage == 1 && $_POST['update'] == "execute") {
 			$error = $objUpdate->executeUpdate();
 			
 			if(empty($error))
-				$success = true;
+				$success = "Update applied without errors!";
 	}
 }
 
 print_uheader("lilac-reloaded updater");
 
-if($stage == 1) {
+if($stage == 1 && $success) {
+
+	print_window_uheader("Update Complete");
+	?>
+<b>Congratulations!</b>
+<p style="margin: 15px;">Your lilac-reloaded update is now complete.</p>
+
+<p>
+	<a href="update.php">Launch lilac-reloaded update site again to check for more updates.</a>
+</p>
+<?php
+print_window_ufooter();
+}
+else if($stage == 1) {
 	$fatalErrors = false;
 	// Dependency checking
 	print_window_uheader("Update check");
@@ -132,32 +145,6 @@ print_window_ufooter();
 
 ?>
 <?php
-}
-else if($stage == 1 && $success) {
-	
-	print_window_uheader("Update Complete");
-	?>
-<b>Congratulations!</b>
-<p style="margin: 15px;">Your lilac-reloaded update is now complete.</p>
-
-<p>
-	<a href="index.php">Launch lilac-reloaded homepage.</a>
-</p>
-<?php
-print_window_ufooter();
-}
-else if($stage == 1 && $error) {
-
-	print_window_uheader("Update failed");
-	?>
-<b>Something went wrong!</b>
-<p style="margin: 15px;">Your lilac-reloaded update was not finished successfully. Error was: <b><?php echo $error;?></b></p>
-
-<p>
-	<a href="update.php">Launch lilac-reloaded homepage.</a>
-</p>
-<?php
-print_window_ufooter();
 }
 else if($stage == 99) {
 
