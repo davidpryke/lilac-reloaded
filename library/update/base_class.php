@@ -61,6 +61,29 @@ class updateBase implements iupdateBase
 	{
 		return;
 	}
+	
+	protected function getConfig()
+	{
+		if(!file_exists($this->rootdir . "/includes/lilac-conf.php"))
+			return false;
+		
+		$config = array();
+		$propelConfig = include($this->rootdir . "/includes/lilac-conf.php");
+		
+		// mysql:host=localhost;dbname=lilac
+		
+		$config["db_dsn"] = $propelConfig["datasources"]["lilac"]["connection"]["dsn"];
+		$config["db_username"] = $propelConfig["datasources"]["lilac"]["connection"]["user"];
+		$config["db_password"] = $propelConfig["datasources"]["lilac"]["connection"]["password"];
+		
+		preg_match("/^([^:]*):host=([^;]*);dbname=(.*)$/", $matches);
+		
+		$config["db_type"] = $matches[1];
+		$config["db_host"] = $matches[2];
+		$config["db_name"] = $matches[3];
+		
+		return $config;
+	}
 }
 
 ?>

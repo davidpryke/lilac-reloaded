@@ -67,21 +67,20 @@ class updateLilac extends updateBase
 	private function updateLilacConf()
 	{
 		if(!file_exists($this->rootdir . "/includes/lilac-conf.php"))
-			return "Configuration file lilac-conf.php does not exist, ist your installation in a sane state?";
+			return "Configuration file lilac-conf.php does not exist, is your installation in a sane state?";
 		
 		if(!file_exists($this->rootdir . "/includes/lilac-conf.php.dist"))
 			return "Configuration template does not exist, make sure your current installation contains a lilac-conf.php.dist file in the includes directory.";
 		
-		$propelConfig = include($this->rootdir . "/includes/lilac-conf.php");
+		$dbConfig = $this->getConfig();
 		
-		$dsn = $propelConfig["datasources"]["lilac"]["connection"]["dsn"];
-		$username = $propelConfig["datasources"]["lilac"]["connection"]["user"];
-		$password = $propelConfig["datasources"]["lilac"]["connection"]["password"];
+		if($dbConfig === false)
+			return "Could not fetch configuration state, is your installation in a sane state??";
 		
 		$conf = file_get_contents($this->rootdir . "/includes/lilac-conf.php.dist");
-		$conf = str_replace("%%DSN%%", $dsn, $conf);
-		$conf = str_replace("%%USERNAME%%", $username, $conf);
-		$conf = str_replace("%%PASSWORD%%", $password, $conf);
+		$conf = str_replace("%%DSN%%", $dbConfig["db_dsn"], $conf);
+		$conf = str_replace("%%USERNAME%%", $dbConfig["db_username"], $conf);
+		$conf = str_replace("%%PASSWORD%%", $dbConfig["db_password"], $conf);
 		$conf = str_replace("%%TIMEZONE%%", "date_default_timezone_set('" . date_default_timezone_get() . "');", $conf);
 		$ret = file_put_contents($this->rootdir . "/includes/lilac-conf.php", $conf);
 		
@@ -93,6 +92,9 @@ class updateLilac extends updateBase
 	
 	private function updateLilacDB()
 	{
+		if(!file_exists($this->rootdir . "/includes/lilac-conf.php"))
+			return "Configuration file lilac-conf.php does not exist, ist your installation in a sane state?";
+		
 		
 	}
 } 
