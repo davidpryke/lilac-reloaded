@@ -28,6 +28,7 @@ $cUpdate = new lilacUpdate();
 
 if($stage == 1 && $_POST['update'] == "execute") {
 	$error = false;
+	$success = false;
 
 	if(!$error) {
 
