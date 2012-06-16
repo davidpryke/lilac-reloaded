@@ -54,21 +54,41 @@ class updateLilac extends updateBase
 	public function executeUpdate()
 	{
 		$result = $this->updateLilacConf();
+		if($result)
+			return $result;
+		
 		$result = $this->updateLilacDB();
+		if($result)
+			return $result;
 		
 		return;
 	}
 	
 	private function updateLilacConf()
 	{
+		if(!file_exists($this->rootdir . "/includes/lilac-conf.php"))
+			return "Configuration file lilac-conf.php does not exist, ist your installation in a sane state?";
+		
+		if(!file_exists($this->rootdir . "/includes/lilac-conf.php.dist"))
+			return "Configuration template does not exist, make sure your current installation contains a lilac-conf.php.dist file in the includes directory.";
+		
 		$propelConfig = include($this->rootdir . "/includes/lilac-conf.php");
 		
-		$conf = file_get_contents(dirname(__FILE__) . "../../includes/lilac-conf.php.dist");
-		$conf = str_replace("%%DSN%%", "mysql:host=" . $mysqlHostname . ";dbname=" . $mysqlDatabase, $conf);
-		$conf = str_replace("%%USERNAME%%", $mysqlUsername, $conf);
-		$conf = str_replace("%%PASSWORD%%", $mysqlPassword, $conf);
+		$dsn = $propelConfig["datasources"]["lilac"]["connection"]["dsn"];
+		$username = $propelConfig["datasources"]["lilac"]["connection"]["user"];
+		$password = $propelConfig["datasources"]["lilac"]["connection"]["password"];
+		
+		$conf = file_get_contents($this->rootdir . "/includes/lilac-conf.php.dist");
+		$conf = str_replace("%%DSN%%", $dsn, $conf);
+		$conf = str_replace("%%USERNAME%%", $username, $conf);
+		$conf = str_replace("%%PASSWORD%%", $password, $conf);
 		$conf = str_replace("%%TIMEZONE%%", "date_default_timezone_set('" . date_default_timezone_get() . "');", $conf);
 		$ret = file_put_contents(dirname(__FILE__) . "../../includes/lilac-conf.php", $conf);
+		
+		if($ret === false)
+			return "Configuration file lilac-conf.php could not be written, please check file permissions.";
+		
+		return;
 	}
 	
 	private function updateLilacDB()
