@@ -93,9 +93,22 @@ class updateLilac extends updateBase
 	private function updateLilacDB()
 	{
 		if(!file_exists($this->rootdir . "/includes/lilac-conf.php"))
-			return "Configuration file lilac-conf.php does not exist, ist your installation in a sane state?";
+			return "Configuration file lilac-conf.php does not exist, is your installation in a sane state?";
 		
+		$dbConfig = $this->getConfig();
 		
+		if($dbConfig === false)
+			return "Could not fetch configuration state, is your installation in a sane state??";
+		
+		exec("mysql -h " . $dbConfig["db_host"] . " -u " . $dbConfig["db_username"] . " -p" . $dbConfig["db_password"] . " " . $dbConfig["db_name"] . " < " . $this->rootdir . "/sqldata/update/" . $this->ut_version . ".sql", $output, $retVal);
+		if($retVal != 0) {
+			return "Failed to import database update-schema. Make sure the mysql binary is in the search path for the web user.";
+		}
+		
+		$dbConn = mysql_connect($dbConfig["db_host"], $dbConfig["db_username"], $dbConfig["db_password"]);
+		if(!mysql_select_db($dbConfig["db_name"], $dbConn)) {
+			mysql_query("INSERT INTO `lilac_configuration` (`key` , `value`) VALUES ('db_build', '" . $this->ut_version . "');", $dbConn);
+		}
 	}
 } 
 
