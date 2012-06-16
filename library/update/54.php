@@ -102,13 +102,15 @@ class updateLilac extends updateBase
 		
 		exec("mysql -h " . $dbConfig["db_host"] . " -u " . $dbConfig["db_username"] . " -p" . $dbConfig["db_password"] . " " . $dbConfig["db_name"] . " < " . $this->rootdir . "/sqldata/update/" . $this->ut_version . ".sql", $output, $retVal);
 		if($retVal != 0) {
-			return "Failed to import database update-schema. Make sure the mysql binary is in the search path for the web user.";
+			return "Failed to import database update-schema. Error message: " . $output;
 		}
 		
 		$dbConn = mysql_connect($dbConfig["db_host"], $dbConfig["db_username"], $dbConfig["db_password"]);
 		if(!mysql_select_db($dbConfig["db_name"], $dbConn)) {
 			mysql_query("INSERT INTO `lilac_configuration` (`key` , `value`) VALUES ('db_build', '" . $this->ut_version . "');", $dbConn);
 		}
+		
+		return;
 	}
 } 
 

@@ -76,7 +76,7 @@ class updateBase implements iupdateBase
 		$config["db_username"] = $propelConfig["datasources"]["lilac"]["connection"]["user"];
 		$config["db_password"] = $propelConfig["datasources"]["lilac"]["connection"]["password"];
 		
-		preg_match("/^([^:]*):host=([^;]*);dbname=(.*)$/", $matches);
+		preg_match("/^([^:]*):host=([^;]*);dbname=(.*)$/", $config["db_dsn"], $matches);
 		
 		$config["db_type"] = $matches[1];
 		$config["db_host"] = $matches[2];
