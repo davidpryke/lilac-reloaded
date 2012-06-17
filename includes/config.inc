@@ -69,9 +69,9 @@ $sys_config['logos_path'] = '/usr/share/nagios/htdocs/images/logos/';
 // We try now to get the path by quering the database for the physical path
 $logosPath = Lilac::get_physical_nagios_logos_path();
 if($logosPath)
-	$sys_config['logos_path'] = $logosPath;
+	$sys_config['logos_path'] = $logosPath . "/images/logos/";
 
 // Root of lilac-reloaded images directory
-$path_config['image_root'] = '/images/';		
+$path_config['image_root'] = dirname($_SERVER['SCRIPT_NAME']) . '/images/';		
 
 ?>
