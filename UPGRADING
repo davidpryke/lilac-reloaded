@@ -1,6 +1,15 @@
 From version 2.0.1 on its possible to upgrade a lilac-reloaded installation.
 
-Just copy over all new files in lilac-reloaded (except includes/lilac-conf.php) and run update.php in your browser.
-Follow the steps and you have a shiny new updated lilac-reloaded.
+Depending on your installation method (see INSTALL file) just do following steps.
 
-Lilac-reloaded will also autodetect if a upgrade is needed and will forward you to the update.php site.
+Installation via file upload:
+1. Download the latest lilac-reloaded package from sourceforge: https://sourceforge.net/projects/lilac--reloaded/files/
+2. Unzip files to your local disk and upload them to your current lilac-reloaded installation, overwriting existing files 
+3. Open your upload location in your webbrowser
+4. You will be redirected to the upgrading process, just follow all the steps trough upgrading process
+
+Installation via git:
+1. Change your working directory to your lilac-reloaded installation via shell and run command: git pull
+2. The newest files will be downloaded and merged to your current installation
+3. Open your upload location in your webbrowser
+4. You will be redirected to the upgrading process, just follow all the steps trough upgrading process

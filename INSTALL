@@ -1,1 +1,18 @@
-Please refer to www.lilacplatform.com for documentation on installation and bug reporting.
+lilac-reloaded can be installed in a few easy steps, either via file upload to your webserver or directly via git.
+
+For upgrading existing installations see UPGRADING file
+
+Installation via file upload:
+1. Download the latest lilac-reloaded package from sourceforge: https://sourceforge.net/projects/lilac--reloaded/files/
+2. Unzip files to your local disk and upload them to your webserver via ftp/scp/rsync/...
+3. Open your upload location in your webbrowser
+4. You will be redirected to the installation process, just follow all the steps trough installation process
+
+Installation via git:
+1. For installation via git you need shell access to your webserver (SSH) and the git binary installed
+2. You can choose between the stable (master) and development (dev) branch to clone
+3. Change to your folder you want to install lilac-reloaded and execute one of the commands (the last options defines the folder name to install):
+ 3.1. Stable: git clone -b master git://lilac--reloaded.git.sourceforge.net/gitroot/lilac--reloaded/lilac--reloaded lilac-reloaded
+ 3.2. Development: git clone -b dev git://lilac--reloaded.git.sourceforge.net/gitroot/lilac--reloaded/lilac--reloaded lilac-reloaded
+4. Open your checkout location in your webbrowser
+4. You will be redirected to the installation process, just follow all the steps trough installation process
