@@ -62,7 +62,16 @@ if(basename($_SERVER['PHP_SELF']) != "update.php") {
 }
 
 /* We get the physical location of logos and images nagios uses */
-$sys_config['logos_path'] = '/usr/share/nagios/htdocs/images/logos/';		// legacy
-$path_config['image_root'] = '/usr/share/nagios/htdocs/images/';		// legacy
+// Root of nagios logos directory
+// Set a default first
+$sys_config['logos_path'] = '/usr/share/nagios/htdocs/images/logos/';
+
+// We try now to get the path by quering the database for the physical path
+$logosPath = Lilac::get_physical_nagios_logos_path();
+if($logosPath)
+	$sys_config['logos_path'] = $logosPath;
+
+// Root of lilac-reloaded images directory
+$path_config['image_root'] = '/images/';		
 
 ?>
