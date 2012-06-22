@@ -70,6 +70,15 @@ class Lilac {
 		}
 	}
 	
+	function get_physical_nagios_logos_path() {
+		if(!class_exists("NagiosCgiConfigurationPeer"))
+			return 0;
+		
+		$cgiConfig = NagiosCgiConfigurationPeer::doSelectOne(new Criteria());
+		
+		return $cgiConfig->getPhysicalHtmlPath();
+	}
+	
 	/**
 	 * @todo Finalized.  Should be moved to caller.
 	 *

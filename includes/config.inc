@@ -28,8 +28,10 @@ require_once(dirname(__FILE__) . "/init.inc.php");	// This should be moved into 
 
 
 /* Needs to be rewritten, just temporary */
+/*
 $sys_config['logos_path'] = '/usr/share/nagios/htdocs/images/logos/';		// legacy
 $path_config['image_root'] = '/usr/share/nagios/htdocs/images/';		// legacy	
+*/
 
 if ( ! defined( "PATH_SEPARATOR" ) ) {
   if ( strpos( $_ENV[ "OS" ], "Win" ) !== false )
@@ -58,4 +60,18 @@ if(basename($_SERVER['PHP_SELF']) != "update.php") {
 		die();
 	}
 }
+
+/* We get the physical location of logos and images nagios uses */
+// Root of nagios logos directory
+// Set a default first
+$sys_config['logos_path'] = '/usr/share/nagios/htdocs/images/logos/';
+
+// We try now to get the path by quering the database for the physical path
+$logosPath = Lilac::get_physical_nagios_logos_path();
+if($logosPath)
+	$sys_config['logos_path'] = $logosPath . "/images/logos/";
+
+// Root of lilac-reloaded images directory
+$path_config['image_root'] = dirname($_SERVER['SCRIPT_NAME']) . '/images/';		
+
 ?>
