@@ -1,6 +1,10 @@
 Version history:
 ------------------------------------
 
+lilac-reloaded 2.0.2:
+- sometimes upgrade von pre 2.0.1 version was not possible, this is fixed
+- fixed images and logos path detection 
+
 lilac-reloaded 2.0.1:
 - its is now possible to upgrade from previous installations, please see UPGRADING for details
 - automatic update check
