@@ -42,11 +42,18 @@ class lilacUpdate
 		if(!class_exists("LilacConfigurationQuery"))
 			return 0;
 
-		$lilacDbVersion = LilacConfigurationQuery::create()->findPk("db_build");
-		if(empty($lilacDbVersion))
+		try 
+		{
+			$lilacDbVersion = LilacConfigurationQuery::create()->findPk("db_build");
+			if(empty($lilacDbVersion))
+				return 0;
+	
+			return $lilacDbVersion->getValue();
+		}
+		catch(Exception $e)
+		{
 			return 0;
-
-		return $lilacDbVersion->getValue();
+		}
 	}
 
 	public function getCurrentAPPVersion()
