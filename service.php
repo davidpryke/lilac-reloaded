@@ -1312,7 +1312,7 @@ print_header("Service Editor");
 								
 								$strparameter = "";
 								if(is_object($parameter))
-									$strparameter = $parameter->parameter;
+									$strparameter = $parameter->getParameter();
 								else
 									$strparameter = $parameter['parameter'];
 								?>
