@@ -965,7 +965,9 @@ if(isset($host)) {
 			}
 		}
 		
-		$templateList = NagiosHostTemplatePeer::doSelect(new Criteria);
+		$c = new Criteria();
+		$c->addAscendingOrderByColumn(NagiosHostTemplatePeer::NAME);
+		$templateList = NagiosHostTemplatePeer::doSelect($c);
 		
 		?>
 		<table width="100%" border="0">

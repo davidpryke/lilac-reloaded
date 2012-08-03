@@ -851,7 +851,9 @@ print_header("Service Template Editor");
 				}
 			}
 			
-			$templateList = NagiosServiceTemplatePeer::doSelect(new Criteria);
+			$c = new Criteria();
+			$c->addAscendingOrderByColumn(NagiosServiceTemplatePeer::NAME);
+			$templateList = NagiosServiceTemplatePeer::doSelect($c);
 			
 			?>
 			<table width="100%" border="0">

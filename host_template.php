@@ -903,7 +903,9 @@ print_header("Host Template Editor");
 				}
 			}
 			
-			$templateList = NagiosHostTemplatePeer::doSelect(new Criteria);
+			$c = new Criteria();
+			$c->addAscendingOrderByColumn(NagiosHostTemplatePeer::NAME);
+			$templateList = NagiosHostTemplatePeer::doSelect($c);
 			
 			?>
 			<table width="100%" border="0">

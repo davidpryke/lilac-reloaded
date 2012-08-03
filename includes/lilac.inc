@@ -286,7 +286,9 @@ class Lilac {
 	}
 		
 	function return_command_list(&$command_list) {
-		$command_list = NagiosCommandPeer::doSelect(new Criteria());
+		$c = new Criteria();
+		$c->addAscendingOrderByColumn(NagiosCommandPeer::NAME);
+		$command_list = NagiosCommandPeer::doSelect($c);
 		return 1;
 	}
 	
@@ -1067,6 +1069,7 @@ class Lilac {
 	function get_servicegroup_list(&$servicegroups_list) {
 		$servicegroups_list = array();
 		$c = new Criteria();
+		$c->addAscendingOrderByColumn(NagiosServiceGroupPeer::NAME);
 		$servicegroups_list = NagiosServiceGroupPeer::doSelect($c);
 		return true;
 	}
