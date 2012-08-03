@@ -124,6 +124,14 @@ else if($stage == 1) {
 	</div>
 	<?php
 	}
+	else
+	{
+	?>
+	<div class="notice">
+		<p>No update ist required. Click <a href="index.php">here</a> to go back to the main navigation.</p>
+	</div>
+	<?php
+	}
 	?>
 </div>
 <?php
