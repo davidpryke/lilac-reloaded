@@ -785,6 +785,19 @@ else if($stage == 2 && $success) {
 		<p style="margin: 15px;">
 		Your lilac installation is now complete.  You should remove the <em>install.php</em> script as it is no longer needed.  You should also remove the write privileges to the <em>includes</em> directory if set.
 		</p>
+		
+		<p style="margin: 15px;">
+		<b>Important: </b> In almost all cases the next step is now to import your existing nagios configuration, even there is only the default configuration of nagios set.<br>
+		This will import important configuration settings of nagios like default paths and parameters. Please click the following link to go to the "Import" site. 
+		</p>
+		
+	<p>
+	<a href="import.php">Import nagios settings</a>
+	</p>
+	
+		<p style="margin: 15px;">
+		If you know what you doing you can skip the "Import" step and click the following link to go to the main site. You can import your configuration at any time later
+		</p>
 
 	<p>
 	<a href="index.php">Launch Lilac Now</a>

@@ -75,6 +75,8 @@ class Lilac {
 			return 0;
 		
 		$cgiConfig = NagiosCgiConfigurationPeer::doSelectOne(new Criteria());
+		if(empty($cgiConfig))
+			return 0;
 		
 		return $cgiConfig->getPhysicalHtmlPath();
 	}
