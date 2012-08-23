@@ -97,16 +97,6 @@ LOCK TABLES `import_log_entry` WRITE;
 UNLOCK TABLES;
 
 --
--- Dumping data for table `lilac_configuration`
---
-
-LOCK TABLES `lilac_configuration` WRITE;
-/*!40000 ALTER TABLE `lilac_configuration` DISABLE KEYS */;
-INSERT INTO `lilac_configuration`(`version`) VALUES('1.0-subversion');
-/*!40000 ALTER TABLE `lilac_configuration` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Dumping data for table `nagios_broker_module`
 --
 
