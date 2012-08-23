@@ -27,7 +27,7 @@ class NmapAutoDiscoveryEngine extends AutoDiscoveryEngine {
 		// Each target is valid		
 	
 		// We have a list of targets
-		$nmap_flags = "--max-rtt-timeout 100 --max-retries 0 -sS -O -A -v -oX " . $this->xmlFile;
+		$nmap_flags = "--max-rtt-timeout 100ms --max-retries 0 -sS -O -A -v -oX " . $this->xmlFile;
 		
 		$exec_line = "sudo " . $config->getVar("nmap_binary") . " " . $nmap_flags . " ";
 		foreach($targets as $target) {

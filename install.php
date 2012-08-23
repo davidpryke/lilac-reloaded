@@ -787,12 +787,12 @@ else if($stage == 2 && $success) {
 		</p>
 		
 		<p style="margin: 15px;">
-		<b>Important: </b> In almost all cases the next step is now to import your existing nagios configuration, even there is only the default configuration of nagios set.<br>
-		This will import important configuration settings of nagios like default paths and parameters. Please click the following link to go to the "Import" site. 
+		<b>Important: </b> In almost all cases the next step is now to import your existing Nagios configuration, even if there is only the default configuration of Nagios set yet.<br>
+		This will import important configuration settings of Nagios like default paths and parameters. Please click the following link to go to the "Import" site. 
 		</p>
 		
 	<p>
-	<a href="import.php">Import nagios settings</a>
+	<a href="import.php">Import Nagios settings</a>
 	</p>
 	
 		<p style="margin: 15px;">
