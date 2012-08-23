@@ -1,6 +1,12 @@
 Version history:
 ------------------------------------
 
+lilac-reloaded 2.0.3:
+- most object are now ordered ascending to get a better workflow
+- importing example data was broken, is fixed now
+- after installation without importing sample data lilac-reloaded didnt show up correctly
+- many fixes, see git log for more information
+
 lilac-reloaded 2.0.2:
 - sometimes upgrade von pre 2.0.1 version was not possible, this is fixed
 - fixed images and logos path detection 

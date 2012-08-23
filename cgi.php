@@ -1,6 +1,7 @@
 <?php
 /*
 Lilac - A Nagios Configuration Tool
+Copyright (C) 2012 Rene Hadler
 Copyright (C) 2007 Taylor Dondich
 
 This program is free software; you can redistribute it and/or

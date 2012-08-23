@@ -1,10 +1,10 @@
-From version 2.0.1 on its possible to upgrade a lilac-reloaded installation.
+Starting from version 2.0.1 its now possible to upgrade a lilac-reloaded installation or even a older lilac installation (Version 1.x).
 
-Depending on your installation method (see INSTALL file) just do following steps.
+Depending on your installation method (see INSTALL file) just do following steps. Please make sure to do backups, you was warned!!!
 
 Installation via file upload:
 1. Download the latest lilac-reloaded package from sourceforge: https://sourceforge.net/projects/lilac--reloaded/files/
-2. Unzip files to your local disk and upload them to your current lilac-reloaded installation, overwriting existing files 
+2. Unzip files to your local disk and upload them to your current lilac-reloaded/lilac installation, overwriting existing files 
 3. Open your upload location in your webbrowser
 4. You will be redirected to the upgrading process, just follow all the steps trough upgrading process
 
