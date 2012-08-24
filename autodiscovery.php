@@ -328,6 +328,7 @@ if(isset($autodiscoveryJob)) {
 				$.getJSON("autodiscovery.php?id=<?php echo $autodiscoveryJob->getId();?>&request=status&tok=" + Math.random() , function(data) {
 					$("#jobstatus").html(data.status_text);
 					$("#elapsedtime").html(data.elapsed_time);
+					$("#joblog").flexReload();
 					
 					if(data.status_code == <?php echo AutodiscoveryJob::STATUS_FINISHED;?> || data.status_code == <?php echo AutodiscoveryJob::STATUS_FAILED;?>) {
 						if(data.status_code == <?php echo AutodiscoveryJob::STATUS_FINISHED;?>) {
@@ -486,11 +487,24 @@ if(!isset($autodiscoveryJob))	{
 		$procUser = Lilac::getProcessUserInfo("name");
 		?>
 			<div class="error">
-			The sudo program was not found on your system. Please make sure sudo is installed / configured properly and available in the system path. Also make sure the webserver-user (<?php echo $procUser; ?>) is able to execute nmap via sudo with administrative rights.
+			  The sudo program was not found on your system. Please make sure sudo is installed / configured properly and available in the system path. Also make sure the webserver-user (<?php echo $procUser; ?>) is able to execute nmap via sudo with administrative rights.
 			</div>
 		<?php 
 		}
+	
+	if(!empty($nmapPath) && !empty($sudoPath))	
+	{
 	?>
+	
+	<div class="warning">
+	  Please make sure to add following to your sudoers file to make autodiscovery work correctly:<br>
+	  <pre><?php echo $procUser; ?> ALL=(ALL) NOPASSWD: <?php echo $nmapPath; ?> *</pre>
+	</div>
+	
+	<?php 
+	}
+	?>
+	
 	To begin an auto-discovery of your configuration, an Auto Discovery Job must be defined.  Configure your auto discovery job below.  Once created, your auto discovery 
 	job will begin in the background.  You will be able to check on the status of your job and view it's log as it continues running.  You are advised to NOT edit anything 
 	in Lilac while your job is running.

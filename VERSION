@@ -1,6 +1,9 @@
 Version history:
 ------------------------------------
 
+lilac-reloaded 2.0.4:
+- autodiscovery feature is now better checked for dependencies and problems
+
 lilac-reloaded 2.0.3:
 - most object are now ordered ascending to get a better workflow
 - importing example data was broken, is fixed now
