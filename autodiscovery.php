@@ -496,8 +496,8 @@ if(!isset($autodiscoveryJob))	{
 	{
 	?>
 	
-	<div class="warning">
-	  Please make sure to add following to your sudoers file to make autodiscovery work correctly:<br>
+	<div class="notice">
+	  Please make sure to add following line to your sudoers file to make autodiscovery work correctly:<br>
 	  <pre><?php echo $procUser; ?> ALL=(ALL) NOPASSWD: <?php echo $nmapPath; ?> *</pre>
 	</div>
 	
