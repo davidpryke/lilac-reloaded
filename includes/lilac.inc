@@ -27,6 +27,20 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 class Lilac {
 	
+	public static function getExecutablePath($exeName)
+	{
+		$env_path = getenv("PATH");
+		$paths = explode(":", $env_path);
+		foreach($paths as $path)
+		{
+			$exePath = $path . "/" . $exeName;
+			if(file_exists($exePath))
+				return $exePath;
+		}
+	
+		return 0;
+	}
+	
 	function get_children_hosts_list($host_id, &$children_lists) {
 		$c = new Criteria();
 		if($host_id != 0) {

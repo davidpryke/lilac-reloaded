@@ -465,9 +465,19 @@ if(!isset($autodiscoveryJob))	{
 		print_window_footer();	
 	}
 	
+	$nmapPath = Lilac::getExecutablePath("nmap");
 	
 	
 	print_window_header("Create New Auto Discovery Job", "100%", "center");
+	
+	if(!$nmapPath)
+	{
+	?>
+		<div class="error">
+		The nmap program was not found on your system. Please make sure nmap is installed properly and available in the system path.
+		</div>
+	<?php 
+	}
 	?>
 	To begin an auto-discovery of your configuration, an Auto Discovery Job must be defined.  Configure your auto discovery job below.  Once created, your auto discovery 
 	job will begin in the background.  You will be able to check on the status of your job and view it's log as it continues running.  You are advised to NOT edit anything 
@@ -489,7 +499,7 @@ if(!isset($autodiscoveryJob))	{
 		<legend>Discovery Options</legend>
 		<p>
 		<label for="nmap_binary">NMAP Binary Location</label>
-		<input id="nmap_binary" name="nmap_binary" type="text" size="100" maxlength="255" value="/usr/bin/nmap" />
+		<input id="nmap_binary" name="nmap_binary" type="text" size="100" maxlength="255" value="<?php echo $nmapPath; ?>" />
 		</p>
 		<p>
 		<input id="traceroute_enabled" name="traceroute_enabled" type="checkbox" checked="checked" /> Enable Traceroute to Determine Parent Host<br />
@@ -520,7 +530,7 @@ if(!isset($autodiscoveryJob))	{
 		<table id="targets">
 			<tr id="targetinputrow">
 				<td>
-				<input id="activetarget" type="text"size="40"></td><td><a id="addtargetlink" href="">Add Target</a>
+				<input id="activetarget" type="text"size="40"></td><td><a id="addtargetlink" href=""> Add Target</a>
 				</td>
 			</tr>
 		</table>
