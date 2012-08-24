@@ -466,18 +466,30 @@ if(!isset($autodiscoveryJob))	{
 	}
 	
 	$nmapPath = Lilac::getExecutablePath("nmap");
-	
+	$sudoPath = Lilac::getExecutablePath("sudo");
 	
 	print_window_header("Create New Auto Discovery Job", "100%", "center");
 	
 	if(!$nmapPath)
 	{
+		$nmapPath = "";
 	?>
 		<div class="error">
-		The nmap program was not found on your system. Please make sure nmap is installed properly and available in the system path.
+		The nmap program was not found on your system. Please make sure nmap is installed properly and available in the system path. You can also enter the path to nmap manually if you have installed it in a different place outside the system path.
 		</div>
 	<?php 
 	}
+	
+	if(!$sudoPath)
+	{
+		$sudoPath = "";
+		$procUser = Lilac::getProcessUserInfo("name");
+		?>
+			<div class="error">
+			The sudo program was not found on your system. Please make sure sudo is installed / configured properly and available in the system path. Also make sure the webserver-user (<?php echo $procUser; ?>) is able to execute nmap via sudo with administrative rights.
+			</div>
+		<?php 
+		}
 	?>
 	To begin an auto-discovery of your configuration, an Auto Discovery Job must be defined.  Configure your auto discovery job below.  Once created, your auto discovery 
 	job will begin in the background.  You will be able to check on the status of your job and view it's log as it continues running.  You are advised to NOT edit anything 

@@ -27,6 +27,12 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 class Lilac {
 	
+	public static function getProcessUserInfo($attr)
+	{
+		$processUser = posix_getpwuid(posix_geteuid());
+		print $processUser[$attr];
+	}
+	
 	public static function getExecutablePath($exeName)
 	{
 		$env_path = getenv("PATH");
