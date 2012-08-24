@@ -566,3 +566,17 @@ li.general {
 .statistics tr.odd {
 	background-color: #e0e0e0;
 }
+
+.notice {
+	background: #FFFF99;
+	padding: 5px;
+	margin: 10px;
+	border: 1px dashed #ccc;
+}
+
+.error {
+	background: #FF9999;
+	padding: 5px;
+	margin: 10px;
+	border: 1px dashed #ccc;
+}
