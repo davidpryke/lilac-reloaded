@@ -30,7 +30,7 @@ class Lilac {
 	public static function getProcessUserInfo($attr)
 	{
 		$processUser = posix_getpwuid(posix_geteuid());
-		print $processUser[$attr];
+		return $processUser[$attr];
 	}
 	
 	public static function getExecutablePath($exeName)
