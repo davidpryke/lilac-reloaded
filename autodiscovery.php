@@ -468,6 +468,7 @@ if(!isset($autodiscoveryJob))	{
 	
 	$nmapPath = Lilac::getExecutablePath("nmap");
 	$sudoPath = Lilac::getExecutablePath("sudo");
+	$procUser = Lilac::getProcessUserInfo("name");
 	
 	print_window_header("Create New Auto Discovery Job", "100%", "center");
 	
@@ -484,7 +485,6 @@ if(!isset($autodiscoveryJob))	{
 	if(!$sudoPath)
 	{
 		$sudoPath = "";
-		$procUser = Lilac::getProcessUserInfo("name");
 		?>
 			<div class="error">
 			  The sudo program was not found on your system. Please make sure sudo is installed / configured properly and available in the system path. Also make sure the webserver-user (<?php echo $procUser; ?>) is able to execute nmap via sudo with administrative rights.
