@@ -77,7 +77,7 @@ class updateLilac extends updateBase
 			return "Could not fetch configuration state, is your installation in a sane state??";
 		
 		// Update DSN to provide port setting
-		$dbConfig["db_dsn"] = preg_replace(";dbname", ";port=3306;dbname", $dbConfig["db_dsn"]);
+		$dbConfig["db_dsn"] = preg_replace("/;dbname/", ";port=3306;dbname", $dbConfig["db_dsn"]);
 		
 		$conf = file_get_contents($this->rootdir . "/includes/lilac-conf.php.dist");
 		$conf = str_replace("%%DSN%%", $dbConfig["db_dsn"], $conf);
