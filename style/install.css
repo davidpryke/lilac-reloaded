@@ -123,6 +123,10 @@ input[type="text"] {
 	width: 200px;
 }
 
+input[type="password"] {
+	width: 200px;
+}
+
 input[type="checkbox"] {
 	width: 40px;
 	margin: 10px;

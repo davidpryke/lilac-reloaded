@@ -751,7 +751,7 @@ else if($stage == 2 && empty($success)) {
 	<fieldset id="mysqlform">
 		<legend>MySQL Connection Information</legend>
 		<p>
-			<label for="mysqlHostname">Host/Port: </label><input type="text" id="mysqlHostname" name="mysqlHostname" value="<?php echo $mysqlHostname;?>" /> <input type="text" id="mysqlPort" name="mysqlPort" value="<?php echo $mysqlHostname;?>" />
+			<label for="mysqlHostname">Host/Port: </label><input type="text" id="mysqlHostname" name="mysqlHostname" value="<?php echo $mysqlHostname;?>" /> <input type="text" id="mysqlPort" name="mysqlPort" length="6" value="<?php echo $mysqlPort;?>" style="width: 80px;" />
 		</p>
 		<p>
 			<label for="mysqlUsername">Username: </label><input type="text" id="mysqlUsername" name="mysqlUsername" value="<?php echo $mysqlUsername;?>" />
