@@ -88,6 +88,7 @@ if($stage == 2) {
 		$mysqlRootUsername = 'root';
 		$mysqlRootPassword = '';
 		$mysqlHostname = 'localhost';
+		$mysqlPort = '3306';
 		$mysqlUsername = '';
 		$mysqlPassword = '';
 		$mysqlDatabase = 'lilac';
@@ -99,6 +100,7 @@ if($stage == 2) {
 		$mysqlRootUsername = trim($_POST['mysqlRootUsername']);
 		$mysqlRootPassword = trim($_POST['mysqlRootPassword']);
 		$mysqlHostname = trim($_POST['mysqlHostname']);
+		$mysqlPort = trim($_POST['mysqlPort']);
 		$mysqlUsername = trim($_POST['mysqlUsername']);
 		$mysqlPassword = trim($_POST['mysqlPassword']);
 		$mysqlDatabase = trim($_POST['mysqlDatabase']);
@@ -122,6 +124,9 @@ if($stage == 2) {
 			if(empty($mysqlHostname)) {
 				$error = "MySQL Hostname cannot be blank.";
 			}
+			else if(empty($mysqlPort)) {
+				$error = "MySQL Port cannot be blank.";
+			}
 			else if(empty($mysqlUsername)) {
 				$error = "MySQL Username cannot be blank.";
 			}
@@ -135,7 +140,7 @@ if($stage == 2) {
 			// Check to see if we need to create the user and database
 			if($mysqlCreateUserDatabase) {
 				// Attempt to connect as admin
-				$dbConn = @mysql_connect($mysqlHostname, $mysqlRootUsername, $mysqlRootPassword);
+				$dbConn = @mysql_connect($mysqlHostname . ":" . $mysqlPort, $mysqlRootUsername, $mysqlRootPassword);
 				if(!$dbConn) {
 					$error = "Failed to connect to MySQL server with Administrator login.";
 				}
@@ -173,7 +178,7 @@ if($stage == 2) {
 			}
 			if(!$error && $mysqlPopulate) {
 				// Okay, we need to populate the database.  Attempt to connect as our user.
-				$dbConn = @mysql_connect($mysqlHostname, $mysqlUsername, $mysqlPassword);
+				$dbConn = @mysql_connect($mysqlHostname . ":" . $mysqlPort, $mysqlUsername, $mysqlPassword);
 				if(!$dbConn) {
 					$error = "Failed to connect to MySQL server with " . $mysqlUsername . " user.";
 				}
@@ -184,19 +189,19 @@ if($stage == 2) {
 					}
 					else {
 						// Load the data
-						exec("mysql -h " . $mysqlHostname . " -u " . $mysqlUsername . " -p" . $mysqlPassword . " " . $mysqlDatabase . " < " . dirname(__FILE__) . "/sqldata/schema.sql", $output, $retVal);
+						exec("mysql -h " . $mysqlHostname . " -P " . $mysqlPort . " -u " . $mysqlUsername . " -p" . $mysqlPassword . " " . $mysqlDatabase . " < " . dirname(__FILE__) . "/sqldata/schema.sql", $output, $retVal);
 						if($retVal != 0) {
 							$error = "Failed to import database schema. Make sure the mysql binary is in the search path for the web user.";
 						}
 						else {
 							// Import labels
-							exec("mysql -h " . $mysqlHostname . " -u " . $mysqlUsername . " -p" . $mysqlPassword . " " . $mysqlDatabase . " < " . dirname(__FILE__) . "/sqldata/lilac-nagios-en-label.sql", $output, $retVal);
+							exec("mysql -h " . $mysqlHostname . " -P " . $mysqlPort . " -u " . $mysqlUsername . " -p" . $mysqlPassword . " " . $mysqlDatabase . " < " . dirname(__FILE__) . "/sqldata/lilac-nagios-en-label.sql", $output, $retVal);
 							if($retVal != 0) {
 								$error = "Failed to import Nagios labels.  Error was: <br />" . str_replace("\n", "<br />", $output[count($output)]);
 							}
 							else {
 								// Import Seed
-								exec("mysql -h " . $mysqlHostname . " -u " . $mysqlUsername . " -p" . $mysqlPassword . " " . $mysqlDatabase . " < " . dirname(__FILE__) . "/sqldata/seed.sql", $output, $retVal);
+								exec("mysql -h " . $mysqlHostname . " -P " . $mysqlPort . " -u " . $mysqlUsername . " -p" . $mysqlPassword . " " . $mysqlDatabase . " < " . dirname(__FILE__) . "/sqldata/seed.sql", $output, $retVal);
 								if($retVal != 0) {
 									$error = "Failed to import seed data.  Error was: <br />" . str_replace("\n", "<br />", $output[count($output)]);
 								}
@@ -206,20 +211,20 @@ if($stage == 2) {
 				}
 			}
 			else if(!$error) {
-				$dbConn = @mysql_connect($mysqlHostname, $mysqlUsername, $mysqlPassword);
+				$dbConn = @mysql_connect($mysqlHostname . ":" . $mysqlPort, $mysqlUsername, $mysqlPassword);
 				// Select db.
 				if(!mysql_select_db($mysqlDatabase, $dbConn)) {
 					$error = "Failed to use " . $mysqlDatabase . " database.  Check your User credentials.  Error was: <em>" . mysql_error($dbConn) . "</em>";
 				}
 				else if(!$mysqlKeepDatabase) {
 					// Load the data
-					exec("mysql -h " . $mysqlHostname . " -u " . $mysqlUsername . " -p" . $mysqlPassword . " " . $mysqlDatabase . " < " . dirname(__FILE__) . "/sqldata/schema.sql", $output, $retVal);
+					exec("mysql -h " . $mysqlHostname . " -P " . $mysqlPort . " -u " . $mysqlUsername . " -p" . $mysqlPassword . " " . $mysqlDatabase . " < " . dirname(__FILE__) . "/sqldata/schema.sql", $output, $retVal);
 					if($retVal != 0) {
 						$error = "Failed to import database schema. Make sure the mysql binary is in the search path for the web user.";
 					}
 					else {
 						// Import labels
-						exec("mysql -h " . $mysqlHostname . " -u " . $mysqlUsername . " -p" . $mysqlPassword . " " . $mysqlDatabase . " < " . dirname(__FILE__) . "/sqldata/lilac-nagios-en-label.sql", $output, $retVal);
+						exec("mysql -h " . $mysqlHostname . " -P " . $mysqlPort . " -u " . $mysqlUsername . " -p" . $mysqlPassword . " " . $mysqlDatabase . " < " . dirname(__FILE__) . "/sqldata/lilac-nagios-en-label.sql", $output, $retVal);
 						if($retVal != 0) {
 							$error = "Failed to import Nagios labels.  Error was: <br />" . str_replace("\n", "<br />", $output[count($output)]);
 						}
@@ -238,7 +243,7 @@ if($stage == 2) {
 					// Insert Build number information
 					mysql_query("INSERT INTO `lilac_configuration` (`key` , `value`) VALUES ('db_build', '" . LILAC_VERSION_BUILD . "');", $dbConn);
 					
-					exec("mysql -h " . $mysqlHostname . " -u " . $mysqlUsername . " -p" . $mysqlPassword . " " . $mysqlDatabase . " < " . dirname(__FILE__) . "/sqldata/lilac-base.sql", $output, $retVal);
+					exec("mysql -h " . $mysqlHostname . " -P " . $mysqlPort . " -u " . $mysqlUsername . " -p" . $mysqlPassword . " " . $mysqlDatabase . " < " . dirname(__FILE__) . "/sqldata/lilac-base.sql", $output, $retVal);
 					if($retVal != 0) {
 						$error = "Failed to import Nagios Base.  Error was: <br />" . str_replace("\n", "<br />", $output[count($output)]);
 					}
@@ -248,7 +253,7 @@ if($stage == 2) {
 			
 			// Create PDO connection to perform upgrades
 			try {
-				$dbConn = new PDO("mysql:host=" . $mysqlHostname . ";dbname=" . $mysqlDatabase, $mysqlUsername, $mysqlPassword);
+				$dbConn = new PDO("mysql:host=" . $mysqlHostname . ";port=" . $mysqlPort . ";dbname=" . $mysqlDatabase, $mysqlUsername, $mysqlPassword);
 			} catch(PDOException $e) {
 				$error = "Failed to connect to MySQL server with " . $mysqlUsername . " user:" . $e->getMessage();
 			}
@@ -256,7 +261,7 @@ if($stage == 2) {
 			if(!$error) {
 				// Okay, write to the configuration file!
 				$conf = file_get_contents(dirname(__FILE__) . "/includes/lilac-conf.php.dist");
-				$conf = str_replace("%%DSN%%", "mysql:host=" . $mysqlHostname . ";dbname=" . $mysqlDatabase, $conf);
+				$conf = str_replace("%%DSN%%", "mysql:host=" . $mysqlHostname . ";port=" . $mysqlPort . ";dbname=" . $mysqlDatabase, $conf);
 				$conf = str_replace("%%USERNAME%%", $mysqlUsername, $conf);
 				$conf = str_replace("%%PASSWORD%%", $mysqlPassword, $conf);	
 				$conf = str_replace("%%TIMEZONE%%", "date_default_timezone_set('" . $timezone . "');", $conf);			
@@ -746,7 +751,7 @@ else if($stage == 2 && empty($success)) {
 	<fieldset id="mysqlform">
 		<legend>MySQL Connection Information</legend>
 		<p>
-			<label for="mysqlHostname">Host: </label><input type="text" id="mysqlHostname" name="mysqlHostname" value="<?php echo$mysqlHostname;?>" />
+			<label for="mysqlHostname">Host/Port: </label><input type="text" id="mysqlHostname" name="mysqlHostname" value="<?php echo $mysqlHostname;?>" /> <input type="text" id="mysqlPort" name="mysqlPort" value="<?php echo $mysqlHostname;?>" />
 		</p>
 		<p>
 			<label for="mysqlUsername">Username: </label><input type="text" id="mysqlUsername" name="mysqlUsername" value="<?php echo $mysqlUsername;?>" />
