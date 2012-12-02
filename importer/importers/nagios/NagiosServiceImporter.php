@@ -402,7 +402,12 @@ class NagiosServiceImporter extends NagiosImporter {
 				}
 				
 				// Okay, let's check that the method DOES exist
-				if(!method_exists($obj, $this->fieldMethods[$key])) {
+				if(empty($this->fieldMethods[$key]))
+				{
+					// No method defined for field
+					continue;
+				}
+				elseif(!method_exists($obj, $this->fieldMethods[$key])) {
 					$job->addError("Method " . $this->fieldMethods[$key] . " does not exist for variable: " . $key . " on line " . $lineNum . " in file " . $fileName);
 					if(!$config->getVar('continue_error')) {
 						return false;
