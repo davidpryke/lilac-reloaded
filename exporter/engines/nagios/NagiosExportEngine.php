@@ -52,16 +52,16 @@ class NagiosExportEngine extends ExportEngine {
 		
 			<legend>Options</legend>
 			<p>
-			<input type="checkbox" id="backup_existing" name="backup_existing" checked="checked" />
-			<label for="backup_existing">Backup Existing Files</label>
+			<input type="checkbox" id="backup_existing" name="backup_existing" />
+			<label for="backup_existing">Backup Existing Files (broken)</label>
 			</p>
 			<p>
-			<input type="checkbox" id="preflight_check" name="preflight_check" checked="checked" />
-			<label for="preflight_check">Perform a Configuration Sanity Check</label>
+			<input type="checkbox" id="preflight_check" name="preflight_check" />
+			<label for="preflight_check">Perform a Configuration Sanity Check (broken)</label>
 			</p>
 			<p>
-			<input type="checkbox" id="restart_nagios" name="restart_nagios" checked="checked" />
-			<label for="restart_nagios">Restart Nagios</label>
+			<input type="checkbox" id="restart_nagios" name="restart_nagios" />
+			<label for="restart_nagios">Restart Nagios (broken)</label>
 			</p>
 		</fieldset>
 		</p>

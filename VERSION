@@ -3,7 +3,9 @@ Version history:
 
 lilac-reloaded 2.0.4:
 - autodiscovery feature is now better checked for dependencies and problems
-- its no possible to provide a custom port number for mysql
+- its now possible to provide a custom port number for mysql
+- importing service configurations with hostgroup_name and maybe other fields are now working
+- disable options on nagios export by default because they are broken, will be enabled in later release again when problems were investigated
 
 lilac-reloaded 2.0.3:
 - most object are now ordered ascending to get a better workflow
@@ -19,7 +21,7 @@ lilac-reloaded 2.0.1:
 - its is now possible to upgrade from previous installations, please see UPGRADING for details
 - automatic update check
 - added new options that are present in new nagios installations
-- many, many fixes (see gitt for details)
+- many, many fixes (see git for details)
 
 lilac-reloaded 2.0-dev:
 - updated propel framework to 1.6.1
