@@ -6,6 +6,7 @@ lilac-reloaded 2.0.4:
 - its now possible to provide a custom port number for mysql
 - importing service configurations with hostgroup_name and maybe other fields are now working
 - disable options on nagios export by default because they are broken, will be enabled in later release again when problems were investigated
+- small fixes, see git log
 
 lilac-reloaded 2.0.3:
 - most object are now ordered ascending to get a better workflow
