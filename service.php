@@ -1,6 +1,7 @@
 <?php
 /*
 Lilac - A Nagios Configuration Tool
+Copyright (C) 2013 Rene Hadler
 Copyright (C) 2007 Taylor Dondich
 
 This program is free software; you can redistribute it and/or
@@ -877,7 +878,9 @@ print_header("Service Editor");
 				}
 			}
 			
-			$templateList = NagiosServiceTemplatePeer::doSelect(new Criteria);
+			$c = new Criteria();
+			$c->addAscendingOrderByColumn(NagiosServiceTemplatePeer::NAME);
+			$templateList = NagiosServiceTemplatePeer::doSelect($c);
 			
 			?>
 			<table width="100%" border="0">
