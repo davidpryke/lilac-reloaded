@@ -61,7 +61,7 @@ class module_search_simple {
 		
 		$this->searchTemplate['hosts']['url'] = "hosts.php?id=@1@";
 		$this->searchTemplate['hostgroups']['url'] = "hostgroups.php?id=@1@";
-		$this->searchTemplate['host_templates']['url'] = "host_templates.php?id=@1@";
+		$this->searchTemplate['host_templates']['url'] = "host_template.php?id=@1@";
 		$this->searchTemplate['services']['url'] = "service.php?id=@1@";
 		$this->searchTemplate['servicegroups']['url'] = "servicegroups.php?servicegroup_id=@1@";
 		$this->searchTemplate['service_templates']['url'] = "service_template.php?id=@1@";
