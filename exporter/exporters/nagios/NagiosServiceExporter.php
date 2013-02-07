@@ -312,8 +312,10 @@ class NagiosServiceExporter extends NagiosExporter {
 			$job->addNotice("Total inherited services found for host " . $host->getName() . ": " . count($inheritedServices));
 			foreach($inheritedServices as $service) {
 				// If service belongs to a hostgroup dont add it again to a host
-				if(!empty($service->getHostgroup()))
+				$hostgroupID = $service->getHostgroup();
+				if(!empty($hostgroupID))
 					continue;
+				
 				$job->addNotice("Processing service " . $service->getDescription());
 				$this->_exportService($service, "host", $host);
 			}
@@ -321,8 +323,10 @@ class NagiosServiceExporter extends NagiosExporter {
 			$job->addNotice("Total services found for host " . $host->getName() . ": " . count($services));
 			foreach($services as $service) {
 				// If service belongs to a hostgroup dont add it again to a host
-				if(!empty($service->getHostgroup()))
+				$hostgroupID = $service->getHostgroup();
+				if(!empty($hostgroupID))
 					continue;
+				
 				$job->addNotice("Processing service " . $service->getDescription());
 				$this->_exportService($service, "host", $host);
 			}
