@@ -72,6 +72,8 @@ class NagiosExportEngine extends ExportEngine {
 	}
 
 	public function renderConfig() {
+		
+		$nagiosExePath = Lilac::getExecutablePath("nagios");
 		?>
 		<p>
 		<fieldset class="checks">
@@ -83,7 +85,7 @@ class NagiosExportEngine extends ExportEngine {
 			</p>
 			<p>
 			<input type="checkbox" id="preflight_check" name="preflight_check" />
-			<label for="preflight_check">Perform a Configuration Sanity Check (broken)</label>
+			<label for="preflight_check">Perform a Configuration Sanity Check</label>
 			</p>
 			<p>
 			<input type="checkbox" id="restart_nagios" name="restart_nagios" />
@@ -96,7 +98,7 @@ class NagiosExportEngine extends ExportEngine {
 			<legend>Path Locations</legend>
 			<p>
 			<label for="nagios_path">Nagios Sanity-Check Command (Required if Doing Sanity Check)</label>
-			<input type="text" size="100" maxlength="255" id="nagios_path" name="nagios_path" />
+			<input type="text" size="100" maxlength="255" id="nagios_path" name="nagios_path" value="<?php echo $nagiosExePath; ?>" />
 			</p>
 			
 			<p>
@@ -174,7 +176,7 @@ class NagiosExportEngine extends ExportEngine {
 			
 			// Do some more checks
 			if(!is_writable($mainConfiguration->getConfigDir())) {
-				$job->addError("Directory at >" . $mainConfiguration->getConfigDir() . "< is not writeable, please check permissions.");
+				$job->addError("Backup directory at >" . $mainConfiguration->getConfigDir() . "< is not writeable, please check permissions.");
 				return false;
 			}
 				

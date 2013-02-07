@@ -1,6 +1,10 @@
 Version history:
 ------------------------------------
 
+lilac-reloaded 2.0.5:
+- backup feature on exporting configurations is now working and better checked
+- some small fixes, see git log for more information
+
 lilac-reloaded 2.0.4:
 - autodiscovery feature is now better checked for dependencies and problems
 - its now possible to provide a custom port number for mysql
