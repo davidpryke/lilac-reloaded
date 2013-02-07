@@ -178,7 +178,7 @@ class NagiosExportEngine extends ExportEngine {
 				return false;
 			}
 				
-			$backupDir = $mainConfiguration->getConfigDir() . "/" . "lilac-backup-" . date("m-d-Y-H-i");
+			$backupDir = $mainConfiguration->getConfigDir() . "/" . "lilac-backup-" . date("m-d-Y-H-i-s");
 			$result = @mkdir($backupDir);
 			if(!$result) {
 				$job->addError("Unable to create backup directory at: " . $backupDir);
