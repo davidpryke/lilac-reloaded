@@ -1,4 +1,30 @@
 <?php
+
+/*
+ lilac-reloaded - A Nagios Configuration Tool
+Copyright (C) 2013 Rene Hadler
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+*/
+
+/*
+ Filename: NagiosExportEngine.php
+Description:
+The class definition and methods for the NagiosExporter class
+*/
+
 abstract class NagiosExporter extends Exporter {
 	
 	private $exportJob;
@@ -53,7 +79,7 @@ class NagiosExportEngine extends ExportEngine {
 			<legend>Options</legend>
 			<p>
 			<input type="checkbox" id="backup_existing" name="backup_existing" />
-			<label for="backup_existing">Backup Existing Files (broken)</label>
+			<label for="backup_existing">Backup Existing Files</label>
 			</p>
 			<p>
 			<input type="checkbox" id="preflight_check" name="preflight_check" />
@@ -145,6 +171,13 @@ class NagiosExportEngine extends ExportEngine {
 		// First determine, do we need to make backups?
 		if($config->getVar('backup_existing')) {
 			$mainConfiguration = NagiosMainConfigurationPeer::doSelectOne(new Criteria());
+			
+			// Do some more checks
+			if(!is_writable($mainConfiguration->getConfigDir())) {
+				$job->addError("Directory at >" . $mainConfiguration->getConfigDir() . "< is not writeable, please check permissions.");
+				return false;
+			}
+				
 			$backupDir = $mainConfiguration->getConfigDir() . "/" . "lilac-backup-" . date("m-d-Y-H-i");
 			$result = @mkdir($backupDir);
 			if(!$result) {
