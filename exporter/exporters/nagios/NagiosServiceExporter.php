@@ -1,5 +1,30 @@
 <?php
 
+/*
+ lilac-reloaded - A Nagios Configuration Tool
+Copyright (C) 2013 Rene Hadler
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+*/
+
+/*
+ Filename: NagiosServiceExporter.php
+Description:
+The class definition and methods for the NagiosServiceExporter class
+*/
+
 class NagiosServiceExporter extends NagiosExporter {
 	
 	public function init() {
@@ -286,12 +311,18 @@ class NagiosServiceExporter extends NagiosExporter {
 			$inheritedServices = $host->getInheritedServices();
 			$job->addNotice("Total inherited services found for host " . $host->getName() . ": " . count($inheritedServices));
 			foreach($inheritedServices as $service) {
+				// If service belongs to a hostgroup dont add it again to a host
+				if(!empty($service->getHostgroup()))
+					continue;
 				$job->addNotice("Processing service " . $service->getDescription());
 				$this->_exportService($service, "host", $host);
 			}
 			$services = $host->getNagiosServices();
 			$job->addNotice("Total services found for host " . $host->getName() . ": " . count($services));
 			foreach($services as $service) {
+				// If service belongs to a hostgroup dont add it again to a host
+				if(!empty($service->getHostgroup()))
+					continue;
 				$job->addNotice("Processing service " . $service->getDescription());
 				$this->_exportService($service, "host", $host);
 			}
