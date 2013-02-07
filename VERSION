@@ -3,6 +3,7 @@ Version history:
 
 lilac-reloaded 2.0.5:
 - backup feature on exporting configurations is now working and better checked
+- exporting hostgroup services no longer provide duplicate service entries
 - some small fixes, see git log for more information
 
 lilac-reloaded 2.0.4:
