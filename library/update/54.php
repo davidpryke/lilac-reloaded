@@ -111,6 +111,9 @@ class updateLilac extends updateBase
 			mysql_query("ALTER TABLE `nagios_main_configuration` ADD `check_for_updates` TINYINT( 4 ) NOT NULL;", $dbConn);
 			mysql_query("ALTER TABLE `nagios_main_configuration` ADD `check_for_orphaned_hosts` TINYINT( 4 ) NOT NULL;", $dbConn);
 			mysql_query("ALTER TABLE `nagios_main_configuration` ADD `bare_update_check` TINYINT( 4 ) NOT NULL;", $dbConn);
+			
+			// We add a default value for temp_path
+			mysql_query("UPDATE `nagios_main_configuration` SET `temp_path`='/tmp';", $dbConn);
 		} else
 		{
 			return "Failed to write database update on updateLilacDB()";
