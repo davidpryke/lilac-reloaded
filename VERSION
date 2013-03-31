@@ -5,7 +5,7 @@ lilac-reloaded 2.0.5:
 - backup feature on exporting configurations is now working and better checked
 - exporting hostgroup services no longer provide duplicate service entries
 - sanity check on export is now working again (if you have problems with "check_result_path not writeable" please change the permissions for this feature to work properly)
-- some small fixes, see git log for more information
+- some other fixes, see git log for more information
 
 lilac-reloaded 2.0.4:
 - autodiscovery feature is now better checked for dependencies and problems
