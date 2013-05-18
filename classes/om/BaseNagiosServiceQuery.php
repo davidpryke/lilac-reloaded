@@ -174,6 +174,10 @@
  * @method     NagiosServiceQuery rightJoinNagiosServiceTemplateInheritance($relationAlias = null) Adds a RIGHT JOIN clause to the query using the NagiosServiceTemplateInheritance relation
  * @method     NagiosServiceQuery innerJoinNagiosServiceTemplateInheritance($relationAlias = null) Adds a INNER JOIN clause to the query using the NagiosServiceTemplateInheritance relation
  *
+ * @method     NagiosServiceQuery leftJoinNagiosServiceCustomObjectVar($relationAlias = null) Adds a LEFT JOIN clause to the query using the NagiosServiceCustomObjectVar relation
+ * @method     NagiosServiceQuery rightJoinNagiosServiceCustomObjectVar($relationAlias = null) Adds a RIGHT JOIN clause to the query using the NagiosServiceCustomObjectVar relation
+ * @method     NagiosServiceQuery innerJoinNagiosServiceCustomObjectVar($relationAlias = null) Adds a INNER JOIN clause to the query using the NagiosServiceCustomObjectVar relation
+ *
  * @method     NagiosService findOne(PropelPDO $con = null) Return the first NagiosService matching the query
  * @method     NagiosService findOneOrCreate(PropelPDO $con = null) Return the first NagiosService matching the query, or a new NagiosService object populated from the query conditions when no match is found
  *
@@ -3055,6 +3059,79 @@ abstract class BaseNagiosServiceQuery extends ModelCriteria
 		return $this
 			->joinNagiosServiceTemplateInheritance($relationAlias, $joinType)
 			->useQuery($relationAlias ? $relationAlias : 'NagiosServiceTemplateInheritance', 'NagiosServiceTemplateInheritanceQuery');
+	}
+
+	/**
+	 * Filter the query by a related NagiosServiceCustomObjectVar object
+	 *
+	 * @param     NagiosServiceCustomObjectVar $nagiosServiceCustomObjectVar  the related object to use as filter
+	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 *
+	 * @return    NagiosServiceQuery The current query, for fluid interface
+	 */
+	public function filterByNagiosServiceCustomObjectVar($nagiosServiceCustomObjectVar, $comparison = null)
+	{
+		if ($nagiosServiceCustomObjectVar instanceof NagiosServiceCustomObjectVar) {
+			return $this
+				->addUsingAlias(NagiosServicePeer::ID, $nagiosServiceCustomObjectVar->getService(), $comparison);
+		} elseif ($nagiosServiceCustomObjectVar instanceof PropelCollection) {
+			return $this
+				->useNagiosServiceCustomObjectVarQuery()
+					->filterByPrimaryKeys($nagiosServiceCustomObjectVar->getPrimaryKeys())
+				->endUse();
+		} else {
+			throw new PropelException('filterByNagiosServiceCustomObjectVar() only accepts arguments of type NagiosServiceCustomObjectVar or PropelCollection');
+		}
+	}
+
+	/**
+	 * Adds a JOIN clause to the query using the NagiosServiceCustomObjectVar relation
+	 * 
+	 * @param     string $relationAlias optional alias for the relation
+	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+	 *
+	 * @return    NagiosServiceQuery The current query, for fluid interface
+	 */
+	public function joinNagiosServiceCustomObjectVar($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+	{
+		$tableMap = $this->getTableMap();
+		$relationMap = $tableMap->getRelation('NagiosServiceCustomObjectVar');
+		
+		// create a ModelJoin object for this join
+		$join = new ModelJoin();
+		$join->setJoinType($joinType);
+		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
+		
+		// add the ModelJoin to the current object
+		if($relationAlias) {
+			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+			$this->addJoinObject($join, $relationAlias);
+		} else {
+			$this->addJoinObject($join, 'NagiosServiceCustomObjectVar');
+		}
+		
+		return $this;
+	}
+
+	/**
+	 * Use the NagiosServiceCustomObjectVar relation NagiosServiceCustomObjectVar object
+	 *
+	 * @see       useQuery()
+	 * 
+	 * @param     string $relationAlias optional alias for the relation,
+	 *                                   to be used as main alias in the secondary query
+	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+	 *
+	 * @return    NagiosServiceCustomObjectVarQuery A secondary query class using the current class as primary query
+	 */
+	public function useNagiosServiceCustomObjectVarQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+	{
+		return $this
+			->joinNagiosServiceCustomObjectVar($relationAlias, $joinType)
+			->useQuery($relationAlias ? $relationAlias : 'NagiosServiceCustomObjectVar', 'NagiosServiceCustomObjectVarQuery');
 	}
 
 	/**

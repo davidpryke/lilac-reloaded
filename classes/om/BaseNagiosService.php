@@ -406,6 +406,11 @@ abstract class BaseNagiosService extends BaseObject  implements Persistent
 	protected $collNagiosServiceTemplateInheritances;
 
 	/**
+	 * @var        array NagiosServiceCustomObjectVar[] Collection to store aggregation of NagiosServiceCustomObjectVar objects.
+	 */
+	protected $collNagiosServiceCustomObjectVars;
+
+	/**
 	 * Flag to prevent endless save loop, if this object is referenced
 	 * by another object which falls in this transaction.
 	 * @var        boolean
@@ -2390,6 +2395,8 @@ abstract class BaseNagiosService extends BaseObject  implements Persistent
 
 			$this->collNagiosServiceTemplateInheritances = null;
 
+			$this->collNagiosServiceCustomObjectVars = null;
+
 		} // if (deep)
 	}
 
@@ -2641,6 +2648,14 @@ abstract class BaseNagiosService extends BaseObject  implements Persistent
 				}
 			}
 
+			if ($this->collNagiosServiceCustomObjectVars !== null) {
+				foreach ($this->collNagiosServiceCustomObjectVars as $referrerFK) {
+					if (!$referrerFK->isDeleted()) {
+						$affectedRows += $referrerFK->save($con);
+					}
+				}
+			}
+
 			$this->alreadyInSave = false;
 
 		}
@@ -2818,6 +2833,14 @@ abstract class BaseNagiosService extends BaseObject  implements Persistent
 
 				if ($this->collNagiosServiceTemplateInheritances !== null) {
 					foreach ($this->collNagiosServiceTemplateInheritances as $referrerFK) {
+						if (!$referrerFK->validate($columns)) {
+							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
+						}
+					}
+				}
+
+				if ($this->collNagiosServiceCustomObjectVars !== null) {
+					foreach ($this->collNagiosServiceCustomObjectVars as $referrerFK) {
 						if (!$referrerFK->validate($columns)) {
 							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
 						}
@@ -3136,6 +3159,9 @@ abstract class BaseNagiosService extends BaseObject  implements Persistent
 			}
 			if (null !== $this->collNagiosServiceTemplateInheritances) {
 				$result['NagiosServiceTemplateInheritances'] = $this->collNagiosServiceTemplateInheritances->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+			}
+			if (null !== $this->collNagiosServiceCustomObjectVars) {
+				$result['NagiosServiceCustomObjectVars'] = $this->collNagiosServiceCustomObjectVars->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
 			}
 		}
 		return $result;
@@ -3624,6 +3650,12 @@ abstract class BaseNagiosService extends BaseObject  implements Persistent
 				}
 			}
 
+			foreach ($this->getNagiosServiceCustomObjectVars() as $relObj) {
+				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+					$copyObj->addNagiosServiceCustomObjectVar($relObj->copy($deepCopy));
+				}
+			}
+
 		} // if ($deepCopy)
 
 		if ($makeNew) {
@@ -4047,6 +4079,9 @@ abstract class BaseNagiosService extends BaseObject  implements Persistent
 		}
 		if ('NagiosServiceTemplateInheritance' == $relationName) {
 			return $this->initNagiosServiceTemplateInheritances();
+		}
+		if ('NagiosServiceCustomObjectVar' == $relationName) {
+			return $this->initNagiosServiceCustomObjectVars();
 		}
 	}
 
@@ -5521,6 +5556,146 @@ abstract class BaseNagiosService extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Clears out the collNagiosServiceCustomObjectVars collection
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addNagiosServiceCustomObjectVars()
+	 */
+	public function clearNagiosServiceCustomObjectVars()
+	{
+		$this->collNagiosServiceCustomObjectVars = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collNagiosServiceCustomObjectVars collection.
+	 *
+	 * By default this just sets the collNagiosServiceCustomObjectVars collection to an empty array (like clearcollNagiosServiceCustomObjectVars());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
+	 * @return     void
+	 */
+	public function initNagiosServiceCustomObjectVars($overrideExisting = true)
+	{
+		if (null !== $this->collNagiosServiceCustomObjectVars && !$overrideExisting) {
+			return;
+		}
+		$this->collNagiosServiceCustomObjectVars = new PropelObjectCollection();
+		$this->collNagiosServiceCustomObjectVars->setModel('NagiosServiceCustomObjectVar');
+	}
+
+	/**
+	 * Gets an array of NagiosServiceCustomObjectVar objects which contain a foreign key that references this object.
+	 *
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this NagiosService is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @return     PropelCollection|array NagiosServiceCustomObjectVar[] List of NagiosServiceCustomObjectVar objects
+	 * @throws     PropelException
+	 */
+	public function getNagiosServiceCustomObjectVars($criteria = null, PropelPDO $con = null)
+	{
+		if(null === $this->collNagiosServiceCustomObjectVars || null !== $criteria) {
+			if ($this->isNew() && null === $this->collNagiosServiceCustomObjectVars) {
+				// return empty collection
+				$this->initNagiosServiceCustomObjectVars();
+			} else {
+				$collNagiosServiceCustomObjectVars = NagiosServiceCustomObjectVarQuery::create(null, $criteria)
+					->filterByNagiosService($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collNagiosServiceCustomObjectVars;
+				}
+				$this->collNagiosServiceCustomObjectVars = $collNagiosServiceCustomObjectVars;
+			}
+		}
+		return $this->collNagiosServiceCustomObjectVars;
+	}
+
+	/**
+	 * Returns the number of related NagiosServiceCustomObjectVar objects.
+	 *
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct
+	 * @param      PropelPDO $con
+	 * @return     int Count of related NagiosServiceCustomObjectVar objects.
+	 * @throws     PropelException
+	 */
+	public function countNagiosServiceCustomObjectVars(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+	{
+		if(null === $this->collNagiosServiceCustomObjectVars || null !== $criteria) {
+			if ($this->isNew() && null === $this->collNagiosServiceCustomObjectVars) {
+				return 0;
+			} else {
+				$query = NagiosServiceCustomObjectVarQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
+				}
+				return $query
+					->filterByNagiosService($this)
+					->count($con);
+			}
+		} else {
+			return count($this->collNagiosServiceCustomObjectVars);
+		}
+	}
+
+	/**
+	 * Method called to associate a NagiosServiceCustomObjectVar object to this object
+	 * through the NagiosServiceCustomObjectVar foreign key attribute.
+	 *
+	 * @param      NagiosServiceCustomObjectVar $l NagiosServiceCustomObjectVar
+	 * @return     void
+	 * @throws     PropelException
+	 */
+	public function addNagiosServiceCustomObjectVar(NagiosServiceCustomObjectVar $l)
+	{
+		if ($this->collNagiosServiceCustomObjectVars === null) {
+			$this->initNagiosServiceCustomObjectVars();
+		}
+		if (!$this->collNagiosServiceCustomObjectVars->contains($l)) { // only add it if the **same** object is not already associated
+			$this->collNagiosServiceCustomObjectVars[]= $l;
+			$l->setNagiosService($this);
+		}
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this NagiosService is new, it will return
+	 * an empty collection; or if this NagiosService has previously
+	 * been saved, it will retrieve related NagiosServiceCustomObjectVars from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in NagiosService.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array NagiosServiceCustomObjectVar[] List of NagiosServiceCustomObjectVar objects
+	 */
+	public function getNagiosServiceCustomObjectVarsJoinNagiosServiceTemplate($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = NagiosServiceCustomObjectVarQuery::create(null, $criteria);
+		$query->joinWith('NagiosServiceTemplate', $join_behavior);
+
+		return $this->getNagiosServiceCustomObjectVars($query, $con);
+	}
+
+	/**
 	 * Clears the current object and sets all attributes to their default values
 	 */
 	public function clear()
@@ -5636,6 +5811,11 @@ abstract class BaseNagiosService extends BaseObject  implements Persistent
 					$o->clearAllReferences($deep);
 				}
 			}
+			if ($this->collNagiosServiceCustomObjectVars) {
+				foreach ($this->collNagiosServiceCustomObjectVars as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
 		} // if ($deep)
 
 		if ($this->collNagiosServiceCheckCommandParameters instanceof PropelCollection) {
@@ -5670,6 +5850,10 @@ abstract class BaseNagiosService extends BaseObject  implements Persistent
 			$this->collNagiosServiceTemplateInheritances->clearIterator();
 		}
 		$this->collNagiosServiceTemplateInheritances = null;
+		if ($this->collNagiosServiceCustomObjectVars instanceof PropelCollection) {
+			$this->collNagiosServiceCustomObjectVars->clearIterator();
+		}
+		$this->collNagiosServiceCustomObjectVars = null;
 		$this->aNagiosHost = null;
 		$this->aNagiosHostTemplate = null;
 		$this->aNagiosHostgroup = null;

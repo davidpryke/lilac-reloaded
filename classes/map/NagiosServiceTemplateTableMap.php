@@ -106,6 +106,7 @@ class NagiosServiceTemplateTableMap extends TableMap
 		$this->addRelation('NagiosEscalation', 'NagiosEscalation', RelationMap::ONE_TO_MANY, array('id' => 'service_template', ), 'CASCADE', null);
 		$this->addRelation('NagiosServiceTemplateInheritanceRelatedBySourceTemplate', 'NagiosServiceTemplateInheritance', RelationMap::ONE_TO_MANY, array('id' => 'source_template', ), 'CASCADE', null);
 		$this->addRelation('NagiosServiceTemplateInheritanceRelatedByTargetTemplate', 'NagiosServiceTemplateInheritance', RelationMap::ONE_TO_MANY, array('id' => 'target_template', ), 'CASCADE', null);
+		$this->addRelation('NagiosServiceCustomObjectVar', 'NagiosServiceCustomObjectVar', RelationMap::ONE_TO_MANY, array('id' => 'service_template', ), 'CASCADE', null);
 	} // buildRelations()
 
 } // NagiosServiceTemplateTableMap

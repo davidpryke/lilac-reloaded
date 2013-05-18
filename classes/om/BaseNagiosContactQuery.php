@@ -88,6 +88,10 @@
  * @method     NagiosContactQuery rightJoinNagiosEscalationContact($relationAlias = null) Adds a RIGHT JOIN clause to the query using the NagiosEscalationContact relation
  * @method     NagiosContactQuery innerJoinNagiosEscalationContact($relationAlias = null) Adds a INNER JOIN clause to the query using the NagiosEscalationContact relation
  *
+ * @method     NagiosContactQuery leftJoinNagiosContactCustomObjectVar($relationAlias = null) Adds a LEFT JOIN clause to the query using the NagiosContactCustomObjectVar relation
+ * @method     NagiosContactQuery rightJoinNagiosContactCustomObjectVar($relationAlias = null) Adds a RIGHT JOIN clause to the query using the NagiosContactCustomObjectVar relation
+ * @method     NagiosContactQuery innerJoinNagiosContactCustomObjectVar($relationAlias = null) Adds a INNER JOIN clause to the query using the NagiosContactCustomObjectVar relation
+ *
  * @method     NagiosContact findOne(PropelPDO $con = null) Return the first NagiosContact matching the query
  * @method     NagiosContact findOneOrCreate(PropelPDO $con = null) Return the first NagiosContact matching the query, or a new NagiosContact object populated from the query conditions when no match is found
  *
@@ -1441,6 +1445,79 @@ abstract class BaseNagiosContactQuery extends ModelCriteria
 		return $this
 			->joinNagiosEscalationContact($relationAlias, $joinType)
 			->useQuery($relationAlias ? $relationAlias : 'NagiosEscalationContact', 'NagiosEscalationContactQuery');
+	}
+
+	/**
+	 * Filter the query by a related NagiosContactCustomObjectVar object
+	 *
+	 * @param     NagiosContactCustomObjectVar $nagiosContactCustomObjectVar  the related object to use as filter
+	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 *
+	 * @return    NagiosContactQuery The current query, for fluid interface
+	 */
+	public function filterByNagiosContactCustomObjectVar($nagiosContactCustomObjectVar, $comparison = null)
+	{
+		if ($nagiosContactCustomObjectVar instanceof NagiosContactCustomObjectVar) {
+			return $this
+				->addUsingAlias(NagiosContactPeer::ID, $nagiosContactCustomObjectVar->getContact(), $comparison);
+		} elseif ($nagiosContactCustomObjectVar instanceof PropelCollection) {
+			return $this
+				->useNagiosContactCustomObjectVarQuery()
+					->filterByPrimaryKeys($nagiosContactCustomObjectVar->getPrimaryKeys())
+				->endUse();
+		} else {
+			throw new PropelException('filterByNagiosContactCustomObjectVar() only accepts arguments of type NagiosContactCustomObjectVar or PropelCollection');
+		}
+	}
+
+	/**
+	 * Adds a JOIN clause to the query using the NagiosContactCustomObjectVar relation
+	 * 
+	 * @param     string $relationAlias optional alias for the relation
+	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+	 *
+	 * @return    NagiosContactQuery The current query, for fluid interface
+	 */
+	public function joinNagiosContactCustomObjectVar($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+	{
+		$tableMap = $this->getTableMap();
+		$relationMap = $tableMap->getRelation('NagiosContactCustomObjectVar');
+		
+		// create a ModelJoin object for this join
+		$join = new ModelJoin();
+		$join->setJoinType($joinType);
+		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
+		
+		// add the ModelJoin to the current object
+		if($relationAlias) {
+			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+			$this->addJoinObject($join, $relationAlias);
+		} else {
+			$this->addJoinObject($join, 'NagiosContactCustomObjectVar');
+		}
+		
+		return $this;
+	}
+
+	/**
+	 * Use the NagiosContactCustomObjectVar relation NagiosContactCustomObjectVar object
+	 *
+	 * @see       useQuery()
+	 * 
+	 * @param     string $relationAlias optional alias for the relation,
+	 *                                   to be used as main alias in the secondary query
+	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+	 *
+	 * @return    NagiosContactCustomObjectVarQuery A secondary query class using the current class as primary query
+	 */
+	public function useNagiosContactCustomObjectVarQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+	{
+		return $this
+			->joinNagiosContactCustomObjectVar($relationAlias, $joinType)
+			->useQuery($relationAlias ? $relationAlias : 'NagiosContactCustomObjectVar', 'NagiosContactCustomObjectVarQuery');
 	}
 
 	/**

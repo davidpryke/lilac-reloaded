@@ -176,6 +176,10 @@
  * @method     NagiosHostQuery rightJoinAutodiscoveryDevice($relationAlias = null) Adds a RIGHT JOIN clause to the query using the AutodiscoveryDevice relation
  * @method     NagiosHostQuery innerJoinAutodiscoveryDevice($relationAlias = null) Adds a INNER JOIN clause to the query using the AutodiscoveryDevice relation
  *
+ * @method     NagiosHostQuery leftJoinNagiosHostCustomObjectVar($relationAlias = null) Adds a LEFT JOIN clause to the query using the NagiosHostCustomObjectVar relation
+ * @method     NagiosHostQuery rightJoinNagiosHostCustomObjectVar($relationAlias = null) Adds a RIGHT JOIN clause to the query using the NagiosHostCustomObjectVar relation
+ * @method     NagiosHostQuery innerJoinNagiosHostCustomObjectVar($relationAlias = null) Adds a INNER JOIN clause to the query using the NagiosHostCustomObjectVar relation
+ *
  * @method     NagiosHost findOne(PropelPDO $con = null) Return the first NagiosHost matching the query
  * @method     NagiosHost findOneOrCreate(PropelPDO $con = null) Return the first NagiosHost matching the query, or a new NagiosHost object populated from the query conditions when no match is found
  *
@@ -3063,6 +3067,79 @@ abstract class BaseNagiosHostQuery extends ModelCriteria
 		return $this
 			->joinAutodiscoveryDevice($relationAlias, $joinType)
 			->useQuery($relationAlias ? $relationAlias : 'AutodiscoveryDevice', 'AutodiscoveryDeviceQuery');
+	}
+
+	/**
+	 * Filter the query by a related NagiosHostCustomObjectVar object
+	 *
+	 * @param     NagiosHostCustomObjectVar $nagiosHostCustomObjectVar  the related object to use as filter
+	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 *
+	 * @return    NagiosHostQuery The current query, for fluid interface
+	 */
+	public function filterByNagiosHostCustomObjectVar($nagiosHostCustomObjectVar, $comparison = null)
+	{
+		if ($nagiosHostCustomObjectVar instanceof NagiosHostCustomObjectVar) {
+			return $this
+				->addUsingAlias(NagiosHostPeer::ID, $nagiosHostCustomObjectVar->getHost(), $comparison);
+		} elseif ($nagiosHostCustomObjectVar instanceof PropelCollection) {
+			return $this
+				->useNagiosHostCustomObjectVarQuery()
+					->filterByPrimaryKeys($nagiosHostCustomObjectVar->getPrimaryKeys())
+				->endUse();
+		} else {
+			throw new PropelException('filterByNagiosHostCustomObjectVar() only accepts arguments of type NagiosHostCustomObjectVar or PropelCollection');
+		}
+	}
+
+	/**
+	 * Adds a JOIN clause to the query using the NagiosHostCustomObjectVar relation
+	 * 
+	 * @param     string $relationAlias optional alias for the relation
+	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+	 *
+	 * @return    NagiosHostQuery The current query, for fluid interface
+	 */
+	public function joinNagiosHostCustomObjectVar($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+	{
+		$tableMap = $this->getTableMap();
+		$relationMap = $tableMap->getRelation('NagiosHostCustomObjectVar');
+		
+		// create a ModelJoin object for this join
+		$join = new ModelJoin();
+		$join->setJoinType($joinType);
+		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
+		
+		// add the ModelJoin to the current object
+		if($relationAlias) {
+			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+			$this->addJoinObject($join, $relationAlias);
+		} else {
+			$this->addJoinObject($join, 'NagiosHostCustomObjectVar');
+		}
+		
+		return $this;
+	}
+
+	/**
+	 * Use the NagiosHostCustomObjectVar relation NagiosHostCustomObjectVar object
+	 *
+	 * @see       useQuery()
+	 * 
+	 * @param     string $relationAlias optional alias for the relation,
+	 *                                   to be used as main alias in the secondary query
+	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+	 *
+	 * @return    NagiosHostCustomObjectVarQuery A secondary query class using the current class as primary query
+	 */
+	public function useNagiosHostCustomObjectVarQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+	{
+		return $this
+			->joinNagiosHostCustomObjectVar($relationAlias, $joinType)
+			->useQuery($relationAlias ? $relationAlias : 'NagiosHostCustomObjectVar', 'NagiosHostCustomObjectVarQuery');
 	}
 
 	/**

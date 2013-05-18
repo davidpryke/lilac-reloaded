@@ -603,6 +603,9 @@ abstract class BaseNagiosServiceTemplatePeer {
 		// Invalidate objects in NagiosServiceTemplateInheritancePeer instance pool, 
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		NagiosServiceTemplateInheritancePeer::clearInstancePool();
+		// Invalidate objects in NagiosServiceCustomObjectVarPeer instance pool, 
+		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
+		NagiosServiceCustomObjectVarPeer::clearInstancePool();
 	}
 
 	/**
@@ -2236,6 +2239,12 @@ abstract class BaseNagiosServiceTemplatePeer {
 			
 			$criteria->add(NagiosServiceTemplateInheritancePeer::TARGET_TEMPLATE, $obj->getId());
 			$affectedRows += NagiosServiceTemplateInheritancePeer::doDelete($criteria, $con);
+
+			// delete related NagiosServiceCustomObjectVar objects
+			$criteria = new Criteria(NagiosServiceCustomObjectVarPeer::DATABASE_NAME);
+			
+			$criteria->add(NagiosServiceCustomObjectVarPeer::SERVICE_TEMPLATE, $obj->getId());
+			$affectedRows += NagiosServiceCustomObjectVarPeer::doDelete($criteria, $con);
 		}
 		return $affectedRows;
 	}

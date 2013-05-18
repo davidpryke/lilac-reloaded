@@ -648,6 +648,9 @@ abstract class BaseNagiosHostTemplatePeer {
 		// Invalidate objects in AutodiscoveryDeviceTemplateMatchPeer instance pool, 
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		AutodiscoveryDeviceTemplateMatchPeer::clearInstancePool();
+		// Invalidate objects in NagiosHostCustomObjectVarPeer instance pool, 
+		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
+		NagiosHostCustomObjectVarPeer::clearInstancePool();
 	}
 
 	/**
@@ -2310,6 +2313,12 @@ abstract class BaseNagiosHostTemplatePeer {
 			
 			$criteria->add(AutodiscoveryDeviceTemplateMatchPeer::HOST_TEMPLATE, $obj->getId());
 			$affectedRows += AutodiscoveryDeviceTemplateMatchPeer::doDelete($criteria, $con);
+
+			// delete related NagiosHostCustomObjectVar objects
+			$criteria = new Criteria(NagiosHostCustomObjectVarPeer::DATABASE_NAME);
+			
+			$criteria->add(NagiosHostCustomObjectVarPeer::HOST_TEMPLATE, $obj->getId());
+			$affectedRows += NagiosHostCustomObjectVarPeer::doDelete($criteria, $con);
 		}
 		return $affectedRows;
 	}

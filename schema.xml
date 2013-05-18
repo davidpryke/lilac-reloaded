@@ -1113,5 +1113,63 @@
 		<column name="percent" type="float" required="true" />
 		<column name="complexity" type="integer" required="true" />
 	</table>
+	
+	<table name="nagios_host_custom_object_var" description="Custom Object Variables for Host">
+		<column name="id" type="integer" primaryKey="true" autoIncrement="true" required="true" />
+ 		<column name="host" type="integer" />
+ 		<column name="host_template" type="integer" />
+		<foreign-key foreignTable="nagios_host" onDelete="cascade">
+			<reference local="host" foreign="id" />
+		</foreign-key>
+		<foreign-key foreignTable="nagios_host_template" onDelete="cascade">
+			<reference local="host_template" foreign="id" />
+		</foreign-key>
+		<column name="var_name" type="varchar" size="255" required="true" />
+		<column name="var_value" type="varchar" size="255" required="true" />
+		<unique>
+  			<unique-column name="host" />
+  			<unique-column name="var_name" />
+		</unique>
+		<unique>
+  			<unique-column name="host_template" />
+  			<unique-column name="var_name" />
+		</unique>
+	</table>
+	
+	<table name="nagios_service_custom_object_var" description="Custom Object Variables for Service">
+		<column name="id" type="integer" primaryKey="true" autoIncrement="true" required="true" />
+ 		<column name="service" type="integer" />
+ 		<column name="service_template" type="integer" />
+		<foreign-key foreignTable="nagios_service" onDelete="cascade">
+			<reference local="service" foreign="id" />
+		</foreign-key>
+		<foreign-key foreignTable="nagios_service_template" onDelete="cascade">
+			<reference local="service_template" foreign="id" />
+		</foreign-key>
+		<column name="var_name" type="varchar" size="255" required="true" />
+		<column name="var_value" type="varchar" size="255" required="true" />
+		<unique>
+  			<unique-column name="service" />
+  			<unique-column name="var_name" />
+		</unique>
+		<unique>
+  			<unique-column name="service_template" />
+  			<unique-column name="var_name" />
+		</unique>
+	</table>
+	
+	<table name="nagios_contact_custom_object_var" description="Custom Object Variables for Contact">
+		<column name="id" type="integer" primaryKey="true" autoIncrement="true" required="true" />
+ 		<column name="contact" type="integer" />
+		<foreign-key foreignTable="nagios_contact" onDelete="cascade">
+			<reference local="contact" foreign="id" />
+		</foreign-key>
+		<column name="var_name" type="varchar" size="255" required="true" />
+		<column name="var_value" type="varchar" size="255" required="true" />
+		<unique>
+  			<unique-column name="contact" />
+  			<unique-column name="var_name" />
+		</unique>
+	</table>
 
 </database>

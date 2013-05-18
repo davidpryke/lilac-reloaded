@@ -112,6 +112,7 @@ class NagiosHostTableMap extends TableMap
 		$this->addRelation('NagiosHostParentRelatedByParentHost', 'NagiosHostParent', RelationMap::ONE_TO_MANY, array('id' => 'parent_host', ), 'CASCADE', null);
 		$this->addRelation('NagiosHostTemplateInheritance', 'NagiosHostTemplateInheritance', RelationMap::ONE_TO_MANY, array('id' => 'source_host', ), 'CASCADE', null);
 		$this->addRelation('AutodiscoveryDevice', 'AutodiscoveryDevice', RelationMap::ONE_TO_MANY, array('id' => 'proposed_parent', ), 'SET NULL', null);
+		$this->addRelation('NagiosHostCustomObjectVar', 'NagiosHostCustomObjectVar', RelationMap::ONE_TO_MANY, array('id' => 'host', ), 'CASCADE', null);
 	} // buildRelations()
 
 } // NagiosHostTableMap

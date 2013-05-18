@@ -467,6 +467,9 @@ abstract class BaseNagiosContactPeer {
 		// Invalidate objects in NagiosEscalationContactPeer instance pool, 
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		NagiosEscalationContactPeer::clearInstancePool();
+		// Invalidate objects in NagiosContactCustomObjectVarPeer instance pool, 
+		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
+		NagiosContactCustomObjectVarPeer::clearInstancePool();
 	}
 
 	/**
@@ -1404,6 +1407,12 @@ abstract class BaseNagiosContactPeer {
 			
 			$criteria->add(NagiosEscalationContactPeer::CONTACT, $obj->getId());
 			$affectedRows += NagiosEscalationContactPeer::doDelete($criteria, $con);
+
+			// delete related NagiosContactCustomObjectVar objects
+			$criteria = new Criteria(NagiosContactCustomObjectVarPeer::DATABASE_NAME);
+			
+			$criteria->add(NagiosContactCustomObjectVarPeer::CONTACT, $obj->getId());
+			$affectedRows += NagiosContactCustomObjectVarPeer::doDelete($criteria, $con);
 		}
 		return $affectedRows;
 	}

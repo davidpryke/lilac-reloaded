@@ -197,6 +197,11 @@ abstract class BaseNagiosContact extends BaseObject  implements Persistent
 	protected $collNagiosEscalationContacts;
 
 	/**
+	 * @var        array NagiosContactCustomObjectVar[] Collection to store aggregation of NagiosContactCustomObjectVar objects.
+	 */
+	protected $collNagiosContactCustomObjectVars;
+
+	/**
 	 * Flag to prevent endless save loop, if this object is referenced
 	 * by another object which falls in this transaction.
 	 * @var        boolean
@@ -1142,6 +1147,8 @@ abstract class BaseNagiosContact extends BaseObject  implements Persistent
 
 			$this->collNagiosEscalationContacts = null;
 
+			$this->collNagiosContactCustomObjectVars = null;
+
 		} // if (deep)
 	}
 
@@ -1342,6 +1349,14 @@ abstract class BaseNagiosContact extends BaseObject  implements Persistent
 				}
 			}
 
+			if ($this->collNagiosContactCustomObjectVars !== null) {
+				foreach ($this->collNagiosContactCustomObjectVars as $referrerFK) {
+					if (!$referrerFK->isDeleted()) {
+						$affectedRows += $referrerFK->save($con);
+					}
+				}
+			}
+
 			$this->alreadyInSave = false;
 
 		}
@@ -1473,6 +1488,14 @@ abstract class BaseNagiosContact extends BaseObject  implements Persistent
 
 				if ($this->collNagiosEscalationContacts !== null) {
 					foreach ($this->collNagiosEscalationContacts as $referrerFK) {
+						if (!$referrerFK->validate($columns)) {
+							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
+						}
+					}
+				}
+
+				if ($this->collNagiosContactCustomObjectVars !== null) {
+					foreach ($this->collNagiosContactCustomObjectVars as $referrerFK) {
 						if (!$referrerFK->validate($columns)) {
 							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
 						}
@@ -1654,6 +1677,9 @@ abstract class BaseNagiosContact extends BaseObject  implements Persistent
 			}
 			if (null !== $this->collNagiosEscalationContacts) {
 				$result['NagiosEscalationContacts'] = $this->collNagiosEscalationContacts->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+			}
+			if (null !== $this->collNagiosContactCustomObjectVars) {
+				$result['NagiosContactCustomObjectVars'] = $this->collNagiosContactCustomObjectVars->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
 			}
 		}
 		return $result;
@@ -1956,6 +1982,12 @@ abstract class BaseNagiosContact extends BaseObject  implements Persistent
 				}
 			}
 
+			foreach ($this->getNagiosContactCustomObjectVars() as $relObj) {
+				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+					$copyObj->addNagiosContactCustomObjectVar($relObj->copy($deepCopy));
+				}
+			}
+
 		} // if ($deepCopy)
 
 		if ($makeNew) {
@@ -2128,6 +2160,9 @@ abstract class BaseNagiosContact extends BaseObject  implements Persistent
 		}
 		if ('NagiosEscalationContact' == $relationName) {
 			return $this->initNagiosEscalationContacts();
+		}
+		if ('NagiosContactCustomObjectVar' == $relationName) {
+			return $this->initNagiosContactCustomObjectVars();
 		}
 	}
 
@@ -2997,6 +3032,121 @@ abstract class BaseNagiosContact extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Clears out the collNagiosContactCustomObjectVars collection
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addNagiosContactCustomObjectVars()
+	 */
+	public function clearNagiosContactCustomObjectVars()
+	{
+		$this->collNagiosContactCustomObjectVars = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collNagiosContactCustomObjectVars collection.
+	 *
+	 * By default this just sets the collNagiosContactCustomObjectVars collection to an empty array (like clearcollNagiosContactCustomObjectVars());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
+	 * @return     void
+	 */
+	public function initNagiosContactCustomObjectVars($overrideExisting = true)
+	{
+		if (null !== $this->collNagiosContactCustomObjectVars && !$overrideExisting) {
+			return;
+		}
+		$this->collNagiosContactCustomObjectVars = new PropelObjectCollection();
+		$this->collNagiosContactCustomObjectVars->setModel('NagiosContactCustomObjectVar');
+	}
+
+	/**
+	 * Gets an array of NagiosContactCustomObjectVar objects which contain a foreign key that references this object.
+	 *
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this NagiosContact is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @return     PropelCollection|array NagiosContactCustomObjectVar[] List of NagiosContactCustomObjectVar objects
+	 * @throws     PropelException
+	 */
+	public function getNagiosContactCustomObjectVars($criteria = null, PropelPDO $con = null)
+	{
+		if(null === $this->collNagiosContactCustomObjectVars || null !== $criteria) {
+			if ($this->isNew() && null === $this->collNagiosContactCustomObjectVars) {
+				// return empty collection
+				$this->initNagiosContactCustomObjectVars();
+			} else {
+				$collNagiosContactCustomObjectVars = NagiosContactCustomObjectVarQuery::create(null, $criteria)
+					->filterByNagiosContact($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collNagiosContactCustomObjectVars;
+				}
+				$this->collNagiosContactCustomObjectVars = $collNagiosContactCustomObjectVars;
+			}
+		}
+		return $this->collNagiosContactCustomObjectVars;
+	}
+
+	/**
+	 * Returns the number of related NagiosContactCustomObjectVar objects.
+	 *
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct
+	 * @param      PropelPDO $con
+	 * @return     int Count of related NagiosContactCustomObjectVar objects.
+	 * @throws     PropelException
+	 */
+	public function countNagiosContactCustomObjectVars(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+	{
+		if(null === $this->collNagiosContactCustomObjectVars || null !== $criteria) {
+			if ($this->isNew() && null === $this->collNagiosContactCustomObjectVars) {
+				return 0;
+			} else {
+				$query = NagiosContactCustomObjectVarQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
+				}
+				return $query
+					->filterByNagiosContact($this)
+					->count($con);
+			}
+		} else {
+			return count($this->collNagiosContactCustomObjectVars);
+		}
+	}
+
+	/**
+	 * Method called to associate a NagiosContactCustomObjectVar object to this object
+	 * through the NagiosContactCustomObjectVar foreign key attribute.
+	 *
+	 * @param      NagiosContactCustomObjectVar $l NagiosContactCustomObjectVar
+	 * @return     void
+	 * @throws     PropelException
+	 */
+	public function addNagiosContactCustomObjectVar(NagiosContactCustomObjectVar $l)
+	{
+		if ($this->collNagiosContactCustomObjectVars === null) {
+			$this->initNagiosContactCustomObjectVars();
+		}
+		if (!$this->collNagiosContactCustomObjectVars->contains($l)) { // only add it if the **same** object is not already associated
+			$this->collNagiosContactCustomObjectVars[]= $l;
+			$l->setNagiosContact($this);
+		}
+	}
+
+	/**
 	 * Clears the current object and sets all attributes to their default values
 	 */
 	public function clear()
@@ -3073,6 +3223,11 @@ abstract class BaseNagiosContact extends BaseObject  implements Persistent
 					$o->clearAllReferences($deep);
 				}
 			}
+			if ($this->collNagiosContactCustomObjectVars) {
+				foreach ($this->collNagiosContactCustomObjectVars as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
 		} // if ($deep)
 
 		if ($this->collNagiosContactAddresss instanceof PropelCollection) {
@@ -3099,6 +3254,10 @@ abstract class BaseNagiosContact extends BaseObject  implements Persistent
 			$this->collNagiosEscalationContacts->clearIterator();
 		}
 		$this->collNagiosEscalationContacts = null;
+		if ($this->collNagiosContactCustomObjectVars instanceof PropelCollection) {
+			$this->collNagiosContactCustomObjectVars->clearIterator();
+		}
+		$this->collNagiosContactCustomObjectVars = null;
 		$this->aNagiosTimeperiodRelatedByHostNotificationPeriod = null;
 		$this->aNagiosTimeperiodRelatedByServiceNotificationPeriod = null;
 	}

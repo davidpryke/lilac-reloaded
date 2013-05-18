@@ -76,6 +76,7 @@ class NagiosContactTableMap extends TableMap
 		$this->addRelation('NagiosHostContactMember', 'NagiosHostContactMember', RelationMap::ONE_TO_MANY, array('id' => 'contact', ), 'CASCADE', null);
 		$this->addRelation('NagiosServiceContactMember', 'NagiosServiceContactMember', RelationMap::ONE_TO_MANY, array('id' => 'contact', ), 'CASCADE', null);
 		$this->addRelation('NagiosEscalationContact', 'NagiosEscalationContact', RelationMap::ONE_TO_MANY, array('id' => 'contact', ), 'CASCADE', null);
+		$this->addRelation('NagiosContactCustomObjectVar', 'NagiosContactCustomObjectVar', RelationMap::ONE_TO_MANY, array('id' => 'contact', ), 'CASCADE', null);
 	} // buildRelations()
 
 } // NagiosContactTableMap

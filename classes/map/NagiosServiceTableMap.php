@@ -112,6 +112,7 @@ class NagiosServiceTableMap extends TableMap
 		$this->addRelation('NagiosDependencyTarget', 'NagiosDependencyTarget', RelationMap::ONE_TO_MANY, array('id' => 'target_service', ), 'CASCADE', null);
 		$this->addRelation('NagiosEscalation', 'NagiosEscalation', RelationMap::ONE_TO_MANY, array('id' => 'service', ), 'CASCADE', null);
 		$this->addRelation('NagiosServiceTemplateInheritance', 'NagiosServiceTemplateInheritance', RelationMap::ONE_TO_MANY, array('id' => 'source_service', ), 'CASCADE', null);
+		$this->addRelation('NagiosServiceCustomObjectVar', 'NagiosServiceCustomObjectVar', RelationMap::ONE_TO_MANY, array('id' => 'service', ), 'CASCADE', null);
 	} // buildRelations()
 
 } // NagiosServiceTableMap
