@@ -82,8 +82,7 @@ class NagiosHost extends BaseNagiosHost {
 			}
 		}
 		return $parameterList;
-	}
-	
+	}	
 	
 	function getInheritedDependencies($self = true) {
 		$dependenciesList = array();
@@ -523,6 +522,36 @@ class NagiosHost extends BaseNagiosHost {
 			$criteria = new Criteria();
 		$criteria->addAscendingOrderByColumn(NagiosHostCheckCommandParameterPeer::ID);
 		return parent::getNagiosHostCheckCommandParameters($criteria);
+	}
+	
+
+	function getInheritedCustomObjectVariables($self = true) {
+		$parameterList = array();
+	
+		$inheritanceTemplates = $this->getNagiosHostTemplateInheritances();
+	
+		if(count($inheritanceTemplates)) {
+			// This template has inherited templates, let's bring their values in
+			foreach($inheritanceTemplates as $hostTemplate) {
+				$parameters = $hostTemplate->getInheritedCustomObjectVariables(false);
+				$parameterList = array_merge($parameterList, $parameters);
+			}
+		}
+		if(!$self) {
+			$parameters = $this->getNagiosHostCustomObjectVariables();
+	
+			foreach($parameters as $parameter) {
+				$parameterList[] = $parameter;
+			}
+		}
+		return $parameterList;
+	}
+	
+	function getNagiosHostCustomObjectVariables($criteria = null, PropelPDO $con = null) {
+		if($criteria == null)
+			$criteria = new Criteria();
+		$criteria->addAscendingOrderByColumn(NagiosHostCustomObjectVarPeer::VAR_NAME);
+		return parent::getNagiosHostCustomObjectVars($criteria);
 	}
 
 } // NagiosHost

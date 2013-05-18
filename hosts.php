@@ -1,7 +1,7 @@
 <?php
 /*
 Lilac - A Nagios Configuration Tool
-Copyright (C) 2012 Rene Hadler
+Copyright (C) 2013 Rene Hadler
 Copyright (C) 2007 Taylor Dondich
 
 This program is free software; you can redistribute it and/or
@@ -274,6 +274,13 @@ if(isset($_GET['request'])) {
 				$commandParameter->delete();
 			}
 			$success = "Check Command Parameter Deleted.";
+		}
+		if($_GET['request'] == "delete" && $_GET['section'] == 'customobjectvars') {
+			$customObjectVar = NagiosHostCustomObjectVarPeer::retrieveByPK($_GET['customobjectvariable_id']);
+			if($customObjectVar) {
+				$customObjectVar->delete();
+			}
+			$success = "Custom Object Variable Deleted.";
 		}
 		if($_GET['request'] == "delete" && $_GET['section'] == 'parents') {
 			$c = new Criteria();
@@ -699,6 +706,20 @@ if(isset($_POST['request'])) {
 		unset($host);
 		$success = "Command Parameter added.";
 	}
+	else if($_POST['request'] == 'custom_object_variable_add') {
+		try
+		{
+			// All is well for error checking, modify the command.
+			$lilac->add_host_custom_object_variable($_GET['id'], $modifiedData);
+			// Remove session data
+			unset($host);
+			$success = "Custom object variable added.";
+		}
+		catch(Exception $e)
+		{
+			$error = $e->getMessage();
+		}
+	}
 	if($_POST['request'] == 'update_host_extended') {
 		// We properly got an host.	
 		if(isset($modifiedData['notes'])) {
@@ -883,6 +904,7 @@ if(isset($host)) {
 		'extended' => 'Extended Information',
 		'dependencies' => 'Dependencies',
 		'escalations' => 'Escalations',
+		'customobjectvars' => 'Custom Object Variables'
 		);
 		
 	if(isset($hostValues['check_command'])) {
@@ -1646,6 +1668,94 @@ if(isset($host)) {
 		</table>
 		<?php
 	}
+	else if($_GET['section'] == "customobjectvars") {
+		$inherited_list = $host->getInheritedCustomObjectVariables();
+		//$numOfInheritedCustomObjectVariables = count($inherited_list);
+	
+		// Get List Of Custom object variables for this service and check
+		$customObjectVariables = $host->getNagiosHostCustomObjectVariables();
+		//$lilac->get_host_check_command_parameters($_GET['id'], $customObjectVariables);
+		//$numOfCheckCommandParameters = count($customObjectVariables);
+	
+		$parameterCounter = 0;
+		?>
+			<table width="90%" align="center" border="0">
+			<tr>
+			<td>
+				<?php
+				if(count($inherited_list)) {
+					?>
+					<table width="100%" align="center" cellspacing="0" cellpadding="2" border="0">
+						<tr class="altTop">
+						<td colspan="2">Custom object variables Inherited By Templates:</td>
+						</tr>
+						<?php
+						if(count($inherited_list)) {
+							$counter = 1;
+							foreach($inherited_list as $parameter) {
+								if($counter % 2) {
+									?>
+									<tr class="altRow1">
+									<?php
+								}
+								else {
+									?>
+									<tr class="altRow2">
+									<?php
+								}
+								?>
+								<td height="20" width="80" nowrap="nowrap" class="altLeft">&nbsp;</td>
+								<td height="20" class="altRight"><b>$ARG<?php echo ++$parameterCounter;?>$:</b> <?php echo $parameter->getParameter();?></td>
+								</tr>
+								<?php
+							}
+						}
+						?>
+					</table>
+					<br />
+					<?php
+				}
+				?>
+				<table width="100%" align="center" cellspacing="0" cellpadding="2" border="0">
+					<tr class="altTop">
+					<td colspan="2">Custom Object Variables:</td>
+					</tr>
+					<?php
+					$counter = 0;
+					foreach($customObjectVariables as $customObjectVariable) {
+						if($counter % 2) {
+							?>
+							<tr class="altRow1">
+							<?php
+						}
+						else {
+							?>
+							<tr class="altRow2">
+							<?php
+						}
+						?>
+						<td height="20" width="80" nowrap="nowrap" class="altLeft">&nbsp;[ <a href="hosts.php?id=<?php echo $_GET['id'];?>&section=customobjectvars&request=delete&customobjectvariable_id=<?php echo $customObjectVariable->getId();?>" onClick="javascript:return confirmDelete();">Delete</a> ]</td>
+						<td height="20" class="altRight"><b>_<?php echo $customObjectVariable->getVarName();?>:</b> <?php echo $customObjectVariable->getVarValue();?></td>
+						</tr>
+						<?php
+						
+						$counter++;
+					}
+					?>
+				</table>
+			<br />
+			<br />
+			<form name="add_custom_object_variable" method="post" action="hosts.php?section=customobjectvars&id=<?php echo $_GET['id'];?>">
+			<input type="hidden" name="request" value="custom_object_variable_add" />
+			Variable Name (Char _ is prepended): <input type="text" name="host_manage[custom_variable_name]" />
+			Value: <input type="text" name="host_manage[custom_variable_value]" /> 
+			<input type="submit" value="Add Variable" />
+			</form>
+			</td>
+			</tr>
+			</table>
+			<?php
+		}
 	else if($_GET['section'] == 'extended') {
 		$tempDir = array();
 		$directory_list[] = array("value" => '', "text" => 'None');
