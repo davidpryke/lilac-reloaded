@@ -398,5 +398,34 @@ class NagiosServiceTemplate extends BaseNagiosServiceTemplate {
 		$criteria->addAscendingOrderByColumn(NagiosServiceCheckCommandParameterPeer::ID);
 		return parent::getNagiosServiceCheckCommandParameters($criteria);
 	}
+	
+	function getInheritedCustomObjectVariables($self = true) {
+		$parameterList = array();
+	
+		$inheritanceTemplates = $this->getNagiosServiceTemplateInheritances();
+	
+		if(count($inheritanceTemplates)) {
+			// This template has inherited templates, let's bring their values in
+			foreach($inheritanceTemplates as $serviceTemplate) {
+				$parameters = $serviceTemplate->getInheritedCustomObjectVariables(false);
+				$parameterList = array_merge($parameterList, $parameters);
+			}
+		}
+		if(!$self) {
+			$parameters = $this->getNagiosServiceTemplateCustomObjectVariables();
+	
+			foreach($parameters as $parameter) {
+				$parameterList[] = $parameter;
+			}
+		}
+		return $parameterList;
+	}
+	
+	function getNagiosServiceTemplateCustomObjectVariables($criteria = null, PropelPDO $con = null) {
+		if($criteria == null)
+			$criteria = new Criteria();
+		$criteria->addAscendingOrderByColumn(NagiosServiceCustomObjectVarPeer::VAR_NAME);
+		return parent::getNagiosServiceCustomObjectVars($criteria);
+	}
 
 } // NagiosServiceTemplate

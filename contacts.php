@@ -743,7 +743,7 @@ print_header("Contact Editor");
 								}
 								?>
 								<td height="20" width="80" nowrap="nowrap" class="altLeft">&nbsp;[ <a href="contacts.php?contact_id=<?php echo $_GET['contact_id'];?>&section=customobjectvars&request=delete&customobjectvariable_id=<?php echo $customObjectVariable->getId();?>" onClick="javascript:return confirmDelete();">Delete</a> ]</td>
-								<td height="20" class="altRight"><b>$_HOST<?php echo $customObjectVariable->getVarName();?>$:</b> <?php echo $customObjectVariable->getVarValue();?></td>
+								<td height="20" class="altRight"><b>$_CONTACT<?php echo $customObjectVariable->getVarName();?>$:</b> <?php echo $customObjectVariable->getVarValue();?></td>
 								</tr>
 								<?php
 								
