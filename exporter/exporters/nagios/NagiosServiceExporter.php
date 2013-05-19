@@ -287,6 +287,24 @@ class NagiosServiceExporter extends NagiosExporter {
 			fputs($fp, "\n");
 		}
 		
+		// Custom Object Variables
+		$cov_list = $service->getInheritedCustomObjectVariables();
+		$servicecov_list = $service->getNagiosServiceCustomObjectVariables();
+		foreach($servicecov_list as $cov)
+			$cov_list[] = $cov;
+			
+		if(count($cov_list) > 0)
+		{
+			foreach($cov_list as $customObjectVariable)
+			{
+				$name = strtoupper($customObjectVariable->getVarName());
+				if($name[0] != "_")
+					$name = "_" . $name;
+					
+				fputs($fp, sprintf("\t%s\t%s\n", $name, $customObjectVariable->getVarValue()));
+			}
+		}
+		
 		fputs($fp, "}\n");
 		fputs($fp, "\n");
 	}

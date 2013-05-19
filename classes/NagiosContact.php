@@ -89,7 +89,10 @@ class NagiosContact extends BaseNagiosContact {
 		return true;
 	}
 	
-	function getNagiosContactCustomObjectVariables($contact_id) {
+	public function getNagiosContactCustomObjectVariables($contact_id=0) {
+		if($contact_id == 0)
+			$contact_id = $this->getId();
+		
 		$c = new Criteria();
 		$c->add(NagiosContactCustomObjectVarPeer::CONTACT, $contact_id);
 	
