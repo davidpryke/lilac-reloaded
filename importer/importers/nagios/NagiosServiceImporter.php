@@ -111,6 +111,10 @@ class NagiosServiceImporter extends NagiosImporter {
 			foreach($entry as $lineValue) {
 				$value = $lineValue['value'];
 				$lineNum = $lineValue['line'];
+				
+				if($key[0] == "_")
+					continue;
+				
 				if(!key_exists($key, $this->regexValidators)) {
 					$job->addLogEntry("Variable in service object file not supported: " . $key . " on line " . $lineNum);
 					if(!$config->getVar('continue_error')) {
@@ -293,6 +297,17 @@ class NagiosServiceImporter extends NagiosImporter {
 				$lineNum = $entry['line'];
 				if($key == 'register' || $key == 'host_name' )
 					continue;
+				
+				// Custom object variables
+				if($key[0] == "_")
+				{
+					$cov = new NagiosServiceCustomObjectVar();
+					$cov->setVarName(substr($key, 1));
+					$cov->setVarValue($value);
+						
+					$obj->addNagiosServiceCustomObjectVar($cov);
+					continue;
+				}
 
 				if($key == 'use') {
 					// We need to add a template inheritance

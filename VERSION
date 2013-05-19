@@ -1,6 +1,9 @@
 Version history:
 ------------------------------------
 
+lilac-reloaded 2.0.6:
+- added support for custom object variables for hosts, services and contacts (and templates)
+
 lilac-reloaded 2.0.5:
 - backup feature on exporting configurations is now working and better checked
 - exporting hostgroup services no longer provide duplicate service entries

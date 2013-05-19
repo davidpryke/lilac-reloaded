@@ -172,7 +172,7 @@ class NagiosImportEngine extends ImportEngine {
 	public function guessConfigLocation()
 	{
 		// Most possible locations
-		$posLoc = array("/etc/nagios/", "/etc/nagios3/", "/usr/local/nagios/etc/", "/etc/nagios/private/");
+		$posLoc = array("/etc/nagios/", "/etc/nagios3/", "/usr/local/nagios/etc/", "/etc/nagios/private/", "/usr/local/nagios/");
 
 		// Found locations
 		$cfgFound = array("nagios" => "", "cgi" => "", "resource" => "");

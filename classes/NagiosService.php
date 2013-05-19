@@ -45,8 +45,11 @@ class NagiosService extends BaseNagiosService {
 			// This template has inherited templates, let's bring their values in
 			foreach($inheritanceTemplates as $inheritanceItem) {
 				$serviceTemplate = $inheritanceItem->getNagiosServiceTemplateRelatedByTargetTemplate();
-				$templateValues = $serviceTemplate->getValues(true);
-				$values = array_merge($values, $templateValues);
+				if($serviceTemplate)
+				{
+					$templateValues = $serviceTemplate->getValues(true);
+					$values = array_merge($values, $templateValues);
+				}
 			}
 		}
 		foreach(NagiosServicePeer::getFieldNames() as $fieldName) {
@@ -106,8 +109,11 @@ class NagiosService extends BaseNagiosService {
 		if(count($inheritanceTemplates)) {
 			// This template has inherited templates, let's bring their values in
 			foreach($inheritanceTemplates as $serviceTemplate) {
-				$dependencies = $serviceTemplate->getInheritedDependencies(false);
-				$dependenciesList = array_merge($dependenciesList, $dependencies);
+				if($serviceTemplate)
+				{
+					$dependencies = $serviceTemplate->getInheritedDependencies(false);
+					$dependenciesList = array_merge($dependenciesList, $dependencies);
+				}
 			}
 		}
 		if(!$self) {
@@ -124,8 +130,11 @@ class NagiosService extends BaseNagiosService {
 		if(count($inheritanceTemplates)) {
 			// This template has inherited templates, let's bring their values in
 			foreach($inheritanceTemplates as $serviceTemplate) {
-				$escalations = $serviceTemplate->getInheritedEscalations(false);
-				$escalationsList = array_merge($escalationsList, $escalations);
+				if($serviceTemplate)
+				{
+					$escalations = $serviceTemplate->getInheritedEscalations(false);
+					$escalationsList = array_merge($escalationsList, $escalations);
+				}
 			}
 		}
 		if(!$self) {
@@ -142,8 +151,11 @@ class NagiosService extends BaseNagiosService {
 		if(count($inheritanceTemplates)) {
 			// This template has inherited templates, let's bring their values in
 			foreach($inheritanceTemplates as $serviceTemplate) {
-				$servicegroup = $serviceTemplate->getInheritedServiceGroups(false);
-				$groupList = array_merge($groupList, $servicegroup);
+				if($serviceTemplate)
+				{
+					$servicegroup = $serviceTemplate->getInheritedServiceGroups(false);
+					$groupList = array_merge($groupList, $servicegroup);
+				}
 			}
 		}
 		if(!$self) {
@@ -164,8 +176,11 @@ class NagiosService extends BaseNagiosService {
 		if(count($inheritanceTemplates)) {
 			// This template has inherited templates, let's bring their values in
 			foreach($inheritanceTemplates as $serviceTemplate) {
-				$contacts = $serviceTemplate->getInheritedContacts(false);
-				$contactsList = array_merge($contactsList, $contacts);
+				if($serviceTemplate)
+				{
+					$contacts = $serviceTemplate->getInheritedContacts(false);
+					$contactsList = array_merge($contactsList, $contacts);
+				}
 			}
 		}
 		if(!$self) {
@@ -186,8 +201,11 @@ class NagiosService extends BaseNagiosService {
 		if(count($inheritanceTemplates)) {
 			// This template has inherited templates, let's bring their values in
 			foreach($inheritanceTemplates as $serviceTemplate) {
-				$contactgroups = $serviceTemplate->getInheritedContactGroups(false);
-				$groupList = array_merge($groupList, $contactgroups);
+				if($serviceTemplate)
+				{
+					$contactgroups = $serviceTemplate->getInheritedContactGroups(false);
+					$groupList = array_merge($groupList, $contactgroups);
+				}
 			}
 		}
 		if(!$self) {
@@ -450,8 +468,11 @@ class NagiosService extends BaseNagiosService {
 		if(count($inheritanceTemplates)) {
 			// This service has inherited templates, let's bring their values in
 			foreach($inheritanceTemplates as $serviceTemplate) {
-				$parameters = $serviceTemplate->getInheritedCustomObjectVariables(false);
-				$parameterList = array_merge($parameterList, $parameters);
+				if($serviceTemplate)
+				{
+					$parameters = $serviceTemplate->getInheritedCustomObjectVariables(false);
+					$parameterList = array_merge($parameterList, $parameters);
+				}
 			}
 		}
 		if(!$self) {

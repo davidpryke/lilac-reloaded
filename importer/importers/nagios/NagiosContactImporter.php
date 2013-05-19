@@ -56,6 +56,10 @@ class NagiosContactImporter extends NagiosImporter {
 					// It's an address value, we'll accept it for now.
 					continue;
 				}
+				
+				// Custom object variables
+				if($key[0] == "_")
+					continue;
 
 				if(!key_exists($key, $this->regexValidators)) {
 					$job->addLogEntry("Variable in contact object file not supported: " . $key . " on line " . $lineNum);
@@ -225,6 +229,17 @@ class NagiosContactImporter extends NagiosImporter {
 				// Address
 				if(strpos($key, "address") === 0) {
 					$contact->addAddress($value);
+					continue;
+				}
+				
+				// Custom object variables
+				if($key[0] == "_")
+				{
+					$cov = new NagiosContactCustomObjectVar();
+					$cov->setVarName(substr($key, 1));
+					$cov->setVarValue($value);
+					
+					$contact->addNagiosContactCustomObjectVar($cov);
 					continue;
 				}
 

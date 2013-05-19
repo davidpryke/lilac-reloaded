@@ -116,6 +116,10 @@ class NagiosHostImporter extends NagiosImporter {
 			foreach($entry as $lineValue) {
 				$value = $lineValue['value'];
 				$lineNum = $lineValue['line'];
+				
+				if($key[0] == "_")
+					continue;
+				
 				if(!key_exists($key, $this->regexValidators)) {
 					$job->addLogEntry("Variable in host object file not supported: " . $key . " on line " . $lineNum);
 					if(!$config->getVar('continue_error')) {
@@ -326,6 +330,17 @@ class NagiosHostImporter extends NagiosImporter {
 				$lineNum = $entry['line'];
 				if($key == 'register')
 					continue;
+				
+				// Custom object variables
+				if($key[0] == "_")
+				{
+					$cov = new NagiosHostCustomObjectVar();
+					$cov->setVarName(substr($key, 1));
+					$cov->setVarValue($value);
+				
+					$obj->addNagiosHostCustomObjectVar($cov);
+					continue;
+				}
 
 				if($key == 'use') {
 					// We need to add a template inheritance
