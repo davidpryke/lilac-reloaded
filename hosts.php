@@ -1670,12 +1670,9 @@ if(isset($host)) {
 	}
 	else if($_GET['section'] == "customobjectvars") {
 		$inherited_list = $host->getInheritedCustomObjectVariables();
-		//$numOfInheritedCustomObjectVariables = count($inherited_list);
 	
 		// Get List Of Custom object variables for this service and check
 		$customObjectVariables = $host->getNagiosHostCustomObjectVariables();
-		//$lilac->get_host_check_command_parameters($_GET['id'], $customObjectVariables);
-		//$numOfCheckCommandParameters = count($customObjectVariables);
 	
 		$parameterCounter = 0;
 		?>
@@ -1687,12 +1684,12 @@ if(isset($host)) {
 					?>
 					<table width="100%" align="center" cellspacing="0" cellpadding="2" border="0">
 						<tr class="altTop">
-						<td colspan="2">Custom object variables Inherited By Templates:</td>
+						<td colspan="2">Custom Object Variables Inherited By Templates:</td>
 						</tr>
 						<?php
 						if(count($inherited_list)) {
 							$counter = 1;
-							foreach($inherited_list as $parameter) {
+							foreach($inherited_list as $customObjectVariable) {
 								if($counter % 2) {
 									?>
 									<tr class="altRow1">
@@ -1705,9 +1702,11 @@ if(isset($host)) {
 								}
 								?>
 								<td height="20" width="80" nowrap="nowrap" class="altLeft">&nbsp;</td>
-								<td height="20" class="altRight"><b>$ARG<?php echo ++$parameterCounter;?>$:</b> <?php echo $parameter->getParameter();?></td>
+								<td height="20" class="altRight"><b>$_HOST<?php echo $customObjectVariable->getVarName();?>$:</b> <?php echo $customObjectVariable->getVarValue();?> from <strong>(host template) <?php echo $customObjectVariable->getNagiosHostTemplate()->getName(); ?></strong></td>
 								</tr>
 								<?php
+								
+								$counter++;
 							}
 						}
 						?>
@@ -1735,7 +1734,7 @@ if(isset($host)) {
 						}
 						?>
 						<td height="20" width="80" nowrap="nowrap" class="altLeft">&nbsp;[ <a href="hosts.php?id=<?php echo $_GET['id'];?>&section=customobjectvars&request=delete&customobjectvariable_id=<?php echo $customObjectVariable->getId();?>" onClick="javascript:return confirmDelete();">Delete</a> ]</td>
-						<td height="20" class="altRight"><b>_<?php echo $customObjectVariable->getVarName();?>:</b> <?php echo $customObjectVariable->getVarValue();?></td>
+						<td height="20" class="altRight"><b>$_HOST<?php echo $customObjectVariable->getVarName();?>$:</b> <?php echo $customObjectVariable->getVarValue();?></td>
 						</tr>
 						<?php
 						
@@ -1747,7 +1746,7 @@ if(isset($host)) {
 			<br />
 			<form name="add_custom_object_variable" method="post" action="hosts.php?section=customobjectvars&id=<?php echo $_GET['id'];?>">
 			<input type="hidden" name="request" value="custom_object_variable_add" />
-			Variable Name (Char _ is prepended): <input type="text" name="host_manage[custom_variable_name]" />
+			New Custom Object Variable Name: <input type="text" name="host_manage[custom_variable_name]" />
 			Value: <input type="text" name="host_manage[custom_variable_value]" /> 
 			<input type="submit" value="Add Variable" />
 			</form>

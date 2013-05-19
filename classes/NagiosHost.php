@@ -531,7 +531,7 @@ class NagiosHost extends BaseNagiosHost {
 		$inheritanceTemplates = $this->getNagiosHostTemplateInheritances();
 	
 		if(count($inheritanceTemplates)) {
-			// This template has inherited templates, let's bring their values in
+			// This host has inherited templates, let's bring their values in
 			foreach($inheritanceTemplates as $hostTemplate) {
 				$parameters = $hostTemplate->getInheritedCustomObjectVariables(false);
 				$parameterList = array_merge($parameterList, $parameters);

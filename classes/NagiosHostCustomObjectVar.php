@@ -13,6 +13,13 @@
  *
  * @package    propel.generator.
  */
-class NagiosHostCustomObjectVar extends BaseNagiosHostCustomObjectVar {
-
+class NagiosHostCustomObjectVar extends BaseNagiosHostCustomObjectVar 
+{
+	// We modify setVarName($v) to save all values uppercase
+	public function setVarName($v)
+	{
+		$v = strtoupper($v);
+		return parent::setVarName($v);
+	}
+	
 } // NagiosHostCustomObjectVar

@@ -492,6 +492,15 @@ class Lilac {
 		$param->save();
 		return true;
 	}
+	
+	function add_host_template_custom_object_variable($host_template_id, $parameter) {
+		$param = new NagiosHostCustomObjectVar();
+		$param->setNagiosHostTemplate(NagiosHostTemplatePeer::retrieveByPK($host_template_id));
+		$param->setVarName($parameter['custom_variable_name']);
+		$param->setVarValue($parameter['custom_variable_value']);
+		$param->save();
+		return true;
+	}
 
 	/**
 	 * @todo Finalized.  Should be moved to Contact.
