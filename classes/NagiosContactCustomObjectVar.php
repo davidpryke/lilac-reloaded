@@ -13,6 +13,14 @@
  *
  * @package    propel.generator.
  */
-class NagiosContactCustomObjectVar extends BaseNagiosContactCustomObjectVar {
+class NagiosContactCustomObjectVar extends BaseNagiosContactCustomObjectVar 
+{
 
+	// We modify setVarName($v) to save all values uppercase
+	public function setVarName($v)
+	{
+		$v = strtoupper($v);
+		return parent::setVarName($v);
+	}
+	
 } // NagiosContactCustomObjectVar

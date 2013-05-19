@@ -1670,6 +1670,8 @@ CREATE TABLE `nagios_host_custom_object_var`
 	PRIMARY KEY (`id`),
 	UNIQUE INDEX `nagios_host_custom_object_var_U_1` (`host`, `var_name`),
 	UNIQUE INDEX `nagios_host_custom_object_var_U_2` (`host_template`, `var_name`),
+	INDEX `nagios_host_custom_object_var_I_1` (`host`),
+	INDEX `nagios_host_custom_object_var_I_2` (`host_template`),
 	CONSTRAINT `nagios_host_custom_object_var_FK_1`
 		FOREIGN KEY (`host`)
 		REFERENCES `nagios_host` (`id`)
@@ -1696,6 +1698,8 @@ CREATE TABLE `nagios_service_custom_object_var`
 	PRIMARY KEY (`id`),
 	UNIQUE INDEX `nagios_service_custom_object_var_U_1` (`service`, `var_name`),
 	UNIQUE INDEX `nagios_service_custom_object_var_U_2` (`service_template`, `var_name`),
+	INDEX `nagios_service_custom_object_var_I_1` (`service`),
+	INDEX `nagios_service_custom_object_var_I_2` (`service_template`),
 	CONSTRAINT `nagios_service_custom_object_var_FK_1`
 		FOREIGN KEY (`service`)
 		REFERENCES `nagios_service` (`id`)
@@ -1720,6 +1724,7 @@ CREATE TABLE `nagios_contact_custom_object_var`
 	`var_value` VARCHAR(255) NOT NULL,
 	PRIMARY KEY (`id`),
 	UNIQUE INDEX `nagios_contact_custom_object_var_U_1` (`contact`, `var_name`),
+	INDEX `nagios_contact_custom_object_var_I_1` (`contact`),
 	CONSTRAINT `nagios_contact_custom_object_var_FK_1`
 		FOREIGN KEY (`contact`)
 		REFERENCES `nagios_contact` (`id`)

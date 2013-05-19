@@ -88,5 +88,13 @@ class NagiosContact extends BaseNagiosContact {
 		$address->save();
 		return true;
 	}
+	
+	function getNagiosContactCustomObjectVariables($contact_id) {
+		$c = new Criteria();
+		$c->add(NagiosContactCustomObjectVarPeer::CONTACT, $contact_id);
+	
+		$cov_list = NagiosContactCustomObjectVarPeer::doSelect($c);
+		return $cov_list;
+	}
 
 } // NagiosContact

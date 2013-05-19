@@ -1134,6 +1134,12 @@
   			<unique-column name="host_template" />
   			<unique-column name="var_name" />
 		</unique>
+		<index>
+  			<index-column name="host" />
+  		</index>
+		<index>
+  			<index-column name="host_template" />
+  		</index>
 	</table>
 	
 	<table name="nagios_service_custom_object_var" description="Custom Object Variables for Service">
@@ -1156,6 +1162,12 @@
   			<unique-column name="service_template" />
   			<unique-column name="var_name" />
 		</unique>
+		<index>
+  			<index-column name="service" />
+  		</index>
+		<index>
+  			<index-column name="service_template" />
+  		</index>
 	</table>
 	
 	<table name="nagios_contact_custom_object_var" description="Custom Object Variables for Contact">
@@ -1170,6 +1182,9 @@
   			<unique-column name="contact" />
   			<unique-column name="var_name" />
 		</unique>
+		<index>
+  			<index-column name="contact" />
+  		</index>
 	</table>
 
 </database>

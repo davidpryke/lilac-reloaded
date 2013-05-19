@@ -571,6 +571,15 @@ class Lilac {
 		$tempPeriod->save();
 		return true;
 	}
+	
+	function add_contact_custom_object_variable($contact_id, $parameter) {
+		$param = new NagiosContactCustomObjectVar();
+		$param->setNagiosContact(NagiosContactPeer::retrieveByPK($contact_id));
+		$param->setVarName($parameter['custom_variable_name']);
+		$param->setVarValue($parameter['custom_variable_value']);
+		$param->save();
+		return true;
+	}
 
 	/**
 	 * @todo Optimized.  Deprecate this.
