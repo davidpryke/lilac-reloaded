@@ -1,7 +1,7 @@
 <?php
 /*
 Lilac - A Nagios Configuration Tool
-Copyright (C) 2012 Rene Hadler
+Copyright (C) 2013 Rene Hadler
 Copyright (C) 2007 Taylor Dondich
 
 This program is free software; you can redistribute it and/or
@@ -678,9 +678,8 @@ else if(!isset($_GET['deviceId'])) {
 			Address
 			</td>
 			<td>Name</td>
-			<td>
-			Description
-			</td>
+			<td>Description</td>
+			<td>OS Family</td>
 			<td>Parent</td>
 			<td>Hostname</td>
 
@@ -705,6 +704,9 @@ else if(!isset($_GET['deviceId'])) {
 				</td>
 				<td>
 				<?php echo $device->getDescription();?>
+				</td>
+				<td>
+				<?php echo $device->getOsfamily();?>
 				</td>
 				<td>
 				<?php
