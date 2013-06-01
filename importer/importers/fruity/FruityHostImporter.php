@@ -105,7 +105,7 @@ class FruityHostImporter extends FruityImporter {
 				$job->addNotice("Fruity Host Contact Group Importer: Could not find contact group with name: " . $contactGroupName);
 				continue;
 			}
-			$membership = new NagiosHostContactGroup();
+			$membership = new NagiosHostContactgroup();
 			$membership->setHost($host->getId());
 			$membership->setNagiosContactGroup($contactGroup);
 			$membership->save();
