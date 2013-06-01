@@ -2117,6 +2117,15 @@ print_header("Host Template Editor");
 				<img src="<?php echo $host_template_icon_image;?>" />
 				</td>
 				<td valign="top">
+				
+				<div class="notice">
+				<p>All filters are used unfiltered for the PHP function <a href="http://at2.php.net/manual/de/function.preg-match.php">preg_match()</a> for the pattern parameter.</p>
+				<p>These rules can be quite complex and powerful, so read documentation on the php page. Here are some examples for quick start:</p>
+				<p>- <strong>/linux/i</strong> = Matches a string with word 'linux' on any position, case insensitive</p>
+				<p>- <strong>/linux/</strong> = Matches a string with word 'linux' on any position, case sensitive</p>
+				<p>- <strong>/$linux/i</strong> = Matches a string with word 'linux' on beginning of the string, case insensitive</p>
+				</div>
+				
 				<?php
 				if(isset($_GET['edit'])) {	// We're editing general information
 					?>
