@@ -4,6 +4,7 @@ Version history:
 lilac-reloaded 2.0.6:
 - added support for custom object variables for hosts, services and contacts (and templates)
 - fixed typo in fruity importer for NagiosHostContactGroup (should be NagiosHostContactgroup)
+- improved autodiscovery feature, bugfixes and display enhancements
 
 lilac-reloaded 2.0.5:
 - backup feature on exporting configurations is now working and better checked
