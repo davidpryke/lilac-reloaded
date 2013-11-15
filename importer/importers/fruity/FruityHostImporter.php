@@ -232,6 +232,10 @@ class FruityHostImporter extends FruityImporter {
 				$key = "maximum_check_attempts";
 			if($key == "retry_check_interval")
 				$key = "retry_interval";
+
+            if($key == "display_name" && empty($val))
+                $val = "";
+
 			if($key == "check_command") {
 				$name = $this->getCommandNameById($val);
 				if($name) {

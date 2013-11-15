@@ -72,6 +72,9 @@ class NagiosHostExporter extends NagiosExporter {
 					$key == "description") {
 					continue;
 				}
+                if($key == 'display_name' && empty($value))
+                    continue;
+
 				if($key == 'name') {
 					$key = 'host_name';
 				}
