@@ -131,11 +131,11 @@ class NagiosHostExporter extends NagiosExporter {
 				else {
 					fputs($fp, "\tnotification_options\t");
 					$tempValues = array();
-					if($values['notification_on_down']['value']) $tempValues[] = "d";
-					if($values['notification_on_unreachable']['value']) $tempValues[] = "u";
-					if($values['notification_on_recovery']['value']) $tempValues[] = "r";
-					if($values['notification_on_flapping']['value']) $tempValues[] = "f";
-					if($values['notification_on_scheduled_downtime']['value']) $tempValues[] = "s";
+					if(isset($values['notification_on_down']['value']) && $values['notification_on_down']['value']) $tempValues[] = "d";
+					if(isset($values['notification_on_unreachable']['value']) && $values['notification_on_unreachable']['value']) $tempValues[] = "u";
+					if(isset($values['notification_on_recovery']['value']) && $values['notification_on_recovery']['value']) $tempValues[] = "r";
+					if(isset($values['notification_on_flapping']['value']) && $values['notification_on_flapping']['value']) $tempValues[] = "f";
+					if(isset($values['notification_on_scheduled_downtime']['value']) && $values['notification_on_scheduled_downtime']['value']) $tempValues[] = "s";
 					fputs($fp, implode(",", $tempValues));
 					fputs($fp, "\n");
 				}
@@ -143,38 +143,40 @@ class NagiosHostExporter extends NagiosExporter {
 
 			
 			// Stalking
-			if($values['stalking_on_up']['value'] || $values['stalking_on_down']['value'] || $values['stalking_on_unreachable']['value']) {
+			if(isset($values['stalking_on_up']['value']) || isset($values['stalking_on_down']['value']) || isset($values['stalking_on_unreachable']['value'])) {
 				fputs($fp, "\tstalking_options\t");
-					if($values['stalking_on_up']['value']) {
+					if(isset($values['stalking_on_up']['value']) && $values['stalking_on_up']['value']) {
 						fputs($fp, "o");
-						if($values['stalking_on_down']['value'] || $values['stalking_on_unreachable']['value'])
+						if((isset($values['stalking_on_down']['value']) && $values['stalking_on_down']['value']) ||
+                           (isset($values['stalking_on_unreachable']['value']) && $values['stalking_on_unreachable']['value']))
 							fputs($fp, ",");
 					}
-					if($values['stalking_on_down']['value']) {
+					if(isset($values['stalking_on_down']['value']) && $values['stalking_on_down']['value']) {
 						fputs($fp, "d");
-						if($values['stalking_on_unreachable']['value'])
+						if(isset($values['stalking_on_unreachable']['value']) && $values['stalking_on_unreachable']['value'])
 							fputs($fp, ",");
 					}
-					if($values['stalking_on_unreachable']['value']) {
+					if(isset($values['stalking_on_unreachable']['value']) && $values['stalking_on_unreachable']['value']) {
 						fputs($fp, "u");
 					}
 				fputs($fp, "\n");
 			}
 			
 			// Flap Detection
-			if($values['flap_detection_on_up']['value'] || $values['flap_detection_on_down']['value'] || $values['flap_detection_on_unreachable']['value']) {
+			if(isset($values['flap_detection_on_up']['value']) || isset($values['flap_detection_on_down']['value']) || isset($values['flap_detection_on_unreachable']['value'])) {
 				fputs($fp, "\tflap_detection_options\t");
-					if($values['flap_detection_on_up']['value']) {
+					if(isset($values['flap_detection_on_up']['value']) && $values['flap_detection_on_up']['value']) {
 						fputs($fp, "o");
-						if($values['flap_detection_on_down']['value'] || $values['flap_detection_on_unreachable']['value'])
+						if((isset($values['flap_detection_on_down']['value']) && $values['flap_detection_on_down']['value']) ||
+                           (isset($values['flap_detection_on_unreachable']['value']) && $values['flap_detection_on_unreachable']['value']))
 							fputs($fp, ",");
 					}
-					if($values['flap_detection_on_down']['value']) {
+					if(isset($values['flap_detection_on_down']['value']) && $values['flap_detection_on_down']['value']) {
 						fputs($fp, "d");
-						if($values['flap_detection_on_unreachable']['value'])
+						if(isset($values['flap_detection_on_unreachable']['value']) && $values['flap_detection_on_unreachable']['value'])
 							fputs($fp, ",");
 					}
-					if($values['flap_detection_on_unreachable']['value']) {
+					if(isset($values['flap_detection_on_unreachable']['value']) && $values['flap_detection_on_unreachable']['value']) {
 						fputs($fp, "u");
 					}
 				fputs($fp, "\n");

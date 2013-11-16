@@ -131,36 +131,39 @@ class NagiosServiceExporter extends NagiosExporter {
 			else {
 				fputs($fp, "\tnotification_options\t");
 				$tempValues = array();
-				if($values['notification_on_warning']['value']) $tempValues[] = "w";
-				if($values['notification_on_unknown']['value']) $tempValues[] = "u";
-				if($values['notification_on_critical']['value']) $tempValues[] = "c";
-				if($values['notification_on_recovery']['value']) $tempValues[] = "r";
-				if($values['notification_on_flapping']['value']) $tempValues[] = "f";
-				if($values['notification_on_scheduled_downtime']['value']) $tempValues[] = "s";
+				if(isset($values['notification_on_warning']['value']) && $values['notification_on_warning']['value']) $tempValues[] = "w";
+				if(isset($values['notification_on_unknown']['value']) && $values['notification_on_unknown']['value']) $tempValues[] = "u";
+				if(isset($values['notification_on_critical']['value']) && $values['notification_on_critical']['value']) $tempValues[] = "c";
+				if(isset($values['notification_on_recovery']['value']) && $values['notification_on_recovery']['value']) $tempValues[] = "r";
+				if(isset($values['notification_on_flapping']['value']) && $values['notification_on_flapping']['value']) $tempValues[] = "f";
+				if(isset($values['notification_on_scheduled_downtime']['value']) && $values['notification_on_scheduled_downtime']['value']) $tempValues[] = "s";
 				fputs($fp, implode(",", $tempValues));
 				fputs($fp, "\n");
 			}
 		}
 
 		// Stalking
-		if($values['flap_detection_on_ok']['value'] || $values['flap_detection_on_warning']['value'] || $values['flap_detection_on_unknown']['value'] || $values['flap_detection_on_critical']['value']) {
+		if(isset($values['flap_detection_on_ok']['value']) || isset($values['flap_detection_on_warning']['value']) || isset($values['flap_detection_on_unknown']['value']) || isset($values['flap_detection_on_critical']['value'])) {
 			fputs($fp, "\tflap_detection_options\t");
-			if($values['flap_detection_on_ok']['value']) {
+			if(isset($values['flap_detection_on_ok']['value']) && $values['flap_detection_on_ok']['value']) {
 				fputs($fp, "o");
-				if($values['flap_detection_on_warning']['value'] || $values['flap_detection_on_unknown']['value'] || $values['flap_detection_on_critical']['value'])
+				if((isset($values['flap_detection_on_warning']['value']) && $values['flap_detection_on_warning']['value']) ||
+                   (isset($values['flap_detection_on_unknown']['value']) && $values['flap_detection_on_unknown']['value']) ||
+                   (isset($values['flap_detection_on_critical']['value']) && $values['flap_detection_on_critical']['value']))
 					fputs($fp, ",");
 			}
-			if($values['flap_detection_on_warning']['value']) {
+			if(isset($values['flap_detection_on_warning']['value']) && $values['flap_detection_on_warning']['value']) {
 				fputs($fp, "w");
-				if($values['flap_detection_on_unknown']['value'] || $values['flap_detection_on_critical']['value'])
+				if((isset($values['flap_detection_on_unknown']['value']) && $values['flap_detection_on_unknown']['value']) ||
+                   (isset($values['flap_detection_on_critical']['value']) && $values['flap_detection_on_critical']['value']))
 					fputs($fp, ",");
 			}
-			if($values['flap_detection_on_unknown']['value']) {
+			if(isset($values['flap_detection_on_unknown']['value']) && $values['flap_detection_on_unknown']['value']) {
 				fputs($fp, "u");
-				if($values['flap_detection_on_critical']['value'])
+				if(isset($values['flap_detection_on_critical']['value']) && $values['flap_detection_on_critical']['value'])
 					fputs($fp, ",");
 			}
-			if($values['flap_detection_on_critical']['value']) {
+			if(isset($values['flap_detection_on_critical']['value']) && $values['flap_detection_on_critical']['value']) {
 				fputs($fp, "c");
 			}
 			fputs($fp, "\n");
@@ -169,24 +172,27 @@ class NagiosServiceExporter extends NagiosExporter {
 
 		
 		// Stalking
-		if($values['stalking_on_ok']['value'] || $values['stalking_on_warning']['value'] || $values['stalking_on_unknown']['value'] || $values['stalking_on_critical']['value']) {
+		if(isset($values['stalking_on_ok']['value']) || isset($values['stalking_on_warning']['value']) || isset($values['stalking_on_unknown']['value']) || isset($values['stalking_on_critical']['value'])) {
 			fputs($fp, "\tstalking_options\t");
-			if($values['stalking_on_ok']['value']) {
+			if(isset($values['stalking_on_ok']['value']) && $values['stalking_on_ok']['value']) {
 				fputs($fp, "o");
-				if($values['stalking_on_warning']['value'] || $values['stalking_on_unknown']['value'] || $values['stalking_on_critical']['value'])
+				if((isset($values['stalking_on_warning']['value']) && $values['stalking_on_warning']['value']) ||
+                   (isset($values['stalking_on_unknown']['value']) && $values['stalking_on_unknown']['value']) ||
+                   (isset($values['stalking_on_critical']['value']) && $values['stalking_on_critical']['value']))
 					fputs($fp, ",");
 			}
-			if($values['stalking_on_warning']['value']) {
+			if(isset($values['stalking_on_warning']['value']) && $values['stalking_on_warning']['value']) {
 				fputs($fp, "w");
-				if($values['stalking_on_unknown']['value'] || $values['stalking_on_critical']['value'])
+				if((isset($values['stalking_on_unknown']['value']) && $values['stalking_on_unknown']['value']) ||
+                   (isset($values['stalking_on_critical']['value']) && $values['stalking_on_critical']['value']))
 					fputs($fp, ",");
 			}
-			if($values['stalking_on_unknown']['value']) {
+			if(isset($values['stalking_on_unknown']['value']) && $values['stalking_on_unknown']['value']) {
 				fputs($fp, "u");
-				if($values['stalking_on_critical']['value'])
+				if(isset($values['stalking_on_critical']['value']) && $values['stalking_on_critical']['value'])
 					fputs($fp, ",");
 			}
-			if($values['stalking_on_critical']['value']) {
+			if(isset($values['stalking_on_critical']['value']) && $values['stalking_on_critical']['value']) {
 				fputs($fp, "c");
 			}
 			fputs($fp, "\n");
