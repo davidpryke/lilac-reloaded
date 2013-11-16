@@ -14,7 +14,7 @@ class FruityServiceImporter extends FruityImporter {
 		}
 		// Service template check commands
 		$job->addNotice("FruityServiceImporter now processing Service Check Commands.");
-		foreach($this->dbConn->query("SELECT * FROM nagios_services_check_command_parameters WHERE service_id IS NOT NULL", PDO::FETCH_ASSOC) as $commandParameterInfo) {
+		foreach($this->dbConn->query("SELECT * FROM nagios_services_check_command_parameters WHERE service_id IS NOT NULL ORDER BY checkcommandparameter_id ASC", PDO::FETCH_ASSOC) as $commandParameterInfo) {
 			$service = $this->getLilacServiceById($commandParameterInfo['service_id']);
 			if(!$service) {
 				$job->addNotice("Fruity Service Check Command Parameter Importer: Could not find service with id: " . $commandParameterInfo['service_id']);

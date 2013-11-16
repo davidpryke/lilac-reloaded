@@ -27,7 +27,7 @@ class FruityServiceTemplateImporter extends FruityImporter {
 		}
 		// Service template check commands
 		$job->addNotice("FruityServiceTemplateImporter now processing Service Template Check Commands.");
-		foreach($this->dbConn->query("SELECT * FROM nagios_services_check_command_parameters WHERE service_template_id IS NOT NULL", PDO::FETCH_ASSOC) as $commandParameterInfo) {
+		foreach($this->dbConn->query("SELECT * FROM nagios_services_check_command_parameters WHERE service_template_id IS NOT NULL ORDER BY checkcommandparameter_id ASC", PDO::FETCH_ASSOC) as $commandParameterInfo) {
 			$serviceTemplateName = $this->getServiceTemplateNameById($commandParameterInfo['service_template_id']);
 			if(!$serviceTemplateName) {
 				$job->addNotice("Fruity Service Template Check Command Parameter Importer: Could not find service template with id " . $commandParameterInfo['service_template_id']);
