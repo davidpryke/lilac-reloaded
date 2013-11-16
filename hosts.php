@@ -1999,7 +1999,7 @@ if(isset($host)) {
 				?>
 			<br />
 			<br />
-			<form name="host_template_contactgroup_add" method="post" action="hosts.php?id=<?php echo $_GET['id'];?>&section=contactgroups">
+			<form name="host_template_contactgroup_add" method="post" action="hosts.php?id=<?php echo $_GET['id'];?>&section=contacts">
 			<input type="hidden" name="request" value="add_contactgroup_command" />
 			<input type="hidden" name="host_manage[contactgroup_add][host_id]" value="<?php echo $_GET['id'];?>" />
 			<b>Add New Contact Group:</b> <?php

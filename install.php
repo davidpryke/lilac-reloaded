@@ -189,19 +189,19 @@ if($stage == 2) {
 					}
 					else {
 						// Load the data
-						exec("mysql -h " . $mysqlHostname . " -P " . $mysqlPort . " -u " . $mysqlUsername . " -p" . $mysqlPassword . " " . $mysqlDatabase . " < " . dirname(__FILE__) . "/sqldata/schema.sql", $output, $retVal);
+						exec("mysql -h " . $mysqlHostname . " -P " . $mysqlPort . " -u " . $mysqlUsername . " -p'" . $mysqlPassword . "' " . $mysqlDatabase . " < " . dirname(__FILE__) . "/sqldata/schema.sql", $output, $retVal);
 						if($retVal != 0) {
 							$error = "Failed to import database schema. Make sure the mysql binary is in the search path for the web user.";
 						}
 						else {
 							// Import labels
-							exec("mysql -h " . $mysqlHostname . " -P " . $mysqlPort . " -u " . $mysqlUsername . " -p" . $mysqlPassword . " " . $mysqlDatabase . " < " . dirname(__FILE__) . "/sqldata/lilac-nagios-en-label.sql", $output, $retVal);
+							exec("mysql -h " . $mysqlHostname . " -P " . $mysqlPort . " -u " . $mysqlUsername . " -p'" . $mysqlPassword . "' " . $mysqlDatabase . " < " . dirname(__FILE__) . "/sqldata/lilac-nagios-en-label.sql", $output, $retVal);
 							if($retVal != 0) {
 								$error = "Failed to import Nagios labels.  Error was: <br />" . str_replace("\n", "<br />", $output[count($output)]);
 							}
 							else {
 								// Import Seed
-								exec("mysql -h " . $mysqlHostname . " -P " . $mysqlPort . " -u " . $mysqlUsername . " -p" . $mysqlPassword . " " . $mysqlDatabase . " < " . dirname(__FILE__) . "/sqldata/seed.sql", $output, $retVal);
+								exec("mysql -h " . $mysqlHostname . " -P " . $mysqlPort . " -u " . $mysqlUsername . " -p'" . $mysqlPassword . "' " . $mysqlDatabase . " < " . dirname(__FILE__) . "/sqldata/seed.sql", $output, $retVal);
 								if($retVal != 0) {
 									$error = "Failed to import seed data.  Error was: <br />" . str_replace("\n", "<br />", $output[count($output)]);
 								}
@@ -218,13 +218,13 @@ if($stage == 2) {
 				}
 				else if(!$mysqlKeepDatabase) {
 					// Load the data
-					exec("mysql -h " . $mysqlHostname . " -P " . $mysqlPort . " -u " . $mysqlUsername . " -p" . $mysqlPassword . " " . $mysqlDatabase . " < " . dirname(__FILE__) . "/sqldata/schema.sql", $output, $retVal);
+					exec("mysql -h " . $mysqlHostname . " -P " . $mysqlPort . " -u " . $mysqlUsername . " -p'" . $mysqlPassword . "' " . $mysqlDatabase . " < " . dirname(__FILE__) . "/sqldata/schema.sql", $output, $retVal);
 					if($retVal != 0) {
 						$error = "Failed to import database schema. Make sure the mysql binary is in the search path for the web user.";
 					}
 					else {
 						// Import labels
-						exec("mysql -h " . $mysqlHostname . " -P " . $mysqlPort . " -u " . $mysqlUsername . " -p" . $mysqlPassword . " " . $mysqlDatabase . " < " . dirname(__FILE__) . "/sqldata/lilac-nagios-en-label.sql", $output, $retVal);
+						exec("mysql -h " . $mysqlHostname . " -P " . $mysqlPort . " -u " . $mysqlUsername . " -p'" . $mysqlPassword . "' " . $mysqlDatabase . " < " . dirname(__FILE__) . "/sqldata/lilac-nagios-en-label.sql", $output, $retVal);
 						if($retVal != 0) {
 							$error = "Failed to import Nagios labels.  Error was: <br />" . str_replace("\n", "<br />", $output[count($output)]);
 						}
@@ -243,7 +243,7 @@ if($stage == 2) {
 					// Insert Build number information
 					mysql_query("INSERT INTO `lilac_configuration` (`key` , `value`) VALUES ('db_build', '" . LILAC_VERSION_BUILD . "');", $dbConn);
 					
-					exec("mysql -h " . $mysqlHostname . " -P " . $mysqlPort . " -u " . $mysqlUsername . " -p" . $mysqlPassword . " " . $mysqlDatabase . " < " . dirname(__FILE__) . "/sqldata/lilac-base.sql", $output, $retVal);
+					exec("mysql -h " . $mysqlHostname . " -P " . $mysqlPort . " -u " . $mysqlUsername . " -p'" . $mysqlPassword . "' " . $mysqlDatabase . " < " . dirname(__FILE__) . "/sqldata/lilac-base.sql", $output, $retVal);
 					if($retVal != 0) {
 						$error = "Failed to import Nagios Base.  Error was: <br />" . str_replace("\n", "<br />", $output[count($output)]);
 					}

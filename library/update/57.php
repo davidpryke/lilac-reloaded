@@ -69,7 +69,7 @@ class updateLilac extends updateBase
 		if($dbConfig === false)
 			return "Could not fetch configuration state, is your installation in a sane state??";
 		
-		exec("mysql -h " . $dbConfig["db_host"] . " -u " . $dbConfig["db_username"] . " -p" . $dbConfig["db_password"] . " " . $dbConfig["db_name"] . " < " . $this->rootdir . "/sqldata/update/" . $this->ut_version . ".sql", $output, $retVal);
+		exec("mysql -h " . $dbConfig["db_host"] . " -u " . $dbConfig["db_username"] . " -p'" . $dbConfig["db_password"] . "' " . $dbConfig["db_name"] . " < " . $this->rootdir . "/sqldata/update/" . $this->ut_version . ".sql", $output, $retVal);
 		if($retVal != 0) {
 			return "Failed to import database update-schema. Error message: " . $output[0];
 		}
