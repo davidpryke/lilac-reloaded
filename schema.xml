@@ -99,6 +99,11 @@
         <column name="action_url_target" type="varchar" size="255" />
         <column name="enable_splunk_integration" type="boolean" />
         <column name="splunk_url" type="varchar" size="255" />
+        <column name="authorized_for_read_only" type="varchar" size="255" required="false" />
+        <column name="color_transparency_index_r" type="integer" required="false" />
+        <column name="color_transparency_index_g" type="integer" required="false" />
+        <column name="color_transparency_index_b" type="integer" required="false" />
+        <column name="result_limit" type="integer" required="false" />
 	</table>
 
 	<table name="nagios_command" description="Nagios Command">

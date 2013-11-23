@@ -54,6 +54,8 @@ if(isset($_POST['request'])) {
          $cgiConfig->setAuthorizedForAllServices($_POST['cgi_config']['authorized_for_all_services']);
         if(isset($_POST['cgi_config']['authorized_for_all_service_commands']))
          $cgiConfig->setAuthorizedForAllServiceCommands($_POST['cgi_config']['authorized_for_all_service_commands']);
+        if(isset($_POST['cgi_config']['authorized_for_read_only']))
+         $cgiConfig->setAuthorizedForReadOnly($_POST['cgi_config']['authorized_for_read_only']);
         if(isset($_POST['cgi_config']['statusmap_background_image']))
          $cgiConfig->setStatusmapBackgroundImage($_POST['cgi_config']['statusmap_background_image']);
         if(isset($_POST['cgi_config']['default_statusmap_layout']))
@@ -64,9 +66,15 @@ if(isset($_POST['request'])) {
          $cgiConfig->setDefaultStatuswrlLayout($_POST['cgi_config']['default_statuswrl_layout']);
         if(isset($_POST['cgi_config']['refresh_rate']))
          $cgiConfig->setRefreshRate($_POST['cgi_config']['refresh_rate']);
+        if(isset($_POST['cgi_config']['color_transparency_index_r']))
+         $cgiConfig->setColorTransparencyIndexR($_POST['cgi_config']['color_transparency_index_r']);
+        if(isset($_POST['cgi_config']['color_transparency_index_g']))
+         $cgiConfig->setColorTransparencyIndexG($_POST['cgi_config']['color_transparency_index_g']);
+        if(isset($_POST['cgi_config']['color_transparency_index_b']))
+         $cgiConfig->setColorTransparencyIndexB($_POST['cgi_config']['color_transparency_index_b']);
         if(isset($_POST['cgi_config']['host_unreachable_sound']))
          $cgiConfig->setHostUnreachableSound($_POST['cgi_config']['host_unreachable_sound']);
-        if(isset($_POST['cgi_config']['host_down_sound'])) 
+        if(isset($_POST['cgi_config']['host_down_sound']))
          $cgiConfig->setHostDownSound($_POST['cgi_config']['host_down_sound']);
         if(isset($_POST['cgi_config']['service_critical_sound']))
          $cgiConfig->setServiceCriticalSound($_POST['cgi_config']['service_critical_sound']);
@@ -89,14 +97,16 @@ if(isset($_POST['request'])) {
          $cgiConfig->setEnableSplunkIntegration($_POST['cgi_config']['enable_splunk_integration']);
         if(isset($_POST['cgi_config']['splunk_url']))
          $cgiConfig->setSplunkUrl($_POST['cgi_config']['splunk_url']);
-        $cgiConfig->save();		
+        if(isset($_POST['cgi_config']['result_limit']))
+         $cgiConfig->setResultLimit($_POST['cgi_config']['result_limit']);
+        $cgiConfig->save();
         $success = "Updated CGI Configuration.";
     }
 }
 
 
 
-	
+
 // Let's make the status map layout select list
 $statusmap_layout_list[] = array("values" => "0", "text" => "User-Defined Coordinates");
 $statusmap_layout_list[] = array("values" => "1", "text" => "Depth Layers");
@@ -117,7 +127,7 @@ $statuswrl_layout_list[] = array("values" => "4", "text" => "Circular");
 if(!isset($_GET['section']))
 	$_GET['section'] = 'paths';
 
-	
+
 // Build subnavigation
 $subnav = array(
 	'paths' => 'Paths',
@@ -192,6 +202,10 @@ print_header("CGI Configuration File Editor");
 		<b>Authorized for All Service Commands:</b> <input type="text" name="cgi_config[authorized_for_all_service_commands]" VALUE="<?php echo $cgiConfig->getAuthorizedForAllServiceCommands();?>"><br />
 		<?php echo $lilac->element_desc("authorized_for_all_service_commands", "nagios_cgi_desc"); ?><br />
 		</div>
+        <div class="formbox">
+        <b>Authorized for Read Only:</b> <input type="text" name="cgi_config[authorized_for_read_only]" VALUE="<?php echo $cgiConfig->getAuthorizedForReadOnly();?>"><br />
+        <?php echo $lilac->element_desc("authorized_for_read_only", "nagios_cgi_desc"); ?><br />
+        </div>
 		<div class="formbox">
 		<input type="submit" value="Update Authentication Configuration" />
 		</div>
@@ -221,6 +235,13 @@ print_header("CGI Configuration File Editor");
 		<b>Refresh Rate:</b> <input type="text" name="cgi_config[refresh_rate]" VALUE="<?php echo $cgiConfig->getRefreshRate();?>"><br />
 		<?php echo $lilac->element_desc("refresh_rate", "nagios_cgi_desc"); ?><br />
 		</div>
+        <div class="formbox">
+        <b>Statusmap CGI Color Transparency Indexes (RGB format):</b>
+            <input type="text" name="cgi_config[color_transparency_index_r]" VALUE="<?php echo $cgiConfig->getColorTransparencyIndexR();?>" size="4" maxlength="3">
+            <input type="text" name="cgi_config[color_transparency_index_g]" VALUE="<?php echo $cgiConfig->getColorTransparencyIndexG();?>" size="4" maxlength="3">
+            <input type="text" name="cgi_config[color_transparency_index_b]" VALUE="<?php echo $cgiConfig->getColorTransparencyIndexB();?>" size="4" maxlength="3"><br />
+        <?php echo $lilac->element_desc("color_transparency_index", "nagios_cgi_desc"); ?><br />
+        </div>
 		<div class="formbox">
 		<input type="submit" value="Update Status Configuration" />
 		</div>
@@ -291,11 +312,16 @@ print_header("CGI Configuration File Editor");
 		<input type="text" size="80" name="cgi_config[splunk_url]" VALUE="<?php echo $cgiConfig->getSplunkUrl();?>"><br />
 		<?php echo $lilac->element_desc("splunk_url", "nagios_cgi_desc"); ?><br />
 		</div>
+        <div class="formbox">
+        <b>Result Limit:</b><br />
+        <input type="text" name="cgi_config[result_limit]" VALUE="<?php echo $cgiConfig->getResultLimit();?>"><br />
+        <?php echo $lilac->element_desc("result_limit", "nagios_cgi_desc"); ?><br />
+        </div>
 		<div class="formbox">
 		<input type="submit" value="Update Other Configuration" />
 		</div>
 		<?php
-	}		
+	}
 	print_window_footer();
 
 print_footer();

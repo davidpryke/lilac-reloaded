@@ -35,6 +35,11 @@
  * @method     NagiosCgiConfigurationQuery orderByActionUrlTarget($order = Criteria::ASC) Order by the action_url_target column
  * @method     NagiosCgiConfigurationQuery orderByEnableSplunkIntegration($order = Criteria::ASC) Order by the enable_splunk_integration column
  * @method     NagiosCgiConfigurationQuery orderBySplunkUrl($order = Criteria::ASC) Order by the splunk_url column
+ * @method     NagiosCgiConfigurationQuery orderByAuthorizedForReadOnly($order = Criteria::ASC) Order by the authorized_for_read_only column
+ * @method     NagiosCgiConfigurationQuery orderByColorTransparencyIndexR($order = Criteria::ASC) Order by the color_transparency_index_r column
+ * @method     NagiosCgiConfigurationQuery orderByColorTransparencyIndexG($order = Criteria::ASC) Order by the color_transparency_index_g column
+ * @method     NagiosCgiConfigurationQuery orderByColorTransparencyIndexB($order = Criteria::ASC) Order by the color_transparency_index_b column
+ * @method     NagiosCgiConfigurationQuery orderByResultLimit($order = Criteria::ASC) Order by the result_limit column
  *
  * @method     NagiosCgiConfigurationQuery groupById() Group by the id column
  * @method     NagiosCgiConfigurationQuery groupByPhysicalHtmlPath() Group by the physical_html_path column
@@ -65,6 +70,11 @@
  * @method     NagiosCgiConfigurationQuery groupByActionUrlTarget() Group by the action_url_target column
  * @method     NagiosCgiConfigurationQuery groupByEnableSplunkIntegration() Group by the enable_splunk_integration column
  * @method     NagiosCgiConfigurationQuery groupBySplunkUrl() Group by the splunk_url column
+ * @method     NagiosCgiConfigurationQuery groupByAuthorizedForReadOnly() Group by the authorized_for_read_only column
+ * @method     NagiosCgiConfigurationQuery groupByColorTransparencyIndexR() Group by the color_transparency_index_r column
+ * @method     NagiosCgiConfigurationQuery groupByColorTransparencyIndexG() Group by the color_transparency_index_g column
+ * @method     NagiosCgiConfigurationQuery groupByColorTransparencyIndexB() Group by the color_transparency_index_b column
+ * @method     NagiosCgiConfigurationQuery groupByResultLimit() Group by the result_limit column
  *
  * @method     NagiosCgiConfigurationQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     NagiosCgiConfigurationQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
@@ -102,6 +112,11 @@
  * @method     NagiosCgiConfiguration findOneByActionUrlTarget(string $action_url_target) Return the first NagiosCgiConfiguration filtered by the action_url_target column
  * @method     NagiosCgiConfiguration findOneByEnableSplunkIntegration(boolean $enable_splunk_integration) Return the first NagiosCgiConfiguration filtered by the enable_splunk_integration column
  * @method     NagiosCgiConfiguration findOneBySplunkUrl(string $splunk_url) Return the first NagiosCgiConfiguration filtered by the splunk_url column
+ * @method     NagiosCgiConfiguration findOneByAuthorizedForReadOnly(string $authorized_for_read_only) Return the first NagiosCgiConfiguration filtered by the authorized_for_read_only column
+ * @method     NagiosCgiConfiguration findOneByColorTransparencyIndexR(int $color_transparency_index_r) Return the first NagiosCgiConfiguration filtered by the color_transparency_index_r column
+ * @method     NagiosCgiConfiguration findOneByColorTransparencyIndexG(int $color_transparency_index_g) Return the first NagiosCgiConfiguration filtered by the color_transparency_index_g column
+ * @method     NagiosCgiConfiguration findOneByColorTransparencyIndexB(int $color_transparency_index_b) Return the first NagiosCgiConfiguration filtered by the color_transparency_index_b column
+ * @method     NagiosCgiConfiguration findOneByResultLimit(int $result_limit) Return the first NagiosCgiConfiguration filtered by the result_limit column
  *
  * @method     array findById(int $id) Return NagiosCgiConfiguration objects filtered by the id column
  * @method     array findByPhysicalHtmlPath(string $physical_html_path) Return NagiosCgiConfiguration objects filtered by the physical_html_path column
@@ -132,6 +147,11 @@
  * @method     array findByActionUrlTarget(string $action_url_target) Return NagiosCgiConfiguration objects filtered by the action_url_target column
  * @method     array findByEnableSplunkIntegration(boolean $enable_splunk_integration) Return NagiosCgiConfiguration objects filtered by the enable_splunk_integration column
  * @method     array findBySplunkUrl(string $splunk_url) Return NagiosCgiConfiguration objects filtered by the splunk_url column
+ * @method     array findByAuthorizedForReadOnly(string $authorized_for_read_only) Return NagiosCgiConfiguration objects filtered by the authorized_for_read_only column
+ * @method     array findByColorTransparencyIndexR(int $color_transparency_index_r) Return NagiosCgiConfiguration objects filtered by the color_transparency_index_r column
+ * @method     array findByColorTransparencyIndexG(int $color_transparency_index_g) Return NagiosCgiConfiguration objects filtered by the color_transparency_index_g column
+ * @method     array findByColorTransparencyIndexB(int $color_transparency_index_b) Return NagiosCgiConfiguration objects filtered by the color_transparency_index_b column
+ * @method     array findByResultLimit(int $result_limit) Return NagiosCgiConfiguration objects filtered by the result_limit column
  *
  * @package    propel.generator..om
  */
@@ -1077,6 +1097,194 @@ abstract class BaseNagiosCgiConfigurationQuery extends ModelCriteria
 			}
 		}
 		return $this->addUsingAlias(NagiosCgiConfigurationPeer::SPLUNK_URL, $splunkUrl, $comparison);
+	}
+
+	/**
+	 * Filter the query on the authorized_for_read_only column
+	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByAuthorizedForReadOnly('fooValue');   // WHERE authorized_for_read_only = 'fooValue'
+	 * $query->filterByAuthorizedForReadOnly('%fooValue%'); // WHERE authorized_for_read_only LIKE '%fooValue%'
+	 * </code>
+	 *
+	 * @param     string $authorizedForReadOnly The value to use as filter.
+	 *              Accepts wildcards (* and % trigger a LIKE)
+	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 *
+	 * @return    NagiosCgiConfigurationQuery The current query, for fluid interface
+	 */
+	public function filterByAuthorizedForReadOnly($authorizedForReadOnly = null, $comparison = null)
+	{
+		if (null === $comparison) {
+			if (is_array($authorizedForReadOnly)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $authorizedForReadOnly)) {
+				$authorizedForReadOnly = str_replace('*', '%', $authorizedForReadOnly);
+				$comparison = Criteria::LIKE;
+			}
+		}
+		return $this->addUsingAlias(NagiosCgiConfigurationPeer::AUTHORIZED_FOR_READ_ONLY, $authorizedForReadOnly, $comparison);
+	}
+
+	/**
+	 * Filter the query on the color_transparency_index_r column
+	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByColorTransparencyIndexR(1234); // WHERE color_transparency_index_r = 1234
+	 * $query->filterByColorTransparencyIndexR(array(12, 34)); // WHERE color_transparency_index_r IN (12, 34)
+	 * $query->filterByColorTransparencyIndexR(array('min' => 12)); // WHERE color_transparency_index_r > 12
+	 * </code>
+	 *
+	 * @param     mixed $colorTransparencyIndexR The value to use as filter.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 *
+	 * @return    NagiosCgiConfigurationQuery The current query, for fluid interface
+	 */
+	public function filterByColorTransparencyIndexR($colorTransparencyIndexR = null, $comparison = null)
+	{
+		if (is_array($colorTransparencyIndexR)) {
+			$useMinMax = false;
+			if (isset($colorTransparencyIndexR['min'])) {
+				$this->addUsingAlias(NagiosCgiConfigurationPeer::COLOR_TRANSPARENCY_INDEX_R, $colorTransparencyIndexR['min'], Criteria::GREATER_EQUAL);
+				$useMinMax = true;
+			}
+			if (isset($colorTransparencyIndexR['max'])) {
+				$this->addUsingAlias(NagiosCgiConfigurationPeer::COLOR_TRANSPARENCY_INDEX_R, $colorTransparencyIndexR['max'], Criteria::LESS_EQUAL);
+				$useMinMax = true;
+			}
+			if ($useMinMax) {
+				return $this;
+			}
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
+		}
+		return $this->addUsingAlias(NagiosCgiConfigurationPeer::COLOR_TRANSPARENCY_INDEX_R, $colorTransparencyIndexR, $comparison);
+	}
+
+	/**
+	 * Filter the query on the color_transparency_index_g column
+	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByColorTransparencyIndexG(1234); // WHERE color_transparency_index_g = 1234
+	 * $query->filterByColorTransparencyIndexG(array(12, 34)); // WHERE color_transparency_index_g IN (12, 34)
+	 * $query->filterByColorTransparencyIndexG(array('min' => 12)); // WHERE color_transparency_index_g > 12
+	 * </code>
+	 *
+	 * @param     mixed $colorTransparencyIndexG The value to use as filter.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 *
+	 * @return    NagiosCgiConfigurationQuery The current query, for fluid interface
+	 */
+	public function filterByColorTransparencyIndexG($colorTransparencyIndexG = null, $comparison = null)
+	{
+		if (is_array($colorTransparencyIndexG)) {
+			$useMinMax = false;
+			if (isset($colorTransparencyIndexG['min'])) {
+				$this->addUsingAlias(NagiosCgiConfigurationPeer::COLOR_TRANSPARENCY_INDEX_G, $colorTransparencyIndexG['min'], Criteria::GREATER_EQUAL);
+				$useMinMax = true;
+			}
+			if (isset($colorTransparencyIndexG['max'])) {
+				$this->addUsingAlias(NagiosCgiConfigurationPeer::COLOR_TRANSPARENCY_INDEX_G, $colorTransparencyIndexG['max'], Criteria::LESS_EQUAL);
+				$useMinMax = true;
+			}
+			if ($useMinMax) {
+				return $this;
+			}
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
+		}
+		return $this->addUsingAlias(NagiosCgiConfigurationPeer::COLOR_TRANSPARENCY_INDEX_G, $colorTransparencyIndexG, $comparison);
+	}
+
+	/**
+	 * Filter the query on the color_transparency_index_b column
+	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByColorTransparencyIndexB(1234); // WHERE color_transparency_index_b = 1234
+	 * $query->filterByColorTransparencyIndexB(array(12, 34)); // WHERE color_transparency_index_b IN (12, 34)
+	 * $query->filterByColorTransparencyIndexB(array('min' => 12)); // WHERE color_transparency_index_b > 12
+	 * </code>
+	 *
+	 * @param     mixed $colorTransparencyIndexB The value to use as filter.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 *
+	 * @return    NagiosCgiConfigurationQuery The current query, for fluid interface
+	 */
+	public function filterByColorTransparencyIndexB($colorTransparencyIndexB = null, $comparison = null)
+	{
+		if (is_array($colorTransparencyIndexB)) {
+			$useMinMax = false;
+			if (isset($colorTransparencyIndexB['min'])) {
+				$this->addUsingAlias(NagiosCgiConfigurationPeer::COLOR_TRANSPARENCY_INDEX_B, $colorTransparencyIndexB['min'], Criteria::GREATER_EQUAL);
+				$useMinMax = true;
+			}
+			if (isset($colorTransparencyIndexB['max'])) {
+				$this->addUsingAlias(NagiosCgiConfigurationPeer::COLOR_TRANSPARENCY_INDEX_B, $colorTransparencyIndexB['max'], Criteria::LESS_EQUAL);
+				$useMinMax = true;
+			}
+			if ($useMinMax) {
+				return $this;
+			}
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
+		}
+		return $this->addUsingAlias(NagiosCgiConfigurationPeer::COLOR_TRANSPARENCY_INDEX_B, $colorTransparencyIndexB, $comparison);
+	}
+
+	/**
+	 * Filter the query on the result_limit column
+	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByResultLimit(1234); // WHERE result_limit = 1234
+	 * $query->filterByResultLimit(array(12, 34)); // WHERE result_limit IN (12, 34)
+	 * $query->filterByResultLimit(array('min' => 12)); // WHERE result_limit > 12
+	 * </code>
+	 *
+	 * @param     mixed $resultLimit The value to use as filter.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 *
+	 * @return    NagiosCgiConfigurationQuery The current query, for fluid interface
+	 */
+	public function filterByResultLimit($resultLimit = null, $comparison = null)
+	{
+		if (is_array($resultLimit)) {
+			$useMinMax = false;
+			if (isset($resultLimit['min'])) {
+				$this->addUsingAlias(NagiosCgiConfigurationPeer::RESULT_LIMIT, $resultLimit['min'], Criteria::GREATER_EQUAL);
+				$useMinMax = true;
+			}
+			if (isset($resultLimit['max'])) {
+				$this->addUsingAlias(NagiosCgiConfigurationPeer::RESULT_LIMIT, $resultLimit['max'], Criteria::LESS_EQUAL);
+				$useMinMax = true;
+			}
+			if ($useMinMax) {
+				return $this;
+			}
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
+		}
+		return $this->addUsingAlias(NagiosCgiConfigurationPeer::RESULT_LIMIT, $resultLimit, $comparison);
 	}
 
 	/**

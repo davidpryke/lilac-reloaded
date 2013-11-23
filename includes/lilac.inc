@@ -91,11 +91,17 @@ class Lilac {
 		}
 	}
 	
-	function get_physical_nagios_logos_path() {
+	public static function get_physical_nagios_logos_path() {
 		if(!class_exists("NagiosCgiConfigurationPeer"))
 			return 0;
-		
-		$cgiConfig = NagiosCgiConfigurationPeer::doSelectOne(new Criteria());
+
+        $cgiConfig = "";
+        try {
+		    $cgiConfig = NagiosCgiConfigurationPeer::doSelectOne(new Criteria());
+        }
+        catch(Exception $e) {
+            return 0;
+        }
 		if(empty($cgiConfig))
 			return 0;
 		

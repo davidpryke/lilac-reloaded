@@ -167,6 +167,11 @@ CREATE TABLE `nagios_cgi_configuration`
 	`action_url_target` VARCHAR(255),
 	`enable_splunk_integration` TINYINT,
 	`splunk_url` VARCHAR(255),
+	`authorized_for_read_only` VARCHAR(255),
+	`color_transparency_index_r` INTEGER,
+	`color_transparency_index_g` INTEGER,
+	`color_transparency_index_b` INTEGER,
+	`result_limit` INTEGER,
 	PRIMARY KEY (`id`)
 ) ENGINE=MyISAM COMMENT='CGI Configuration';
 

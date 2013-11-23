@@ -26,7 +26,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
 define("LILAC_VERSION", "2.0.7-dev");
-define("LILAC_VERSION_BUILD", "57");
+define("LILAC_VERSION_BUILD", "58");
 define("LILAC_NAME", "Lilac-Reloaded");
 define("LILAC_FS_ROOT", dirname(__FILE__) . "/../");
 

@@ -199,6 +199,36 @@ abstract class BaseNagiosCgiConfiguration extends BaseObject  implements Persist
 	protected $splunk_url;
 
 	/**
+	 * The value for the authorized_for_read_only field.
+	 * @var        string
+	 */
+	protected $authorized_for_read_only;
+
+	/**
+	 * The value for the color_transparency_index_r field.
+	 * @var        int
+	 */
+	protected $color_transparency_index_r;
+
+	/**
+	 * The value for the color_transparency_index_g field.
+	 * @var        int
+	 */
+	protected $color_transparency_index_g;
+
+	/**
+	 * The value for the color_transparency_index_b field.
+	 * @var        int
+	 */
+	protected $color_transparency_index_b;
+
+	/**
+	 * The value for the result_limit field.
+	 * @var        int
+	 */
+	protected $result_limit;
+
+	/**
 	 * Flag to prevent endless save loop, if this object is referenced
 	 * by another object which falls in this transaction.
 	 * @var        boolean
@@ -500,6 +530,56 @@ abstract class BaseNagiosCgiConfiguration extends BaseObject  implements Persist
 	public function getSplunkUrl()
 	{
 		return $this->splunk_url;
+	}
+
+	/**
+	 * Get the [authorized_for_read_only] column value.
+	 * 
+	 * @return     string
+	 */
+	public function getAuthorizedForReadOnly()
+	{
+		return $this->authorized_for_read_only;
+	}
+
+	/**
+	 * Get the [color_transparency_index_r] column value.
+	 * 
+	 * @return     int
+	 */
+	public function getColorTransparencyIndexR()
+	{
+		return $this->color_transparency_index_r;
+	}
+
+	/**
+	 * Get the [color_transparency_index_g] column value.
+	 * 
+	 * @return     int
+	 */
+	public function getColorTransparencyIndexG()
+	{
+		return $this->color_transparency_index_g;
+	}
+
+	/**
+	 * Get the [color_transparency_index_b] column value.
+	 * 
+	 * @return     int
+	 */
+	public function getColorTransparencyIndexB()
+	{
+		return $this->color_transparency_index_b;
+	}
+
+	/**
+	 * Get the [result_limit] column value.
+	 * 
+	 * @return     int
+	 */
+	public function getResultLimit()
+	{
+		return $this->result_limit;
 	}
 
 	/**
@@ -1115,6 +1195,106 @@ abstract class BaseNagiosCgiConfiguration extends BaseObject  implements Persist
 	} // setSplunkUrl()
 
 	/**
+	 * Set the value of [authorized_for_read_only] column.
+	 * 
+	 * @param      string $v new value
+	 * @return     NagiosCgiConfiguration The current object (for fluent API support)
+	 */
+	public function setAuthorizedForReadOnly($v)
+	{
+		if ($v !== null) {
+			$v = (string) $v;
+		}
+
+		if ($this->authorized_for_read_only !== $v) {
+			$this->authorized_for_read_only = $v;
+			$this->modifiedColumns[] = NagiosCgiConfigurationPeer::AUTHORIZED_FOR_READ_ONLY;
+		}
+
+		return $this;
+	} // setAuthorizedForReadOnly()
+
+	/**
+	 * Set the value of [color_transparency_index_r] column.
+	 * 
+	 * @param      int $v new value
+	 * @return     NagiosCgiConfiguration The current object (for fluent API support)
+	 */
+	public function setColorTransparencyIndexR($v)
+	{
+		if ($v !== null) {
+			$v = (int) $v;
+		}
+
+		if ($this->color_transparency_index_r !== $v) {
+			$this->color_transparency_index_r = $v;
+			$this->modifiedColumns[] = NagiosCgiConfigurationPeer::COLOR_TRANSPARENCY_INDEX_R;
+		}
+
+		return $this;
+	} // setColorTransparencyIndexR()
+
+	/**
+	 * Set the value of [color_transparency_index_g] column.
+	 * 
+	 * @param      int $v new value
+	 * @return     NagiosCgiConfiguration The current object (for fluent API support)
+	 */
+	public function setColorTransparencyIndexG($v)
+	{
+		if ($v !== null) {
+			$v = (int) $v;
+		}
+
+		if ($this->color_transparency_index_g !== $v) {
+			$this->color_transparency_index_g = $v;
+			$this->modifiedColumns[] = NagiosCgiConfigurationPeer::COLOR_TRANSPARENCY_INDEX_G;
+		}
+
+		return $this;
+	} // setColorTransparencyIndexG()
+
+	/**
+	 * Set the value of [color_transparency_index_b] column.
+	 * 
+	 * @param      int $v new value
+	 * @return     NagiosCgiConfiguration The current object (for fluent API support)
+	 */
+	public function setColorTransparencyIndexB($v)
+	{
+		if ($v !== null) {
+			$v = (int) $v;
+		}
+
+		if ($this->color_transparency_index_b !== $v) {
+			$this->color_transparency_index_b = $v;
+			$this->modifiedColumns[] = NagiosCgiConfigurationPeer::COLOR_TRANSPARENCY_INDEX_B;
+		}
+
+		return $this;
+	} // setColorTransparencyIndexB()
+
+	/**
+	 * Set the value of [result_limit] column.
+	 * 
+	 * @param      int $v new value
+	 * @return     NagiosCgiConfiguration The current object (for fluent API support)
+	 */
+	public function setResultLimit($v)
+	{
+		if ($v !== null) {
+			$v = (int) $v;
+		}
+
+		if ($this->result_limit !== $v) {
+			$this->result_limit = $v;
+			$this->modifiedColumns[] = NagiosCgiConfigurationPeer::RESULT_LIMIT;
+		}
+
+		return $this;
+	} // setResultLimit()
+
+	/**
 	 * Indicates whether the columns in this object are only set to default values.
 	 *
 	 * This method can be used in conjunction with isModified() to indicate whether an object is both
@@ -1175,6 +1355,11 @@ abstract class BaseNagiosCgiConfiguration extends BaseObject  implements Persist
 			$this->action_url_target = ($row[$startcol + 26] !== null) ? (string) $row[$startcol + 26] : null;
 			$this->enable_splunk_integration = ($row[$startcol + 27] !== null) ? (boolean) $row[$startcol + 27] : null;
 			$this->splunk_url = ($row[$startcol + 28] !== null) ? (string) $row[$startcol + 28] : null;
+			$this->authorized_for_read_only = ($row[$startcol + 29] !== null) ? (string) $row[$startcol + 29] : null;
+			$this->color_transparency_index_r = ($row[$startcol + 30] !== null) ? (int) $row[$startcol + 30] : null;
+			$this->color_transparency_index_g = ($row[$startcol + 31] !== null) ? (int) $row[$startcol + 31] : null;
+			$this->color_transparency_index_b = ($row[$startcol + 32] !== null) ? (int) $row[$startcol + 32] : null;
+			$this->result_limit = ($row[$startcol + 33] !== null) ? (int) $row[$startcol + 33] : null;
 			$this->resetModified();
 
 			$this->setNew(false);
@@ -1183,7 +1368,7 @@ abstract class BaseNagiosCgiConfiguration extends BaseObject  implements Persist
 				$this->ensureConsistency();
 			}
 
-			return $startcol + 29; // 29 = NagiosCgiConfigurationPeer::NUM_HYDRATE_COLUMNS.
+			return $startcol + 34; // 34 = NagiosCgiConfigurationPeer::NUM_HYDRATE_COLUMNS.
 
 		} catch (Exception $e) {
 			throw new PropelException("Error populating NagiosCgiConfiguration object", $e);
@@ -1569,6 +1754,21 @@ abstract class BaseNagiosCgiConfiguration extends BaseObject  implements Persist
 			case 28:
 				return $this->getSplunkUrl();
 				break;
+			case 29:
+				return $this->getAuthorizedForReadOnly();
+				break;
+			case 30:
+				return $this->getColorTransparencyIndexR();
+				break;
+			case 31:
+				return $this->getColorTransparencyIndexG();
+				break;
+			case 32:
+				return $this->getColorTransparencyIndexB();
+				break;
+			case 33:
+				return $this->getResultLimit();
+				break;
 			default:
 				return null;
 				break;
@@ -1626,6 +1826,11 @@ abstract class BaseNagiosCgiConfiguration extends BaseObject  implements Persist
 			$keys[26] => $this->getActionUrlTarget(),
 			$keys[27] => $this->getEnableSplunkIntegration(),
 			$keys[28] => $this->getSplunkUrl(),
+			$keys[29] => $this->getAuthorizedForReadOnly(),
+			$keys[30] => $this->getColorTransparencyIndexR(),
+			$keys[31] => $this->getColorTransparencyIndexG(),
+			$keys[32] => $this->getColorTransparencyIndexB(),
+			$keys[33] => $this->getResultLimit(),
 		);
 		return $result;
 	}
@@ -1744,6 +1949,21 @@ abstract class BaseNagiosCgiConfiguration extends BaseObject  implements Persist
 			case 28:
 				$this->setSplunkUrl($value);
 				break;
+			case 29:
+				$this->setAuthorizedForReadOnly($value);
+				break;
+			case 30:
+				$this->setColorTransparencyIndexR($value);
+				break;
+			case 31:
+				$this->setColorTransparencyIndexG($value);
+				break;
+			case 32:
+				$this->setColorTransparencyIndexB($value);
+				break;
+			case 33:
+				$this->setResultLimit($value);
+				break;
 		} // switch()
 	}
 
@@ -1797,6 +2017,11 @@ abstract class BaseNagiosCgiConfiguration extends BaseObject  implements Persist
 		if (array_key_exists($keys[26], $arr)) $this->setActionUrlTarget($arr[$keys[26]]);
 		if (array_key_exists($keys[27], $arr)) $this->setEnableSplunkIntegration($arr[$keys[27]]);
 		if (array_key_exists($keys[28], $arr)) $this->setSplunkUrl($arr[$keys[28]]);
+		if (array_key_exists($keys[29], $arr)) $this->setAuthorizedForReadOnly($arr[$keys[29]]);
+		if (array_key_exists($keys[30], $arr)) $this->setColorTransparencyIndexR($arr[$keys[30]]);
+		if (array_key_exists($keys[31], $arr)) $this->setColorTransparencyIndexG($arr[$keys[31]]);
+		if (array_key_exists($keys[32], $arr)) $this->setColorTransparencyIndexB($arr[$keys[32]]);
+		if (array_key_exists($keys[33], $arr)) $this->setResultLimit($arr[$keys[33]]);
 	}
 
 	/**
@@ -1837,6 +2062,11 @@ abstract class BaseNagiosCgiConfiguration extends BaseObject  implements Persist
 		if ($this->isColumnModified(NagiosCgiConfigurationPeer::ACTION_URL_TARGET)) $criteria->add(NagiosCgiConfigurationPeer::ACTION_URL_TARGET, $this->action_url_target);
 		if ($this->isColumnModified(NagiosCgiConfigurationPeer::ENABLE_SPLUNK_INTEGRATION)) $criteria->add(NagiosCgiConfigurationPeer::ENABLE_SPLUNK_INTEGRATION, $this->enable_splunk_integration);
 		if ($this->isColumnModified(NagiosCgiConfigurationPeer::SPLUNK_URL)) $criteria->add(NagiosCgiConfigurationPeer::SPLUNK_URL, $this->splunk_url);
+		if ($this->isColumnModified(NagiosCgiConfigurationPeer::AUTHORIZED_FOR_READ_ONLY)) $criteria->add(NagiosCgiConfigurationPeer::AUTHORIZED_FOR_READ_ONLY, $this->authorized_for_read_only);
+		if ($this->isColumnModified(NagiosCgiConfigurationPeer::COLOR_TRANSPARENCY_INDEX_R)) $criteria->add(NagiosCgiConfigurationPeer::COLOR_TRANSPARENCY_INDEX_R, $this->color_transparency_index_r);
+		if ($this->isColumnModified(NagiosCgiConfigurationPeer::COLOR_TRANSPARENCY_INDEX_G)) $criteria->add(NagiosCgiConfigurationPeer::COLOR_TRANSPARENCY_INDEX_G, $this->color_transparency_index_g);
+		if ($this->isColumnModified(NagiosCgiConfigurationPeer::COLOR_TRANSPARENCY_INDEX_B)) $criteria->add(NagiosCgiConfigurationPeer::COLOR_TRANSPARENCY_INDEX_B, $this->color_transparency_index_b);
+		if ($this->isColumnModified(NagiosCgiConfigurationPeer::RESULT_LIMIT)) $criteria->add(NagiosCgiConfigurationPeer::RESULT_LIMIT, $this->result_limit);
 
 		return $criteria;
 	}
@@ -1927,6 +2157,11 @@ abstract class BaseNagiosCgiConfiguration extends BaseObject  implements Persist
 		$copyObj->setActionUrlTarget($this->getActionUrlTarget());
 		$copyObj->setEnableSplunkIntegration($this->getEnableSplunkIntegration());
 		$copyObj->setSplunkUrl($this->getSplunkUrl());
+		$copyObj->setAuthorizedForReadOnly($this->getAuthorizedForReadOnly());
+		$copyObj->setColorTransparencyIndexR($this->getColorTransparencyIndexR());
+		$copyObj->setColorTransparencyIndexG($this->getColorTransparencyIndexG());
+		$copyObj->setColorTransparencyIndexB($this->getColorTransparencyIndexB());
+		$copyObj->setResultLimit($this->getResultLimit());
 		if ($makeNew) {
 			$copyObj->setNew(true);
 			$copyObj->setId(NULL); // this is a auto-increment column, so set to default value
@@ -2005,6 +2240,11 @@ abstract class BaseNagiosCgiConfiguration extends BaseObject  implements Persist
 		$this->action_url_target = null;
 		$this->enable_splunk_integration = null;
 		$this->splunk_url = null;
+		$this->authorized_for_read_only = null;
+		$this->color_transparency_index_r = null;
+		$this->color_transparency_index_g = null;
+		$this->color_transparency_index_b = null;
+		$this->result_limit = null;
 		$this->alreadyInSave = false;
 		$this->alreadyInValidation = false;
 		$this->clearAllReferences();

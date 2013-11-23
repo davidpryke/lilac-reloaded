@@ -67,6 +67,11 @@ class NagiosCgiConfigurationTableMap extends TableMap
 		$this->addColumn('ACTION_URL_TARGET', 'ActionUrlTarget', 'VARCHAR', false, 255, null);
 		$this->addColumn('ENABLE_SPLUNK_INTEGRATION', 'EnableSplunkIntegration', 'BOOLEAN', false, null, null);
 		$this->addColumn('SPLUNK_URL', 'SplunkUrl', 'VARCHAR', false, 255, null);
+		$this->addColumn('AUTHORIZED_FOR_READ_ONLY', 'AuthorizedForReadOnly', 'VARCHAR', false, 255, null);
+		$this->addColumn('COLOR_TRANSPARENCY_INDEX_R', 'ColorTransparencyIndexR', 'INTEGER', false, null, null);
+		$this->addColumn('COLOR_TRANSPARENCY_INDEX_G', 'ColorTransparencyIndexG', 'INTEGER', false, null, null);
+		$this->addColumn('COLOR_TRANSPARENCY_INDEX_B', 'ColorTransparencyIndexB', 'INTEGER', false, null, null);
+		$this->addColumn('RESULT_LIMIT', 'ResultLimit', 'INTEGER', false, null, null);
 		// validators
 	} // initialize()
 
