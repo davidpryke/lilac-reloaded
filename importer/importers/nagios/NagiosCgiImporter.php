@@ -25,7 +25,12 @@ class NagiosCgiImporter extends NagiosImporter {
 								'service_critical_sound' => '',
 								'service_warning_sound' => '',
 								'service_unknown_sound' => '',
-								'ping_syntax' => '');
+								'ping_syntax' => '',
+                                'authorized_for_read_only' => '',
+                                'color_transparency_index_r' => '',
+                                'color_transparency_index_g' => '',
+                                'color_transparency_index_b' => '',
+                                'result_limit' => '');
 	
 	private $fieldMethods = array('physical_html_path' => 'setPhysicalHtmlPath',
 								'url_html_path' => 'setUrlHtmlPath',
@@ -49,19 +54,22 @@ class NagiosCgiImporter extends NagiosImporter {
 								'service_critical_sound' => 'setServiceCriticalSound',
 								'service_warning_sound' => 'setServiceWarningSound',
 								'service_unknown_sound' => 'setServiceUnknownSound',
-								'ping_syntax' => 'setPingSyntax');
+								'ping_syntax' => 'setPingSyntax',
+                                'authorized_for_read_only' => 'setAuthorizedForReadOnly',
+                                'color_transparency_index_r' => 'setColorTransparencyIndexR',
+                                'color_transparency_index_g' => 'setColorTransparencyIndexG',
+                                'color_transparency_index_b' => 'setColorTransparencyIndexB',
+                                'result_limit' => 'setResultLimit');
 								
 	// We should gather all the cfg_file and cfg_dir directives and add them to our NagiosImportEngine's object files
 	public function init() {
-
-		
 		$values = $segment->getValues();
 		foreach($values as $key => $entry) {
 			foreach($entry as $lineValue) {
 				$value = $lineValue['value'];
 				$lineNum = $lineValue['line'];
 				
-				if(!key_exists($key, $this->regexValidators)) {
+				if(!array_key_exists($key, $this->regexValidators)) {
 					$job->addLogEntry("Variable in cgi configuration file not supported: " . $key . " on line " . $linenum);
 					if(!$config->get('continue_error')) {
 						return false;
@@ -88,7 +96,6 @@ class NagiosCgiImporter extends NagiosImporter {
 	}
 	
 	public function import() {
-
 		$job = $this->getEngine()->getJob();
 		
 		$config = $this->getEngine()->getConfig();
@@ -122,7 +129,7 @@ class NagiosCgiImporter extends NagiosImporter {
 			foreach($entries as $entry) {
 				$value = $entry['value'];
 				$lineNum = $entry['line'];
-					if(key_exists($key, $this->fieldMethods) && $this->fieldMethods[$key] != '') {
+					if(array_key_exists($key, $this->fieldMethods) && $this->fieldMethods[$key] != '') {
 						// Okay, let's check that the method DOES exist
 						if(!method_exists($cgiCfg, $this->fieldMethods[$key])) {
 							$job->addError("Method " . $this->fieldMethods[$key] . " does not exist for variable: " . $key . " on line " . $lineNum . " in file " . $fileName);

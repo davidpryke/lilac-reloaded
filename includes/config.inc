@@ -1,7 +1,7 @@
 <?php
 /*
 Lilac - A Nagios Configuration Tool
-Copyright (C) 2012 Rene Hadler
+Copyright (C) 2013 Rene Hadler
 Copyright (C) 2007 Taylor Dondich
 
 This program is free software; you can redistribute it and/or
@@ -27,19 +27,11 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 require_once(dirname(__FILE__) . "/init.inc.php");	// This should be moved into other files.
 
-
-/* Needs to be rewritten, just temporary */
-/*
-$sys_config['logos_path'] = '/usr/share/nagios/htdocs/images/logos/';		// legacy
-$path_config['image_root'] = '/usr/share/nagios/htdocs/images/';		// legacy	
-*/
-
 if ( ! defined( "PATH_SEPARATOR" ) ) {
   if ( strpos( $_ENV[ "OS" ], "Win" ) !== false )
     define( "PATH_SEPARATOR", ";" );
   else define( "PATH_SEPARATOR", ":" );
 }
-
 
 require_once('propel/Propel.php');
 Propel::init(LILAC_FS_ROOT . "includes/lilac-conf.php");
