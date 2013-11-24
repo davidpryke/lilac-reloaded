@@ -136,6 +136,9 @@
  * @method     NagiosMainConfigurationQuery orderByCheckForUpdates($order = Criteria::ASC) Order by the check_for_updates column
  * @method     NagiosMainConfigurationQuery orderByCheckForOrphanedHosts($order = Criteria::ASC) Order by the check_for_orphaned_hosts column
  * @method     NagiosMainConfigurationQuery orderByBareUpdateCheck($order = Criteria::ASC) Order by the bare_update_check column
+ * @method     NagiosMainConfigurationQuery orderByLogCurrentStates($order = Criteria::ASC) Order by the log_current_states column
+ * @method     NagiosMainConfigurationQuery orderByCheckWorkers($order = Criteria::ASC) Order by the check_workers column
+ * @method     NagiosMainConfigurationQuery orderByQuerySocket($order = Criteria::ASC) Order by the query_socket column
  *
  * @method     NagiosMainConfigurationQuery groupById() Group by the id column
  * @method     NagiosMainConfigurationQuery groupByConfigDir() Group by the config_dir column
@@ -267,6 +270,9 @@
  * @method     NagiosMainConfigurationQuery groupByCheckForUpdates() Group by the check_for_updates column
  * @method     NagiosMainConfigurationQuery groupByCheckForOrphanedHosts() Group by the check_for_orphaned_hosts column
  * @method     NagiosMainConfigurationQuery groupByBareUpdateCheck() Group by the bare_update_check column
+ * @method     NagiosMainConfigurationQuery groupByLogCurrentStates() Group by the log_current_states column
+ * @method     NagiosMainConfigurationQuery groupByCheckWorkers() Group by the check_workers column
+ * @method     NagiosMainConfigurationQuery groupByQuerySocket() Group by the query_socket column
  *
  * @method     NagiosMainConfigurationQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     NagiosMainConfigurationQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
@@ -437,6 +443,9 @@
  * @method     NagiosMainConfiguration findOneByCheckForUpdates(boolean $check_for_updates) Return the first NagiosMainConfiguration filtered by the check_for_updates column
  * @method     NagiosMainConfiguration findOneByCheckForOrphanedHosts(boolean $check_for_orphaned_hosts) Return the first NagiosMainConfiguration filtered by the check_for_orphaned_hosts column
  * @method     NagiosMainConfiguration findOneByBareUpdateCheck(boolean $bare_update_check) Return the first NagiosMainConfiguration filtered by the bare_update_check column
+ * @method     NagiosMainConfiguration findOneByLogCurrentStates(boolean $log_current_states) Return the first NagiosMainConfiguration filtered by the log_current_states column
+ * @method     NagiosMainConfiguration findOneByCheckWorkers(int $check_workers) Return the first NagiosMainConfiguration filtered by the check_workers column
+ * @method     NagiosMainConfiguration findOneByQuerySocket(string $query_socket) Return the first NagiosMainConfiguration filtered by the query_socket column
  *
  * @method     array findById(int $id) Return NagiosMainConfiguration objects filtered by the id column
  * @method     array findByConfigDir(string $config_dir) Return NagiosMainConfiguration objects filtered by the config_dir column
@@ -568,6 +577,9 @@
  * @method     array findByCheckForUpdates(boolean $check_for_updates) Return NagiosMainConfiguration objects filtered by the check_for_updates column
  * @method     array findByCheckForOrphanedHosts(boolean $check_for_orphaned_hosts) Return NagiosMainConfiguration objects filtered by the check_for_orphaned_hosts column
  * @method     array findByBareUpdateCheck(boolean $bare_update_check) Return NagiosMainConfiguration objects filtered by the bare_update_check column
+ * @method     array findByLogCurrentStates(boolean $log_current_states) Return NagiosMainConfiguration objects filtered by the log_current_states column
+ * @method     array findByCheckWorkers(int $check_workers) Return NagiosMainConfiguration objects filtered by the check_workers column
+ * @method     array findByQuerySocket(string $query_socket) Return NagiosMainConfiguration objects filtered by the query_socket column
  *
  * @package    propel.generator..om
  */
@@ -4853,6 +4865,100 @@ abstract class BaseNagiosMainConfigurationQuery extends ModelCriteria
 			$bare_update_check = in_array(strtolower($bareUpdateCheck), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
 		}
 		return $this->addUsingAlias(NagiosMainConfigurationPeer::BARE_UPDATE_CHECK, $bareUpdateCheck, $comparison);
+	}
+
+	/**
+	 * Filter the query on the log_current_states column
+	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByLogCurrentStates(true); // WHERE log_current_states = true
+	 * $query->filterByLogCurrentStates('yes'); // WHERE log_current_states = true
+	 * </code>
+	 *
+	 * @param     boolean|string $logCurrentStates The value to use as filter.
+	 *              Non-boolean arguments are converted using the following rules:
+	 *                * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
+	 *                * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
+	 *              Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
+	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 *
+	 * @return    NagiosMainConfigurationQuery The current query, for fluid interface
+	 */
+	public function filterByLogCurrentStates($logCurrentStates = null, $comparison = null)
+	{
+		if (is_string($logCurrentStates)) {
+			$log_current_states = in_array(strtolower($logCurrentStates), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+		}
+		return $this->addUsingAlias(NagiosMainConfigurationPeer::LOG_CURRENT_STATES, $logCurrentStates, $comparison);
+	}
+
+	/**
+	 * Filter the query on the check_workers column
+	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByCheckWorkers(1234); // WHERE check_workers = 1234
+	 * $query->filterByCheckWorkers(array(12, 34)); // WHERE check_workers IN (12, 34)
+	 * $query->filterByCheckWorkers(array('min' => 12)); // WHERE check_workers > 12
+	 * </code>
+	 *
+	 * @param     mixed $checkWorkers The value to use as filter.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 *
+	 * @return    NagiosMainConfigurationQuery The current query, for fluid interface
+	 */
+	public function filterByCheckWorkers($checkWorkers = null, $comparison = null)
+	{
+		if (is_array($checkWorkers)) {
+			$useMinMax = false;
+			if (isset($checkWorkers['min'])) {
+				$this->addUsingAlias(NagiosMainConfigurationPeer::CHECK_WORKERS, $checkWorkers['min'], Criteria::GREATER_EQUAL);
+				$useMinMax = true;
+			}
+			if (isset($checkWorkers['max'])) {
+				$this->addUsingAlias(NagiosMainConfigurationPeer::CHECK_WORKERS, $checkWorkers['max'], Criteria::LESS_EQUAL);
+				$useMinMax = true;
+			}
+			if ($useMinMax) {
+				return $this;
+			}
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
+		}
+		return $this->addUsingAlias(NagiosMainConfigurationPeer::CHECK_WORKERS, $checkWorkers, $comparison);
+	}
+
+	/**
+	 * Filter the query on the query_socket column
+	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByQuerySocket('fooValue');   // WHERE query_socket = 'fooValue'
+	 * $query->filterByQuerySocket('%fooValue%'); // WHERE query_socket LIKE '%fooValue%'
+	 * </code>
+	 *
+	 * @param     string $querySocket The value to use as filter.
+	 *              Accepts wildcards (* and % trigger a LIKE)
+	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 *
+	 * @return    NagiosMainConfigurationQuery The current query, for fluid interface
+	 */
+	public function filterByQuerySocket($querySocket = null, $comparison = null)
+	{
+		if (null === $comparison) {
+			if (is_array($querySocket)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $querySocket)) {
+				$querySocket = str_replace('*', '%', $querySocket);
+				$comparison = Criteria::LIKE;
+			}
+		}
+		return $this->addUsingAlias(NagiosMainConfigurationPeer::QUERY_SOCKET, $querySocket, $comparison);
 	}
 
 	/**

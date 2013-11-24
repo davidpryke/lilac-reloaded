@@ -805,6 +805,24 @@ abstract class BaseNagiosMainConfiguration extends BaseObject  implements Persis
 	protected $bare_update_check;
 
 	/**
+	 * The value for the log_current_states field.
+	 * @var        boolean
+	 */
+	protected $log_current_states;
+
+	/**
+	 * The value for the check_workers field.
+	 * @var        int
+	 */
+	protected $check_workers;
+
+	/**
+	 * The value for the query_socket field.
+	 * @var        string
+	 */
+	protected $query_socket;
+
+	/**
 	 * @var        NagiosCommand
 	 */
 	protected $aNagiosCommandRelatedByOcspCommand;
@@ -2156,6 +2174,36 @@ abstract class BaseNagiosMainConfiguration extends BaseObject  implements Persis
 	public function getBareUpdateCheck()
 	{
 		return $this->bare_update_check;
+	}
+
+	/**
+	 * Get the [log_current_states] column value.
+	 * 
+	 * @return     boolean
+	 */
+	public function getLogCurrentStates()
+	{
+		return $this->log_current_states;
+	}
+
+	/**
+	 * Get the [check_workers] column value.
+	 * 
+	 * @return     int
+	 */
+	public function getCheckWorkers()
+	{
+		return $this->check_workers;
+	}
+
+	/**
+	 * Get the [query_socket] column value.
+	 * 
+	 * @return     string
+	 */
+	public function getQuerySocket()
+	{
+		return $this->query_socket;
 	}
 
 	/**
@@ -5143,6 +5191,74 @@ abstract class BaseNagiosMainConfiguration extends BaseObject  implements Persis
 	} // setBareUpdateCheck()
 
 	/**
+	 * Sets the value of the [log_current_states] column. 
+	 * Non-boolean arguments are converted using the following rules:
+	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
+	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
+	 * Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
+	 * 
+	 * @param      boolean|integer|string $v The new value
+	 * @return     NagiosMainConfiguration The current object (for fluent API support)
+	 */
+	public function setLogCurrentStates($v)
+	{
+		if ($v !== null) {
+			if (is_string($v)) {
+				$v = in_array(strtolower($v), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+			} else {
+				$v = (boolean) $v;
+			}
+		}
+
+		if ($this->log_current_states !== $v) {
+			$this->log_current_states = $v;
+			$this->modifiedColumns[] = NagiosMainConfigurationPeer::LOG_CURRENT_STATES;
+		}
+
+		return $this;
+	} // setLogCurrentStates()
+
+	/**
+	 * Set the value of [check_workers] column.
+	 * 
+	 * @param      int $v new value
+	 * @return     NagiosMainConfiguration The current object (for fluent API support)
+	 */
+	public function setCheckWorkers($v)
+	{
+		if ($v !== null) {
+			$v = (int) $v;
+		}
+
+		if ($this->check_workers !== $v) {
+			$this->check_workers = $v;
+			$this->modifiedColumns[] = NagiosMainConfigurationPeer::CHECK_WORKERS;
+		}
+
+		return $this;
+	} // setCheckWorkers()
+
+	/**
+	 * Set the value of [query_socket] column.
+	 * 
+	 * @param      string $v new value
+	 * @return     NagiosMainConfiguration The current object (for fluent API support)
+	 */
+	public function setQuerySocket($v)
+	{
+		if ($v !== null) {
+			$v = (string) $v;
+		}
+
+		if ($this->query_socket !== $v) {
+			$this->query_socket = $v;
+			$this->modifiedColumns[] = NagiosMainConfigurationPeer::QUERY_SOCKET;
+		}
+
+		return $this;
+	} // setQuerySocket()
+
+	/**
 	 * Indicates whether the columns in this object are only set to default values.
 	 *
 	 * This method can be used in conjunction with isModified() to indicate whether an object is both
@@ -5304,6 +5420,9 @@ abstract class BaseNagiosMainConfiguration extends BaseObject  implements Persis
 			$this->check_for_updates = ($row[$startcol + 127] !== null) ? (boolean) $row[$startcol + 127] : null;
 			$this->check_for_orphaned_hosts = ($row[$startcol + 128] !== null) ? (boolean) $row[$startcol + 128] : null;
 			$this->bare_update_check = ($row[$startcol + 129] !== null) ? (boolean) $row[$startcol + 129] : null;
+			$this->log_current_states = ($row[$startcol + 130] !== null) ? (boolean) $row[$startcol + 130] : null;
+			$this->check_workers = ($row[$startcol + 131] !== null) ? (int) $row[$startcol + 131] : null;
+			$this->query_socket = ($row[$startcol + 132] !== null) ? (string) $row[$startcol + 132] : null;
 			$this->resetModified();
 
 			$this->setNew(false);
@@ -5312,7 +5431,7 @@ abstract class BaseNagiosMainConfiguration extends BaseObject  implements Persis
 				$this->ensureConsistency();
 			}
 
-			return $startcol + 130; // 130 = NagiosMainConfigurationPeer::NUM_HYDRATE_COLUMNS.
+			return $startcol + 133; // 133 = NagiosMainConfigurationPeer::NUM_HYDRATE_COLUMNS.
 
 		} catch (Exception $e) {
 			throw new PropelException("Error populating NagiosMainConfiguration object", $e);
@@ -6148,6 +6267,15 @@ abstract class BaseNagiosMainConfiguration extends BaseObject  implements Persis
 			case 129:
 				return $this->getBareUpdateCheck();
 				break;
+			case 130:
+				return $this->getLogCurrentStates();
+				break;
+			case 131:
+				return $this->getCheckWorkers();
+				break;
+			case 132:
+				return $this->getQuerySocket();
+				break;
 			default:
 				return null;
 				break;
@@ -6307,6 +6435,9 @@ abstract class BaseNagiosMainConfiguration extends BaseObject  implements Persis
 			$keys[127] => $this->getCheckForUpdates(),
 			$keys[128] => $this->getCheckForOrphanedHosts(),
 			$keys[129] => $this->getBareUpdateCheck(),
+			$keys[130] => $this->getLogCurrentStates(),
+			$keys[131] => $this->getCheckWorkers(),
+			$keys[132] => $this->getQuerySocket(),
 		);
 		if ($includeForeignObjects) {
 			if (null !== $this->aNagiosCommandRelatedByOcspCommand) {
@@ -6754,6 +6885,15 @@ abstract class BaseNagiosMainConfiguration extends BaseObject  implements Persis
 			case 129:
 				$this->setBareUpdateCheck($value);
 				break;
+			case 130:
+				$this->setLogCurrentStates($value);
+				break;
+			case 131:
+				$this->setCheckWorkers($value);
+				break;
+			case 132:
+				$this->setQuerySocket($value);
+				break;
 		} // switch()
 	}
 
@@ -6908,6 +7048,9 @@ abstract class BaseNagiosMainConfiguration extends BaseObject  implements Persis
 		if (array_key_exists($keys[127], $arr)) $this->setCheckForUpdates($arr[$keys[127]]);
 		if (array_key_exists($keys[128], $arr)) $this->setCheckForOrphanedHosts($arr[$keys[128]]);
 		if (array_key_exists($keys[129], $arr)) $this->setBareUpdateCheck($arr[$keys[129]]);
+		if (array_key_exists($keys[130], $arr)) $this->setLogCurrentStates($arr[$keys[130]]);
+		if (array_key_exists($keys[131], $arr)) $this->setCheckWorkers($arr[$keys[131]]);
+		if (array_key_exists($keys[132], $arr)) $this->setQuerySocket($arr[$keys[132]]);
 	}
 
 	/**
@@ -7049,6 +7192,9 @@ abstract class BaseNagiosMainConfiguration extends BaseObject  implements Persis
 		if ($this->isColumnModified(NagiosMainConfigurationPeer::CHECK_FOR_UPDATES)) $criteria->add(NagiosMainConfigurationPeer::CHECK_FOR_UPDATES, $this->check_for_updates);
 		if ($this->isColumnModified(NagiosMainConfigurationPeer::CHECK_FOR_ORPHANED_HOSTS)) $criteria->add(NagiosMainConfigurationPeer::CHECK_FOR_ORPHANED_HOSTS, $this->check_for_orphaned_hosts);
 		if ($this->isColumnModified(NagiosMainConfigurationPeer::BARE_UPDATE_CHECK)) $criteria->add(NagiosMainConfigurationPeer::BARE_UPDATE_CHECK, $this->bare_update_check);
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::LOG_CURRENT_STATES)) $criteria->add(NagiosMainConfigurationPeer::LOG_CURRENT_STATES, $this->log_current_states);
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::CHECK_WORKERS)) $criteria->add(NagiosMainConfigurationPeer::CHECK_WORKERS, $this->check_workers);
+		if ($this->isColumnModified(NagiosMainConfigurationPeer::QUERY_SOCKET)) $criteria->add(NagiosMainConfigurationPeer::QUERY_SOCKET, $this->query_socket);
 
 		return $criteria;
 	}
@@ -7240,6 +7386,9 @@ abstract class BaseNagiosMainConfiguration extends BaseObject  implements Persis
 		$copyObj->setCheckForUpdates($this->getCheckForUpdates());
 		$copyObj->setCheckForOrphanedHosts($this->getCheckForOrphanedHosts());
 		$copyObj->setBareUpdateCheck($this->getBareUpdateCheck());
+		$copyObj->setLogCurrentStates($this->getLogCurrentStates());
+		$copyObj->setCheckWorkers($this->getCheckWorkers());
+		$copyObj->setQuerySocket($this->getQuerySocket());
 		if ($makeNew) {
 			$copyObj->setNew(true);
 			$copyObj->setId(NULL); // this is a auto-increment column, so set to default value
@@ -7811,6 +7960,9 @@ abstract class BaseNagiosMainConfiguration extends BaseObject  implements Persis
 		$this->check_for_updates = null;
 		$this->check_for_orphaned_hosts = null;
 		$this->bare_update_check = null;
+		$this->log_current_states = null;
+		$this->check_workers = null;
+		$this->query_socket = null;
 		$this->alreadyInSave = false;
 		$this->alreadyInValidation = false;
 		$this->clearAllReferences();

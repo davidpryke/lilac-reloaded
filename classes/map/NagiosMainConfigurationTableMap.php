@@ -168,6 +168,9 @@ class NagiosMainConfigurationTableMap extends TableMap
 		$this->addColumn('CHECK_FOR_UPDATES', 'CheckForUpdates', 'BOOLEAN', false, null, null);
 		$this->addColumn('CHECK_FOR_ORPHANED_HOSTS', 'CheckForOrphanedHosts', 'BOOLEAN', false, null, null);
 		$this->addColumn('BARE_UPDATE_CHECK', 'BareUpdateCheck', 'BOOLEAN', false, null, null);
+		$this->addColumn('LOG_CURRENT_STATES', 'LogCurrentStates', 'BOOLEAN', false, null, null);
+		$this->addColumn('CHECK_WORKERS', 'CheckWorkers', 'INTEGER', false, null, null);
+		$this->addColumn('QUERY_SOCKET', 'QuerySocket', 'VARCHAR', false, 255, null);
 		// validators
 	} // initialize()
 

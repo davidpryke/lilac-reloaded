@@ -975,9 +975,13 @@
         <column name="check_for_updates" type="boolean" />
         <column name="check_for_orphaned_hosts" type="boolean" />
         <column name="bare_update_check" type="boolean" />
-
         <!-- End new in Nagios 3.x -->
 
+        <!-- New in Nagios 4.x -->
+        <column name="log_current_states" type="boolean" />
+        <column name="check_workers" type="integer" />
+        <column name="query_socket" type="varchar" size="255" />
+        <!-- End new in Nagios 4.x -->
 
 		<foreign-key foreignTable="nagios_command" onDelete="cascade">
 			<reference local="ocsp_command" foreign="id" />
