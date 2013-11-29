@@ -89,7 +89,7 @@ class NagiosExportEngine extends ExportEngine {
 			</p>
 			<p>
 			<input type="checkbox" id="restart_nagios" name="restart_nagios" />
-			<label for="restart_nagios">Restart Nagios (broken)</label>
+			<label for="restart_nagios">Restart Nagios (Please configure your permissions properly eg. your sudoers file)</label>
 			</p>
 		</fieldset>
 		</p>
@@ -534,7 +534,6 @@ class NagiosExportEngine extends ExportEngine {
 		}
 
 		// Move the configuration files to the appropriate place.
-
 		$mainConfiguration = NagiosMainConfigurationPeer::doSelectOne(new Criteria());
 		if(!$this->dir_copy($this->exportDir, $mainConfiguration->getConfigDir())) {
 			$job->addError("Unable to copy configuration files to : " . $mainConfiguration->getConfigDir());
