@@ -1,6 +1,9 @@
 Version history:
 ------------------------------------
 
+lilac-reloaded 2.0.7:
+- added support for new Nagios 4 options, marked deprecated options
+
 lilac-reloaded 2.0.6:
 - added support for custom object variables for hosts, services and contacts (and templates)
 - fixed typo in fruity importer for NagiosHostContactGroup (should be NagiosHostContactgroup)
