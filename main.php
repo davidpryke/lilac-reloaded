@@ -889,6 +889,29 @@ if(isset($_POST['request'])) {
 		$mainConfig->save();
 		$success = "Modified Main Debug Configuration";
 	}
+    if($_POST['request'] == 'main_modify_nagios4') {
+        // Field Error Checking
+        if(isset($_POST['main_config']['log_current_states'])) {
+            $mainConfig->setLogCurrentStates($_POST['main_config']['log_current_states']);
+        }
+        else {
+            $mainConfig->setLogCurrentStates(null);
+        }
+        if(isset($_POST['main_config']['check_workers'])) {
+            $mainConfig->setCheckWorkers($_POST['main_config']['check_workers']);
+        }
+        else {
+            $mainConfig->setCheckWorkers(null);
+        }
+        if(isset($_POST['main_config']['query_socket'])) {
+            $mainConfig->setQuerySocket($_POST['main_config']['query_socket']);
+        }
+        else {
+            $mainConfig->setQuerySocket(null);
+        }
+        $mainConfig->save();
+        $success = "Modified Main Nagios4 Configuration";
+    }
 	if($_POST['request'] == "main_modify_broker") {
 		$mainConfig->setEventBrokerOptions($_POST['main_config']['event_broker_options']);
 		$mainConfig->save();
@@ -953,7 +976,8 @@ $subnav = array(
 	'freshness' => 'Freshness',
 	'broker' => 'Broker',
 	'debug' => 'Debug',
-	'other' => 'Other'
+	'other' => 'Other',
+    'nagios4' => 'Nagios 4'
 	);
 
 
@@ -1387,6 +1411,28 @@ print_header("Main Configuration File Editor", "main");
 		</form>
 		<?php
 	}
+    else if($_GET['section'] == 'nagios4') {
+        ?>
+        <form name="main_config" method="post" action="main.php?section=nagios4">
+            <input type="hidden" name="request" value="main_modify_nagios4" />
+            <?php
+            $file_mode_array[] = array("values" => 'a', "text" => "Append");
+            $file_mode_array[] = array("values" => 'w', "text" => "Write");
+
+            double_pane_form_window_start();
+
+            form_select_element_with_enabler($enable_list, "values", "text", "main_config", "log_current_states", "Log Current States", $lilac->element_desc("log_current_states", "nagios_main_desc"), $mainValues, null);
+            form_text_element_with_enabler(60, 255, "main_config", "query_socket", "Query Socket", $lilac->element_desc("query_socket", "nagios_main_desc"), $mainValues, null);
+            form_text_element_with_enabler(10, 10, "main_config", "check_workers", "Check Workers", $lilac->element_desc("check_workers", "nagios_main_desc"), $mainValues, null);
+
+            double_pane_form_window_finish();
+            ?>
+            <div class="formbox">
+                <input type="submit" value="Update Nagios Configuration" />
+            </div>
+        </form>
+    <?php
+    }
 	
 	print_window_footer();
 	?>
