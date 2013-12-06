@@ -43,6 +43,13 @@ include_once(LILAC_FS_ROOT . 'includes/lilac.inc');
 include_once(LILAC_FS_ROOT . 'classes/Module.php');
 include_once(LILAC_FS_ROOT . 'classes/LilacCoreModule.php');
 
+/* Check mysql connection */
+try {
+    Propel::getConnection();
+} catch (Exception $e) {
+    exit('Connection to database failed: ' . $e->getMessage());
+}
+
 include_once(LILAC_FS_ROOT . 'includes/update.php');
 
 /* Update check */

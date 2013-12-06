@@ -2,7 +2,13 @@ Version history:
 ------------------------------------
 
 lilac-reloaded 2.0.7:
-- added support for new Nagios 4 options, marked deprecated options
+- added support for new Nagios 4 fields, marked deprecated options
+- added new CGI fields
+- added additional checks to avoid PHP flooding the logs
+- marked fields that are deprecated in Nagios 4
+- reenabled "restart nagios" function on export, added notice how to implement
+- better error handling on database errors
+- many bug fixes, see git log
 
 lilac-reloaded 2.0.6:
 - added support for custom object variables for hosts, services and contacts (and templates)
