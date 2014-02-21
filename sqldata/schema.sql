@@ -172,6 +172,7 @@ CREATE TABLE `nagios_cgi_configuration`
 	`color_transparency_index_g` INTEGER,
 	`color_transparency_index_b` INTEGER,
 	`result_limit` INTEGER,
+	`nagios_check_command` VARCHAR(255),
 	PRIMARY KEY (`id`)
 ) ENGINE=MyISAM COMMENT='CGI Configuration';
 

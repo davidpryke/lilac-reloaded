@@ -99,12 +99,12 @@ if(isset($_POST['request'])) {
          $cgiConfig->setSplunkUrl($_POST['cgi_config']['splunk_url']);
         if(isset($_POST['cgi_config']['result_limit']))
          $cgiConfig->setResultLimit($_POST['cgi_config']['result_limit']);
+        if(isset($_POST['cgi_config']['nagios_check_command']))
+            $cgiConfig->setNagiosCheckCommand($_POST['cgi_config']['nagios_check_command']);
         $cgiConfig->save();
         $success = "Updated CGI Configuration.";
     }
 }
-
-
 
 
 // Let's make the status map layout select list
@@ -241,6 +241,10 @@ print_header("CGI Configuration File Editor");
             <input type="text" name="cgi_config[color_transparency_index_g]" VALUE="<?php echo $cgiConfig->getColorTransparencyIndexG();?>" size="4" maxlength="3">
             <input type="text" name="cgi_config[color_transparency_index_b]" VALUE="<?php echo $cgiConfig->getColorTransparencyIndexB();?>" size="4" maxlength="3"><br />
         <?php echo $lilac->element_desc("color_transparency_index", "nagios_cgi_desc"); ?><br />
+        </div>
+        <div class="formbox">
+            <b>Nagios Process Check Command:</b> <input type="text" size="80" name="cgi_config[nagios_check_command]" VALUE="<?php echo $cgiConfig->getNagiosCheckCommand();?>"><br />
+            <?php echo $lilac->element_desc("nagios_check_command", "nagios_cgi_desc"); ?><br />
         </div>
 		<div class="formbox">
 		<input type="submit" value="Update Status Configuration" />

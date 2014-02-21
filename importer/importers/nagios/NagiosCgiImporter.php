@@ -30,7 +30,8 @@ class NagiosCgiImporter extends NagiosImporter {
                                 'color_transparency_index_r' => '',
                                 'color_transparency_index_g' => '',
                                 'color_transparency_index_b' => '',
-                                'result_limit' => '');
+                                'result_limit' => '',
+                                'nagios_check_command' => '');
 	
 	private $fieldMethods = array('physical_html_path' => 'setPhysicalHtmlPath',
 								'url_html_path' => 'setUrlHtmlPath',
@@ -59,7 +60,8 @@ class NagiosCgiImporter extends NagiosImporter {
                                 'color_transparency_index_r' => 'setColorTransparencyIndexR',
                                 'color_transparency_index_g' => 'setColorTransparencyIndexG',
                                 'color_transparency_index_b' => 'setColorTransparencyIndexB',
-                                'result_limit' => 'setResultLimit');
+                                'result_limit' => 'setResultLimit',
+                                'nagios_check_command' => 'setNagiosCheckCommand');
 								
 	// We should gather all the cfg_file and cfg_dir directives and add them to our NagiosImportEngine's object files
 	public function init() {

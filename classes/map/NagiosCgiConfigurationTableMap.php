@@ -72,6 +72,7 @@ class NagiosCgiConfigurationTableMap extends TableMap
 		$this->addColumn('COLOR_TRANSPARENCY_INDEX_G', 'ColorTransparencyIndexG', 'INTEGER', false, null, null);
 		$this->addColumn('COLOR_TRANSPARENCY_INDEX_B', 'ColorTransparencyIndexB', 'INTEGER', false, null, null);
 		$this->addColumn('RESULT_LIMIT', 'ResultLimit', 'INTEGER', false, null, null);
+		$this->addColumn('NAGIOS_CHECK_COMMAND', 'NagiosCheckCommand', 'VARCHAR', false, 255, null);
 		// validators
 	} // initialize()
 

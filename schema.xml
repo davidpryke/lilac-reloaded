@@ -104,6 +104,7 @@
         <column name="color_transparency_index_g" type="integer" required="false" />
         <column name="color_transparency_index_b" type="integer" required="false" />
         <column name="result_limit" type="integer" required="false" />
+        <column name="nagios_check_command" type="varchar" size="255" required="false" />
 	</table>
 
 	<table name="nagios_command" description="Nagios Command">

@@ -40,6 +40,7 @@
  * @method     NagiosCgiConfigurationQuery orderByColorTransparencyIndexG($order = Criteria::ASC) Order by the color_transparency_index_g column
  * @method     NagiosCgiConfigurationQuery orderByColorTransparencyIndexB($order = Criteria::ASC) Order by the color_transparency_index_b column
  * @method     NagiosCgiConfigurationQuery orderByResultLimit($order = Criteria::ASC) Order by the result_limit column
+ * @method     NagiosCgiConfigurationQuery orderByNagiosCheckCommand($order = Criteria::ASC) Order by the nagios_check_command column
  *
  * @method     NagiosCgiConfigurationQuery groupById() Group by the id column
  * @method     NagiosCgiConfigurationQuery groupByPhysicalHtmlPath() Group by the physical_html_path column
@@ -75,6 +76,7 @@
  * @method     NagiosCgiConfigurationQuery groupByColorTransparencyIndexG() Group by the color_transparency_index_g column
  * @method     NagiosCgiConfigurationQuery groupByColorTransparencyIndexB() Group by the color_transparency_index_b column
  * @method     NagiosCgiConfigurationQuery groupByResultLimit() Group by the result_limit column
+ * @method     NagiosCgiConfigurationQuery groupByNagiosCheckCommand() Group by the nagios_check_command column
  *
  * @method     NagiosCgiConfigurationQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     NagiosCgiConfigurationQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
@@ -117,6 +119,7 @@
  * @method     NagiosCgiConfiguration findOneByColorTransparencyIndexG(int $color_transparency_index_g) Return the first NagiosCgiConfiguration filtered by the color_transparency_index_g column
  * @method     NagiosCgiConfiguration findOneByColorTransparencyIndexB(int $color_transparency_index_b) Return the first NagiosCgiConfiguration filtered by the color_transparency_index_b column
  * @method     NagiosCgiConfiguration findOneByResultLimit(int $result_limit) Return the first NagiosCgiConfiguration filtered by the result_limit column
+ * @method     NagiosCgiConfiguration findOneByNagiosCheckCommand(string $nagios_check_command) Return the first NagiosCgiConfiguration filtered by the nagios_check_command column
  *
  * @method     array findById(int $id) Return NagiosCgiConfiguration objects filtered by the id column
  * @method     array findByPhysicalHtmlPath(string $physical_html_path) Return NagiosCgiConfiguration objects filtered by the physical_html_path column
@@ -152,6 +155,7 @@
  * @method     array findByColorTransparencyIndexG(int $color_transparency_index_g) Return NagiosCgiConfiguration objects filtered by the color_transparency_index_g column
  * @method     array findByColorTransparencyIndexB(int $color_transparency_index_b) Return NagiosCgiConfiguration objects filtered by the color_transparency_index_b column
  * @method     array findByResultLimit(int $result_limit) Return NagiosCgiConfiguration objects filtered by the result_limit column
+ * @method     array findByNagiosCheckCommand(string $nagios_check_command) Return NagiosCgiConfiguration objects filtered by the nagios_check_command column
  *
  * @package    propel.generator..om
  */
@@ -1285,6 +1289,34 @@ abstract class BaseNagiosCgiConfigurationQuery extends ModelCriteria
 			}
 		}
 		return $this->addUsingAlias(NagiosCgiConfigurationPeer::RESULT_LIMIT, $resultLimit, $comparison);
+	}
+
+	/**
+	 * Filter the query on the nagios_check_command column
+	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByNagiosCheckCommand('fooValue');   // WHERE nagios_check_command = 'fooValue'
+	 * $query->filterByNagiosCheckCommand('%fooValue%'); // WHERE nagios_check_command LIKE '%fooValue%'
+	 * </code>
+	 *
+	 * @param     string $nagiosCheckCommand The value to use as filter.
+	 *              Accepts wildcards (* and % trigger a LIKE)
+	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 *
+	 * @return    NagiosCgiConfigurationQuery The current query, for fluid interface
+	 */
+	public function filterByNagiosCheckCommand($nagiosCheckCommand = null, $comparison = null)
+	{
+		if (null === $comparison) {
+			if (is_array($nagiosCheckCommand)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $nagiosCheckCommand)) {
+				$nagiosCheckCommand = str_replace('*', '%', $nagiosCheckCommand);
+				$comparison = Criteria::LIKE;
+			}
+		}
+		return $this->addUsingAlias(NagiosCgiConfigurationPeer::NAGIOS_CHECK_COMMAND, $nagiosCheckCommand, $comparison);
 	}
 
 	/**

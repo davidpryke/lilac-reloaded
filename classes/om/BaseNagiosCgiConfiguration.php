@@ -229,6 +229,12 @@ abstract class BaseNagiosCgiConfiguration extends BaseObject  implements Persist
 	protected $result_limit;
 
 	/**
+	 * The value for the nagios_check_command field.
+	 * @var        string
+	 */
+	protected $nagios_check_command;
+
+	/**
 	 * Flag to prevent endless save loop, if this object is referenced
 	 * by another object which falls in this transaction.
 	 * @var        boolean
@@ -580,6 +586,16 @@ abstract class BaseNagiosCgiConfiguration extends BaseObject  implements Persist
 	public function getResultLimit()
 	{
 		return $this->result_limit;
+	}
+
+	/**
+	 * Get the [nagios_check_command] column value.
+	 * 
+	 * @return     string
+	 */
+	public function getNagiosCheckCommand()
+	{
+		return $this->nagios_check_command;
 	}
 
 	/**
@@ -1295,6 +1311,26 @@ abstract class BaseNagiosCgiConfiguration extends BaseObject  implements Persist
 	} // setResultLimit()
 
 	/**
+	 * Set the value of [nagios_check_command] column.
+	 * 
+	 * @param      string $v new value
+	 * @return     NagiosCgiConfiguration The current object (for fluent API support)
+	 */
+	public function setNagiosCheckCommand($v)
+	{
+		if ($v !== null) {
+			$v = (string) $v;
+		}
+
+		if ($this->nagios_check_command !== $v) {
+			$this->nagios_check_command = $v;
+			$this->modifiedColumns[] = NagiosCgiConfigurationPeer::NAGIOS_CHECK_COMMAND;
+		}
+
+		return $this;
+	} // setNagiosCheckCommand()
+
+	/**
 	 * Indicates whether the columns in this object are only set to default values.
 	 *
 	 * This method can be used in conjunction with isModified() to indicate whether an object is both
@@ -1360,6 +1396,7 @@ abstract class BaseNagiosCgiConfiguration extends BaseObject  implements Persist
 			$this->color_transparency_index_g = ($row[$startcol + 31] !== null) ? (int) $row[$startcol + 31] : null;
 			$this->color_transparency_index_b = ($row[$startcol + 32] !== null) ? (int) $row[$startcol + 32] : null;
 			$this->result_limit = ($row[$startcol + 33] !== null) ? (int) $row[$startcol + 33] : null;
+			$this->nagios_check_command = ($row[$startcol + 34] !== null) ? (string) $row[$startcol + 34] : null;
 			$this->resetModified();
 
 			$this->setNew(false);
@@ -1368,7 +1405,7 @@ abstract class BaseNagiosCgiConfiguration extends BaseObject  implements Persist
 				$this->ensureConsistency();
 			}
 
-			return $startcol + 34; // 34 = NagiosCgiConfigurationPeer::NUM_HYDRATE_COLUMNS.
+			return $startcol + 35; // 35 = NagiosCgiConfigurationPeer::NUM_HYDRATE_COLUMNS.
 
 		} catch (Exception $e) {
 			throw new PropelException("Error populating NagiosCgiConfiguration object", $e);
@@ -1769,6 +1806,9 @@ abstract class BaseNagiosCgiConfiguration extends BaseObject  implements Persist
 			case 33:
 				return $this->getResultLimit();
 				break;
+			case 34:
+				return $this->getNagiosCheckCommand();
+				break;
 			default:
 				return null;
 				break;
@@ -1831,6 +1871,7 @@ abstract class BaseNagiosCgiConfiguration extends BaseObject  implements Persist
 			$keys[31] => $this->getColorTransparencyIndexG(),
 			$keys[32] => $this->getColorTransparencyIndexB(),
 			$keys[33] => $this->getResultLimit(),
+			$keys[34] => $this->getNagiosCheckCommand(),
 		);
 		return $result;
 	}
@@ -1964,6 +2005,9 @@ abstract class BaseNagiosCgiConfiguration extends BaseObject  implements Persist
 			case 33:
 				$this->setResultLimit($value);
 				break;
+			case 34:
+				$this->setNagiosCheckCommand($value);
+				break;
 		} // switch()
 	}
 
@@ -2022,6 +2066,7 @@ abstract class BaseNagiosCgiConfiguration extends BaseObject  implements Persist
 		if (array_key_exists($keys[31], $arr)) $this->setColorTransparencyIndexG($arr[$keys[31]]);
 		if (array_key_exists($keys[32], $arr)) $this->setColorTransparencyIndexB($arr[$keys[32]]);
 		if (array_key_exists($keys[33], $arr)) $this->setResultLimit($arr[$keys[33]]);
+		if (array_key_exists($keys[34], $arr)) $this->setNagiosCheckCommand($arr[$keys[34]]);
 	}
 
 	/**
@@ -2067,6 +2112,7 @@ abstract class BaseNagiosCgiConfiguration extends BaseObject  implements Persist
 		if ($this->isColumnModified(NagiosCgiConfigurationPeer::COLOR_TRANSPARENCY_INDEX_G)) $criteria->add(NagiosCgiConfigurationPeer::COLOR_TRANSPARENCY_INDEX_G, $this->color_transparency_index_g);
 		if ($this->isColumnModified(NagiosCgiConfigurationPeer::COLOR_TRANSPARENCY_INDEX_B)) $criteria->add(NagiosCgiConfigurationPeer::COLOR_TRANSPARENCY_INDEX_B, $this->color_transparency_index_b);
 		if ($this->isColumnModified(NagiosCgiConfigurationPeer::RESULT_LIMIT)) $criteria->add(NagiosCgiConfigurationPeer::RESULT_LIMIT, $this->result_limit);
+		if ($this->isColumnModified(NagiosCgiConfigurationPeer::NAGIOS_CHECK_COMMAND)) $criteria->add(NagiosCgiConfigurationPeer::NAGIOS_CHECK_COMMAND, $this->nagios_check_command);
 
 		return $criteria;
 	}
@@ -2162,6 +2208,7 @@ abstract class BaseNagiosCgiConfiguration extends BaseObject  implements Persist
 		$copyObj->setColorTransparencyIndexG($this->getColorTransparencyIndexG());
 		$copyObj->setColorTransparencyIndexB($this->getColorTransparencyIndexB());
 		$copyObj->setResultLimit($this->getResultLimit());
+		$copyObj->setNagiosCheckCommand($this->getNagiosCheckCommand());
 		if ($makeNew) {
 			$copyObj->setNew(true);
 			$copyObj->setId(NULL); // this is a auto-increment column, so set to default value
@@ -2245,6 +2292,7 @@ abstract class BaseNagiosCgiConfiguration extends BaseObject  implements Persist
 		$this->color_transparency_index_g = null;
 		$this->color_transparency_index_b = null;
 		$this->result_limit = null;
+		$this->nagios_check_command = null;
 		$this->alreadyInSave = false;
 		$this->alreadyInValidation = false;
 		$this->clearAllReferences();
