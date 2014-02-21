@@ -1,6 +1,12 @@
 Version history:
 ------------------------------------
 
+lilac-reloaded 2.0.8:
+- on installation timezone selection for australia and africa is enabled
+- added new cgi-field nagios_check_command
+- cannot delete escalation in hostgroups -> fixed
+- exporter fails with no error when job name is blank -> fixed
+
 lilac-reloaded 2.0.7:
 - added support for new Nagios 4 fields, marked deprecated options
 - added new CGI fields
