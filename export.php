@@ -139,7 +139,7 @@ if(isset($_GET['request']) && $_GET['request'] == 'fetch') {
 
 if(isset($_POST['request'])) {
 	if(!strlen(trim($_POST['job_name']))) {
-		$status_msg = "Job name must be provided.";
+		$error = "Job name must be provided.";
 	}
 	else {
 		// Instantiate an engine
