@@ -54,7 +54,7 @@ if(isset($_GET['request'])) {
 			}
 		}
 		else if($_GET['request'] == "delete" && $_GET['section'] == 'escalations') {
-			$escalation = NagiosEscalationPeer::retrieveByPK($_GET['escalation']);
+			$escalation = NagiosEscalationPeer::retrieveByPK($_GET['escalation_id']);
 			if($escalation) {
 				$escalation->delete();
 				$success = "Escalation Deleted";
