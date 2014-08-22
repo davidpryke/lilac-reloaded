@@ -110,12 +110,12 @@ class NagiosImportEngine extends ImportEngine {
 	<p>
 		<input type="checkbox" id="overwrite_main" name="overwrite_main"
 			checked="checked" /> <label for="overwrite_main">Overwrite Main
-			Configuration</label>
+			Configuration (nagios.cfg)</label>
 	</p>
 	<p>
 		<input type="checkbox" id="overwrite_cgi" name="overwrite_cgi"
 			checked="checked" /> <label for="overwrite_cgi">Overwrite CGI
-			Configuration</label>
+			Configuration (cgi.cfg)</label>
 	</p>
 	<p>
 		<input type="checkbox" id="overwrite_resources"
@@ -124,15 +124,17 @@ class NagiosImportEngine extends ImportEngine {
 	</p>
 	<p>
 		<input type="checkbox" id="delete_existing" name="delete_existing"
-			checked="checked" /> <label for="delete_existing">Delete Current
-			Objects</label>
+			checked="checked" /> <label for="delete_existing">Delete Existing
+			Objects (Untick if you want to overwrite/merge existing objects)</label>
 	</p>
+    <!--
 	<p>
 		<input type="checkbox" name="overwrite_existing"
 			id="overwrite_existing" checked="checked" /> <label
 			for="overwrite_existing">Overwrite Existing Objects (Ignored if
 			Deleting Existing Objects)</label>
 	</p>
+	-->
 	<p>
 		<input type="checkbox" name="skip_missing_template_values"
 			id="skip_missing_template_values" checked="checked" /> <label
@@ -226,7 +228,7 @@ class NagiosImportEngine extends ImportEngine {
 		$config->setVar("overwrite_resources", (isset($_POST['overwrite_resources']) ? true : false));
 		$config->setVar("continue_error", (isset($_POST['continue_error']) ? true : false));
 		$config->setVar("delete_existing", (isset($_POST['delete_existing']) ? true : false));
-		$config->setVar("overwrite_existing", (isset($_POST['overwrite_existing']) ? true : false));
+		//$config->setVar("overwrite_existing", (isset($_POST['overwrite_existing']) ? true : false));
 		$config->setVar("skip_missing_template_values", (isset($_POST['skip_missing_template_values']) ? true : false));
 		$config->setVar("config_file", $_POST['config_file']);
 		$config->setVar("cgi_file", $_POST['cgi_file']);
@@ -256,12 +258,16 @@ class NagiosImportEngine extends ImportEngine {
 	</li>
 	<?php
 	}
+
+    /*
 	if($config->getVar("overwrite_existing")) {
-		?>
+    ?>
 	<li><strong>Overwriting Existing Objects</strong>
 	</li>
 	<?php
 	}
+    */
+
 	if($config->getVar("continue_error")) {
 		?>
 	<li><strong>Attempting to Continue on Errors</strong>

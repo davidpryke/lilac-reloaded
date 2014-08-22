@@ -128,7 +128,7 @@ class FruityImportEngine extends ImportEngine {
 	}
 
 	public function getDescription() {
-		return "Imports existing configurations from Fruity 1.0a1";
+		return "Imports existing configurations from Fruity 1.0a1 (Not supported anymore)";
 	}
 
 	public function renderConfig() {
