@@ -1,6 +1,12 @@
 Version history:
 ------------------------------------
 
+lilac-reloaded 2.0.9:
+- better descriptions and labels
+- added field when updating from lilac 1.x
+- added default values for transparency settings
+- variable check_for_updates is now imported correctly
+
 lilac-reloaded 2.0.8:
 - on installation timezone selection for australia and africa is enabled
 - added new cgi-field nagios_check_command

@@ -132,7 +132,8 @@ class NagiosMainImporter extends NagiosImporter {
 								'daemon_dumps_core' => '',
                                 'log_current_states' => '',
                                 'check_workers' => '',
-                                'query_socket' => '');
+                                'query_socket' => '',
+								'check_for_updates' => '');
 	
 	private $fieldMethods = array('log_file' => 'setLogFile',
 								'daemon_dumps_core' => 'setDaemonDumpsCore',
@@ -260,7 +261,8 @@ class NagiosMainImporter extends NagiosImporter {
 								'admin_pager' => 'setAdminPager',
                                 'log_current_states' => 'setLogCurrentStates',
                                 'check_workers' => 'setCheckWorkers',
-                                'query_socket' => 'setQuerySocket');
+                                'query_socket' => 'setQuerySocket',
+								'check_for_updates' => 'setCheckForUpdates');
 	
 	// We should gather all the cfg_file and cfg_dir directives and add them to our NagiosImportEngine's object files
 	public function init() {
