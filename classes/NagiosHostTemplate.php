@@ -591,11 +591,15 @@ class NagiosHostTemplate extends BaseNagiosHostTemplate {
 				$parameterList = array_merge($parameterList, $parameters);
 			}
 		}
-		if(!$self) {
-			$parameters = $this->getNagiosHostTemplateCustomObjectVariables();
-	
-			foreach($parameters as $parameter) {
-				$parameterList[] = $parameter;
+		$parameters = $this->getNagiosHostTemplateCustomObjectVariables();
+
+		foreach($parameters as $parameter) {
+			if(!$self) {
+				# Set (or overwrite) the paramter if we are returning our objects
+				$parameterList[$parameter->getVarName()] = $parameter;
+			} else {
+				# Remove the inherited parameter if we are not returning our objects, but have defined one directly
+				unset($parameterList[$parameter->getVarName()]);
 			}
 		}
 		return $parameterList;
@@ -607,5 +611,36 @@ class NagiosHostTemplate extends BaseNagiosHostTemplate {
 		$criteria->addAscendingOrderByColumn(NagiosHostCustomObjectVarPeer::VAR_NAME);
 		return parent::getNagiosHostCustomObjectVars($criteria);
 	}
+
+        function getDependentHosts() {
+                $hosts = array();
+                $criteria = new Criteria();
+                $criteria->add(NagiosHostTemplateInheritancePeer::SOURCE_HOST, NULL, Criteria::ISNOTNULL);
+                $criteria->add(NagiosHostTemplateInheritancePeer::TARGET_TEMPLATE, $this->getId());
+                $links = NagiosHostTemplateInheritancePeer::doSelect($criteria);
+                foreach($links as $link) {
+                        $host = $link->getNagiosHost();
+                        $hosts[] = $host;
+                }
+                return $hosts;
+        }
+
+        function getDependentHostTemplates() {
+                $hosttemplates = array();
+                $criteria = new Criteria();
+                $criteria->add(NagiosHostTemplateInheritancePeer::SOURCE_TEMPLATE, NULL, Criteria::ISNOTNULL);
+                $criteria->add(NagiosHostTemplateInheritancePeer::TARGET_TEMPLATE, $this->getId());
+                $links = NagiosHostTemplateInheritancePeer::doSelect($criteria);
+                foreach($links as $link) {
+                        $hosttemplate = $link->getNagiosHostTemplateRelatedBySourceTemplate();
+                        $hosttemplates[] = $hosttemplate;
+                }
+                return $hosttemplates;
+        }
+
+        function getDependentCount() {
+                return count($this->getDependentHosts()) + count($this->getDependentHostTemplates());
+        }
+
 
 } // NagiosHostTemplate

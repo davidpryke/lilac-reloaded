@@ -475,11 +475,14 @@ class NagiosService extends BaseNagiosService {
 				}
 			}
 		}
-		if(!$self) {
-			$parameters = $this->getNagiosServiceCustomObjectVariables();
-	
-			foreach($parameters as $parameter) {
-				$parameterList[] = $parameter;
+		$parameters = $this->getNagiosServiceCustomObjectVariables();
+		foreach($parameters as $parameter) {
+			if(!$self) {
+				# Set (or overwrite) the parameter if we want to include our parameters
+				$parameterList[$parameter->getVarName()] = $parameter;
+			} else {
+				# Make sure the inherited parameter is not used
+				unset($parameterList[$parameter->getVarName()]);
 			}
 		}
 		return $parameterList;

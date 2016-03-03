@@ -192,6 +192,20 @@ class NagiosHost extends BaseNagiosHost {
 				$servicesList[] = $service;
 			}
 		}
+		# Filter services to unique list
+		$services = $this->getNagiosServices();
+		$servicenames = [];
+		foreach($services as $service) {
+			$servicenames[$service->getDescription()]=1;
+		}
+		foreach(array_keys(array_reverse($servicesList, true)) as $key) {
+			$description=$servicesList[$key]->getDescription();
+			if(array_key_exists($description, $servicenames)) {
+				unset($servicesList[$key]);
+			} else {
+				$servicenames[$description]=1;
+			}
+		}
 		
 		return array_unique($servicesList);
 	}
@@ -537,11 +551,15 @@ class NagiosHost extends BaseNagiosHost {
 				$parameterList = array_merge($parameterList, $parameters);
 			}
 		}
-		if(!$self) {
-			$parameters = $this->getNagiosHostCustomObjectVariables();
-	
-			foreach($parameters as $parameter) {
-				$parameterList[] = $parameter;
+
+		$parameters = $this->getNagiosHostCustomObjectVariables();
+		foreach($parameters as $parameter) {
+			if(!$self) {
+				# Set (or overwrite) the parameter if we want to include our parameters
+				$parameterList[$parameter->getVarName()] = $parameter;
+			} else {
+				# Make sure the inherited parameter is not used
+				unset($parameterList[$parameter->getVarName()]);
 			}
 		}
 		return $parameterList;

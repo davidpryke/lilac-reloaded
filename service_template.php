@@ -815,10 +815,13 @@ $subnav = array(
 	'extended' => 'Extended Information',
 	'dependencies' => 'Dependencies',
 	'escalations' => 'Escalations',
-	'customobjectvars' => 'Custom Object Variables'
+	'customobjectvars' => 'Custom Object Variables',
 	);
 if(isset($tempServiceTemplateInfo['check_command']) || isset($templateValues['check_command'])) {
 	$subnav['checkcommand'] = "Check Command Parameters";
+}
+if($serviceTemplate->getDependentCount()) {
+	$subnav['dependent'] = 'Show Dependent Services and Templates';
 }
 
 print_header("Service Template Editor");
@@ -1940,6 +1943,46 @@ print_header("Service Template Editor");
 			</tr>
 			</table>
 			<?php
+		}
+		else if($_GET['section'] == 'dependent') {		
+			$dependentservices = $serviceTemplate->getDependentServices();
+			$counter = 0;
+			if(count($dependentservices)) {
+				?>
+					<table width="100%" align="center" cellspacing="0" cellpadding="2" border="0">
+					<tr class="altTop">
+					<td colspan="2">Services directly dependent on this Service Template:</td>
+					</tr>
+				<?php
+				foreach($dependentservices as $dependent) {
+					if($counter++ % 2) {
+						?> <tr class="altRow1"> <?php
+					} else {
+						?> <tr class="altRow2"> <?php
+					}
+					?> <td height="20" class="altRight"><b><a href="service.php?id=<?php echo $dependent->getId();?>"><?php echo $dependent->getDisplayName();?></a></b></td> <?php
+				}
+				?> </table> <?php
+			}
+
+			$dependentservicetemplates = $serviceTemplate->getDependentServiceTemplates();
+			if(count($dependentservicetemplates)) {
+				?>
+					<table width="100%" align="center" cellspacing="0" cellpadding="2" border="0">
+					<tr class="altTop">
+					<td colspan="2">Service templates directly dependent on this Service Template:</td>
+					</tr>
+				<?php
+				foreach($dependentservicetemplates as $dependent) {
+					if($counter++ % 2) {
+						?> <tr class="altRow1"> <?php
+					} else {
+						?> <tr class="altRow2"> <?php
+					}
+					?> <td height="20" class="altRight"><b><a href="service_template.php?id=<?php echo $dependent->getId();?>"><?php echo $dependent->getName();?></a></b></td> <?php
+				}
+				?> </table> <?php
+			}
 		}
 		print_window_footer();
 		?>

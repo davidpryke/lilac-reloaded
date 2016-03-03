@@ -49,6 +49,23 @@ class NagiosServiceExporter extends NagiosExporter {
 			
 			case 'hostgroup':
 				fputs($fp, "\thostgroup_name\t" . $targetObj->getName() . "\n");
+
+				$ignoreHosts = array();
+				//error_log("Children for ". $targetObj->getName());
+				foreach($targetObj->getMembers() as $childHost) {
+					//error_log($childHost->getName());
+					foreach($childHost->getNagiosServices() as $childService) {
+						//error_log($childService->getDescription() ." compare to ". $service->getDescription());
+						if($childService->getDescription() == $service->getDescription()) {
+							//error_log("Overriding service ". $service->getDescription() ." in template ". $targetObj->getName() ." for host ". $childHost->getName());
+							array_push($ignoreHosts, "!". $childHost->getName());
+						}
+					}
+				}
+				if(count($ignoreHosts) > 0) {
+					fputs($fp, "\thost_name\t" . implode(",",$ignoreHosts) . "\n");
+				}
+
 				break;
 		}
 		
@@ -124,7 +141,7 @@ class NagiosServiceExporter extends NagiosExporter {
 		}
 		
 		// Notifications
-		if(isset($values['notification_on_warning']['value'])) {
+		//if(isset($values['notification_on_warning']['value'])) {
 			if(!$values['notification_on_warning']['value'] && !$values['notification_on_unknown']['value'] && !$values['notification_on_critical']['value'] && !$values['notification_on_recovery']['value'] && !$values['notification_on_flapping']['value']) {
 				fputs($fp, "\tnotification_options\tn\n");
 			}
@@ -140,7 +157,7 @@ class NagiosServiceExporter extends NagiosExporter {
 				fputs($fp, implode(",", $tempValues));
 				fputs($fp, "\n");
 			}
-		}
+		//}
 
 		// Stalking
 		if(isset($values['flap_detection_on_ok']['value']) || isset($values['flap_detection_on_warning']['value']) || isset($values['flap_detection_on_unknown']['value']) || isset($values['flap_detection_on_critical']['value'])) {
@@ -214,8 +231,8 @@ class NagiosServiceExporter extends NagiosExporter {
 				$contactList[$contact->getName()] = $contact;
 			}
 		}
+		fputs($fp, "\tcontacts\t");
 		if(count($contactList)) {
-			fputs($fp, "\tcontacts\t");
 			$first = true;
 			foreach($contactList as $contact) {
 				if(!$first) {
@@ -226,8 +243,8 @@ class NagiosServiceExporter extends NagiosExporter {
 				}
 				fputs($fp, $contact->getName());
 			}
-			fputs($fp, "\n");
 		}
+		fputs($fp, "\n");
 
 	
 
@@ -248,7 +265,7 @@ class NagiosServiceExporter extends NagiosExporter {
 				$groupList[$group->getName()] = $group;
 			}
 		}
-		if(count($groupList)) {
+		if(count($groupList) || count($contactList)) {
 			fputs($fp, "\tcontact_groups\t");
 			$first = true;
 			foreach($groupList as $group) {

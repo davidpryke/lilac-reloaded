@@ -411,11 +411,14 @@ class NagiosServiceTemplate extends BaseNagiosServiceTemplate {
 				$parameterList = array_merge($parameterList, $parameters);
 			}
 		}
-		if(!$self) {
-			$parameters = $this->getNagiosServiceTemplateCustomObjectVariables();
-	
-			foreach($parameters as $parameter) {
-				$parameterList[] = $parameter;
+		$parameters = $this->getNagiosServiceTemplateCustomObjectVariables();
+		foreach($parameters as $parameter) {
+			if(!$self) {
+				# Set (or overwrite) the parameter if we want to include our parameters
+				$parameterList[$parameter->getVarName()] = $parameter;
+			} else {
+				# Make sure the inherited parameter is not used
+				unset($parameterList[$parameter->getVarName()]);
 			}
 		}
 		return $parameterList;
@@ -426,6 +429,36 @@ class NagiosServiceTemplate extends BaseNagiosServiceTemplate {
 			$criteria = new Criteria();
 		$criteria->addAscendingOrderByColumn(NagiosServiceCustomObjectVarPeer::VAR_NAME);
 		return parent::getNagiosServiceCustomObjectVars($criteria);
+	}
+
+	function getDependentServices() {
+		$services = array();
+		$criteria = new Criteria();
+		$criteria->add(NagiosServiceTemplateInheritancePeer::SOURCE_SERVICE, NULL, Criteria::ISNOTNULL);
+		$criteria->add(NagiosServiceTemplateInheritancePeer::TARGET_TEMPLATE, $this->getId());
+		$links = NagiosServiceTemplateInheritancePeer::doSelect($criteria);
+		foreach($links as $link) {
+			$service = $link->getNagiosService();
+			$services[] = $service;
+		}
+		return $services;
+	}
+
+	function getDependentServiceTemplates() {
+		$servicetemplates = array();
+		$criteria = new Criteria();
+		$criteria->add(NagiosServiceTemplateInheritancePeer::SOURCE_TEMPLATE, NULL, Criteria::ISNOTNULL);
+		$criteria->add(NagiosServiceTemplateInheritancePeer::TARGET_TEMPLATE, $this->getId());
+		$links = NagiosServiceTemplateInheritancePeer::doSelect($criteria);
+		foreach($links as $link) {
+			$servicetemplate = $link->getNagiosServiceTemplateRelatedBySourceTemplate();
+			$servicetemplates[] = $servicetemplate;
+		}
+		return $servicetemplates;
+	}
+
+	function getDependentCount() {
+		return count($this->getDependentServices()) + count($this->getDependentServiceTemplates());
 	}
 
 } // NagiosServiceTemplate

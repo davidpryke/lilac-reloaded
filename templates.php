@@ -59,7 +59,7 @@ print_header("Template Listings");
 					<?php
 			}
 			?>
-				<td height="20" class="altLeft">&nbsp;<a href="host_template.php?id=<?php echo $hostTemplateList[$counter]->getId();?>"><?php echo $hostTemplateList[$counter]->getName();?></a></td>
+				<td height="20" class="altLeft">&nbsp;<a href="host_template.php?id=<?php echo $hostTemplateList[$counter]->getId();?>"><?php echo $hostTemplateList[$counter]->getName();?> (<?php echo $hostTemplateList[$counter]->getDependentCount();?>)</a></td>
 				<td height="20" class="altRight">&nbsp;<?php echo $hostTemplateList[$counter]->getDescription();?></td>
 				</tr>
 				<?php
@@ -99,7 +99,7 @@ print_header("Template Listings");
 					<?php
 			}
 			?>
-				<td height="20" class="altLeft">&nbsp;<a href="service_template.php?id=<?php echo $serviceTemplateList[$counter]->getId();?>"><?php echo $serviceTemplateList[$counter]->getName();?></a></td>
+				<td height="20" class="altLeft">&nbsp;<a href="service_template.php?id=<?php echo $serviceTemplateList[$counter]->getId();?>"><?php echo $serviceTemplateList[$counter]->getName();?> (<?php echo $serviceTemplateList[$counter]->getDependentCount();?>)</a></td>
 				<td height="20" class="altRight">&nbsp;<?php echo $serviceTemplateList[$counter]->getDescription();?></td>
 				</tr>
 				<?php
