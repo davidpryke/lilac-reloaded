@@ -36,4 +36,14 @@ class NagiosHostPeer extends BaseNagiosHostPeer {
 		return $hosts;
 	}
 
+	static public function getAllHosts() {
+		$con = Propel::getConnection(BaseNagiosHostPeer::DATABASE_NAME);
+		$sql = "SELECT * from nagios_host ORDER BY nagios_host.name";
+		$stmt = $con->prepare($sql);
+		$stmt->execute();
+		$hosts = NagiosHostPeer::populateObjects($stmt);
+		
+		return $hosts;
+	}
+
 } // NagiosHostPeer
