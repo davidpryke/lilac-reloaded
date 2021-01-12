@@ -114,6 +114,9 @@ if(isset($_GET['id'])) {
 	}
 }
 
+if(isset($_GET['showall'])) {
+	$showall = $_GET['showall'];
+}
 
 // Action Handlers
 if(isset($_GET['request'])) {
@@ -2260,22 +2263,30 @@ if(isset($host)) {
 
 // Get list of children hosts
 if(!isset($host)) {
-	$children_list = NagiosHostPeer::getTopLevelHosts();
+	if(isset($showall)) {
+		$children_list = NagiosHostPeer::getAllHosts();
+		$title = "All Hosts";
+	}
+	else {
+		$children_list = NagiosHostPeer::getTopLevelHosts();
+		$title = "Top Level Network Hosts";
+	}
 }
 else {
 	$children_list = $host->getChildrenHosts();
-}
-$numOfChildren = count($children_list);
-	
-if(isset($host)) {
 	$title = "Children Hosts for " . $host->getName();
 }
-else {
-	$title = "Top Level Network Hosts";
-}
+
+$numOfChildren = count($children_list);
 print_window_header($title, "100%");
 ?>
+<a class="networkadd sublink" href="hosts.php?showall=true">View All Hosts</a><br /><?php
+if(!isset($host)) {?>
+<a class="networkadd sublink" href="add_host.php">Add A New Top-Level Host</a><?php
+}
+else {?>
 <a class="networkadd sublink" href="add_host.php<?php if(isset($host)) print("?parent_id=" . $host->getId());?>">Add A New Child Host</a><?php
+}
 print($navbar);
 ?><br />
 <?php
