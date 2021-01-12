@@ -150,7 +150,7 @@ if($stage == 2) {
 					}
 					else {
 						// Create database
-						if(!mysql_query("create database " . $mysqlDatabase, $dbConn)) {
+						if(!mysql_query("create database " . $mysqlDatabase . " DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci", $dbConn)) {
 							$error = "Failed to create database.  Error was: <em>" . mysql_error($dbConn) . "</em>";
 						}
 						else {
