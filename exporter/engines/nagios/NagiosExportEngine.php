@@ -175,12 +175,20 @@ class NagiosExportEngine extends ExportEngine {
 			$mainConfiguration = NagiosMainConfigurationPeer::doSelectOne(new Criteria());
 			
 			// Do some more checks
-			if(!is_writable($mainConfiguration->getConfigDir())) {
-				$job->addError("Backup directory at >" . $mainConfiguration->getConfigDir() . "< is not writeable, please check permissions.");
+			// Save backups to a different location:
+			//if(!is_writable($mainConfiguration->getConfigDir())) {
+			//	$job->addError("Backup directory at >" . $mainConfiguration->getConfigDir() . "< is not writeable, please check permissions.");
+			//	return false;
+			//}
+			if(!is_writable($mainConfiguration->getConfigDir() . "/../lilac-etc-backups/")) {
+				$job->addError("Backup directory at >" . $mainConfiguration->getConfigDir() . "/../lilac-etc-backups/< is not writeable, please check permissions.");
 				return false;
 			}
 				
-			$backupDir = $mainConfiguration->getConfigDir() . "/" . "lilac-backup-" . date("m-d-Y-H-i-s");
+			// Save backups to a different location:
+			// $backupDir = $mainConfiguration->getConfigDir() . "/" . "lilac-backup-" . date("m-d-Y-H-i-s");
+			$backupDir = $mainConfiguration->getConfigDir() . "/../lilac-etc-backups/lilac-backup-" . date("m-d-Y-H-i-s");
+
 			$result = @mkdir($backupDir);
 			if(!$result) {
 				$job->addError("Unable to create backup directory at: " . $backupDir);
@@ -492,27 +500,6 @@ class NagiosExportEngine extends ExportEngine {
 		
 		$job->addNotice("Finished exporting objects.");
 
-		// Finished exporting, let's check if we need to do the preflight
-		if($config->getVar("preflight_check")) {
-			exec($this->verifyCmd . " -v " . $this->exportDir . "/nagios.cfg", $output, $retVal);
-			if(($retVal != 0)) {
-				if($retVal == 127) {
-					$job->addError("The command to verify your configuration: " . $this->verifyCmd . " was not found (127).");
-				}
-				else {
-					$job->addError("Nagios Sanity Check Failed.  Did not write configuration files to production.  Output is as follows:");
-					foreach($output as $outputLine) {
-						$job->addError($outputLine);
-					}
-				}
-				$job->addError("Export failed.");
-				return false;
-			}
-			else {
-				$job->addNotice("Nagios Sanity Check Passed.");
-			}
-		}
-
 		// Now need to re-export main configuration file, so config dir's point 
 		// to right location
 		$fp = @fopen($this->exportDir . "/nagios.cfg", "w");
@@ -540,6 +527,28 @@ class NagiosExportEngine extends ExportEngine {
 			$job->addError("Export failed.");
 			return false;
 		}
+
+		// Finished exporting, let's check if we need to do the preflight
+		if($config->getVar("preflight_check")) {
+			exec($this->verifyCmd . " -v " . $this->exportDir . "/nagios.cfg", $output, $retVal);
+			if(($retVal != 0)) {
+				if($retVal == 127) {
+					$job->addError("The command to verify your configuration: " . $this->verifyCmd . " was not found (127).");
+				}
+				else {
+					$job->addError("Nagios Sanity Check Failed.  Did not write configuration files to production.  Output is as follows:");
+					foreach($output as $outputLine) {
+						$job->addError($outputLine);
+					}
+				}
+				$job->addError("Export failed.");
+				return false;
+			}
+			else {
+				$job->addNotice("Nagios Sanity Check Passed.");
+			}
+		}
+
 		// Check if we have to restart
 		if($config->getVar("restart_nagios")) {
 			$output = null;
