@@ -34,6 +34,7 @@ define("LILAC_FS_ROOT", dirname(__FILE__) . "/../");
 set_include_path(dirname(__FILE__) . "/../library/:" . dirname(__FILE__) . "/../classes/:" . get_include_path());
 
 require_once("Log.php");
+require_once("mysql2i.class.php");
 
 function installer_exists() {
 	if(file_exists(dirname(__FILE__) . "/../install.php")) {
