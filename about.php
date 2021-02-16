@@ -29,7 +29,7 @@ print_window_header("About Lilac-Reloaded", "100%");
 <h2>Lilac-Reloaded <?php echo LILAC_VERSION;?></h2>
 <p>
 	Lilac-Reloaded is the successor of the Lilac Nagios Configurator.<br /><br />
-	This particular version is available at <a href="https://github.com/davidpryke/lilac-reloaded">https://github.com/davidpryke/lilac-reloaded</a>.<br /><br />
+	This particular version is available at <a href="https://github.com/davidpryke/lilac-reloaded" target="_blank">https://github.com/davidpryke/lilac-reloaded</a>.<br /><br />
 </p>
 </p>
 <p>
