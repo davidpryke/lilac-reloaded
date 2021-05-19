@@ -231,8 +231,9 @@ class NagiosServiceExporter extends NagiosExporter {
 				$contactList[$contact->getName()] = $contact;
 			}
 		}
-		fputs($fp, "\tcontacts\t");
+		
 		if(count($contactList)) {
+			fputs($fp, "\tcontacts\t");
 			$first = true;
 			foreach($contactList as $contact) {
 				if(!$first) {
@@ -265,7 +266,7 @@ class NagiosServiceExporter extends NagiosExporter {
 				$groupList[$group->getName()] = $group;
 			}
 		}
-		if(count($groupList) || count($contactList)) {
+		if(count($groupList)) {
 			fputs($fp, "\tcontact_groups\t");
 			$first = true;
 			foreach($groupList as $group) {
