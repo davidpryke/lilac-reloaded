@@ -394,9 +394,12 @@ class NagiosHost extends BaseNagiosHost {
 		$c = new Criteria();
 		$c->add(NagiosHostParentPeer::CHILD_HOST, $this->getId());
 		$relationship = NagiosHostParentPeer::doSelectOne($c);
-		if(!count($relationship)) {
-			return null;
-		}
+                if(is_null($relationship)) {
+                        return null;
+                }
+                if(!count($relationship)) {
+                        return null;
+                }
 		return $relationship->getNagiosHostRelatedByParentHost()->getId();
 	}
 
