@@ -2280,7 +2280,8 @@ else {
 $numOfChildren = count($children_list);
 print_window_header($title, "100%");
 ?>
-<a class="networkadd sublink" href="hosts.php?showall=true">View All Hosts</a><br /><?php
+<a class="networkadd sublink" href="hosts.php?showall=true">View All Hosts</a><br />
+<a class="networkadd sublink" href="hosts.php">View Top-Level Hosts</a><br /><?php
 if(!isset($host)) {?>
 <a class="networkadd sublink" href="add_host.php">Add A New Top-Level Host</a><?php
 }
