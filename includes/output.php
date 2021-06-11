@@ -330,7 +330,7 @@ function print_header($title = null) {
 		<ul>
 			<li><a href="index.php">General</a></li>
 			<li><a href="templates.php">Templates</a></li>
-			<li><a href="hosts.php">Network</a></li>
+			<li><a href="hosts.php?showall=true">Network</a></li>
 			<li><a href="tools.php">Tools</a></li>
 			<li><a href="about.php">About</a></li>
 		</ul>
